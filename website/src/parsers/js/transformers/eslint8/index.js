@@ -11,16 +11,16 @@ export default {
 
   defaultParserID: 'babel-eslint',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
     require([
       'eslint8/lib/linter',
       'eslint8/lib/source-code',
       '../../utils/eslint4Utils',
-    ], (Linter, sourceCode, utils) =>
+    ], (/** @type {any} */ Linter, /** @type {any} */ sourceCode, /** @type {any} */ utils) =>
       callback({ eslint: new Linter.Linter(), sourceCode, utils }));
   },
 
-  transform(/** @type {Record<string, Function>} */ { eslint, sourceCode, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, any>} */ { eslint, sourceCode, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     utils.defineRule(eslint, transformCode);
     return utils.runRule(code, eslint, sourceCode);
   },

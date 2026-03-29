@@ -1,4 +1,4 @@
-export default function(/** @type {Record<string, unknown>} */ CodeMirror) {
+export default function(/** @type {any} */ CodeMirror) {
   /* https://github.com/facebook/reason/blob/master/src/reason-parser/reason_lexer.mll#L94-L154 */
   const keywords = (
     'and as assert begin class constraint done downto exception external fun ' +
@@ -15,7 +15,7 @@ export default function(/** @type {Record<string, unknown>} */ CodeMirror) {
   );
   const builtins = 'true false Error Ok None Some'.split(' ');
 
-  function set(/** @type {Record<string, unknown>} */ words) {
+  function set(/** @type {any} */ words) {
     let obj = {};
     // @ts-expect-error — indexing dynamic object
     for (let i = 0; i < words.length; ++i) obj[words[i]] = true;
@@ -30,7 +30,7 @@ export default function(/** @type {Record<string, unknown>} */ CodeMirror) {
     builtin: set(builtins),
 
     hooks: {
-      '{': function(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ state) {
+      '{': function(/** @type {any} */ stream, /** @type {any} */ state) {
         if (stream.eat('|')) {
           state.longString = true;
           state.tokenize = tokenLongString;
@@ -39,31 +39,31 @@ export default function(/** @type {Record<string, unknown>} */ CodeMirror) {
       },
 
       // array open [|
-      '[': function(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ _state) {
+      '[': function(/** @type {any} */ stream, /** @type {any} */ _state) {
         if (stream.eat('|')) {
           return 'operator';
         }
         return null;
       },
       // array close |]
-      '|': function(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ _state) {
+      '|': function(/** @type {any} */ stream, /** @type {any} */ _state) {
         if (stream.eat(']')) {
           return 'operator';
         }
         return 'operator';
       },
 
-      '"': function(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ state) {
+      '"': function(/** @type {any} */ stream, /** @type {any} */ state) {
         state.tokenize = tokenString;
         return state.tokenize(stream, state);
       },
 
-      "'": function(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ state) {
+      "'": function(/** @type {any} */ stream, /** @type {any} */ state) {
         state.tokenize = tokenPolymorphicVar;
         return state.tokenize(stream, state);
       },
 
-      '/': function(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ state) {
+      '/': function(/** @type {any} */ stream, /** @type {any} */ state) {
         if (!stream.eat('*')) return false;
         state.tokenize = tokenNestedComment(1);
         return state.tokenize(stream, state);
@@ -71,7 +71,7 @@ export default function(/** @type {Record<string, unknown>} */ CodeMirror) {
     },
   });
 
-  function tokenPolymorphicVar(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ state) {
+  function tokenPolymorphicVar(/** @type {any} */ stream, /** @type {any} */ state) {
     /* A char can't have more than 4 characters */
     let count = 0;
     let next; //eslint-disable-line no-unused-vars
@@ -92,7 +92,7 @@ export default function(/** @type {Record<string, unknown>} */ CodeMirror) {
     return null;
   }
 
-  function tokenString(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ state) {
+  function tokenString(/** @type {any} */ stream, /** @type {any} */ state) {
     let next,
       end = false,
       escaped = false;
@@ -109,8 +109,8 @@ export default function(/** @type {Record<string, unknown>} */ CodeMirror) {
     return 'string';
   }
 
-  function tokenNestedComment(/** @type {Record<string, unknown>} */ depth) {
-    return function(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ state) {
+  function tokenNestedComment(/** @type {any} */ depth) {
+    return function(/** @type {any} */ stream, /** @type {any} */ state) {
       let ch;
       while ((ch = stream.next())) {
         if (ch == '*' && stream.eat('/')) {
@@ -130,7 +130,7 @@ export default function(/** @type {Record<string, unknown>} */ CodeMirror) {
     };
   }
 
-  function tokenLongString(/** @type {Record<string, unknown>} */ stream, /** @type {Record<string, unknown>} */ state) {
+  function tokenLongString(/** @type {any} */ stream, /** @type {any} */ state) {
     let prev, next;
     while (state.longString && (next = stream.next()) != null) {
       if (prev === '|' && next === '}') state.longString = false;
@@ -150,7 +150,7 @@ export default function(/** @type {Record<string, unknown>} */ CodeMirror) {
 
   CodeMirror.defineMode(
     'reason',
-    function(/** @type {Record<string, unknown>} */ conf) {
+    function(/** @type {any} */ conf) {
       return Object.assign(CodeMirror.getMode(conf, 'application/reason'), {
         lineComment: undefined, // reason doesn't have line comments
       });

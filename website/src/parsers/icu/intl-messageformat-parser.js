@@ -33,8 +33,8 @@ export default {
     pkg.homepage || 'https://formatjs.io/docs/intl-messageformat-parser/',
   locationProps: new Set(['location']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
-    require(['intl-messageformat-parser'], (all) => {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+    require(['intl-messageformat-parser'], (/** @type {any} */ all) => {
       Object.keys(all.TYPE).forEach((k) => {
         // @ts-expect-error — indexing dynamic object
         TYPES[k] = all.TYPE[k];
@@ -43,7 +43,7 @@ export default {
     });
   },
 
-  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code, /** @type {Record<string, Function>} */ opts) {
+  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code, /** @type {Record<string, any>} */ opts) {
     return parser.parse(code, opts);
   },
 
@@ -60,7 +60,7 @@ export default {
     return node.type != null && TYPES[node.type];
   },
 
-  nodeToRange(/** @type {Record<string, Function>} */ { location }) {
+  nodeToRange(/** @type {Record<string, any>} */ { location }) {
     if (location && location.start && location.end) {
       return [location.start.offset, location.end.offset];
     }

@@ -5,7 +5,7 @@ const ID = 'traceur';
 const FILENAME = 'astExplorer.js';
 
 class Comment {
-  constructor(/** @type {Record<string, unknown>} */ sourceRange) {
+  constructor(/** @type {any} */ sourceRange) {
     this.type = 'COMMENT';
     Object.defineProperty(this, 'location', { value: sourceRange });
     this.value = sourceRange.toString();
@@ -21,14 +21,14 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['location']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
     require(['exports-loader?traceur!traceur/bin/traceur'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ traceur, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {any} */ traceur, /** @type {string} */ code, /** @type {any} */ options) {
     let sourceFile = new traceur.syntax.SourceFile(FILENAME, code);
     let errorReporter = new traceur.util.ErrorReporter();
-    errorReporter.reportMessageInternal = (/** @type {Record<string, unknown>} */ sourceRange, /** @type {Record<string, unknown>} */ message) => {
+    errorReporter.reportMessageInternal = (/** @type {any} */ sourceRange, /** @type {any} */ message) => {
       if (options.TolerateErrors) {
         return;
       }
@@ -48,23 +48,23 @@ export default {
       errorReporter,
       new traceur.util.Options(options),
     );
-    /** @type {Record<string, unknown>} */
+    /** @type {any} */
     let comments = [];
-    parser.handleComment = (/** @type {Record<string, unknown>} */ sourceRange) => {
+    parser.handleComment = (/** @type {any} */ sourceRange) => {
       comments.push(new Comment(sourceRange));
     };
     let ast = options.SourceType === 'Script' ?
       parser.parseScript() :
       parser.parseModule();
-    ast.comments = /** @type {Record<string, unknown>} */ comments;
+    ast.comments = /** @type {any} */ comments;
     return ast;
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {any} */ node) {
     return node.constructor.name;
   },
 
-  *forEachProperty(/** @type {Record<string, unknown>} */ node) {
+  *forEachProperty(/** @type {any} */ node) {
     if (node && typeof node === 'object') {
       if ('type' in node) {
         yield {
@@ -87,13 +87,13 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {Record<string, Function>} */ { location: loc }) {
+  nodeToRange(/** @type {any} */ { location: loc }) {
     if (loc) {
       return [loc.start.offset, loc.end.offset];
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {any} */ node, /** @type {string} */ key) {
     return (
       key === 'scriptItemList' ||
       key === 'declarations' ||
@@ -141,7 +141,7 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(/** @type {Record<string, unknown>} */ defaultOptions) {
+  _getSettingsConfiguration(/** @type {any} */ defaultOptions) {
     return {
       fields :[
         ['SourceType', ['Script', 'Module']],

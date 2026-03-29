@@ -18,13 +18,13 @@ export default {
 
   defaultParserID: 'postcss',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
-    require(['../../../transpilers/babel', 'postcss'], (transpile, postcss) => {
+  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
+    require(['../../../transpilers/babel', 'postcss'], (/** @type {any} */ transpile, /** @type {any} */ postcss) => {
       callback({ transpile: transpile.default, postcss });
     });
   },
 
-  transform(/** @type {Record<string, Function>} */ { transpile, postcss }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, any>} */ { transpile, postcss }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile( transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

@@ -12,7 +12,7 @@ export default {
 
   defaultParserID: 'acorn-to-esprima',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
     require(
       [
         // Explicitly require just the stuff we care about to avoid loading
@@ -27,7 +27,7 @@ export default {
     );
   },
 
-  transform(/** @type {Record<string, Function>} */ { eslint, sourceCode, rules, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, any>} */ { eslint, sourceCode, rules, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     utils.defineRule(rules, transformCode);
     return utils.runRule(code, eslint, sourceCode);
   },

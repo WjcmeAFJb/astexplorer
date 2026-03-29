@@ -44,11 +44,11 @@ export default {
   homepage: `https://www.npmjs.com/package/@esy-ocaml/reason/v/${parserVersion}`,
   locationProps: new Set(locKeys),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
     require(['astexplorer-refmt'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {any} */ parser, /** @type {string} */ code) {
     return parser.parseReason(code);
   },
 
@@ -56,7 +56,7 @@ export default {
     return node.type;
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     const locKey = locKeys.find(key => Object.prototype.hasOwnProperty.call(node, key));
     if (locKey) {
       const range = [

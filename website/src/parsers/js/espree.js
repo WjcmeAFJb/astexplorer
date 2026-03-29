@@ -13,15 +13,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['espree'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ espree, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, any>} */ espree, /** @type {string} */ code, /** @type {any} */ options) {
     return espree.parse(code, options);
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -51,7 +51,7 @@ export default {
 
     return {
       fields: [
-        ['ecmaVersion', ['latest', 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], (/** @type {Record<string, unknown>} */ x) => x === 'latest' ? x : Number(x)],
+        ['ecmaVersion', ['latest', 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], (/** @type {any} */ x) => x === 'latest' ? x : Number(x)],
         ['sourceType', ['script', 'module', 'commonjs']],
         'range',
         'loc',
@@ -64,13 +64,13 @@ export default {
           title: 'ecmaFeatures',
           fields: Object.keys(defaultOptions.ecmaFeatures),
           settings:
-          (/** @type {Record<string, unknown>} */ settings) => settings.ecmaFeatures || {...defaultOptions.ecmaFeatures},
+          (/** @type {any} */ settings) => settings.ecmaFeatures || {...defaultOptions.ecmaFeatures},
         },
       ],
     };
   },
 
-  renderSettings(/** @type {Record<string, unknown>} */ parserSettings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
+  renderSettings(/** @type {any} */ parserSettings, /** @type {(settings: any) => void} */ onChange) {
     return (
       <div>
         <p>

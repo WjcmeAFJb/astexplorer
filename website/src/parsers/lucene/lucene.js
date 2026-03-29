@@ -18,15 +18,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['fieldLocation', 'termLocation', 'location']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['lucene'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ {parse}, /** @type {string} */ code) {
+  parse(/** @type {Record<string, any>} */ {parse}, /** @type {string} */ code) {
     return parse(code);
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     let start = [];
     let end = [];
 

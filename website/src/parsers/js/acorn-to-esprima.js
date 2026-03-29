@@ -13,8 +13,8 @@ export default {
   locationProps: new Set(['loc', 'start', 'end', 'range']),
   showInMenu: false,
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
-    require(['acorn-to-esprima', 'babel5'], (acornToEsprima, {acorn: {tokTypes}, traverse, parse}) => {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+    require(['acorn-to-esprima', 'babel5'], (/** @type {any} */ acornToEsprima, /** @type {any} */ {acorn: {tokTypes}, traverse, parse}) => {
       callback({
         ...acornToEsprima,
         tokTypes,
@@ -24,16 +24,16 @@ export default {
     });
   },
 
-  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
     const opts = {
       locations: true,
       ranges: true,
     };
 
     // @ts-expect-error — dynamic third-party API
-    const /** @type {Record<string, unknown>} */ comments = opts.onComment = [];
+    const /** @type {any} */ comments = opts.onComment = [];
     // @ts-expect-error — dynamic third-party API
-    const /** @type {Record<string, unknown>} */ tokens = opts.onToken = [];
+    const /** @type {any} */ tokens = opts.onToken = [];
 
     let ast = parser.parse(code, opts);
 
@@ -46,7 +46,7 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

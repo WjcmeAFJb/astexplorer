@@ -12,15 +12,15 @@ export default {
 
   defaultParserID: 'babylon6',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
     require([
       '../../../transpilers/babel',
       'babel6',
       'recast',
-    ], (transpile, babel, recast) => callback({ transpile: transpile.default, babel, recast }));
+    ], (/** @type {any} */ transpile, /** @type {any} */ babel, /** @type {any} */ recast) => callback({ transpile: transpile.default, babel, recast }));
   },
 
-  transform(/** @type {Record<string, Function>} */ { transpile, babel, recast }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, any>} */ { transpile, babel, recast }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

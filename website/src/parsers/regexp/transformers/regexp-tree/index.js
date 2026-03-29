@@ -11,14 +11,14 @@ export default {
 
   defaultParserID: ID,
 
-  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
     require([
       '../../../transpilers/babel',
       'regexp-tree',
-    ], (transpile, regexpTree) => callback({ transpile: transpile.default, regexpTree }));
+    ], (/** @type {any} */ transpile, /** @type {any} */ regexpTree) => callback({ transpile: transpile.default, regexpTree }));
   },
 
-  transform(/** @type {Record<string, Function>} */ { transpile, regexpTree }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, any>} */ { transpile, regexpTree }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let handler = compileModule( // eslint-disable-line no-shadow
       transformCode,

@@ -11,11 +11,11 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/codeschool/sqlite-parser',
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
     require(['sqlite-parser'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ sqliteParser, /** @type {string} */ code) {
+  parse(/** @type {any} */ sqliteParser, /** @type {string} */ code) {
     return sqliteParser(code);
   },
 

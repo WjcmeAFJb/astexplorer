@@ -18,17 +18,17 @@ export default {
   locationProps: new Set(['loc']),
   typeProps: new Set(['kind']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['graphql/language'], ({ parse }) => {
       callback({ parse });
     });
   },
 
-  parse(/** @type {Record<string, Function>} */ { parse }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, any>} */ { parse }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parse(code, options);
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (node.loc) {
       return [node.loc.start, node.loc.end];
     }

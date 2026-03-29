@@ -17,15 +17,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
     require(['json-to-ast'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ jsonToAst, /** @type {string} */ code) {
+  parse(/** @type {any} */ jsonToAst, /** @type {string} */ code) {
     return jsonToAst(code);
   },
 
-  nodeToRange(/** @type {Record<string, Function>} */ {loc}) {
+  nodeToRange(/** @type {any} */ {loc}) {
     if (loc) {
       return [
         loc.start.offset,

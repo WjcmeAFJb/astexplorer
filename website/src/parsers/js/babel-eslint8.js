@@ -13,11 +13,11 @@ export default {
   locationProps: new Set(['loc', 'start', 'end', 'range']),
   showInMenu: false,
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['babel-eslint8'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
     const opts = {
       sourceType: 'module',
     };
@@ -27,7 +27,7 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

@@ -17,7 +17,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(
       ['recast', 'babel5', 'babylon6', 'babylon7', 'flow-parser', 'recast/parsers/typescript'],
       (recast, babelCore, babylon6, babylon7, flow, typescript) => {
@@ -35,7 +35,7 @@ export default {
     );
   },
 
-  parse(/** @type {Record<string, Function>} */ { recast, parsers }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, any>} */ { recast, parsers }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     options = {...options}; // a copy is needed since we are mutating options
     const flowOptions = /** @type {Record<string, unknown>} */ (options.flow);
     const babylon6Options = /** @type {Record<string, unknown>} */ (options.babylon6);
@@ -98,7 +98,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }

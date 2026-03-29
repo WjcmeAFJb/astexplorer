@@ -12,13 +12,13 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['regexp-tree'], (regexpTree) => {
       callback(regexpTree);
     });
   },
 
-  parse(/** @type {Record<string, Function>} */ regexpTree, /** @type {string} */ code, options={}) {
+  parse(/** @type {Record<string, any>} */ regexpTree, /** @type {string} */ code, options={}) {
     regexpTree
       .parser
       .setOptions(options);
@@ -26,7 +26,7 @@ export default {
     return regexpTree.parse(code);
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (node.loc != null) {
       return [node.loc.start, node.loc.end];
     }

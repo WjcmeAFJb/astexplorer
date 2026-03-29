@@ -17,15 +17,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
     require(['redot'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ redot, /** @type {string} */ code) {
+  parse(/** @type {any} */ redot, /** @type {string} */ code) {
     return redot().parse(code);
   },
 
-  nodeToRange(/** @type {Record<string, Function>} */ { position }) {
+  nodeToRange(/** @type {any} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }

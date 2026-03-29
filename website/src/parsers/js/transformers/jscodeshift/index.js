@@ -6,9 +6,9 @@ const ID = 'jscodeshift';
 const sessionMethods = new Set();
 
 // https://github.com/facebook/jscodeshift#parser
-const getJscodeshiftParser = (/** @type {Record<string, unknown>} */ parser, /** @type {Record<string, unknown>} */ parserSettings) => {
+const getJscodeshiftParser = (/** @type {any} */ parser, /** @type {any} */ parserSettings) => {
   if (parser === 'typescript') {
-    if (parserSettings.typescript && /** @type {Record<string, Function>} */ (parserSettings.typescript).jsx === false) {
+    if (parserSettings.typescript && /** @type {any} */ (parserSettings.typescript).jsx === false) {
       return 'ts'
     }
     return 'tsx'
@@ -31,29 +31,29 @@ export default {
     'flow',
   ]),
 
-  formatCodeExample(/** @type {Record<string, unknown>} */ codeExample, /** @type {Record<string, Function>} */ { parser, parserSettings }) {
+  formatCodeExample(/** @type {any} */ codeExample, /** @type {any} */ { parser, parserSettings }) {
     return codeExample.replace('{{parser}}', `${getJscodeshiftParser(parser, parserSettings)}`)
   },
 
-  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
-    require(['../../../transpilers/babel', 'jscodeshift'], (transpile, jscodeshift) => {
+  loadTransformer(/** @type {(realTransformer: any) => void} */ callback) {
+    require(['../../../transpilers/babel', 'jscodeshift'], (/** @type {any} */ transpile, /** @type {any} */ jscodeshift) => {
         const { registerMethods } = jscodeshift;
 
-        /** @type {Record<string, unknown>} */
+        /** @type {any} */
         let origMethods;
 
         jscodeshift.registerMethods({
           hasOwnProperty(/** @type {string} */ name) {
             // compare only against current-session & very original methods
-            if (!/** @type {Record<string, unknown>} */ origMethods) {
+            if (!/** @type {any} */ origMethods) {
               origMethods = new Set(Object.getOwnPropertyNames(this));
             }
-            return /** @type {Record<string, unknown>} */ origMethods.has(name) || sessionMethods.has(name);
+            return /** @type {any} */ origMethods.has(name) || sessionMethods.has(name);
           },
         });
 
         // patch in order to collect user-defined method names
-        jscodeshift.registerMethods = function (/** @type {Record<string, unknown>} */ methods) {
+        jscodeshift.registerMethods = function (/** @type {any} */ methods) {
           registerMethods.apply(this, arguments);
           for (let name in methods) {
             sessionMethods.add(name);
@@ -66,7 +66,7 @@ export default {
   },
 
   transform(
-    /** @type {Record<string, Function>} */ { transpile, jscodeshift },
+    /** @type {any} */ { transpile, jscodeshift },
     /** @type {string} */ transformCode,
     /** @type {string} */ code,
   ) {
@@ -91,7 +91,7 @@ export default {
         jscodeshift: transformModule.parser ?
           jscodeshift.withParser(transformModule.parser) :
           jscodeshift,
-        stats: (/** @type {unknown} */ value, quantity=1) => {
+        stats: (/** @type {any} */ value, quantity=1) => {
           statsWasCalled = true;
           counter[value] = (counter[value] ? counter[value] : 0) + quantity;
         },

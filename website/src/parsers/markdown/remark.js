@@ -25,7 +25,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require([
       'remark',
       'remark-gfm',
@@ -44,7 +44,7 @@ export default {
   },
 
   parse(
-    /** @type {Record<string, Function>} */ { remark, gfm, directive, footnotes, frontmatter, math },
+    /** @type {Record<string, any>} */ { remark, gfm, directive, footnotes, frontmatter, math },
     /** @type {string} */ code,
     /** @type {Record<string, unknown>} */ options,
   ) {
@@ -58,7 +58,7 @@ export default {
     return remark().use(plugins).parse(code);
   },
 
-  nodeToRange(/** @type {Record<string, Function>} */ { position }) {
+  nodeToRange(/** @type {Record<string, any>} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }

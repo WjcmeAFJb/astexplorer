@@ -27,11 +27,11 @@ export default {
   locationProps: new Set(['loc']),
   typeProps: new Set(['kind']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
     require(['php-parser'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ Engine, /** @type {string} */ code) {
+  parse(/** @type {any} */ Engine, /** @type {string} */ code) {
     const parser = new Engine(defaultOptions);
     return parser.parseCode(code, '');
   },
@@ -40,7 +40,7 @@ export default {
     return node.kind;
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (node.loc && node.loc.start && node.loc.end) {
       return [node.loc.start.offset, node.loc.end.offset];
     }

@@ -16,15 +16,15 @@ export default {
   homepage: pkg.repository.url,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
-    require(['@swc/wasm-web/wasm.js'], (instance) => {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+    require(['@swc/wasm-web/wasm.js'], (/** @type {any} */ instance) => {
       instance.default(wasm_bg).then(() => {
         callback(instance)
       });
     });
   },
 
-  parse(/** @type {Record<string, Function>} */ parsers, /** @type {string} */ code, options = {}) {
+  parse(/** @type {Record<string, any>} */ parsers, /** @type {string} */ code, options = {}) {
     try {
       return parsers.parseSync(code, {...this.getDefaultOptions(), ...options});
     } catch (message) {
@@ -32,7 +32,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (node && node.span && typeof node.span.start === 'number') {
       return [node.span.start, node.span.end];
     }

@@ -11,8 +11,8 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/glimmerjs/glimmer-vm',
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
-    require(['@glimmer/syntax'], (glimmer) => callback(glimmer.preprocess));
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+    require(['@glimmer/syntax'], (/** @type {any} */ glimmer) => callback(glimmer.preprocess));
   },
 
   opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {

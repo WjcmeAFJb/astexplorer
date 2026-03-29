@@ -17,15 +17,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['@humanwhocodes/momoa'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ momoa, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, any>} */ momoa, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return momoa.parse(code, options);
   },
 
-  nodeToRange(/** @type {Record<string, Function>} */ {loc}) {
+  nodeToRange(/** @type {Record<string, any>} */ {loc}) {
     if (loc) {
       return [
         loc.start.offset,

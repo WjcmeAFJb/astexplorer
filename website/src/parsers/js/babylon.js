@@ -13,15 +13,15 @@ export default {
   locationProps: new Set(['loc', 'start', 'end']),
   showInMenu: false,
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['babylon5'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ parserSettings) {
+  parse(/** @type {Record<string, any>} */ babylon, /** @type {string} */ code, /** @type {any} */ parserSettings) {
     return babylon.parse(code, parserSettings);
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {any} */ node) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -30,7 +30,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }
@@ -59,7 +59,7 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(/** @type {Record<string, unknown>} */ defaultOptions) {
+  _getSettingsConfiguration(/** @type {any} */ defaultOptions) {
     return {
       fields: [
         ['sourceType', ['module', 'script']],
@@ -71,19 +71,19 @@ export default {
           key: 'features',
           title: 'Features',
           fields: Object.keys(defaultOptions.features),
-          settings: (/** @type {Record<string, unknown>} */ settings) => settings.features || {.../** @type {Record<string, unknown>} */ (defaultOptions.features)},
+          settings: (/** @type {any} */ settings) => settings.features || {.../** @type {any} */ (defaultOptions.features)},
         },
         {
           key: 'plugins',
           title: 'Plugins',
           fields: Object.keys(defaultOptions.plugins),
-          settings: (/** @type {Record<string, unknown>} */ settings) => settings.plugins || {.../** @type {Record<string, unknown>} */ (defaultOptions.plugins)},
-          values: (/** @type {Record<string, unknown>} */ plugins) => Object.keys(defaultOptions.plugins).reduce(
+          settings: (/** @type {any} */ settings) => settings.plugins || {.../** @type {any} */ (defaultOptions.plugins)},
+          values: (/** @type {any} */ plugins) => Object.keys(defaultOptions.plugins).reduce(
             // @ts-expect-error — indexing dynamic object
             (obj, name) => ((obj[name] = name in plugins), obj),
             {},
           ),
-          update: (/** @type {Record<string, unknown>} */ plugins, /** @type {string} */ name, /** @type {unknown} */ value) => {
+          update: (/** @type {any} */ plugins, /** @type {string} */ name, /** @type {unknown} */ value) => {
             if (value) {
               return {...plugins, [name]: true};
             }

@@ -12,11 +12,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc', 'start', 'end', 'range']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['@babel/eslint-parser'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
     const opts = {
       sourceType: 'module',
       requireConfigFile: false,
@@ -32,7 +32,7 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

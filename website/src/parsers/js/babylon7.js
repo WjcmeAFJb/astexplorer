@@ -70,8 +70,8 @@ export const parserSettingsConfiguration = {
       key: 'plugins',
       title: 'Plugins',
       fields: availablePlugins,
-      settings: (/** @type {Record<string, unknown>} */ settings) => settings.plugins || defaultOptions.plugins,
-      values: (/** @type {Record<string, unknown>} */ plugins) => availablePlugins.reduce(
+      settings: (/** @type {any} */ settings) => settings.plugins || defaultOptions.plugins,
+      values: (/** @type {any} */ plugins) => availablePlugins.reduce(
         // @ts-expect-error — indexing dynamic object
         (obj, name) => ((obj[name] = plugins.indexOf(name) > -1), obj),
         {},
@@ -84,7 +84,7 @@ export const parserSettingsConfiguration = {
         ['proposal', ['minimal', 'smart', 'hack', 'fsharp']],
         ['hackTopicToken', ['%', '#', '^', '^^', '@@']],
       ],
-      settings: (/** @type {Record<string, unknown>} */ settings) => settings.pipelineOptions || defaultOptions.pipelineOptions,
+      settings: (/** @type {any} */ settings) => settings.pipelineOptions || defaultOptions.pipelineOptions,
     },
     {
       key: 'decoratorOptions',
@@ -94,7 +94,7 @@ export const parserSettingsConfiguration = {
         "decoratorsBeforeExport",
         ['version', ["2018-09", "2021-12", "2022-03"]],
       ],
-      settings: (/** @type {Record<string, unknown>} */ settings) => settings.decoratorOptions || defaultOptions.decoratorOptions,
+      settings: (/** @type {any} */ settings) => settings.decoratorOptions || defaultOptions.decoratorOptions,
     },
     {
       key: 'typescriptOptions',
@@ -103,7 +103,7 @@ export const parserSettingsConfiguration = {
         'dts',
         'disallowAmbiguousJSXLike'
       ],
-      settings: (/** @type {Record<string, unknown>} */ settings) => settings.typescriptOptions || defaultOptions.typescriptOptions,
+      settings: (/** @type {any} */ settings) => settings.typescriptOptions || defaultOptions.typescriptOptions,
     }
   ],
 };
@@ -117,16 +117,16 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
     require(['babylon7'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {any} */ babylon, /** @type {string} */ code, /** @type {any} */ options) {
     options = {...options};
     // Older versions didn't have the pipelineOptions setting, but
     // only a pipelineProposal string option.
-    const { pipelineOptions = {proposal: options.pipelineProposal}, decoratorOptions, typescriptOptions } = /** @type {Record<string, Function>} */ (options);
-    options.plugins = /** @type {unknown[]} */ (options.plugins || []).map((/** @type {Record<string, unknown>} */ plugin) => {
+    const { pipelineOptions = {proposal: options.pipelineProposal}, decoratorOptions, typescriptOptions } = /** @type {any} */ (options);
+    options.plugins = /** @type {unknown[]} */ (options.plugins || []).map((/** @type {any} */ plugin) => {
       switch (plugin) {
         case 'decorators':
           return ['decorators', decoratorOptions];
@@ -144,7 +144,7 @@ export default {
     return babylon.parse(code, options);
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {any} */ node) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -152,7 +152,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

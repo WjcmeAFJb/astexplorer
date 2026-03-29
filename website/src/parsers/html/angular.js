@@ -18,17 +18,17 @@ export default {
   ]),
   typeProps: new Set(['name']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
     require(['@angular/compiler'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ ng, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {any} */ ng, /** @type {string} */ code, /** @type {any} */ options) {
     const ast = ng.parseTemplate(code, 'astexplorer.html', options);
     fixSpan(ast, code);
     return ast;
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (node.startSourceSpan) {
       if (node.endSourceSpan) {
         return [
@@ -49,7 +49,7 @@ export default {
     }
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {any} */ node) {
     let name = getNodeCtor(node);
     if (node.name) {
       name += `(${node.name})`;
@@ -64,7 +64,7 @@ export default {
   },
 };
 
-function getNodeCtor(/** @type {Record<string, unknown>} */ node) {
+function getNodeCtor(/** @type {any} */ node) {
   return node.constructor && node.constructor.name;
 }
 
@@ -82,10 +82,10 @@ function getNodeCtor(/** @type {Record<string, unknown>} */ node) {
  *     <tag [attr]="expression">
  *                  ^^^^^^^^^^ sub AST { start: 13, end: 23 }
  */
-function fixSpan(/** @type {Record<string, unknown>} */ ast, /** @type {string} */ code) {
+function fixSpan(/** @type {any} */ ast, /** @type {string} */ code) {
   const fixed = new Set();
   const KEEP_VISIT = 1;
-  function visitTarget(/** @type {unknown} */ value, /** @type {Record<string, unknown>} */ isTarget, /** @type {Record<string, unknown>} */ fn, /** @type {Record<string, unknown>} */ parent) {
+  function visitTarget(/** @type {any} */ value, /** @type {any} */ isTarget, /** @type {any} */ fn, /** @type {any} */ parent) {
     if (value !== null && typeof value === 'object') {
       if (isTarget(value)) {
         if (fn(value, parent) !== KEEP_VISIT) {
@@ -102,7 +102,7 @@ function fixSpan(/** @type {Record<string, unknown>} */ ast, /** @type {string} 
     }
   }
 
-  function getBaseStart(/** @type {Record<string, unknown>} */ parent) {
+  function getBaseStart(/** @type {any} */ parent) {
     const nodeName = getNodeCtor(parent);
     switch (nodeName) {
       case 'BoundAttribute':
@@ -134,12 +134,12 @@ function fixSpan(/** @type {Record<string, unknown>} */ ast, /** @type {string} 
   visitTarget(
     ast,
     (/** @type {unknown} */ value) => getNodeCtor(value) === 'ASTWithSource',
-    (/** @type {Record<string, unknown>} */ node, /** @type {Record<string, unknown>} */ parent) => {
+    (/** @type {any} */ node, /** @type {any} */ parent) => {
       const baseStart = getBaseStart(parent);
       visitTarget(
         node,
-        (/** @type {unknown} */ value) => value.span,
-        (/** @type {Record<string, unknown>} */ node) => {
+        (/** @type {any} */ value) => value.span,
+        (/** @type {any} */ node) => {
           if (!fixed.has(node)) {
             node.span.start += baseStart;
             node.span.end += baseStart;

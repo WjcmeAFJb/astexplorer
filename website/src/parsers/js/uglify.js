@@ -14,7 +14,7 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['TYPE']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require([
       'raw-loader?esModule=false!uglify-es/lib/utils.js',
       'raw-loader?esModule=false!uglify-es/lib/ast.js',
@@ -25,7 +25,7 @@ export default {
     });
   },
 
-  parse(/** @type {Record<string, Function>} */ UglifyJS, /** @type {string} */ code) {
+  parse(/** @type {Record<string, any>} */ UglifyJS, /** @type {string} */ code) {
     return UglifyJS.parse(code);
   },
 
@@ -37,7 +37,7 @@ export default {
     return type;
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     let start, end;
     switch (node.TYPE) {
       case 'Token':

@@ -11,8 +11,8 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage,
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
-    require(['handlebars'], (handlebars) => callback(handlebars.parse));
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+    require(['handlebars'], (/** @type {any} */ handlebars) => callback(handlebars.parse));
   },
 
   opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {

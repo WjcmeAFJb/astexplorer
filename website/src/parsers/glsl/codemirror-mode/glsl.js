@@ -6,9 +6,9 @@
 
 /**
  * @typedef {{ next: () => string | null, eat: (ch: string) => string | null, eatWhile: (re: RegExp) => boolean, eatSpace: () => boolean, skipToEnd: () => void, skipTo: (ch: string) => boolean, peek: () => string, current: () => string, sol: () => boolean, eol: () => boolean, indentation: () => number, column: () => number, [k: string]: unknown }} CMStream
- * @typedef {{ tokenize: ((stream: CMStream, state: CMState) => string | null) | null, context: CMContext, indented: number, startOfLine: boolean, longString?: boolean, [k: string]: unknown }} CMState
+ * @typedef {{ tokenize: ((stream: CMStream, state: CMState) => string | false | null) | null, context: CMContext, indented: number, startOfLine: boolean, longString?: boolean, [k: string]: unknown }} CMState
  * @typedef {{ indented: number, column: number, type: string, align: boolean | null, prev: CMContext | null }} CMContext
- * @typedef {{ keywords?: Record<string, boolean>, builtin?: Record<string, boolean>, blockKeywords?: Record<string, boolean>, atoms?: Record<string, boolean>, hooks?: Record<string, Function>, helperType?: string, [k: string]: unknown }} CMMode
+ * @typedef {{ keywords?: any, builtin?: any, blockKeywords?: any, atoms?: any, hooks?: Record<string, any>, helperType?: string, [k: string]: unknown }} CMMode
  */
 
 import CodeMirror from 'codemirror';
@@ -134,7 +134,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
       return {
         /** @type {((stream: CMStream, state: CMState) => string | null) | null} */
         tokenize: null,
-        context: new Context((basecolumn || 0) - indentUnit, 0, 'top', false),
+        context: new Context((basecolumn || 0) - indentUnit, 0, 'top', false, null),
         indented: 0,
         startOfLine: true,
       };
@@ -231,7 +231,7 @@ function def(/** @type {string | string[]} */ mimes, /** @type {CMMode} */ mode)
   if (typeof mimes == 'string') mimes = [mimes];
   /** @type {string[]} */
   var words = [];
-  function add(/** @type {Record<string, boolean> | undefined} */ obj) {
+  function add(/** @type {any | undefined} */ obj) {
     if (obj)
       for (var prop in obj)
         if (Object.prototype.hasOwnProperty.call(obj, prop)) words.push(prop);
@@ -245,7 +245,7 @@ function def(/** @type {string | string[]} */ mimes, /** @type {CMMode} */ mode)
   }
 
   for (var i = 0; i < mimes.length; ++i)
-    CodeMirror.defineMIME(mimes[i], mode);
+    CodeMirror.defineMIME(mimes[i], /** @type {any} */ (mode));
 }
 
 def(['x-shader/x-vertex', 'x-shader/x-fragment'], {

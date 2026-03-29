@@ -12,11 +12,11 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/fb55/htmlparser2',
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
     require(['posthtml-parser'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ posthtmlParser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {any} */ posthtmlParser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return posthtmlParser(code, options);
   },
 

@@ -3,8 +3,8 @@ import pkg from '@angular-eslint/template-parser/package.json';
 
 const ID = '@angular-eslint/template-parser';
 
-function wrapParesr(/** @type {(realParser: Record<string, Function>) => void} */ callback, /** @type {Record<string, Function>} */ { parseForESLint }) {
-  const parse = (/** @type {string} */ code, /** @type {Record<string, unknown>} */ options) => {
+function wrapParesr(/** @type {(realParser: Record<string, any>) => void} */ callback, /** @type {Record<string, any>} */ { parseForESLint }) {
+  const parse = (/** @type {string} */ code, /** @type {any} */ options) => {
     const {
       ast,
       visitorKeys,
@@ -12,7 +12,7 @@ function wrapParesr(/** @type {(realParser: Record<string, Function>) => void} *
     } = parseForESLint(code, options);
 
     // Traverse AST in order to add `loc` and `range` for each child
-    const addLocation = (/** @type {Record<string, unknown>} */ node) => {
+    const addLocation = (/** @type {any} */ node) => {
       if (!node.startSourceSpan || !node.endSourceSpan) {
         if (!node.sourceSpan) return node;
         const range = node.range || [
@@ -42,9 +42,9 @@ function wrapParesr(/** @type {(realParser: Record<string, Function>) => void} *
       }
     };
 
-    const visit = (/** @type {Record<string, unknown>} */ node) => {
+    const visit = (/** @type {any} */ node) => {
       const keys = visitorKeys[node.type] || [];
-      const newNode = keys.reduce((/** @type {Record<string, unknown>} */ acc, /** @type {string} */ key) => {
+      const newNode = keys.reduce((/** @type {any} */ acc, /** @type {string} */ key) => {
         const child = node[key];
         if (Array.isArray(child)) {
           const children = child;
@@ -72,11 +72,11 @@ export default {
   homepage: pkg.homepage || 'https://github.com/angular-eslint/angular-eslint',
   locationProps: new Set(['loc', 'start', 'end', 'range', 'startSourceSpan', 'endSourceSpan', 'sourceSpan', 'handlerSpan', 'location']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['@angular-eslint/template-parser'], wrapParesr.bind(null, callback));
   },
 
-  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code, /** @type {any} */ options) {
     return parser.parse(code, options);
   },
 };

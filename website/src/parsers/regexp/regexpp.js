@@ -18,18 +18,18 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['end', 'start']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['regexpp'], callback);
   },
 
-  parse(/** @type {Record<string, Function>} */ regexpp, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, any>} */ regexpp, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     if (Object.keys(options).length === 0) {
       options = /** @type {Record<string, unknown>} */ (this.getDefaultOptions());
     }
     return regexpp.parseRegExpLiteral(code, options);
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.start === 'number' && typeof node.end === 'number') {
       return [node.start, node.end];
     }

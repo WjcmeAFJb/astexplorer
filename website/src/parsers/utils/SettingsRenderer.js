@@ -6,7 +6,7 @@ import React from 'react';
 /** @type {(v: string) => string | number} */
 const identity = v => v;
 
-function valuesFromArray(/** @type {Record<string, Function>} */ settings) {
+function valuesFromArray(/** @type {any} */ settings) {
   return settings.reduce(
     (/** @type {Record<string, unknown>} */ obj, /** @type {string} */ name) => (
       (obj[name] = settings.indexOf(name) > -1),
@@ -16,19 +16,19 @@ function valuesFromArray(/** @type {Record<string, Function>} */ settings) {
   );
 }
 
-function getValuesFromSettings(/** @type {Record<string, Function>} */ settings) {
+function getValuesFromSettings(/** @type {any} */ settings) {
   if (Array.isArray(settings)) {
     return valuesFromArray(settings);
   }
   return settings;
 }
 
-function defaultUpdater(/** @type {Record<string, Function>} */ settings, /** @type {string} */ name, /** @type {unknown} */ value) {
+function defaultUpdater(/** @type {any} */ settings, /** @type {string} */ name, /** @type {unknown} */ value) {
   return {...settings, [name]: value};
 }
 
-function arrayUpdater(/** @type {Record<string, Function>} */ settings, /** @type {string} */ name, /** @type {unknown} */ value) {
-  settings = new Set(settings);
+function arrayUpdater(/** @type {any} */ settings, /** @type {string} */ name, /** @type {unknown} */ value) {
+  settings = /** @type {any} */ (new Set(settings));
   if (value) {
     settings.add(name);
   } else {
@@ -37,7 +37,7 @@ function arrayUpdater(/** @type {Record<string, Function>} */ settings, /** @typ
   return Array.from(settings);
 }
 
-function getUpdateStrategy(/** @type {Record<string, Function>} */ settings) {
+function getUpdateStrategy(/** @type {any} */ settings) {
   if (Array.isArray(settings)) {
     return arrayUpdater;
   }

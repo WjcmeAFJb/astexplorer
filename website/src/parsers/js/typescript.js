@@ -4,7 +4,7 @@ import pkg from 'typescript/package.json';
 const ID = 'typescript';
 const FILENAME = 'astExplorer.ts';
 
-/** @type {Record<string, unknown>} */
+/** @type {any} */
 let getComments;
 const syntaxKind = {};
 
@@ -24,8 +24,8 @@ export default {
   locationProps: new Set(['pos', 'end']),
   typeProps: new Set(['kind']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
-    require(['typescript'], _ts => {
+  loadParser(/** @type {(realParser: any) => void} */ callback) {
+    require(['typescript'], (/** @type {any} */ _ts) => {
         // workarounds issue described at https://github.com/Microsoft/TypeScript/issues/18062
         for (const name of Object.keys(_ts.SyntaxKind).filter(x => isNaN(parseInt(x)))) {
             const value = _ts.SyntaxKind[name];
@@ -40,7 +40,7 @@ export default {
     });
   },
 
-  parse(/** @type {Record<string, Function>} */ ts, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {any} */ ts, /** @type {string} */ code, /** @type {any} */ options) {
     const compilerHost/*: ts.CompilerHost*/ = {
       fileExists: () => true,
       getCanonicalFileName: (/** @type {string} */ filename) => filename,
@@ -50,10 +50,10 @@ export default {
       getSourceFile: (/** @type {string} */ filename) => {
         return ts.createSourceFile(filename, code, ts.ScriptTarget.Latest, true);
       },
-      /** @returns {Record<string, unknown>} */
+      /** @returns {any} */
       readFile: () => null,
       useCaseSensitiveFileNames: () => true,
-      /** @returns {Record<string, unknown>} */
+      /** @returns {any} */
       writeFile: () => null,
     };
 
@@ -69,7 +69,7 @@ export default {
 
     const sourceFile = program.getSourceFile(filename);
 
-    getComments = (/** @type {Record<string, unknown>} */ node, /** @type {Record<string, unknown>} */ isTrailing) => {
+    getComments = (/** @type {any} */ node, /** @type {any} */ isTrailing) => {
       if (node.parent) {
         const nodePos = isTrailing ? node.end : node.pos;
         const parentPos = isTrailing ? node.parent.end : node.parent.pos;
@@ -95,7 +95,7 @@ export default {
     return sourceFile;
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {any} */ node) {
     if (node.kind) {
       // @ts-expect-error — indexing dynamic object
       return syntaxKind[node.kind];
@@ -107,7 +107,7 @@ export default {
     'parent',
   ]),
 
-  *forEachProperty(/** @type {Record<string, unknown>} */ node) {
+  *forEachProperty(/** @type {any} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (this._ignoredProperties.has(prop) || prop.charAt(0) === '_') {
@@ -120,12 +120,12 @@ export default {
       }
       if (node.parent) {
         yield {
-          value: /** @type {Record<string, unknown>} */ getComments(node),
+          value: /** @type {any} */ getComments(node),
           key: 'leadingComments',
           computed: true,
         };
         yield {
-          value: /** @type {Record<string, unknown>} */ getComments(node, true),
+          value: /** @type {any} */ getComments(node, true),
           key: 'trailingComments',
           computed: true,
         };
@@ -133,7 +133,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.getStart === 'function' &&
         typeof node.getEnd === 'function') {
       return [node.getStart(), node.getEnd()];
@@ -143,7 +143,7 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ _, /** @type {string} */ key) {
+  opensByDefault(/** @type {any} */ _, /** @type {string} */ key) {
     return (
       key === 'statements' ||
       key === 'declarationList' ||

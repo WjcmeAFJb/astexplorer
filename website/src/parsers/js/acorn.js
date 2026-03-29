@@ -13,7 +13,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
     require(['acorn', 'acorn-loose', 'acorn-jsx'], (acorn, acornLoose, acornJsx) => {
       callback({
         acorn,
@@ -23,7 +23,7 @@ export default {
     });
   },
 
-  parse(/** @type {Record<string, Function>} */ parsers, /** @type {string} */ code, options={}) {
+  parse(/** @type {Record<string, any>} */ parsers, /** @type {string} */ code, options={}) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
@@ -47,7 +47,7 @@ export default {
     });
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -73,7 +73,7 @@ export default {
   _getSettingsConfiguration() {
     return {
       fields: [
-        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'latest'], (/** @type {Record<string, unknown>} */ x) => x === 'latest' ? x : Number(x)],
+        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'latest'], (/** @type {any} */ x) => x === 'latest' ? x : Number(x)],
         ['sourceType', ['script', 'module']],
         'allowReserved',
         'allowReturnOutsideFunction',
@@ -89,7 +89,7 @@ export default {
     };
   },
 
-  renderSettings(/** @type {Record<string, unknown>} */ parserSettings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
+  renderSettings(/** @type {any} */ parserSettings, /** @type {(settings: any) => void} */ onChange) {
     return (
       <div>
         <p>

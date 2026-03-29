@@ -11,16 +11,16 @@ export default {
 
   defaultParserID: 'svelte',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: any) => void} */ callback) {
     require(
       ['svelte/compiler'],
       callback,
     );
   },
 
-  transform(/** @type {Record<string, Function>} */ { preprocess }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {any} */ { preprocess }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     /** @type {function(): {markup?: Function, script?: Function, style?: Function}} */
-    const transform = compileModule(transformCode);
+    const transform = /** @type {any} */ (compileModule(transformCode));
 
     // Identity functions in case of missing transforms
     const _markupIdentity = (/** @type {string} */ content, /** @type {string} */ _filename) => content;
@@ -34,17 +34,17 @@ export default {
     const styleTransform = transform().style || _styleIdentity;
 
     const result = preprocess(code, {
-      markup:(/** @type {Record<string, Function>} */ { content, _filename}) => {
+      markup:(/** @type {any} */ { content, _filename}) => {
         return {
           code: markupTransform(content),
         };
       },
-      script: (/** @type {Record<string, Function>} */ {content, attributes, _filename}) => {
+      script: (/** @type {any} */ {content, attributes, _filename}) => {
         return {
           code: scriptTransform(content, attributes),
         };
       },
-      style: (/** @type {Record<string, Function>} */ {content, attributes, _filename}) => {
+      style: (/** @type {any} */ {content, attributes, _filename}) => {
         return {
           code: styleTransform(content, attributes),
         };

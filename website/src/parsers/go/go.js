@@ -12,14 +12,14 @@ export default {
   _ignoredProperties: new Set(['_type']),
   locationProps: new Set(['Loc']),
 
-  async loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
-    require(['astexplorer-go'], async parser => {
+  async loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+    require(['astexplorer-go'], async (/** @type {any} */ parser) => {
       await parser.init()
       callback(parser)
     })
   },
 
-  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
     return parser.parseFile(code)
   },
 
@@ -27,9 +27,9 @@ export default {
     return node._type
   },
 
-  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+  nodeToRange(/** @type {any} */ node) {
     if (node.Loc) {
-      return [node.Loc.Start, node.Loc.End].map(({ Offset }) => Offset)
+      return [/** @type {any} */ (node.Loc).Start, /** @type {any} */ (node.Loc).End].map((/** @type {any} */ { Offset }) => Offset)
     }
   },
 }
