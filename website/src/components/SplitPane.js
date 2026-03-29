@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import * as React from 'react';
 import cx from '../utils/classnames.js';
 
+/** @type {Record<string, string>} */
 const baseStyle = {
   flex: '1',
   display: 'flex',
@@ -27,7 +28,7 @@ export default function SplitPane({vertical, className, children, onResize}) {
   // panel, as percentage of the parent containers size. The remaining elements
   // are sized and layed out through flexbox.
   const [position, setPosition] = React.useState(50)
-  const container = React.useRef()
+  const container = React.useRef(/** @type {HTMLDivElement | null} */ (null))
 
   const onMouseDown = React.useCallback(function(event) {
     if (!container.current) {
@@ -62,6 +63,7 @@ export default function SplitPane({vertical, className, children, onResize}) {
 
   children = React.Children.toArray(children)
 
+  // @ts-expect-error — children was reassigned to ReactChild[] above which has .length; TS doesn't track reassignment narrowing on params
   if (children.length < 2) {
     return (
       <div className={className} style={{display: 'flex'}}>

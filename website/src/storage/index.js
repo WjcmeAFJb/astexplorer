@@ -4,7 +4,7 @@
 
 export default class StorageHandler {
   /**
-   * @param {StorageBackend[]} backends
+   * @param {Array<*>} backends
    */
   constructor(backends) {
     this._backends = backends;

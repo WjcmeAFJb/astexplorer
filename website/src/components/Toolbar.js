@@ -18,7 +18,9 @@ import KeyMapButton from './buttons/KeyMapButton';
  * @param {(transformer: import('../types.js').Transformer | null) => void} [props.onTransformChange]
  * @param {(keyMap: string) => void} [props.onKeyMapChange]
  * @param {import('../types.js').Parser} props.parser
+ * @param {import('../types.js').Category} [props.category]
  * @param {import('../types.js').Transformer} [props.transformer]
+ * @param {(category: import('../types.js').Category) => void} [props.onCategoryChange]
  * @param {boolean} [props.showTransformer]
  * @param {boolean} [props.canSave]
  * @param {boolean} [props.canFork]
@@ -26,7 +28,9 @@ import KeyMapButton from './buttons/KeyMapButton';
  */
 export default function Toolbar(props) {
   let {parser, transformer, showTransformer} = props;
+  /** @type {string | React.ReactElement} */
   let parserInfo = parser.displayName;
+  /** @type {string | React.ReactElement} */
   let transformerInfo = '';
   if (parser) {
     if (parser.version) {

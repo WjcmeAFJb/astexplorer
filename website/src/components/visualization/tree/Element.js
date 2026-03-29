@@ -137,11 +137,11 @@ function useOpenState(openFromParent, isInRange) {
 /**
  * @typedef {Object} ElementProps
  * @property {string} [name]
- * @property {unknown} [value]
+ * @property {*} [value]
  * @property {boolean} [computed]
  * @property {boolean} [open]
  * @property {number} [level]
- * @property {import('../../../core/TreeAdapter.js').default} treeAdapter  -- NOTE: TreeAdapter class is not exported by name; this reference works at the structural level
+ * @property {{isArray: Function, isObject: Function, getNodeName: Function, getRange: Function, opensByDefault: Function, walkNode: Function, isInRange: Function, hasChildrenInRange: Function, isLocationProp: Function}} treeAdapter
  * @property {boolean} [autofocus]
  * @property {unknown} [parent]
  * @property {boolean} [isInRange]
@@ -151,8 +151,7 @@ function useOpenState(openFromParent, isInRange) {
  * @property {number} [position]
  */
 
-/** @type {React.NamedExoticComponent<ElementProps>} */
-const Element = React.memo(function Element({
+const Element = React.memo(/** @param {ElementProps} props */ function Element({
   name,
   value,
   computed,
@@ -174,7 +173,7 @@ const Element = React.memo(function Element({
     open,
     autofocus && (isInRange || hasChildrenInRange),
   );
-  const element = useRef();
+  const element = useRef(/** @type {HTMLLIElement | null} */ (null));
   if (autofocus && isInRange && !hasChildrenInRange) {
     focusNodes('add', element);
   }
@@ -366,9 +365,11 @@ const Element = React.memo(function Element({
     prevProps.isInRange === nextProps.isInRange &&
     prevProps.hasChildrenInRange === nextProps.hasChildrenInRange &&
     //
+    // @ts-expect-error — hashChildrenInRange is a typo for hasChildrenInRange in original code; kept as-is
     ((nextProps.isInRange || nextProps.hashChildrenInRange) && prevProps.position === nextProps.position);
 });
 
+// @ts-expect-error — React.memo result supports propTypes at runtime (React 16) but @types/react removed it
 Element.propTypes = {
   name: PropTypes.string,
   value: PropTypes.any,
@@ -385,8 +386,7 @@ Element.propTypes = {
 
 const NOT_COMPUTED = {};
 
-/** @type {React.NamedExoticComponent<ElementProps>} */
-const FunctionElement = React.memo(function FunctionElement(props) {
+const FunctionElement = React.memo(/** @param {ElementProps} props */ function FunctionElement(props) {
   const [computedValue, setComputedValue] = useState(NOT_COMPUTED);
   const [error, setError] = useState(null);
   const {name, value, parent, computed, treeAdapter} = props;
@@ -444,6 +444,7 @@ const FunctionElement = React.memo(function FunctionElement(props) {
   );
 });
 
+// @ts-expect-error — React.memo propTypes (see above)
 FunctionElement.propTypes = Element.propTypes;
 
 /**
@@ -453,8 +454,7 @@ FunctionElement.propTypes = Element.propTypes;
  * @property {boolean} [computed]
  */
 
-/** @type {React.NamedExoticComponent<PrimitiveElementProps>} */
-const PrimitiveElement = React.memo(function PrimitiveElement({
+const PrimitiveElement = React.memo(/** @param {PrimitiveElementProps} props */ function PrimitiveElement({
   name,
   value,
   computed,
@@ -469,6 +469,7 @@ const PrimitiveElement = React.memo(function PrimitiveElement({
   );
 });
 
+// @ts-expect-error — React.memo propTypes (see above)
 PrimitiveElement.propTypes = {
   name: PropTypes.string,
   value: PropTypes.any,
@@ -482,8 +483,7 @@ PrimitiveElement.propTypes = {
  * @property {(event: React.MouseEvent) => void} [onClick]
  */
 
-/** @type {React.NamedExoticComponent<PropertyNameProps>} */
-const PropertyName = React.memo(function PropertyName({name, computed, onClick}) {
+const PropertyName = React.memo(/** @param {PropertyNameProps} props */ function PropertyName({name, computed, onClick}) {
   return (
     <span className="key">
       <span className="name nb" onClick={onClick}>
@@ -494,6 +494,7 @@ const PropertyName = React.memo(function PropertyName({name, computed, onClick})
   );
 });
 
+// @ts-expect-error — React.memo propTypes (see above)
 PropertyName.propTypes = {
   name: PropTypes.string,
   computed: PropTypes.bool,
@@ -539,4 +540,5 @@ export default function ElementContainer(props) {
   );
 }
 
+// @ts-expect-error — React.memo propTypes (see above)
 ElementContainer.propTypes = Element.propTypes;

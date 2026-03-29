@@ -10,11 +10,13 @@ import {getParserByID, getTransformerByID} from '../parsers';
 
 // Our selectors are not computationally expensive so we can just use this
 // implementation.
+// createSelector uses Function.apply which loses type information.
+// Callback parameters are untyped (any) because they come from heterogeneous
+// dependency return types. Each call site uses @type to declare the actual signature.
 /**
- * @template T
  * @param {Array<(state: AppState) => unknown>} deps
- * @param {(...args: unknown[]) => T} f
- * @returns {(state: AppState) => T}
+ * @param {Function} f
+ * @returns {(state: AppState) => *}
  */
 function createSelector(deps, f) {
   return function(state) {

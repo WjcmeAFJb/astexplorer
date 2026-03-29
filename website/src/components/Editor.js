@@ -115,7 +115,7 @@ export default class Editor extends React.Component {
   }
 
   componentDidMount() {
-    /** @type {Array<string | Function>} */
+    /** @type {Array<*>} */
     this._CMHandlers = [];
     /** @type {Array<() => void>} */
     this._subscriptions = [];
@@ -223,10 +223,11 @@ export default class Editor extends React.Component {
 
   /**
    * @param {string} event
-   * @param {Function} handler
+   * @param {*} handler
    */
   _bindCMHandler(event, handler) {
     this._CMHandlers.push(event, handler);
+    // @ts-expect-error — CodeMirror.on overloads don't accept generic string event names
     this.codeMirror.on(event, handler);
   }
 
@@ -258,7 +259,7 @@ export default class Editor extends React.Component {
 
   render() {
     return (
-      <div className="editor" ref={c => this.container = c}/>
+      <div className="editor" ref={/** @type {*} */ (c => this.container = c)}/>
     );
   }
 }

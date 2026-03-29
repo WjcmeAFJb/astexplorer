@@ -8,6 +8,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {getRevision} from '../store/selectors';
 
+/** @type {React.CSSProperties} */
 const buttonStyle = {
   backgroundColor: 'transparent',
   border: 'none',
@@ -74,4 +75,4 @@ GistBanner.propTypes = {
   revision: PropTypes.object,
 }
 
-export default connect(state => ({revision: getRevision(state)}))(GistBanner);
+export default connect(/** @param {import('../types.js').AppState} state */ state => ({revision: getRevision(state)}))(GistBanner);

@@ -14,6 +14,8 @@ import cx from '../../utils/classnames.js';
  * @param {() => void} [props.onFork]
  * @param {() => void} [props.onSave]
  * @param {boolean} [props.saving]
+ * @param {() => void} [props.onShareButtonClick]
+ * @param {import('../../types.js').Revision} [props.snippet]
  * @returns {React.ReactElement}
  */
 export default function SnippetButton(props) {

@@ -5,9 +5,10 @@ import Editor from './Editor';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/tern/tern.css';
 
-/** @type {unknown} */
+/** @type {*} */
 let server;
 
+// @ts-expect-error — propTypes static is a subset of Editor.propTypes (missing enableFormatting); intentional as this subclass doesn't use it
 export default class JSCodeshiftEditor extends Editor {
   /** @param {import('./Editor').EditorProps} props */
   constructor(props) {

@@ -66,7 +66,7 @@ export default class Editor extends React.Component {
 
   render() {
     return (
-      <div id="JSONEditor" className={this.props.className} ref={c => this.container = c}/>
+      <div id="JSONEditor" className={this.props.className} ref={/** @type {*} */ (c => this.container = c)}/>
     );
   }
 }

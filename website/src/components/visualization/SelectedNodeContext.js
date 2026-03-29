@@ -5,7 +5,7 @@ import React from 'react';
  */
 
 /** @type {React.Context<SetSelectedNodeFn | undefined>} */
-const SelectedNodeContext = React.createContext();
+const SelectedNodeContext = React.createContext(/** @type {SetSelectedNodeFn | undefined} */ (undefined));
 
 /**
  * @returns {SetSelectedNodeFn}

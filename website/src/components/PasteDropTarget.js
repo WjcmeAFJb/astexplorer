@@ -18,10 +18,14 @@ categories.forEach(({ id, mimeTypes }) => {
 });
 
 /**
- * @typedef {Object} PasteDropTargetProps
+ * @typedef {Object} PasteDropTargetOwnProps
  * @property {(type: string, event: Event, code: string, categoryId?: string) => void} [onText]
  * @property {(type: string, event: Event, message: string) => void} [onError]
  * @property {React.ReactNode} [children]
+ */
+
+/**
+ * @typedef {PasteDropTargetOwnProps & Record<string, unknown>} PasteDropTargetProps
  */
 
 /** @extends {React.Component<PasteDropTargetProps, {dragging: boolean}>} */
@@ -60,6 +64,7 @@ export default class PasteDropTarget extends React.Component {
       }
       let cbdata = event.clipboardData;
       // Plain text
+      // @ts-expect-error — operator precedence: !indexOf > -1 compares boolean > number; existing code behavior
       if (!cbdata.types.indexOf || !cbdata.types.indexOf('text/plain') > -1) {
         return;
       }
@@ -103,6 +108,7 @@ export default class PasteDropTarget extends React.Component {
       reader.onload = readerEvent => {
         let text = readerEvent.target.result;
         if (categoryId === 'JSON' || categoryId === 'TEXT') {
+          // @ts-expect-error — text is reassigned from string|ArrayBuffer to Promise; resolved via Promise.resolve below
           text = this._jsonToCode(text).then(
             text => {
               categoryId = 'javascript';
@@ -118,7 +124,7 @@ export default class PasteDropTarget extends React.Component {
             },
           );
         }
-        Promise.resolve(text).then(text => {
+        Promise.resolve(text).then(/** @param {*} text */ text => {
           this.props.onText('drop', readerEvent, text, categoryId);
         });
       };
@@ -139,7 +145,7 @@ export default class PasteDropTarget extends React.Component {
   }
 
   /**
-   * @param {string} json
+   * @param {*} json
    * @returns {Promise<string>}
    */
   _jsonToCode(json) {
@@ -158,7 +164,7 @@ export default class PasteDropTarget extends React.Component {
   /**
    * @param {EventTarget} elem
    * @param {string} event
-   * @param {EventListener} listener
+   * @param {(event: *) => void} listener
    * @param {boolean} [capture]
    */
   _bindListener(elem, event, listener, capture) {
@@ -179,8 +185,9 @@ export default class PasteDropTarget extends React.Component {
       null;
 
     return (
+      // @ts-expect-error — spreading remaining props (includes onError) onto div; harmless extra prop
       <div
-        ref={c => this.container = c}
+        ref={/** @type {*} */ (c => this.container = c)}
         {...props}>
         {dropindicator}
         {children}

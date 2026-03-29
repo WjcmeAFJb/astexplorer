@@ -69,7 +69,7 @@ export default function Tree({parseResult, position}) {
     () => treeAdapterFromParseResult(parseResult, settings),
     [parseResult.treeAdapter, settings],
   );
-  const rootElement = useRef();
+  const rootElement = useRef(/** @type {HTMLUListElement | null} */ (null));
 
   focusNodes('init');
   useLayoutEffect(() => {

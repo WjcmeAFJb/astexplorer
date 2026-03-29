@@ -29,4 +29,4 @@ export const readState = storage ?
       console.warn('Unable to read from local storage.');
     }
   } :
-  noop;
+  /** @type {() => AppState | undefined} */ (noop);

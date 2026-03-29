@@ -8,7 +8,7 @@ import stringify from 'json-stringify-safe';
 
 /**
  * @param {number} index
- * @param {unknown} map
+ * @param {*} map
  * @returns {{line: number, ch: number} | undefined}
  */
 function positionFromIndex(index, map) {

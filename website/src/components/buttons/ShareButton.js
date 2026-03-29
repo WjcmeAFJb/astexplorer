@@ -3,7 +3,7 @@ import React from 'react';
 
 /**
  * @param {Object} props
- * @param {() => void} props.onShareButtonClick
+ * @param {() => void} [props.onShareButtonClick]
  * @param {import('../../types.js').Revision} [props.snippet]
  * @returns {React.ReactElement}
  */

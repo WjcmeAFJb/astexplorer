@@ -58,7 +58,7 @@ const initialState = {
 /**
  * Returns the subset of the data that makes sense to persist between visits.
  * @param {AppState} state
- * @returns {Partial<AppState>}
+ * @returns {*}
  */
 export function persist(state) {
   return {
@@ -73,7 +73,7 @@ export function persist(state) {
 /**
  * When read from persistent storage, set the last stored code as initial version.
  * This is necessary because we use CodeMirror as an uncontrolled component.
- * @param {AppState} [state]
+ * @param {AppState} state
  * @returns {AppState}
  */
 export function revive(state=initialState) {
@@ -92,7 +92,7 @@ export function revive(state=initialState) {
 }
 
 /**
- * @param {AppState} [state]
+ * @param {AppState} state
  * @param {Action} action
  * @returns {AppState}
  */
@@ -116,12 +116,13 @@ export function astexplorer(state=initialState, action) {
     parserPerCategory: parserPerCategory(state.parserPerCategory, action),
     parserSettings: parserSettings(state.parserSettings, action, state),
     workbench: workbench(state.workbench, action, state),
+    // @ts-expect-error — third arg (fullState) passed for consistency with other sub-reducers; unused by format()
     enableFormatting: format(state.enableFormatting, action, state),
   };
 }
 
 /**
- * @param {boolean} [state]
+ * @param {boolean} state
  * @param {Action} action
  * @returns {boolean}
  */
@@ -149,7 +150,7 @@ function getDefaultTransform(transformer, workbenchState) {
 }
 
 /**
- * @param {WorkbenchState} [state]
+ * @param {WorkbenchState} state
  * @param {Action} action
  * @param {AppState} fullState
  * @returns {WorkbenchState}
@@ -190,6 +191,7 @@ function workbench(state=initialState.workbench, action, fullState) {
     case actions.SET_PARSER:
       {
         const newState = {...state, parser: action.parser.id};
+        // @ts-expect-error — intentional cross-type comparison: action.parser is Parser, state.parser is string (ID). Always truthy, used as "parser changed" guard.
         if (action.parser !== state.parser) {
           // Update parser settings
           newState.parserSettings =
@@ -313,7 +315,7 @@ function workbench(state=initialState.workbench, action, fullState) {
 }
 
 /**
- * @param {Record<string, Record<string, unknown>>} [state]
+ * @param {Record<string, Record<string, unknown>>} state
  * @param {Action} action
  * @param {AppState} fullState
  * @returns {Record<string, Record<string, unknown>>}
@@ -336,7 +338,7 @@ function parserSettings(state=initialState.parserSettings, action, fullState) {
 }
 
 /**
- * @param {Record<string, string>} [state]
+ * @param {Record<string, string>} state
  * @param {Action} action
  * @returns {Record<string, string>}
  */
@@ -350,7 +352,7 @@ function parserPerCategory(state=initialState.parserPerCategory, action) {
 }
 
 /**
- * @param {boolean} [state]
+ * @param {boolean} state
  * @param {Action} action
  * @returns {boolean}
  */
@@ -366,7 +368,7 @@ function showSettingsDialog(state=initialState.showSettingsDialog, action) {
 }
 
 /**
- * @param {boolean} [state]
+ * @param {boolean} state
  * @param {Action} action
  * @returns {boolean}
  */
@@ -382,7 +384,7 @@ function showSettingsDrawer(state=initialState.showSettingsDrawer, action) {
 }
 
 /**
- * @param {boolean} [state]
+ * @param {boolean} state
  * @param {Action} action
  * @returns {boolean}
  */
@@ -398,7 +400,7 @@ function showShareDialog(state=initialState.showShareDialog, action) {
 }
 
 /**
- * @param {boolean} [state]
+ * @param {boolean} state
  * @param {Action} action
  * @returns {boolean}
  */
@@ -414,7 +416,7 @@ function loadSnippet(state=initialState.loadingSnippet, action) {
 }
 
 /**
- * @param {boolean} [state]
+ * @param {boolean} state
  * @param {Action} action
  * @returns {boolean}
  */
@@ -430,7 +432,7 @@ function saving(state=initialState.saving, action) {
 }
 
 /**
- * @param {boolean} [state]
+ * @param {boolean} state
  * @param {Action} action
  * @returns {boolean}
  */
@@ -446,7 +448,7 @@ function forking(state=initialState.forking, action) {
 }
 
 /**
- * @param {number | null} [state]
+ * @param {number | null} state
  * @param {Action} action
  * @returns {number | null}
  */
@@ -471,7 +473,7 @@ function cursor(state=initialState.cursor, action) {
 }
 
 /**
- * @param {Error | null} [state]
+ * @param {Error | null} state
  * @param {Action} action
  * @returns {Error | null}
  */
@@ -487,7 +489,7 @@ function error(state=initialState.error, action) {
 }
 
 /**
- * @param {boolean} [state]
+ * @param {boolean} state
  * @param {Action} action
  * @returns {boolean}
  */
@@ -507,7 +509,7 @@ function showTransformPanel(state=initialState.showTransformPanel, action) {
 }
 
 /**
- * @param {Revision | null} [state]
+ * @param {Revision | null} state
  * @param {Action} action
  * @returns {Revision | null}
  */

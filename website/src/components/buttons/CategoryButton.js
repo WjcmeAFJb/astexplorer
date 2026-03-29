@@ -22,8 +22,8 @@ const categoryIcon = {
 
 /**
  * @typedef {Object} CategoryButtonProps
- * @property {(category: import('../../types.js').Category) => void} onCategoryChange
- * @property {import('../../types.js').Category} category
+ * @property {(category: import('../../types.js').Category) => void} [onCategoryChange]
+ * @property {import('../../types.js').Category} [category]
  */
 
 /** @extends {React.Component<CategoryButtonProps>} */

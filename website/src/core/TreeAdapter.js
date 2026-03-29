@@ -177,7 +177,7 @@ class TreeAdapter {
 
 }
 
-/** @type {Record<string, AdapterOptions & {openByDefaultNodes?: Set<string>, openByDefaultKeys?: Set<string>}>} */
+/** @type {Record<string, *>} */
 const TreeAdapterConfigs = {
   default: {
     filters: [],

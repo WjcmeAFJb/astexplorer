@@ -6,11 +6,8 @@
     "target": "es2020",
     "module": "es2020",
     "moduleResolution": "bundler",
-    "baseUrl": ".",
-    "paths": {
-      "*": ["*"]
-    }
+    "skipLibCheck": true
   },
-  "include": ["src/**/*.js"],
+  "include": ["src/**/*.js", "src/**/*.d.ts"],
   "exclude": ["node_modules", "src/parsers"]
 }

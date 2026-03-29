@@ -2,7 +2,7 @@
  * Describes the result of a parse process. Only exists here for documentation
  * purposes.
  *
- * @type {import('../types.js').ParseResult}
+ * @type {Record<string, unknown>}
  */
 // eslint-disable-next-line no-unused-vars
 const ParseResult = {

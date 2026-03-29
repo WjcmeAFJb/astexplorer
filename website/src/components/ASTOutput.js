@@ -21,7 +21,7 @@ function formatTime(time) {
 
 /**
  * @param {Object} props
- * @param {import('../types.js').ParseResult} [props.parseResult]
+ * @param {Partial<import('../types.js').ParseResult>} [props.parseResult]
  * @param {number | null} [props.position]
  * @returns {React.ReactElement}
  */
@@ -57,7 +57,7 @@ export default function ASTOutput({parseResult={}, position=null}) {
       <button
         key={index}
         value={index}
-        onClick={event => setSelectedOutput(event.target.value)}
+        onClick={/** @type {*} */ (event => setSelectedOutput(event.target.value))}
         className={cx({
           active: selectedOutput == index,
         })}>

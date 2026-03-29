@@ -1,7 +1,7 @@
 import JSON from './JSON';
 import Tree from './Tree';
 
-/** @type {Array<(props: {parseResult: import('../../types.js').ParseResult, position?: number | null}) => React.ReactElement>} */
+/** @type {Array<*>} */
 export default [
   Tree,
   JSON,
