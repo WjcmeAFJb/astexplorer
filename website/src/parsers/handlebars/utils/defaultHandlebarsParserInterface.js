@@ -5,6 +5,7 @@ export default {
 
   locationProps: new Set(['loc']),
 
+  /** @this {any} */
   parse(parseHandlebars, code) {
     this.lineOffsets = [];
     let index = 0;
@@ -14,6 +15,7 @@ export default {
     return parseHandlebars(code);
   },
 
+  /** @this {any} */
   getOffset({ line, column }) {
     return this.lineOffsets[line - 1] + column;
   },

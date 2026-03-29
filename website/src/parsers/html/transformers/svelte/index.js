@@ -19,6 +19,7 @@ export default {
   },
 
   transform({ preprocess }, transformCode, code) {
+    /** @type {*} */
     const transform = compileModule(transformCode);
 
     // Identity functions in case of missing transforms

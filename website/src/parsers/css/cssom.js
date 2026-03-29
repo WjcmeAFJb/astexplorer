@@ -9,6 +9,7 @@ export default {
   id: ID,
   displayName: ID,
   version: pkg.version,
+  // @ts-expect-error — pkg.homepage may not exist in this package.json
   homepage: pkg.homepage || 'https://github.com/NV/CSSOM',
   locationProps: new Set(['__starts', '__ends']),
   typeProps: new Set(),

@@ -17,6 +17,7 @@ export default {
     require(['astexplorer-syn'], callback);
   },
 
+  /** @this {any} */
   parse(parser, code) {
     this.lineOffsets = [];
     let index = 0;
@@ -30,6 +31,7 @@ export default {
     return node._type;
   },
 
+  /** @this {any} */
   nodeToRange(node) {
     if (node.span) {
       return [node.span.start, node.span.end].map(

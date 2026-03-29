@@ -1,3 +1,8 @@
+/**
+ * @param {string} code
+ * @param {Record<string, unknown>} [globals]
+ * @returns {*}
+ */
 export default function compileModule(code, globals = {}) {
   let exports = {};
   let module = { exports };

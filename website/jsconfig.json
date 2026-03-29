@@ -9,5 +9,5 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*.js", "src/**/*.d.ts"],
-  "exclude": ["node_modules", "src/parsers"]
+  "exclude": ["node_modules"]
 }

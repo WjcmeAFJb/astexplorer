@@ -13,6 +13,7 @@ export default {
 
   locationProps: new Set(['loc']),
 
+  /** @this {any} */
   getOffset({ line, column }) {
     return this.lineOffsets[line - 1] + column;
   },
@@ -28,6 +29,7 @@ export default {
     });
   },
 
+  /** @this {any} */
   parse({ parse }, code) {
     this.lineOffsets = [];
     let index = 0;

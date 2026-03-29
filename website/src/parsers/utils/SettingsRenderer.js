@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+/** @typedef {import('../../types.js').SettingsConfiguration} SettingsConfiguration */
+
+/** @type {(v: *) => *} */
 const identity = v => v;
 
 function valuesFromArray(settings) {
@@ -41,6 +44,13 @@ function getUpdateStrategy(settings) {
   return defaultUpdater;
 }
 
+/**
+ * @param {Object} props
+ * @param {SettingsConfiguration} props.settingsConfiguration
+ * @param {*} props.parserSettings
+ * @param {(settings: *) => void} props.onChange
+ * @returns {React.ReactElement}
+ */
 export default function SettingsRenderer(props) {
   const {settingsConfiguration, parserSettings, onChange} = props;
   const {

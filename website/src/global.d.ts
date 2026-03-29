@@ -62,8 +62,48 @@ declare module 'react-dom' {
   export function render(element: React.ReactElement, container: Element | null): void;
 }
 
+// Package.json imports – many parser files import a package.json and access
+// `pkg.homepage`, but the resolved types often lack that field.  Declaring the
+// module wildcard as `any` keeps every `*/package.json` import happy.
+declare module '*/package.json' {
+  const value: any;
+  export default value;
+}
+
 // json-stringify-safe
 declare module 'json-stringify-safe' {
   function stringify(obj: unknown, replacer?: unknown, spaces?: number): string;
   export default stringify;
+}
+
+// java-parser package.json
+declare module 'java-parser/package.json' {
+  const value: any;
+  export default value;
+}
+
+// Worker-loader import for hermes web worker
+declare module 'worker-loader!./hermes-worker.js' {
+  class HermesWorker extends Worker {
+    constructor();
+  }
+  export default HermesWorker;
+}
+
+// meriyah package.json
+declare module 'meriyah/package.json' {
+  const value: any;
+  export default value;
+}
+
+// SWC WASM binary
+declare module '@swc/wasm-web/wasm_bg.wasm' {
+  const url: string;
+  export default url;
+}
+
+// babel-plugin-macros package metadata
+declare module 'babel-plugin-macros/package' {
+  const value: any;
+  export default value;
 }

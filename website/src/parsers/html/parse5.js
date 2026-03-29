@@ -29,6 +29,7 @@ export default {
     });
   },
 
+  /** @this {any} */
   parse({ Parser, TreeAdapters }, code, options) {
     this.options = options;
     return new Parser({
@@ -37,6 +38,7 @@ export default {
     }).parse(code);
   },
 
+  /** @this {any} */
   getNodeName(node) {
     if (this.options.treeAdapter === 'htmlparser2') {
       if (node.type) {

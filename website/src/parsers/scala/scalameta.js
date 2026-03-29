@@ -32,7 +32,9 @@ export default {
     const { error, lineNumber, columnNumber } = parsed;
     if (error) {
       const e = new SyntaxError(parsed.error);
+      // @ts-expect-error — non-standard SyntaxError properties (browser extension)
       e.lineNumber = lineNumber + 1;
+      // @ts-expect-error — non-standard SyntaxError properties (browser extension)
       e.columnNumber = columnNumber + 1;
       throw e;
     }

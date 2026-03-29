@@ -3,10 +3,12 @@ import defaultParserInterface from '../../utils/defaultParserInterface';
 export default {
   ...defaultParserInterface,
 
+  /** @this {any} */
   getOffset({ line, column }) {
     return this.lineOffsets[line - 1] + column - 1;
   },
 
+  /** @this {any} */
   parse(parseCSS, code) {
     this.lineOffsets = [];
     let index = 0;

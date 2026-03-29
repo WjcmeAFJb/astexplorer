@@ -37,7 +37,9 @@ export default {
         message += `: ${sourceRange}`;
       }
       let err = new SyntaxError(message);
+      // @ts-expect-error — non-standard SyntaxError properties (browser extension)
       err.lineNumber = start.line + 1;
+      // @ts-expect-error — non-standard SyntaxError properties (browser extension)
       err.columnNumber = start.column;
       throw err;
     };

@@ -1,5 +1,13 @@
+/** @typedef {import('../types.js').Category} Category */
+/** @typedef {import('../types.js').Parser} Parser */
+/** @typedef {import('../types.js').Transformer} Transformer */
+
 const localRequire = require.context('./', true, /^\.\/(?!utils|transpilers)[^/]+\/(transformers\/([^/]+)\/)?(codeExample\.txt|[^/]+?\.js)$/);
 
+/**
+ * @param {*} module
+ * @returns {*}
+ */
 function interopRequire(module) {
   return module.__esModule ? module.default : module;
 }
@@ -8,8 +16,11 @@ const files =
   localRequire.keys()
   .map(name => name.split('/').slice(1));
 
+/** @type {Record<string, Category>} */
 const categoryByID = {};
+/** @type {Record<string, Parser>} */
 const parserByID = {};
+/** @type {Record<string, Transformer>} */
 const transformerByID = {};
 
 const restrictedParserNames = new Set([
@@ -58,22 +69,39 @@ export const categories =
     return category;
   });
 
+/** @returns {Category} */
 export function getDefaultCategory() {
   return categoryByID.javascript;
 }
 
+/**
+ * @param {Category} [category]
+ * @returns {Parser}
+ */
 export function getDefaultParser(category = getDefaultCategory()) {
   return category.parsers.filter(p => p.showInMenu)[0];
 }
 
+/**
+ * @param {string} id
+ * @returns {Category}
+ */
 export function getCategoryByID(id) {
   return categoryByID[id];
 }
 
+/**
+ * @param {string} id
+ * @returns {Parser}
+ */
 export function getParserByID(id) {
   return parserByID[id];
 }
 
+/**
+ * @param {string} id
+ * @returns {Transformer}
+ */
 export function getTransformerByID(id) {
   return transformerByID[id];
 }

@@ -9,6 +9,7 @@ const syntaxKind = {};
 
 // Typescript uses `process` somehow
 if (!global.process) {
+  // @ts-expect-error — partial stub: only needed so `process` is truthy for TS internals
   global.process = {}
 }
 

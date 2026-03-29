@@ -21,6 +21,7 @@ onmessage = async function(e) {
   }
   let value;
   try {
+    // @ts-expect-error — args is an array from postMessage; handler expects positional params
     value = handler(...args);
   } catch (e) {
     postMessage({

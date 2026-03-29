@@ -9,6 +9,7 @@ export default {
   id: ID,
   displayName: ID,
   version: pkg.version,
+  // @ts-expect-error — pkg.homepage may not exist in this package.json
   homepage: pkg.homepage || 'https://github.com/nene/sql-parser-cst',
   locationProps: new Set(['range']),
 

@@ -9,6 +9,7 @@ export default {
   id: ID,
   displayName: ID,
   version: pkg.version,
+  // @ts-expect-error — pkg.homepage may not exist in this package.json
   homepage: pkg.homepage,
   locationProps: new Set(['fieldLocation', 'termLocation', 'location']),
 
