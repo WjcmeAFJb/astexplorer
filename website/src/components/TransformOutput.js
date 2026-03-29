@@ -6,6 +6,11 @@ import * as React from 'react';
 
 import stringify from 'json-stringify-safe';
 
+/**
+ * @param {number} index
+ * @param {unknown} map
+ * @returns {{line: number, ch: number} | undefined}
+ */
 function positionFromIndex(index, map) {
   if (!map) {
     return;
@@ -35,6 +40,12 @@ function positionFromIndex(index, map) {
   return { line: line - 1, ch: column };
 }
 
+/**
+ * @param {Object} props
+ * @param {import('../types.js').TransformResult} [props.transformResult]
+ * @param {string} [props.mode]
+ * @returns {React.ReactElement}
+ */
 export default function TransformOutput({transformResult, mode}) {
   // This ensures that we are rendering an empty editor as "placeholder" if no transform result is available yet.
   transformResult = transformResult == null ? {result: ''} : transformResult;

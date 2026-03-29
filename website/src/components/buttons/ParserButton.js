@@ -2,6 +2,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {getParserByID} from '../../parsers';
 
+/**
+ * @typedef {Object} ParserButtonProps
+ * @property {(parser: import('../../types.js').Parser) => void} [onParserChange]
+ * @property {() => void} [onParserSettingsButtonClick]
+ * @property {import('../../types.js').Parser} [parser]
+ * @property {import('../../types.js').Category} [category]
+ */
+
+/** @extends {React.Component<ParserButtonProps>} */
 export default class ParserButton extends React.Component {
   constructor(props) {
     super(props);

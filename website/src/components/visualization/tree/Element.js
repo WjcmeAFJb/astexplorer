@@ -11,6 +11,12 @@ import stringify from '../../../utils/stringify';
 
 const {useState, useRef, useMemo, useCallback, useEffect} = React;
 
+/**
+ * @template T
+ * @param {T} value
+ * @param {T} initialValue
+ * @returns {T}
+ */
 function usePrevious(value, initialValue) {
   const ref = useRef(initialValue);
   useEffect(() => {
@@ -46,6 +52,11 @@ const EVENTS = {
   DEEP_OPEN: 4,
 };
 
+/**
+ * @param {number} currentState
+ * @param {number} event
+ * @returns {number | undefined}
+ */
 function transition(currentState, event) {
   switch (currentState) {
     case OPEN_STATES.DEFAULT:
@@ -86,6 +97,11 @@ function transition(currentState, event) {
   }
 }
 
+/**
+ * @param {boolean} openFromParent
+ * @param {boolean} isInRange
+ * @returns {[number, React.Dispatch<React.SetStateAction<number>>]}
+ */
 function useOpenState(openFromParent, isInRange) {
   const previousOpenFromParent = usePrevious(openFromParent, false);
   const wasInRange = usePrevious(isInRange, false);
@@ -118,6 +134,24 @@ function useOpenState(openFromParent, isInRange) {
   return [ computedOpenState, setOwnOpenState ];
 }
 
+/**
+ * @typedef {Object} ElementProps
+ * @property {string} [name]
+ * @property {unknown} [value]
+ * @property {boolean} [computed]
+ * @property {boolean} [open]
+ * @property {number} [level]
+ * @property {import('../../../core/TreeAdapter.js').default} treeAdapter  -- NOTE: TreeAdapter class is not exported by name; this reference works at the structural level
+ * @property {boolean} [autofocus]
+ * @property {unknown} [parent]
+ * @property {boolean} [isInRange]
+ * @property {boolean} [hasChildrenInRange]
+ * @property {boolean} [selected]
+ * @property {(state: number, own?: boolean) => void} [onClick]
+ * @property {number} [position]
+ */
+
+/** @type {React.NamedExoticComponent<ElementProps>} */
 const Element = React.memo(function Element({
   name,
   value,
@@ -351,6 +385,7 @@ Element.propTypes = {
 
 const NOT_COMPUTED = {};
 
+/** @type {React.NamedExoticComponent<ElementProps>} */
 const FunctionElement = React.memo(function FunctionElement(props) {
   const [computedValue, setComputedValue] = useState(NOT_COMPUTED);
   const [error, setError] = useState(null);
@@ -449,6 +484,10 @@ PropertyName.propTypes = {
   onClick: PropTypes.func,
 };
 
+/**
+ * @param {ElementProps} props
+ * @returns {React.ReactElement}
+ */
 export default function ElementContainer(props) {
   const [selected, setSelected] = useState(false);
   const setSelectedNode = useSelectedNode();

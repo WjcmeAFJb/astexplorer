@@ -1,5 +1,7 @@
 /**
  * Converts a JS value to a sensible string representation.
+ * @param {unknown} value
+ * @returns {string}
  */
 export default function stringify(value) {
   switch (typeof value) {

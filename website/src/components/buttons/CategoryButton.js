@@ -20,6 +20,13 @@ const categoryIcon = {
   yaml: 'fa-yc',
 };
 
+/**
+ * @typedef {Object} CategoryButtonProps
+ * @property {(category: import('../../types.js').Category) => void} onCategoryChange
+ * @property {import('../../types.js').Category} category
+ */
+
+/** @extends {React.Component<CategoryButtonProps>} */
 export default class CategoryButton extends React.Component {
   constructor(props) {
     super(props);

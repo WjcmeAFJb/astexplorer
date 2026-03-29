@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import {subscribe, clear} from '../utils/pubsub.js';
 import React from 'react';
 
+/** @type {Record<string, unknown>} */
 const defaultPrettierOptions = {
   printWidth: 80,
   tabWidth: 2,
@@ -16,8 +17,26 @@ const defaultPrettierOptions = {
   parser: 'babel',
 };
 
+/**
+ * @typedef {Object} EditorProps
+ * @property {string} [value]
+ * @property {boolean} [highlight]
+ * @property {boolean} [lineNumbers]
+ * @property {boolean} [readOnly]
+ * @property {(args: {value: string, cursor: number}) => void} [onContentChange]
+ * @property {(cursor: number) => void} [onActivity]
+ * @property {(index: number) => {line: number, ch: number}} [posFromIndex]
+ * @property {{message: string, loc?: {line: number}, lineNumber?: number, line?: number}} [error]
+ * @property {string} [mode]
+ * @property {boolean} [enableFormatting]
+ * @property {string} [keyMap]
+ */
+
 export default class Editor extends React.Component {
 
+  /**
+   * @param {EditorProps} props
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -25,6 +44,9 @@ export default class Editor extends React.Component {
     };
   }
 
+  /**
+   * @param {EditorProps} nextProps
+   */
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.state.value) {
       this.setState(
@@ -48,14 +70,22 @@ export default class Editor extends React.Component {
     return false;
   }
 
+  /** @returns {string | undefined} */
   getValue() {
     return this.codeMirror && this.codeMirror.getValue();
   }
 
+  /**
+   * @param {EditorProps['error']} error
+   * @returns {number | undefined}
+   */
   _getErrorLine(error) {
     return error.loc ? error.loc.line : (error.lineNumber || error.line);
   }
 
+  /**
+   * @param {EditorProps['error']} [error]
+   */
   _setError(error) {
     if (this.codeMirror) {
       let oldError = this.props.error;
@@ -75,12 +105,19 @@ export default class Editor extends React.Component {
     }
   }
 
+  /**
+   * @param {CodeMirror.Doc} doc
+   * @param {number} index
+   * @returns {{line: number, ch: number}}
+   */
   _posFromIndex(doc, index) {
     return (this.props.posFromIndex ? this.props : doc).posFromIndex(index);
   }
 
   componentDidMount() {
+    /** @type {Array<string | Function>} */
     this._CMHandlers = [];
+    /** @type {Array<() => void>} */
     this._subscriptions = [];
     this.codeMirror = CodeMirror( // eslint-disable-line new-cap
       this.container,
@@ -114,7 +151,7 @@ export default class Editor extends React.Component {
     });
     this._bindCMHandler('cursorActivity', () => {
       clearTimeout(this._updateTimer);
-      this._updateTimer = setTimeout(this._onActivity.bind(this, true), 100);
+      this._updateTimer = setTimeout(this._onActivity.bind(this), 100);
     });
 
     this._subscriptions.push(
@@ -126,7 +163,9 @@ export default class Editor extends React.Component {
     );
 
     if (this.props.highlight) {
+      /** @type {[number, number] | null} */
       this._markerRange = null;
+      /** @type {CodeMirror.TextMarker | null} */
       this._mark = null;
       this._subscriptions.push(
         subscribe('HIGHLIGHT', ({range}) => {
@@ -182,6 +221,10 @@ export default class Editor extends React.Component {
     this.codeMirror = null;
   }
 
+  /**
+   * @param {string} event
+   * @param {Function} handler
+   */
   _bindCMHandler(event, handler) {
     this._CMHandlers.push(event, handler);
     this.codeMirror.on(event, handler);

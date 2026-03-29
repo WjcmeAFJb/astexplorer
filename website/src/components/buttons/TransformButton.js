@@ -3,6 +3,15 @@ import React from 'react';
 import cx from '../../utils/classnames.js';
 import {getTransformerByID} from '../../parsers';
 
+/**
+ * @typedef {Object} TransformButtonProps
+ * @property {import('../../types.js').Category} [category]
+ * @property {import('../../types.js').Transformer} [transformer]
+ * @property {boolean} [showTransformer]
+ * @property {(transformer: import('../../types.js').Transformer | null) => void} [onTransformChange]
+ */
+
+/** @extends {React.Component<TransformButtonProps>} */
 export default class TransformButton extends React.Component {
   constructor(props) {
     super(props);

@@ -6,6 +6,16 @@ import SaveButton from './SaveButton';
 import ShareButton from './ShareButton';
 import cx from '../../utils/classnames.js';
 
+/**
+ * @param {Object} props
+ * @param {boolean} [props.canFork]
+ * @param {boolean} [props.canSave]
+ * @param {boolean} [props.forking]
+ * @param {() => void} [props.onFork]
+ * @param {() => void} [props.onSave]
+ * @param {boolean} [props.saving]
+ * @returns {React.ReactElement}
+ */
 export default function SnippetButton(props) {
   const canForkAndNotSave = props.canFork && !props.canSave;
   const savingOrForking = props.saving || props.forking;

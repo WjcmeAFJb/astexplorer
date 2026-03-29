@@ -12,6 +12,9 @@ const {useReducer, useMemo, useRef, useLayoutEffect} = React;
 
 const STORAGE_KEY = 'tree_settings';
 
+/**
+ * @returns {Record<string, boolean>}
+ */
 function initSettings() {
   const storedSettings = global.localStorage.getItem(STORAGE_KEY);
   return storedSettings ?
@@ -25,6 +28,11 @@ function initSettings() {
     };
 }
 
+/**
+ * @param {Record<string, boolean>} state
+ * @param {{name: string, checked: boolean}} element
+ * @returns {Record<string, boolean>}
+ */
 function reducer(state, element) {
   const newState = {...state, [element.name]: element.checked};
 
@@ -32,6 +40,12 @@ function reducer(state, element) {
   return newState;
 }
 
+/**
+ * @param {string} name
+ * @param {Record<string, boolean>} settings
+ * @param {React.Dispatch<{name: string, checked: boolean}>} updateSettings
+ * @returns {React.ReactElement}
+ */
 function makeCheckbox(name, settings, updateSettings) {
   return (
     <input
@@ -43,6 +57,12 @@ function makeCheckbox(name, settings, updateSettings) {
   );
 }
 
+/**
+ * @param {Object} props
+ * @param {import('../../types.js').ParseResult} props.parseResult
+ * @param {number | null} [props.position]
+ * @returns {React.ReactElement}
+ */
 export default function Tree({parseResult, position}) {
   const [settings, updateSettings] = useReducer(reducer, null, initSettings);
   const treeAdapter = useMemo(

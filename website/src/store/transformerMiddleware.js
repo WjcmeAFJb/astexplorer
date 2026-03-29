@@ -1,6 +1,15 @@
+/** @typedef {import('../types.js').Transformer} Transformer */
+/** @typedef {import('../types.js').TransformResult} TransformResult */
+
 import {getTransformer, getTransformCode, getCode, showTransformer} from './selectors';
 import {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
 
+/**
+ * @param {Transformer} transformer
+ * @param {string} transformCode
+ * @param {string} code
+ * @returns {Promise<TransformResult>}
+ */
 async function transform(transformer, transformCode, code) {
   // Transforms may make use of Node's __filename global. See GitHub issue #420.
   // So we define a dummy one.
@@ -10,6 +19,7 @@ async function transform(transformer, transformCode, code) {
   if (!transformer._promise) {
     transformer._promise = new Promise(transformer.loadTransformer);
   }
+  /** @type {unknown} */
   let realTransformer;
   try {
     realTransformer = await transformer._promise;
@@ -30,6 +40,7 @@ async function transform(transformer, transformCode, code) {
   }
 }
 
+/** @type {(store: import('redux').MiddlewareAPI) => (next: import('redux').Dispatch) => (action: import('../types.js').Action) => Promise<void> | void} */
 export default store => next => async (action) => {
   const oldState = store.getState();
   next(action);
@@ -60,6 +71,7 @@ export default store => next => async (action) => {
       console.clear();
     }
 
+    /** @type {TransformResult} */
     let result;
     try  {
       result = await transform(newTransformer, newTransformCode, newCode);

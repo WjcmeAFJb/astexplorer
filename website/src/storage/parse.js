@@ -2,6 +2,9 @@ import React from 'react';
 import api from './api';
 import {getTransformerByID, getParserByID} from '../parsers';
 
+/**
+ * @returns {{id: string, rev: string | number} | null}
+ */
 function getIDAndRevisionFromHash() {
   let match = global.location.hash.match(/^#\/(?!gist\/)([^/]+)(?:\/(latest|\d*))?/);
   if (match) {
@@ -13,6 +16,11 @@ function getIDAndRevisionFromHash() {
   return null;
 }
 
+/**
+ * @param {string} snippetID
+ * @param {string | number} [revisionID='latest']
+ * @returns {Promise<Revision>}
+ */
 function fetchSnippet(snippetID, revisionID='latest') {
   return api(`/parse/${snippetID}/${revisionID}`)
     .then(response => {
@@ -29,20 +37,34 @@ function fetchSnippet(snippetID, revisionID='latest') {
     .then(response => new Revision(response));
 }
 
+/**
+ * @param {unknown} snippet
+ * @returns {boolean}
+ */
 export function owns(snippet) {
   return snippet instanceof Revision;
 }
 
+/**
+ * @returns {boolean}
+ */
 export function matchesURL() {
   return getIDAndRevisionFromHash() !== null;
 }
 
+/**
+ * @param {Revision} revision
+ * @returns {void}
+ */
 export function updateHash(revision) {
   const rev = revision.getRevisionID();
   const newHash = '/' + revision.getSnippetID() + (rev && rev !== 0 ? '/' + rev : '');
   global.location.hash = newHash;
 }
 
+/**
+ * @returns {Promise<Revision | null>}
+ */
 export function fetchFromURL() {
   const urlParameters = getIDAndRevisionFromHash();
   if (urlParameters) {
@@ -53,6 +75,7 @@ export function fetchFromURL() {
 
 /**
  * Create a new snippet.
+ * @returns {Promise<never>}
  */
 export function create() {
   return Promise.reject(
@@ -62,6 +85,7 @@ export function create() {
 
 /**
  * Update an existing snippet.
+ * @returns {Promise<never>}
  */
 export function update() {
   return Promise.reject(
@@ -71,6 +95,7 @@ export function update() {
 
 /**
  * Fork existing snippet.
+ * @returns {Promise<never>}
  */
 export function fork() {
   return Promise.reject(
@@ -78,28 +103,47 @@ export function fork() {
   );
 }
 
+/**
+ * @typedef {Object} ParseSnippetData
+ * @property {string} snippetID
+ * @property {string | number} revisionID
+ * @property {string} [toolID]
+ * @property {string} [transform]
+ * @property {string} [parserID]
+ * @property {string} [code]
+ * @property {Record<string, string>} [settings]
+ */
+
 class Revision {
+  /**
+   * @param {ParseSnippetData} data
+   */
 	constructor(data) {
     this._data = data;
 	}
 
+  /** @returns {boolean} */
   canSave() {
     return false;
   }
 
+  /** @returns {string} */
   getPath() {
     const rev = this.getRevisionID();
     return '/' + this.getSnippetID() + (rev && rev !== 0 ? '/' + rev : '');
   }
 
+  /** @returns {string} */
   getSnippetID() {
     return this._data.snippetID;
   }
 
+  /** @returns {string | number} */
   getRevisionID() {
     return this._data.revisionID;
   }
 
+  /** @returns {string | undefined} */
   getTransformerID() {
     const transformerID = this._data.toolID;
     if (!transformerID && this.getTransformCode()) {
@@ -110,6 +154,7 @@ class Revision {
     return transformerID;
   }
 
+  /** @returns {string} */
   getTransformCode() {
     const transform = this._data.transform;
     if (transform) {
@@ -122,6 +167,7 @@ class Revision {
     return '';
   }
 
+  /** @returns {string} */
   getParserID() {
     const transformerID = this.getTransformerID();
     if (transformerID) {
@@ -130,12 +176,14 @@ class Revision {
     return this._data.parserID;
   }
 
+  /** @returns {string} */
   getCode() {
     const parserID = this.getParserID();
     // Code examples where never stored
     return this._data.code || getParserByID(parserID).category.codeExample;
   }
 
+  /** @returns {Record<string, unknown> | false | null} */
   getParserSettings() {
     const settings = this._data.settings;
     if (!settings) {
@@ -145,6 +193,7 @@ class Revision {
     return !!parserSettings && JSON.parse(parserSettings);
   }
 
+  /** @returns {React.ReactElement} */
   getShareInfo() {
     const snippetID = this.getSnippetID();
     const revisionID = this.getRevisionID();

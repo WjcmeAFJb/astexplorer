@@ -2,6 +2,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames.js';
 
+/**
+ * @typedef {Object} ForkButtonProps
+ * @property {boolean} [canFork]
+ * @property {boolean} [saving]
+ * @property {boolean} [forking]
+ * @property {() => void} [onFork]
+ */
+
+/** @extends {React.Component<ForkButtonProps>} */
 export default class ForkButton extends React.Component {
   render() {
     const { canFork, saving, forking, onFork } = this.props;

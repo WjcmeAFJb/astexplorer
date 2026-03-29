@@ -5,6 +5,10 @@ import visualizations from './visualization';
 
 const {useState} = React;
 
+/**
+ * @param {number | null} time
+ * @returns {string | null}
+ */
 function formatTime(time) {
   if (!time) {
     return null;
@@ -15,6 +19,12 @@ function formatTime(time) {
   return `${(time / 1000).toFixed(2)}s`;
 }
 
+/**
+ * @param {Object} props
+ * @param {import('../types.js').ParseResult} [props.parseResult]
+ * @param {number | null} [props.position]
+ * @returns {React.ReactElement}
+ */
 export default function ASTOutput({parseResult={}, position=null}) {
   const [selectedOutput, setSelectedOutput] = useState(0);
   const {ast=null} = parseResult;
@@ -73,6 +83,7 @@ ASTOutput.propTypes = {
   position: PropTypes.number,
 };
 
+/** @extends {React.Component<{children: React.ReactNode}, {hasError: boolean}>} */
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);

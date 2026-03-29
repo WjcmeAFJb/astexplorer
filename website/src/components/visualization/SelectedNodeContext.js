@@ -1,7 +1,15 @@
 import React from 'react';
 
+/**
+ * @typedef {(node: unknown, cb?: () => void) => void} SetSelectedNodeFn
+ */
+
+/** @type {React.Context<SetSelectedNodeFn | undefined>} */
 const SelectedNodeContext = React.createContext();
 
+/**
+ * @returns {SetSelectedNodeFn}
+ */
 function useSelectedNode() {
   const context = React.useContext(SelectedNodeContext);
   if (!context) {
@@ -10,8 +18,13 @@ function useSelectedNode() {
   return context;
 }
 
+/** @type {(() => void) | null} */
 let unselectCallback;
 
+/**
+ * @param {unknown} node
+ * @param {() => void} [cb]
+ */
 function setSelectedNode(node, cb) {
   if (unselectCallback) {
     unselectCallback();
@@ -25,6 +38,11 @@ function setSelectedNode(node, cb) {
   }
 }
 
+/**
+ * @param {Object} props
+ * @param {React.ReactNode} [props.children]
+ * @returns {React.ReactElement}
+ */
 function SelectedNodeProvider(props) {
   return <SelectedNodeContext.Provider value={setSelectedNode} {...props} />;
 }

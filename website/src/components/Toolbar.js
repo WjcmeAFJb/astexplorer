@@ -6,6 +6,24 @@ import SnippetButton from './buttons/SnippetButton';
 import TransformButton from './buttons/TransformButton';
 import KeyMapButton from './buttons/KeyMapButton';
 
+/**
+ * @param {Object} props
+ * @param {boolean} [props.saving]
+ * @param {boolean} [props.forking]
+ * @param {() => void} [props.onSave]
+ * @param {() => void} [props.onFork]
+ * @param {(parser: import('../types.js').Parser) => void} [props.onParserChange]
+ * @param {() => void} [props.onParserSettingsButtonClick]
+ * @param {() => void} [props.onShareButtonClick]
+ * @param {(transformer: import('../types.js').Transformer | null) => void} [props.onTransformChange]
+ * @param {(keyMap: string) => void} [props.onKeyMapChange]
+ * @param {import('../types.js').Parser} props.parser
+ * @param {import('../types.js').Transformer} [props.transformer]
+ * @param {boolean} [props.showTransformer]
+ * @param {boolean} [props.canSave]
+ * @param {boolean} [props.canFork]
+ * @returns {React.ReactElement}
+ */
 export default function Toolbar(props) {
   let {parser, transformer, showTransformer} = props;
   let parserInfo = parser.displayName;

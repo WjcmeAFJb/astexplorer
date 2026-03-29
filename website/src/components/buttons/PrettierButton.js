@@ -2,6 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames.js';
 
+/**
+ * @param {Object} props
+ * @param {() => void} [props.toggleFormatting]
+ * @param {boolean} [props.enableFormatting]
+ * @returns {React.ReactElement}
+ */
 export default function PrettierButton(props) {
   return (<button type="button"
             className="toggleBtn"

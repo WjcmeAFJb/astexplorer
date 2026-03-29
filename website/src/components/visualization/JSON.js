@@ -4,6 +4,11 @@ import React from 'react';
 
 import stringify from 'json-stringify-safe';
 
+/**
+ * @param {Object} props
+ * @param {import('../../types.js').ParseResult} props.parseResult
+ * @returns {React.ReactElement}
+ */
 export default function JSON({parseResult}) {
   return (
     <JSONEditor

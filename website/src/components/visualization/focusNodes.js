@@ -16,8 +16,13 @@
  *   - After render, the tree root triggers the focus logic. The element that is
  *     closest to the center is scrolled into the view.
  */
+/** @type {Set<React.RefObject<HTMLElement>>} */
 let nodes;
 
+/**
+ * @param {'init' | 'add' | 'focus'} message
+ * @param {React.RefObject<HTMLElement>} [arg]
+ */
 export default function(message, arg) {
   switch (message) {
     case 'init':

@@ -13,6 +13,9 @@ import {
 import Toolbar from '../components/Toolbar';
 import * as selectors from '../store/selectors';
 
+/**
+ * @param {import('../types.js').AppState} state
+ */
 function mapStateToProps(state) {
   const parser = selectors.getParser(state);
 
@@ -30,12 +33,15 @@ function mapStateToProps(state) {
   };
 }
 
+/**
+ * @param {import('redux').Dispatch} dispatch
+ */
 function mapDispatchToProps(dispatch) {
   return {
-    onParserChange: parser => {
+    onParserChange: (/** @type {import('../types.js').Parser} */ parser) => {
       dispatch(setParser(parser));
     },
-    onCategoryChange: category => {
+    onCategoryChange: (/** @type {import('../types.js').Category} */ category) => {
       dispatch(selectCategory(category));
     },
     onParserSettingsButtonClick: () => {
@@ -44,10 +50,10 @@ function mapDispatchToProps(dispatch) {
     onShareButtonClick: () => {
       dispatch(openShareDialog());
     },
-    onTransformChange: transformer => {
+    onTransformChange: (/** @type {import('../types.js').Transformer | null} */ transformer) => {
       dispatch(transformer ? selectTransformer(transformer) : hideTransformer());
     },
-    onKeyMapChange: keyMap => {
+    onKeyMapChange: (/** @type {string} */ keyMap) => {
       dispatch(setKeyMap(keyMap))
     },
     onSave: () => dispatch(save(false)),

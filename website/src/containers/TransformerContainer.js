@@ -3,6 +3,9 @@ import Transformer from '../components/Transformer';
 import {setTransformState, toggleFormatting} from '../store/actions';
 import * as selectors from '../store/selectors';
 
+/**
+ * @param {import('../types.js').AppState} state
+ */
 function mapStateToProps(state) {
   return {
     transformer: selectors.getTransformer(state),
@@ -20,9 +23,12 @@ function mapStateToProps(state) {
   };
 }
 
+/**
+ * @param {import('redux').Dispatch} dispatch
+ */
 function mapDispatchToProps(dispatch) {
   return {
-    onContentChange: ({value, cursor}) => {
+    onContentChange: (/** @type {{value: string, cursor: number}} */ {value, cursor}) => {
       dispatch(setTransformState({code: value, cursor}));
     },
     toggleFormatting: () => {

@@ -1,7 +1,12 @@
+/** @typedef {import('../types.js').AppState} AppState */
+
 import {connect} from 'react-redux';
 import ASTOutput from '../components/ASTOutput';
 import * as selectors from '../store/selectors';
 
+/**
+ * @param {AppState} state
+ */
 function mapStateToProps(state) {
   return {
     parseResult: selectors.getParseResult(state),

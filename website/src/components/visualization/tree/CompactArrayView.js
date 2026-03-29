@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+/**
+ * @typedef {Object} CompactArrayViewProps
+ * @property {unknown[] | {length: number}} array
+ * @property {(event: React.MouseEvent) => void} [onClick]
+ */
+
+/** @extends {React.Component<CompactArrayViewProps>} */
 export default class CompactArrayView extends React.Component {
   shouldComponentUpdate(nextProps) {
     return nextProps.array.length !== this.props.array.length;

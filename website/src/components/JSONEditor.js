@@ -7,6 +7,13 @@ import PropTypes from 'prop-types';
 import {subscribe, clear} from '../utils/pubsub.js';
 import React from 'react';
 
+/**
+ * @typedef {Object} JSONEditorProps
+ * @property {string} [value]
+ * @property {string} [className]
+ */
+
+/** @extends {React.Component<JSONEditorProps>} */
 export default class Editor extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {

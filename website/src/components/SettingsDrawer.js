@@ -1,6 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+/**
+ * @typedef {Object} SettingsDrawerProps
+ * @property {() => void} [onWantToExpand]
+ * @property {() => void} [onWantToCollapse]
+ * @property {boolean} [isOpen]
+ */
+
+/** @extends {React.Component<SettingsDrawerProps>} */
 export default class SettingsDrawer extends React.Component {
   constructor(props) {
     super(props);

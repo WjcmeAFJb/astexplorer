@@ -1,8 +1,17 @@
+/** @typedef {import('../types.js').AppState} AppState */
+/** @typedef {import('../types.js').WorkbenchState} WorkbenchState */
+/** @typedef {import('../types.js').TransformState} TransformState */
+/** @typedef {import('../types.js').Action} Action */
+/** @typedef {import('../types.js').Transformer} Transformer */
+/** @typedef {import('../types.js').Category} Category */
+/** @typedef {import('../types.js').Revision} Revision */
+
 import * as actions from './actions';
 import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from '../parsers';
 
 const defaultParser = getDefaultParser(getCategoryByID('javascript'));
 
+/** @type {AppState} */
 const initialState = {
 
   // UI related state
@@ -48,6 +57,8 @@ const initialState = {
 
 /**
  * Returns the subset of the data that makes sense to persist between visits.
+ * @param {AppState} state
+ * @returns {Partial<AppState>}
  */
 export function persist(state) {
   return {
@@ -62,6 +73,8 @@ export function persist(state) {
 /**
  * When read from persistent storage, set the last stored code as initial version.
  * This is necessary because we use CodeMirror as an uncontrolled component.
+ * @param {AppState} [state]
+ * @returns {AppState}
  */
 export function revive(state=initialState) {
   return {
@@ -78,6 +91,11 @@ export function revive(state=initialState) {
   };
 }
 
+/**
+ * @param {AppState} [state]
+ * @param {Action} action
+ * @returns {AppState}
+ */
 export function astexplorer(state=initialState, action) {
   return {
     // UI related state
@@ -102,11 +120,21 @@ export function astexplorer(state=initialState, action) {
   };
 }
 
+/**
+ * @param {boolean} [state]
+ * @param {Action} action
+ * @returns {boolean}
+ */
 function format(state=initialState.enableFormatting, action) {
   if (action.type === actions.TOGGLE_FORMATTING) return !state;
   return state;
 }
 
+/**
+ * @param {Transformer} transformer
+ * @param {WorkbenchState} workbenchState
+ * @returns {string}
+ */
 function getDefaultTransform(transformer, workbenchState) {
   if (typeof transformer.formatCodeExample === 'function') {
     return transformer.formatCodeExample(
@@ -120,7 +148,17 @@ function getDefaultTransform(transformer, workbenchState) {
   return transformer.defaultTransform
 }
 
+/**
+ * @param {WorkbenchState} [state]
+ * @param {Action} action
+ * @param {AppState} fullState
+ * @returns {WorkbenchState}
+ */
 function workbench(state=initialState.workbench, action, fullState) {
+  /**
+   * @param {Category} category
+   * @returns {Partial<WorkbenchState>}
+   */
   function parserFromCategory(category) {
     const parser = fullState.parserPerCategory[category.id] ||
       getDefaultParser(category).id;
@@ -274,6 +312,12 @@ function workbench(state=initialState.workbench, action, fullState) {
   }
 }
 
+/**
+ * @param {Record<string, Record<string, unknown>>} [state]
+ * @param {Action} action
+ * @param {AppState} fullState
+ * @returns {Record<string, Record<string, unknown>>}
+ */
 function parserSettings(state=initialState.parserSettings, action, fullState) {
   switch (action.type) {
     case actions.SET_PARSER_SETTINGS:
@@ -291,6 +335,11 @@ function parserSettings(state=initialState.parserSettings, action, fullState) {
   }
 }
 
+/**
+ * @param {Record<string, string>} [state]
+ * @param {Action} action
+ * @returns {Record<string, string>}
+ */
 function parserPerCategory(state=initialState.parserPerCategory, action) {
   switch (action.type) {
     case actions.SET_PARSER:
@@ -300,6 +349,11 @@ function parserPerCategory(state=initialState.parserPerCategory, action) {
   }
 }
 
+/**
+ * @param {boolean} [state]
+ * @param {Action} action
+ * @returns {boolean}
+ */
 function showSettingsDialog(state=initialState.showSettingsDialog, action) {
   switch(action.type) {
     case actions.OPEN_SETTINGS_DIALOG:
@@ -311,6 +365,11 @@ function showSettingsDialog(state=initialState.showSettingsDialog, action) {
   }
 }
 
+/**
+ * @param {boolean} [state]
+ * @param {Action} action
+ * @returns {boolean}
+ */
 function showSettingsDrawer(state=initialState.showSettingsDrawer, action) {
   switch(action.type) {
     case actions.EXPAND_SETTINGS_DRAWER:
@@ -322,6 +381,11 @@ function showSettingsDrawer(state=initialState.showSettingsDrawer, action) {
   }
 }
 
+/**
+ * @param {boolean} [state]
+ * @param {Action} action
+ * @returns {boolean}
+ */
 function showShareDialog(state=initialState.showShareDialog, action) {
   switch(action.type) {
     case actions.OPEN_SHARE_DIALOG:
@@ -333,6 +397,11 @@ function showShareDialog(state=initialState.showShareDialog, action) {
   }
 }
 
+/**
+ * @param {boolean} [state]
+ * @param {Action} action
+ * @returns {boolean}
+ */
 function loadSnippet(state=initialState.loadingSnippet, action) {
   switch(action.type) {
     case actions.START_LOADING_SNIPPET:
@@ -344,6 +413,11 @@ function loadSnippet(state=initialState.loadingSnippet, action) {
   }
 }
 
+/**
+ * @param {boolean} [state]
+ * @param {Action} action
+ * @returns {boolean}
+ */
 function saving(state=initialState.saving, action) {
   switch(action.type) {
     case actions.START_SAVE:
@@ -355,6 +429,11 @@ function saving(state=initialState.saving, action) {
   }
 }
 
+/**
+ * @param {boolean} [state]
+ * @param {Action} action
+ * @returns {boolean}
+ */
 function forking(state=initialState.forking, action) {
   switch(action.type) {
     case actions.START_SAVE:
@@ -366,6 +445,11 @@ function forking(state=initialState.forking, action) {
   }
 }
 
+/**
+ * @param {number | null} [state]
+ * @param {Action} action
+ * @returns {number | null}
+ */
 function cursor(state=initialState.cursor, action) {
   switch(action.type) {
     case actions.SET_CURSOR:
@@ -386,6 +470,11 @@ function cursor(state=initialState.cursor, action) {
   }
 }
 
+/**
+ * @param {Error | null} [state]
+ * @param {Action} action
+ * @returns {Error | null}
+ */
 function error(state=initialState.error, action) {
   switch (action.type) {
     case actions.SET_ERROR:
@@ -397,6 +486,11 @@ function error(state=initialState.error, action) {
   }
 }
 
+/**
+ * @param {boolean} [state]
+ * @param {Action} action
+ * @returns {boolean}
+ */
 function showTransformPanel(state=initialState.showTransformPanel, action) {
   switch (action.type) {
     case actions.SELECT_TRANSFORMER:
@@ -412,6 +506,11 @@ function showTransformPanel(state=initialState.showTransformPanel, action) {
   }
 }
 
+/**
+ * @param {Revision | null} [state]
+ * @param {Action} action
+ * @returns {Revision | null}
+ */
 function activeRevision(state=initialState.selectedRevision, action) {
   switch (action.type) {
     case actions.SET_SNIPPET:
@@ -425,6 +524,12 @@ function activeRevision(state=initialState.selectedRevision, action) {
   }
 }
 
+/**
+ * @template {Record<string, unknown>} T
+ * @param {T} obj
+ * @param  {...string} properties
+ * @returns {Partial<T>}
+ */
 function pick(obj, ...properties) {
   return properties.reduce(
     (result, prop) => (result[prop] = obj[prop], result),

@@ -1,7 +1,10 @@
+/** @typedef {import('../types.js').AppState} AppState */
+
 const storage = global.localStorage;
 const key = 'explorerSettingsV1';
 const noop = () => {};
 
+/** @type {(state: Partial<AppState>) => void} */
 export const writeState = storage ?
   state => {
     try {
@@ -13,6 +16,7 @@ export const writeState = storage ?
   } :
   noop;
 
+/** @type {() => AppState | undefined} */
 export const readState = storage ?
   () => {
     try {

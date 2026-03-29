@@ -1,6 +1,16 @@
+/** @typedef {import('../types.js').Parser} Parser */
+/** @typedef {import('../types.js').ParseResult} ParseResult */
+/** @typedef {import('../types.js').TreeFilter} TreeFilter */
+
 import {getParser, getParserSettings, getCode} from './selectors';
 import {ignoreKeysFilter, locationInformationFilter, functionFilter, emptyKeysFilter, typeKeysFilter} from '../core/TreeAdapter.js';
 
+/**
+ * @param {Parser} parser
+ * @param {string} code
+ * @param {Record<string, unknown> | null} parserSettings
+ * @returns {Promise<unknown>}
+ */
 function parse(parser, code, parserSettings) {
   if (!parser._promise) {
     parser._promise = new Promise(parser.loadParser);
@@ -14,6 +24,7 @@ function parse(parser, code, parserSettings) {
   );
 }
 
+/** @type {(store: import('redux').MiddlewareAPI) => (next: import('redux').Dispatch) => (action: import('../types.js').Action) => unknown} */
 export default store => next => action => {
   const oldState = store.getState();
   next(action);

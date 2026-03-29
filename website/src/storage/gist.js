@@ -1,7 +1,12 @@
+/** @typedef {import('../types.js').SnippetData} SnippetData */
+
 import React from 'react';
 import api from './api';
 import {getParserByID} from '../parsers';
 
+/**
+ * @returns {{id: string, rev: string | undefined} | null}
+ */
 function getIDAndRevisionFromHash() {
   let match = global.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);
   if (match) {
@@ -13,6 +18,11 @@ function getIDAndRevisionFromHash() {
   return null;
 }
 
+/**
+ * @param {string} snippetID
+ * @param {string} [revisionID='latest']
+ * @returns {Promise<Revision>}
+ */
 function fetchSnippet(snippetID, revisionID='latest') {
   return api(
     `/gist/${snippetID}` + (revisionID ? `/${revisionID}` : ''),
@@ -34,14 +44,24 @@ function fetchSnippet(snippetID, revisionID='latest') {
   .then(response => new Revision(response));
 }
 
+/**
+ * @param {unknown} snippet
+ * @returns {boolean}
+ */
 export function owns(snippet) {
   return snippet instanceof Revision;
 }
 
+/**
+ * @returns {boolean}
+ */
 export function matchesURL() {
   return getIDAndRevisionFromHash() !== null;
 }
 
+/**
+ * @returns {Promise<Revision | null>}
+ */
 export function fetchFromURL() {
   const data = getIDAndRevisionFromHash();
   if (!data) {
@@ -52,6 +72,8 @@ export function fetchFromURL() {
 
 /**
  * Create a new snippet.
+ * @param {SnippetData} data
+ * @returns {Promise<Revision>}
  */
 export function create(data) {
   return api(
@@ -75,6 +97,9 @@ export function create(data) {
 
 /**
  * Update an existing snippet.
+ * @param {Revision} revision
+ * @param {SnippetData} data
+ * @returns {Promise<Revision>}
  */
 export function update(revision, data) {
   // Fetch latest version of snippet
@@ -107,6 +132,9 @@ export function update(revision, data) {
 
 /**
  * Fork existing snippet.
+ * @param {Revision} revision
+ * @param {SnippetData} data
+ * @returns {Promise<Revision>}
  */
 export function fork(revision, data) {
   return api(
@@ -128,40 +156,78 @@ export function fork(revision, data) {
   .then(data => new Revision(data));
 }
 
+/**
+ * @typedef {Object} GistFile
+ * @property {string} content
+ */
+
+/**
+ * @typedef {Object} GistHistoryEntry
+ * @property {string} version
+ */
+
+/**
+ * @typedef {Object} GistData
+ * @property {string} id
+ * @property {Record<string, GistFile>} files
+ * @property {GistHistoryEntry[]} history
+ */
+
+/**
+ * @typedef {Object} GistConfig
+ * @property {number} [v]
+ * @property {string} parserID
+ * @property {string} [toolID]
+ * @property {Record<string, Record<string, unknown>>} settings
+ */
+
 class Revision {
+  /**
+   * @param {GistData} gist
+   */
   constructor(gist) {
     this._gist = gist;
+    /** @type {GistConfig} */
     this._config = JSON.parse(gist.files['astexplorer.json'].content);
   }
 
+  /** @returns {boolean} */
   canSave() {
     return true;
   }
 
+  /** @returns {string} */
   getPath() {
     return `/gist/${this.getSnippetID()}/${this.getRevisionID()}`;
   }
 
+  /** @returns {string} */
   getSnippetID() {
     return this._gist.id;
   }
+
+  /** @returns {string} */
   getRevisionID() {
     return this._gist.history[0].version;
   }
 
+  /** @returns {string | undefined} */
   getTransformerID() {
     return this._config.toolID;
   }
 
+  /** @returns {string} */
   getTransformCode() {
     const transformFile = this._gist.files['transform.js'];
     return transformFile ? transformFile.content : '';
   }
 
+  /** @returns {string} */
   getParserID() {
     return this._config.parserID;
   }
 
+  /** @returns {string} */
   getCode() {
     if (this._code == null) {
       this._code = getSource(this._config, this._gist) || '';
@@ -169,10 +235,12 @@ class Revision {
     return this._code;
   }
 
+  /** @returns {Record<string, unknown> | undefined} */
   getParserSettings() {
     return this._config.settings[this._config.parserID];
   }
 
+  /** @returns {React.ReactElement} */
   getShareInfo() {
     const snippetID = this.getSnippetID();
     const revisionID = this.getRevisionID();
@@ -209,6 +277,11 @@ class Revision {
   }
 }
 
+/**
+ * @param {GistConfig} config
+ * @param {GistData} gist
+ * @returns {string | undefined}
+ */
 function getSource(config, gist) {
   switch (config.v) {
     case 1:

@@ -4,6 +4,13 @@ import cx from '../../utils/classnames.js';
 
 const keyMappings = ['default', 'vim', 'emacs', 'sublime']
 
+/**
+ * @typedef {Object} KeyMapButtonProps
+ * @property {(keyMap: string) => void} [onKeyMapChange]
+ * @property {string} [keyMap]
+ */
+
+/** @extends {React.Component<KeyMapButtonProps>} */
 class KeyMapButton extends React.Component {
   render() {
     return (

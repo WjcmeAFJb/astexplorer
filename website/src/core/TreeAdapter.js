@@ -1,9 +1,19 @@
+/** @typedef {import('../types.js').AdapterOptions} AdapterOptions */
+/** @typedef {import('../types.js').WalkResult} WalkResult */
+/** @typedef {import('../types.js').TreeFilter} TreeFilter */
+/** @typedef {import('../types.js').ParseResult} ParseResult */
+
 /**
  * Configurable base class for all tree traversal.
  */
 class TreeAdapter {
 
+  /**
+   * @param {AdapterOptions} adapterOptions
+   * @param {Record<string, boolean>} filterValues
+   */
   constructor(adapterOptions, filterValues) {
+    /** @type {WeakMap<object, [number, number] | null>} */
     this._ranges = new WeakMap();
     this._filterValues = filterValues;
     this._adapterOptions = adapterOptions;
@@ -11,6 +21,7 @@ class TreeAdapter {
 
   /**
    * Used by UI components to render an appropriate input for each filter.
+   * @returns {TreeFilter[]}
    */
   getConfigurableFilters() {
     return (this._adapterOptions.filters || []).filter(filter => Boolean(filter.key));
@@ -18,6 +29,8 @@ class TreeAdapter {
 
   /**
    * A more or less human readable name of the node.
+   * @param {unknown} node
+   * @returns {string}
    */
   getNodeName(node) {
     return this._adapterOptions.nodeToName(node);
@@ -27,13 +40,15 @@ class TreeAdapter {
    * The start and end indicies of the node in the source text. The return value
    * is an array of form `[start, end]`. This is used for highlighting source
    * text and focusing nodes in the tree.
+   * @param {unknown} node
+   * @returns {[number, number] | null | undefined}
    */
   getRange(node) {
     if (node == null) {
       return null;
     }
-    if (this._ranges.has(node)) {
-      return this._ranges.get(node);
+    if (this._ranges.has(/** @type {object} */ (node))) {
+      return this._ranges.get(/** @type {object} */ (node));
     }
     const {nodeToRange} = this._adapterOptions;
     let range = nodeToRange(node);
@@ -43,6 +58,12 @@ class TreeAdapter {
     return range;
   }
 
+  /**
+   * @param {unknown} node
+   * @param {string} key
+   * @param {number} position
+   * @returns {boolean}
+   */
   isInRange(node, key, position) {
     if (this.isLocationProp(key)) {
       return false;
@@ -57,6 +78,13 @@ class TreeAdapter {
     return range[0] <= position && position <= range[1];
   }
 
+  /**
+   * @param {unknown} node
+   * @param {string} key
+   * @param {number} position
+   * @param {Set<unknown>} [seen]
+   * @returns {boolean}
+   */
   hasChildrenInRange(node, key, position, seen=new Set()) {
     if (this.isLocationProp(key)) {
       return false;
@@ -88,27 +116,45 @@ class TreeAdapter {
     return false;
   }
 
+  /**
+   * @param {string} key
+   * @returns {boolean}
+   */
   isLocationProp(key) {
     return this._adapterOptions.locationProps && this._adapterOptions.locationProps.has(key);
   }
 
   /**
    * Whether or not the provided node should be automatically expanded.
+   * @param {unknown} node
+   * @param {string} key
+   * @returns {boolean}
    */
   opensByDefault(node, key) {
     return this._adapterOptions.openByDefault(node, key);
   }
 
+  /**
+   * @param {unknown} node
+   * @returns {boolean}
+   */
   isArray(node) {
     return Array.isArray(node);
   }
 
+  /**
+   * @param {unknown} node
+   * @returns {boolean}
+   */
   isObject(node) {
     return Boolean(node) && typeof node === 'object' && !this.isArray(node);
   }
 
   /**
    * A generator to iterate over each "property" of the node.
+   * @param {unknown} node
+   * @yields {WalkResult}
+   * @returns {Generator<WalkResult>}
    */
   *walkNode(node) {
     if (node != null) {
@@ -130,6 +176,7 @@ class TreeAdapter {
 
 }
 
+/** @type {Record<string, AdapterOptions & {openByDefaultNodes?: Set<string>, openByDefaultKeys?: Set<string>}>} */
 const TreeAdapterConfigs = {
   default: {
     filters: [],
@@ -186,10 +233,20 @@ const TreeAdapterConfigs = {
   },
 };
 
+/**
+ * @param {number} position
+ * @returns {boolean}
+ */
 function isValidPosition(position) {
   return Number.isInteger(position);
 }
 
+/**
+ * @param {Set<string>} [keys]
+ * @param {string} [key]
+ * @param {string} [label]
+ * @returns {TreeFilter}
+ */
 export function ignoreKeysFilter(keys=new Set(), key, label) {
   return {
     key,
@@ -198,6 +255,10 @@ export function ignoreKeysFilter(keys=new Set(), key, label) {
   };
 }
 
+/**
+ * @param {Set<string>} keys
+ * @returns {TreeFilter}
+ */
 export function locationInformationFilter(keys) {
   return ignoreKeysFilter(
     keys,
@@ -206,6 +267,9 @@ export function locationInformationFilter(keys) {
   );
 }
 
+/**
+ * @returns {TreeFilter}
+ */
 export function functionFilter() {
   return {
     key: 'hideFunctions',
@@ -214,6 +278,9 @@ export function functionFilter() {
   };
 }
 
+/**
+ * @returns {TreeFilter}
+ */
 export function emptyKeysFilter() {
   return {
     key: 'hideEmptyKeys',
@@ -222,6 +289,10 @@ export function emptyKeysFilter() {
   };
 }
 
+/**
+ * @param {Set<string>} [keys]
+ * @returns {TreeFilter}
+ */
 export function typeKeysFilter(keys) {
   return ignoreKeysFilter(
     keys,
@@ -230,6 +301,12 @@ export function typeKeysFilter(keys) {
   );
 }
 
+/**
+ * @param {string} type
+ * @param {Partial<AdapterOptions>} adapterOptions
+ * @param {Record<string, boolean>} filterValues
+ * @returns {TreeAdapter}
+ */
 function createTreeAdapter(type, adapterOptions, filterValues) {
   if (TreeAdapterConfigs[type] == null) {
     throw new Error(`Unknown tree adapter type "${type}"`);
@@ -240,6 +317,11 @@ function createTreeAdapter(type, adapterOptions, filterValues) {
   );
 }
 
+/**
+ * @param {ParseResult} parseResult
+ * @param {Record<string, boolean>} filterValues
+ * @returns {TreeAdapter}
+ */
 export function treeAdapterFromParseResult({treeAdapter}, filterValues) {
   return createTreeAdapter(
     treeAdapter.type,

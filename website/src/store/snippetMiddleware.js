@@ -1,9 +1,17 @@
+/** @typedef {import('../types.js').Action} Action */
+/** @typedef {import('../types.js').AppState} AppState */
+
 import * as selectors from './selectors.js';
 import * as actions from './actions.js';
 
 let clearURLOnClearError = false;
+/** @type {() => void} */
 let cancelLoad = () => {}
 
+/**
+ * @param {import('../storage/index.js').default} storageAdapter
+ * @returns {(store: import('redux').MiddlewareAPI) => (next: import('redux').Dispatch) => (action: Action) => unknown}
+ */
 export default storageAdapter => store => next => action => {
   switch (action.type) {
     case actions.CLEAR_ERROR:
@@ -26,6 +34,12 @@ export default storageAdapter => store => next => action => {
   }
 }
 
+/**
+ * @param {AppState} state
+ * @param {import('redux').Dispatch} next
+ * @param {import('../storage/index.js').default} storageAdapter
+ * @returns {Promise<void>}
+ */
 async function loadSnippet(state, next, storageAdapter) {
   // Ignore changes to the URL while a snippet is being saved (that process will
   // update the URL.
@@ -63,6 +77,13 @@ async function loadSnippet(state, next, storageAdapter) {
   }
 }
 
+/**
+ * @param {Action} action
+ * @param {AppState} state
+ * @param {import('redux').Dispatch} next
+ * @param {import('../storage/index.js').default} storageAdapter
+ * @returns {Promise<void>}
+ */
 async function saveSnippet({fork}, state, next, storageAdapter) {
   const revision = selectors.getRevision(state);
   const parser = selectors.getParser(state);

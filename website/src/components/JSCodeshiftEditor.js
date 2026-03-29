@@ -5,6 +5,7 @@ import Editor from './Editor';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/tern/tern.css';
 
+/** @type {unknown} */
 let server;
 
 export default class JSCodeshiftEditor extends Editor {

@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+/**
+ * @param {Object} props
+ * @param {string[]} props.keys
+ * @param {(event: React.MouseEvent) => void} [props.onClick]
+ * @returns {React.ReactElement}
+ */
 export default function CompactObjectView({keys, onClick}) {
   if (keys.length === 0) {
     return <span className="p">{'{ }'}</span>;

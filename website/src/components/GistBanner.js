@@ -19,7 +19,14 @@ const buttonStyle = {
   paddingRight: 10,
 };
 
+/**
+ * @typedef {Object} GistBannerProps
+ * @property {import('../types.js').Revision | null} [revision]
+ */
+
+/** @extends {React.Component<GistBannerProps, {visible: boolean}>} */
 class GistBanner extends React.Component {
+  /** @param {GistBannerProps} props */
   constructor(props) {
     super(props);
     this.state = {

@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+/**
+ * @typedef {Object} ErrorMessageProps
+ * @property {{message: string} | null} [error]
+ * @property {() => void} [onWantToClose]
+ */
+
+/** @extends {React.Component<ErrorMessageProps>} */
 export default class ErrorMessage extends React.Component {
   render() {
     return this.props.error ?

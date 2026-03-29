@@ -3,6 +3,9 @@ import {closeSettingsDialog, setParserSettings} from '../store/actions';
 import {showSettingsDialog, getParser, getParserSettings} from '../store/selectors';
 import SettingsDialog from '../components/dialogs/SettingsDialog';
 
+/**
+ * @param {import('../types.js').AppState} state
+ */
 function mapStateToProps(state) {
   return {
     visible: showSettingsDialog(state),
@@ -11,6 +14,9 @@ function mapStateToProps(state) {
   };
 }
 
+/**
+ * @param {import('redux').Dispatch} dispatch
+ */
 function mapDispatchToProps(dispatch) {
   return {
     onSave: (parser, newSettings) => dispatch(setParserSettings(newSettings)),

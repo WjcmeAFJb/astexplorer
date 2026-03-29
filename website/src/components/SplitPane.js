@@ -15,6 +15,12 @@ const styleB = {
 
 /**
  * Creates a left-right split pane inside its container.
+ * @param {Object} props
+ * @param {boolean} [props.vertical]
+ * @param {string} [props.className]
+ * @param {React.ReactNode} [props.children]
+ * @param {() => void} [props.onResize]
+ * @returns {React.ReactElement}
  */
 export default function SplitPane({vertical, className, children, onResize}) {
   // Position is really the size (width or height) of the first (left or top)

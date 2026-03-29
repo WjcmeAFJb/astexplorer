@@ -17,7 +17,16 @@ categories.forEach(({ id, mimeTypes }) => {
   });
 });
 
+/**
+ * @typedef {Object} PasteDropTargetProps
+ * @property {(type: string, event: Event, code: string, categoryId?: string) => void} [onText]
+ * @property {(type: string, event: Event, message: string) => void} [onError]
+ * @property {React.ReactNode} [children]
+ */
+
+/** @extends {React.Component<PasteDropTargetProps, {dragging: boolean}>} */
 export default class PasteDropTarget extends React.Component {
+  /** @param {PasteDropTargetProps} props */
   constructor(props) {
     super(props);
     this.state = {
@@ -124,6 +133,10 @@ export default class PasteDropTarget extends React.Component {
     this._listeners = null;
   }
 
+  /**
+   * @param {string} json
+   * @returns {Promise<string>}
+   */
   _jsonToCode(json) {
     let ast;
     try {
@@ -137,6 +150,12 @@ export default class PasteDropTarget extends React.Component {
     });
   }
 
+  /**
+   * @param {EventTarget} elem
+   * @param {string} event
+   * @param {EventListener} listener
+   * @param {boolean} [capture]
+   */
   _bindListener(elem, event, listener, capture) {
     for (const e of event.split(/\s+/)) {
       elem.addEventListener(e, listener, capture);
