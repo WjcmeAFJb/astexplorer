@@ -124,7 +124,7 @@ export default class PasteDropTarget extends React.Component {
             },
           );
         }
-        Promise.resolve(text).then(/** @param {*} text */ text => {
+        Promise.resolve(text).then(/** @param {string} text */ text => {
           this.props.onText('drop', readerEvent, text, categoryId);
         });
       };
@@ -145,7 +145,7 @@ export default class PasteDropTarget extends React.Component {
   }
 
   /**
-   * @param {*} json
+   * @param {string} json
    * @returns {Promise<string>}
    */
   _jsonToCode(json) {
@@ -185,9 +185,9 @@ export default class PasteDropTarget extends React.Component {
       null;
 
     return (
-      // @ts-expect-error — spreading remaining props (includes onError) onto div; harmless extra prop
       <div
-        ref={/** @type {*} */ (c => this.container = c)}
+        // @ts-expect-error — ref callback returns assignment value instead of void
+        ref={c => this.container = c}
         {...props}>
         {dropindicator}
         {children}

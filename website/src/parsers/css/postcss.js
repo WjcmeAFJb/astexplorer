@@ -31,6 +31,7 @@ export default {
     );
   },
 
+  /** @this {import('./utils/defaultCSSParserInterface').LineOffsetsMixin} */
   nodeToRange({ source: range }) {
     if (!range || !range.end) return;
     return [

@@ -9,7 +9,6 @@ export default {
   id: ID,
   displayName: ID,
   version: pkg.version,
-  // @ts-expect-error — pkg.homepage may not exist in this package.json
   homepage: pkg.homepage || 'https://github.com/fb55/htmlparser2',
   locationProps: new Set(['startIndex', 'endIndex']),
   typeProps: new Set(['type', 'name']),

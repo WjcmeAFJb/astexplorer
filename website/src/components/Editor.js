@@ -130,7 +130,7 @@ export default class Editor extends React.Component {
       },
     );
 
-    this._bindCMHandler('blur', instance => {
+    this._bindCMHandler('blur', /** @param {CodeMirror.Editor & {doc: CodeMirror.Doc, display: {maxLineLength: number}}} instance */ instance => {
       if (!this.props.enableFormatting) return;
 
       require(['prettier/standalone', 'prettier/parser-babel'], (prettier, babel) => {
@@ -223,7 +223,7 @@ export default class Editor extends React.Component {
 
   /**
    * @param {string} event
-   * @param {*} handler
+   * @param {(...args: unknown[]) => void} handler
    */
   _bindCMHandler(event, handler) {
     this._CMHandlers.push(event, handler);
@@ -259,7 +259,8 @@ export default class Editor extends React.Component {
 
   render() {
     return (
-      <div className="editor" ref={/** @type {*} */ (c => this.container = c)}/>
+      <div className="editor" // @ts-expect-error — ref callback returns assignment value (element) instead of void
+        ref={c => this.container = c}/>
     );
   }
 }

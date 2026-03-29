@@ -69,7 +69,6 @@ export default {
   id: ID,
   displayName: ID,
   version: pkg.version,
-  // @ts-expect-error — pkg.homepage may not exist in this package.json
   homepage: pkg.homepage || 'https://github.com/angular-eslint/angular-eslint',
   locationProps: new Set(['loc', 'start', 'end', 'range', 'startSourceSpan', 'endSourceSpan', 'sourceSpan', 'handlerSpan', 'location']),
 

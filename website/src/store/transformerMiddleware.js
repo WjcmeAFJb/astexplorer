@@ -19,7 +19,7 @@ async function transform(transformer, transformCode, code) {
   if (!transformer._promise) {
     transformer._promise = new Promise(transformer.loadTransformer);
   }
-  /** @type {*} */
+  /** @type {{version?: string} | undefined} */
   let realTransformer;
   try {
     realTransformer = await transformer._promise;

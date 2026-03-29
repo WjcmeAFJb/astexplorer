@@ -58,7 +58,7 @@ const initialState = {
 /**
  * Returns the subset of the data that makes sense to persist between visits.
  * @param {AppState} state
- * @returns {*}
+ * @returns {{showTransformPanel?: boolean, parserSettings?: Record<string, Record<string, unknown>>, parserPerCategory?: Record<string, string>, workbench: {parser?: string, code?: string, keyMap?: string, transform: {code?: string, transformer?: string | null}}}}
  */
 export function persist(state) {
   return {

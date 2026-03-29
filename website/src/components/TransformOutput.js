@@ -8,7 +8,7 @@ import stringify from 'json-stringify-safe';
 
 /**
  * @param {number} index
- * @param {*} map
+ * @param {import('source-map/lib/source-map-consumer').SourceMapConsumer | null | undefined} map
  * @returns {{line: number, ch: number} | undefined}
  */
 function positionFromIndex(index, map) {

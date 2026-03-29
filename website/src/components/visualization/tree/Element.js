@@ -369,7 +369,7 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
     ((nextProps.isInRange || nextProps.hashChildrenInRange) && prevProps.position === nextProps.position);
 });
 
-// @ts-expect-error — React.memo result supports propTypes at runtime (React 16) but @types/react removed it
+// @ts-expect-error — React 16 supports propTypes on memo; @types/react uses a type alias that cannot be augmented
 Element.propTypes = {
   name: PropTypes.string,
   value: PropTypes.any,
@@ -444,7 +444,7 @@ const FunctionElement = React.memo(/** @param {ElementProps} props */ function F
   );
 });
 
-// @ts-expect-error — React.memo propTypes (see above)
+// @ts-expect-error — React 16 memo propTypes (see Element.propTypes above)
 FunctionElement.propTypes = Element.propTypes;
 
 /**
@@ -469,7 +469,7 @@ const PrimitiveElement = React.memo(/** @param {PrimitiveElementProps} props */ 
   );
 });
 
-// @ts-expect-error — React.memo propTypes (see above)
+// @ts-expect-error — React 16 memo propTypes
 PrimitiveElement.propTypes = {
   name: PropTypes.string,
   value: PropTypes.any,
@@ -494,7 +494,7 @@ const PropertyName = React.memo(/** @param {PropertyNameProps} props */ function
   );
 });
 
-// @ts-expect-error — React.memo propTypes (see above)
+// @ts-expect-error — React 16 memo propTypes
 PropertyName.propTypes = {
   name: PropTypes.string,
   computed: PropTypes.bool,
@@ -540,5 +540,5 @@ export default function ElementContainer(props) {
   );
 }
 
-// @ts-expect-error — React.memo propTypes (see above)
+// @ts-expect-error — React 16 memo propTypes
 ElementContainer.propTypes = Element.propTypes;

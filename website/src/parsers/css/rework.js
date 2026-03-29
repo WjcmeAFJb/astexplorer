@@ -9,7 +9,6 @@ export default {
   id: ID,
   displayName: ID,
   version: pkg.version,
-  // @ts-expect-error — pkg.homepage may not exist in this package.json
   homepage: pkg.homepage || 'https://github.com/reworkcss/rework',
   locationProps: new Set(['position']),
 
@@ -17,6 +16,7 @@ export default {
     require(['css/lib/parse'], callback);
   },
 
+  /** @this {import('./utils/defaultCSSParserInterface').LineOffsetsMixin} */
   nodeToRange({ position: range }) {
     if (!range) return;
     return [range.start, range.end].map(pos => this.getOffset(pos));

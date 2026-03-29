@@ -5,7 +5,7 @@ import Editor from './Editor';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/tern/tern.css';
 
-/** @type {*} */
+/** @type {CodeMirror.TernServer | null} */
 let server;
 
 // @ts-expect-error — propTypes static is a subset of Editor.propTypes (missing enableFormatting); intentional as this subclass doesn't use it
@@ -25,7 +25,7 @@ export default class JSCodeshiftEditor extends Editor {
       'Ctrl-O': cm => server && server.showDocs(cm),
     });
 
-    this._bindCMHandler('cursorActivity', cm => {
+    this._bindCMHandler('cursorActivity', /** @param {CodeMirror.Editor} cm */ cm => {
       server && server.updateArgHints(cm);
     });
   }

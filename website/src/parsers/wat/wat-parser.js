@@ -1,6 +1,12 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from '@webassemblyjs/wast-parser/package.json';
 
+/**
+ * @typedef {Object} LineOffsetsMixin
+ * @property {number[]} lineOffsets
+ * @property {(pos: {line: number, column: number}) => number} getOffset
+ */
+
 const ID = 'wat-parser';
 
 export default {
@@ -13,11 +19,12 @@ export default {
 
   locationProps: new Set(['loc']),
 
-  /** @this {any} */
+  /** @this {LineOffsetsMixin} */
   getOffset({ line, column }) {
     return this.lineOffsets[line - 1] + column;
   },
 
+  /** @this {LineOffsetsMixin} */
   nodeToRange({ loc }) {
     if (!loc) return;
     return [loc.start, loc.end].map(pos => this.getOffset(pos));
@@ -29,7 +36,7 @@ export default {
     });
   },
 
-  /** @this {any} */
+  /** @this {LineOffsetsMixin} */
   parse({ parse }, code) {
     this.lineOffsets = [];
     let index = 0;

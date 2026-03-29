@@ -4,7 +4,7 @@ const storage = global.localStorage;
 const key = 'explorerSettingsV1';
 const noop = () => {};
 
-/** @type {(state: Partial<AppState>) => void} */
+/** @type {(state: Record<string, unknown>) => void} */
 export const writeState = storage ?
   state => {
     try {

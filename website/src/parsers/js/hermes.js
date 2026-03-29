@@ -29,7 +29,6 @@ export default {
   id: 'hermes',
   displayName: pkg.name,
   version: pkg.version,
-  // @ts-expect-error — pkg.homepage may not exist in this package.json
   homepage: pkg.homepage || 'https://hermesengine.dev/',
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 

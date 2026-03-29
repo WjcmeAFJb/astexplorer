@@ -1,6 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'astexplorer-syn/package.json';
 
+/** @typedef {{lineOffsets: number[]}} LineOffsetsMixin */
+
 const ID = 'syn';
 
 export default {
@@ -17,7 +19,7 @@ export default {
     require(['astexplorer-syn'], callback);
   },
 
-  /** @this {any} */
+  /** @this {LineOffsetsMixin} */
   parse(parser, code) {
     this.lineOffsets = [];
     let index = 0;
@@ -31,7 +33,7 @@ export default {
     return node._type;
   },
 
-  /** @this {any} */
+  /** @this {LineOffsetsMixin} */
   nodeToRange(node) {
     if (node.span) {
       return [node.span.start, node.span.end].map(

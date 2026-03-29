@@ -26,6 +26,7 @@ interface Window {
 
 // Webpack AMD-style require used by the project
 interface WebpackRequire {
+  // Callback params are `any` because webpack require loads arbitrary modules at runtime
   (deps: string[], callback: (...modules: any[]) => void): void;
   context(directory: string, useSubdirectories: boolean, regExp: RegExp): {
     keys(): string[];
@@ -35,6 +36,10 @@ interface WebpackRequire {
 declare var require: WebpackRequire;
 
 declare var process: { env: Record<string, string | undefined> };
+
+// ---------------------------------------------------------------------------
+// Third-party module declarations
+// ---------------------------------------------------------------------------
 
 // source-map library
 declare module 'source-map/lib/source-map-consumer' {
@@ -63,10 +68,16 @@ declare module 'react-dom' {
 }
 
 // Package.json imports – many parser files import a package.json and access
-// `pkg.homepage`, but the resolved types often lack that field.  Declaring the
-// module wildcard as `any` keeps every `*/package.json` import happy.
+// `pkg.homepage`, but the resolved types often lack that field.
 declare module '*/package.json' {
-  const value: any;
+  const value: {
+    name: string;
+    version: string;
+    homepage?: string;
+    description?: string;
+    repository?: { type?: string; url?: string; directory?: string; [k: string]: unknown };
+    [key: string]: unknown;
+  };
   export default value;
 }
 
@@ -74,12 +85,6 @@ declare module '*/package.json' {
 declare module 'json-stringify-safe' {
   function stringify(obj: unknown, replacer?: unknown, spaces?: number): string;
   export default stringify;
-}
-
-// java-parser package.json
-declare module 'java-parser/package.json' {
-  const value: any;
-  export default value;
 }
 
 // Worker-loader import for hermes web worker
@@ -90,20 +95,20 @@ declare module 'worker-loader!./hermes-worker.js' {
   export default HermesWorker;
 }
 
-// meriyah package.json
-declare module 'meriyah/package.json' {
-  const value: any;
-  export default value;
-}
-
 // SWC WASM binary
 declare module '@swc/wasm-web/wasm_bg.wasm' {
   const url: string;
   export default url;
 }
 
+// astexplorer-refmt esy.json
+declare module 'astexplorer-refmt/esy.json' {
+  const value: { name: string; version: string; [key: string]: unknown };
+  export default value;
+}
+
 // babel-plugin-macros package metadata
 declare module 'babel-plugin-macros/package' {
-  const value: any;
+  const value: { name: string; version: string; [key: string]: unknown };
   export default value;
 }

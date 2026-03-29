@@ -175,7 +175,7 @@
  * @typedef {Object} TransformResult
  * @property {string} [result]
  * @property {Error} [error]
- * @property {unknown} [map]
+ * @property {import('source-map/lib/source-map-consumer').SourceMapConsumer | null} [map]
  * @property {string} [version]
  */
 

@@ -57,7 +57,8 @@ export default function ASTOutput({parseResult={}, position=null}) {
       <button
         key={index}
         value={index}
-        onClick={/** @type {*} */ (event => setSelectedOutput(event.target.value))}
+        // @ts-expect-error — value is string from DOM, compared with == (loose); state is number
+        onClick={event => setSelectedOutput(/** @type {HTMLButtonElement} */ (event.target).value)}
         className={cx({
           active: selectedOutput == index,
         })}>

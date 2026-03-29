@@ -47,8 +47,8 @@ function getUpdateStrategy(settings) {
 /**
  * @param {Object} props
  * @param {SettingsConfiguration} props.settingsConfiguration
- * @param {*} props.parserSettings
- * @param {(settings: *) => void} props.onChange
+ * @param {Record<string, unknown>} props.parserSettings
+ * @param {(settings: Record<string, unknown>) => void} props.onChange
  * @returns {React.ReactElement}
  */
 export default function SettingsRenderer(props) {
