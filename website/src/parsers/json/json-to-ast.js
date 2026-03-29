@@ -1,6 +1,11 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'json-to-ast/package.json';
 
+/**
+ * @typedef {(code: string) => JsonToAstNode} JsonToAstParser
+ * @typedef {{ loc?: { start: { offset: number }, end: { offset: number } }, [key: string]: unknown }} JsonToAstNode
+ */
+
 const ID = 'jsonToAst';
 
 export default {
@@ -12,15 +17,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['json-to-ast'], callback);
   },
 
-  parse(/** @type {DynModule} */ jsonToAst, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ jsonToAst, /** @type {string} */ code) {
     return jsonToAst(code);
   },
 
-  nodeToRange(/** @type {DynModule} */ {loc}) {
+  nodeToRange(/** @type {Record<string, Function>} */ {loc}) {
     if (loc) {
       return [
         loc.start.offset,

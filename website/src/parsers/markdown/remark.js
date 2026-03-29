@@ -2,6 +2,18 @@ import React from 'react';
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'remark/package.json';
 
+/**
+ * @typedef {{
+ *   remark: import('remark').remark,
+ *   gfm: typeof import('remark-gfm').default,
+ *   directive: typeof import('remark-directive').default,
+ *   footnotes: typeof import('remark-footnotes').default,
+ *   frontmatter: typeof import('remark-frontmatter').default,
+ *   math: typeof import('remark-math').default,
+ * }} RemarkParser
+ * @typedef {import('unist').Node & { position?: { start: { offset: number }, end: { offset: number } }, children?: RemarkNode[], [key: string]: unknown }} RemarkNode
+ */
+
 const ID = 'remark';
 
 export default {
@@ -13,7 +25,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require([
       'remark',
       'remark-gfm',
@@ -32,7 +44,7 @@ export default {
   },
 
   parse(
-    /** @type {DynModule} */ { remark, gfm, directive, footnotes, frontmatter, math },
+    /** @type {Record<string, Function>} */ { remark, gfm, directive, footnotes, frontmatter, math },
     /** @type {string} */ code,
     /** @type {Record<string, unknown>} */ options,
   ) {
@@ -46,13 +58,13 @@ export default {
     return remark().use(plugins).parse(code);
   },
 
-  nodeToRange(/** @type {DynModule} */ { position }) {
+  nodeToRange(/** @type {Record<string, Function>} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 

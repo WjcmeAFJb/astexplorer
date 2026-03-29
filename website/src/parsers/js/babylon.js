@@ -13,15 +13,15 @@ export default {
   locationProps: new Set(['loc', 'start', 'end']),
   showInMenu: false,
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['babylon5'], callback);
   },
 
-  parse(/** @type {DynModule} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ parserSettings) {
+  parse(/** @type {Record<string, Function>} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ parserSettings) {
     return babylon.parse(code, parserSettings);
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -30,7 +30,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }
@@ -78,12 +78,12 @@ export default {
           title: 'Plugins',
           fields: Object.keys(defaultOptions.plugins),
           settings: (/** @type {Record<string, unknown>} */ settings) => settings.plugins || {.../** @type {Record<string, unknown>} */ (defaultOptions.plugins)},
-          values: (/** @type {ASTNode} */ plugins) => Object.keys(defaultOptions.plugins).reduce(
+          values: (/** @type {Record<string, unknown>} */ plugins) => Object.keys(defaultOptions.plugins).reduce(
             // @ts-expect-error — indexing dynamic object
             (obj, name) => ((obj[name] = name in plugins), obj),
             {},
           ),
-          update: (/** @type {ASTNode} */ plugins, /** @type {string} */ name, /** @type {ASTNodeValue} */ value) => {
+          update: (/** @type {Record<string, unknown>} */ plugins, /** @type {string} */ name, /** @type {unknown} */ value) => {
             if (value) {
               return {...plugins, [name]: true};
             }

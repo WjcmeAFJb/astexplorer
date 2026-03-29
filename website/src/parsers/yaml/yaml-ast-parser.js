@@ -1,8 +1,13 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'yaml-ast-parser/package.json';
 
+/**
+ * @typedef {import('yaml-ast-parser')} YamlAstParserModule
+ * @typedef {import('yaml-ast-parser').YAMLNode} YamlAstNode
+ */
+
 const ID = 'yaml-ast-parser';
-/** @type {ASTNode} */
+/** @type {Record<number, string> | null} */
 let Kind = null;
 
 export default {
@@ -17,24 +22,24 @@ export default {
   locationProps: new Set(['startPosition', 'endPosition']),
   typeProps: new Set(['kind']),
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     if (typeof node.startPosition === 'number') {
       return [node.startPosition, node.endPosition];
     }
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
-    return /** @type {ASTNode} */ Kind[node.kind];
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
+    return /** @type {Record<string, unknown>} */ Kind[node.kind];
   },
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['yaml-ast-parser'], function(yamlAstParser) {
       Kind = yamlAstParser.Kind;
       callback(yamlAstParser);
     });
   },
 
-  parse(/** @type {DynModule} */ { load }, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ { load }, /** @type {string} */ code) {
     return load(code);
   },
 };

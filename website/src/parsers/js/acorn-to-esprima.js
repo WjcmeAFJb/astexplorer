@@ -13,7 +13,7 @@ export default {
   locationProps: new Set(['loc', 'start', 'end', 'range']),
   showInMenu: false,
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['acorn-to-esprima', 'babel5'], (acornToEsprima, {acorn: {tokTypes}, traverse, parse}) => {
       callback({
         ...acornToEsprima,
@@ -24,16 +24,16 @@ export default {
     });
   },
 
-  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
     const opts = {
       locations: true,
       ranges: true,
     };
 
     // @ts-expect-error — dynamic third-party API
-    const /** @type {ASTNode} */ comments = opts.onComment = [];
+    const /** @type {Record<string, unknown>} */ comments = opts.onComment = [];
     // @ts-expect-error — dynamic third-party API
-    const /** @type {ASTNode} */ tokens = opts.onToken = [];
+    const /** @type {Record<string, unknown>} */ tokens = opts.onToken = [];
 
     let ast = parser.parse(code, opts);
 
@@ -46,7 +46,7 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

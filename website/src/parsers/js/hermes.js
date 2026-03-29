@@ -1,3 +1,5 @@
+/** @typedef {{type: string, start?: number, end?: number, range?: [number, number], loc?: {start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}} ESTreeNode */
+
 import defaultParserInterface from './utils/defaultESTreeParserInterface';
 // NOTE: We load the hermes-parser package in a worker and not directly, because
 // it violates the typical limit on the size of a WebAssembly module that can be
@@ -32,15 +34,15 @@ export default {
   homepage: pkg.homepage || 'https://hermesengine.dev/',
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: HermesWorkerClient) => void} */ callback) {
     callback(new HermesWorkerClient());
   },
 
-  async parse(/** @type {DynModule} */ hermes, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  async parse(/** @type {HermesWorkerClient} */ hermes, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return await hermes.parse(code, options);
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {ESTreeNode} */ node) {
     // For `babel: true` mode
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];

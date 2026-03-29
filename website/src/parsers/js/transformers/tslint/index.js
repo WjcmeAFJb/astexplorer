@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'typescript',
 
-  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
     require([
       '../../../transpilers/typescript',
       'tslint/lib/index',
@@ -24,7 +24,7 @@ export default {
     ) => callback({transpile: transpile.default, tslint, typescript}));
   },
 
-  transform(/** @type {DynModule} */ { transpile, tslint, typescript }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, Function>} */ { transpile, tslint, typescript }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,
@@ -43,13 +43,13 @@ export default {
   },
 };
 
-function formatResults(/** @type {ASTNode} */ results) {
+function formatResults(/** @type {Record<string, unknown>} */ results) {
   return results.length === 0
     ? 'Lint rule not fired.'
     : results.map(formatResult).join('').trim();
 }
 
-function formatResult(/** @type {ASTNode} */ result) {
+function formatResult(/** @type {Record<string, unknown>} */ result) {
   let { line, character } = result.startPosition.lineAndCharacter;
   let rawLine = result.rawLines.split('\n')[line];
   let pointer = '-'.repeat(character) + '^';

@@ -1,6 +1,13 @@
 import compileModule from '../../../utils/compileModule';
 import pkg from 'postcss/package.json';
 
+/**
+ * @typedef {{
+ *   transpile: (code: string) => string,
+ *   postcss: import('postcss').Postcss,
+ * }} PostCSSTransformerModule
+ */
+
 const ID = 'postcss';
 
 export default {
@@ -11,13 +18,13 @@ export default {
 
   defaultParserID: 'postcss',
 
-  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
     require(['../../../transpilers/babel', 'postcss'], (transpile, postcss) => {
       callback({ transpile: transpile.default, postcss });
     });
   },
 
-  transform(/** @type {DynModule} */ { transpile, postcss }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, Function>} */ { transpile, postcss }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile( transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

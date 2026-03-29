@@ -1,6 +1,18 @@
 import defaultParserInterface from './utils/defaultCSSParserInterface';
 import pkg from 'postcss/package.json';
 
+/**
+ * @typedef {{
+ *   'built-in': import('postcss').Parser,
+ *   scss: import('postcss').Parser,
+ *   less: import('postcss').Parser,
+ *   'safe-parser': import('postcss').Parser,
+ *   [key: string]: import('postcss').Parser,
+ * }} PostCSSParsers
+ *
+ * @typedef {import('postcss').ChildNode} PostCSSNode
+ */
+
 const ID = 'postcss';
 
 export default {
@@ -12,8 +24,8 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['source']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
-    require(['postcss/lib/parse', 'postcss-scss/lib/scss-parse', 'postcss-less/lib/', 'postcss-safe-parser'], (builtIn, scss, less, safe) => {
+  loadParser(/** @type {(realParser: PostCSSParsers) => void} */ callback) {
+    require(['postcss/lib/parse', 'postcss-scss/lib/scss-parse', 'postcss-less/lib/', 'postcss-safe-parser'], (/** @type {import('postcss').Parser} */ builtIn, /** @type {import('postcss').Parser} */ scss, /** @type {{parse: import('postcss').Parser}} */ less, /** @type {import('postcss').Parser} */ safe) => {
       callback({
         'built-in': builtIn,
         scss,
@@ -23,16 +35,16 @@ export default {
     });
   },
 
-  parse(/** @type {DynModule} */ parsers, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {PostCSSParsers} */ parsers, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return defaultParserInterface.parse.call(
       this,
-      parsers[/** @type {DynModule} */ (options.parser)],
+      parsers[/** @type {string} */ (options.parser)],
       code,
     );
   },
 
   /** @this {import('./utils/defaultCSSParserInterface').LineOffsetsMixin} */
-  nodeToRange(/** @type {DynModule} */ { source: range }) {
+  nodeToRange(/** @type {PostCSSNode} */ { source: range }) {
     if (!range || !range.end) return;
     return [
       this.getOffset(range.start),
@@ -40,7 +52,7 @@ export default {
     ];
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {PostCSSNode} */ node, /** @type {string} */ key) {
     return key === 'nodes';
   },
 

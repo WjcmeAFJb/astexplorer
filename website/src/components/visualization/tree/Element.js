@@ -137,7 +137,7 @@ function useOpenState(openFromParent, isInRange) {
 /**
  * @typedef {Object} ElementProps
  * @property {string} [name]
- * @property {ASTNodeValue} [value]
+ * @property {unknown} [value]
  * @property {boolean} [computed]
  * @property {boolean} [open]
  * @property {number} [level]
@@ -281,7 +281,9 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
       }
     }
 
+    // @ts-expect-error — value is narrowed to object but .length check is runtime duck-typing for array-like
     if (typeof value.length === 'number') {
+      // @ts-expect-error — value.length access after typeof guard
       if (value.length > 0 && isOpen) {
         prefix = '[';
         suffix = ']';
@@ -301,11 +303,13 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
           <span>
             {valueOutput}
             <CompactArrayView
+              // @ts-expect-error — value confirmed array-like by typeof value.length === 'number' guard above
               array={value}
               onClick={onToggleClick}
             />
           </span>;
       }
+      // @ts-expect-error — value.length access after typeof guard
       showToggler = value.length > 0;
     } else {
       if (isOpen) {
@@ -426,7 +430,7 @@ const FunctionElement = React.memo(/** @param {ElementProps} props */ function F
           title="Click to invoke function"
           onClick={() => {
             try {
-              const computedValue = value.call(parent);
+              const computedValue = /** @type {Function} */ (value).call(parent);
               console.log(computedValue); // eslint-disable-line no-console
               setComputedValue(computedValue);
             } catch(err) {

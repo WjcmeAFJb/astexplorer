@@ -12,19 +12,19 @@ export default {
   homepage: pkg.homepage || 'https://github.com/nene/sql-parser-cst',
   locationProps: new Set(['range']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['sql-parser-cst'], callback);
   },
 
-  parse(/** @type {DynModule} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.parse(code, options);
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     return node.type;
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     return node.range;
   },
 

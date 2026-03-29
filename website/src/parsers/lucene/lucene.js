@@ -1,6 +1,12 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'lucene/package.json';
 
+/**
+ * @typedef {{ parse(code: string): object }} LuceneParser
+ * @typedef {{ location?: LuceneLocation, fieldLocation?: LuceneLocation, termLocation?: LuceneLocation, [key: string]: unknown }} LuceneNode
+ * @typedef {{ start: { offset: number }, end: { offset: number } }} LuceneLocation
+ */
+
 const ID = 'lucene';
 
 export default {
@@ -12,15 +18,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['fieldLocation', 'termLocation', 'location']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['lucene'], callback);
   },
 
-  parse(/** @type {DynModule} */ {parse}, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ {parse}, /** @type {string} */ code) {
     return parse(code);
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     let start = [];
     let end = [];
 

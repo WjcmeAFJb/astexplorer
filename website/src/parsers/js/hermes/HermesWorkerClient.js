@@ -1,3 +1,5 @@
+/** @typedef {MessageEvent<{type: string, action: string, value: unknown, requestId: number}>} WorkerMessageEvent */
+
 // Some ESLint rules don't understand the Webpack loader syntax.
 // eslint-disable-next-line require-in-package/require-in-package, import/default
 import HermesWorker from 'worker-loader!./hermes-worker.js';
@@ -11,7 +13,7 @@ export default class HermesWorkerClient {
     this._worker.onmessage = this._handleMessage.bind(this);
   }
 
-  _handleMessage(/** @type {ASTNode} */ e) {
+  _handleMessage(/** @type {WorkerMessageEvent} */ e) {
     const {type, action, value, requestId} = e.data;
     const request = this._requests.get(requestId);
     if (!request) {
@@ -32,7 +34,7 @@ export default class HermesWorkerClient {
     }
   }
 
-  _request(/** @type {ASTNode} */ type, /** @type {ASTNode} */ args) {
+  _request(/** @type {string} */ type, /** @type {unknown[]} */ args) {
     return new Promise((resolve, reject) => {
       const requestId = this._nextRequestId++;
       this._requests.set(requestId, {resolve, reject});

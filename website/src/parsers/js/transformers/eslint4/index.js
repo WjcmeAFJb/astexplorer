@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'babel-eslint',
 
-  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
     require(
       [
         'eslint4/lib/linter',
@@ -22,7 +22,7 @@ export default {
     );
   },
 
-  transform(/** @type {DynModule} */ { eslint, sourceCode, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, Function>} */ { eslint, sourceCode, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     utils.defineRule(eslint, transformCode);
     return utils.runRule(code, eslint, sourceCode);
   },

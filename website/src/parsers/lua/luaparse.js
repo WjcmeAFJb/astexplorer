@@ -2,6 +2,10 @@ import React from 'react';
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'luaparse/package.json';
 
+/**
+ * @typedef {{ parse(code: string, options?: object): object }} LuaparseParser
+ */
+
 const ID = 'luaparse';
 
 export default {
@@ -13,11 +17,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['luaparse'], callback);
   },
 
-  parse(/** @type {DynModule} */ luaparse, /** @type {string} */ code, options={}) {
+  parse(/** @type {Record<string, Function>} */ luaparse, /** @type {string} */ code, options={}) {
     return luaparse.parse(code, options);
   },
 

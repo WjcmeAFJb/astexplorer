@@ -3,7 +3,7 @@ import defaultParserInterface from '../../utils/defaultParserInterface';
 export default {
   ...defaultParserInterface,
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
     return (
       Boolean(node) && node.type === 'Program' ||
       key === 'body' ||

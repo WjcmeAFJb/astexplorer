@@ -5,7 +5,7 @@ const ID = 'traceur';
 const FILENAME = 'astExplorer.js';
 
 class Comment {
-  constructor(/** @type {ASTNode} */ sourceRange) {
+  constructor(/** @type {Record<string, unknown>} */ sourceRange) {
     this.type = 'COMMENT';
     Object.defineProperty(this, 'location', { value: sourceRange });
     this.value = sourceRange.toString();
@@ -21,14 +21,14 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['location']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['exports-loader?traceur!traceur/bin/traceur'], callback);
   },
 
-  parse(/** @type {DynModule} */ traceur, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, Function>} */ traceur, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     let sourceFile = new traceur.syntax.SourceFile(FILENAME, code);
     let errorReporter = new traceur.util.ErrorReporter();
-    errorReporter.reportMessageInternal = (/** @type {ASTNode} */ sourceRange, /** @type {ASTNode} */ message) => {
+    errorReporter.reportMessageInternal = (/** @type {Record<string, unknown>} */ sourceRange, /** @type {Record<string, unknown>} */ message) => {
       if (options.TolerateErrors) {
         return;
       }
@@ -48,23 +48,23 @@ export default {
       errorReporter,
       new traceur.util.Options(options),
     );
-    /** @type {ASTNode} */
+    /** @type {Record<string, unknown>} */
     let comments = [];
-    parser.handleComment = (/** @type {ASTNode} */ sourceRange) => {
+    parser.handleComment = (/** @type {Record<string, unknown>} */ sourceRange) => {
       comments.push(new Comment(sourceRange));
     };
     let ast = options.SourceType === 'Script' ?
       parser.parseScript() :
       parser.parseModule();
-    ast.comments = /** @type {ASTNode} */ comments;
+    ast.comments = /** @type {Record<string, unknown>} */ comments;
     return ast;
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     return node.constructor.name;
   },
 
-  *forEachProperty(/** @type {ASTNode} */ node) {
+  *forEachProperty(/** @type {Record<string, unknown>} */ node) {
     if (node && typeof node === 'object') {
       if ('type' in node) {
         yield {
@@ -87,13 +87,13 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {DynModule} */ { location: loc }) {
+  nodeToRange(/** @type {Record<string, Function>} */ { location: loc }) {
     if (loc) {
       return [loc.start.offset, loc.end.offset];
     }
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
     return (
       key === 'scriptItemList' ||
       key === 'declarations' ||

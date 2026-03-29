@@ -1,6 +1,11 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'cssom/package.json';
 
+/**
+ * @typedef {{parse: (code: string) => CSSOMNode}} CSSOMParser
+ * @typedef {{__starts?: number, __ends?: number, parentRule?: CSSOMNode, cssRules?: CSSOMNode[], style?: Record<string, string>, constructor: Function, [key: string]: unknown}} CSSOMNode
+ */
+
 const ID = 'cssom';
 
 export default {
@@ -13,19 +18,19 @@ export default {
   locationProps: new Set(['__starts', '__ends']),
   typeProps: new Set(),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
-    require(['cssom/lib/parse'], callback);
+  loadParser(/** @type {(realParser: CSSOMParser) => void} */ callback) {
+    require(['cssom/lib/parse'], (/** @type {CSSOMParser} */ m) => callback(m));
   },
 
-  parse(/** @type {DynModule} */ CSSOM, /** @type {string} */ code) {
+  parse(/** @type {CSSOMParser} */ CSSOM, /** @type {string} */ code) {
     return CSSOM.parse(code);
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {CSSOMNode} */ node) {
     return node.constructor.name;
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {CSSOMNode} */ node) {
     let { __starts, __ends } = node;
     if (__ends === undefined && node.parentRule) {
       ({ __ends } = node.parentRule);
@@ -35,7 +40,7 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {CSSOMNode} */ node, /** @type {string} */ key) {
     return key === 'cssRules' || key === 'style';
   },
 

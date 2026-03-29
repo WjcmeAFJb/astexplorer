@@ -39,7 +39,7 @@ function loadTern() {
       'codemirror/addon/tern/tern',
       'acorn',
     ],
-    (_1, _2, acorn) => {
+    (/** @type {unknown} */ _1, /** @type {unknown} */ _2, /** @type {typeof import('acorn')} */ acorn) => {
       global.acorn = acorn;
       require(
         [
@@ -49,7 +49,7 @@ function loadTern() {
           '../defs/jscodeshift.json',
           'tern/defs/ecmascript.json',
         ],
-        (tern, _, infer, jscs_def, ecmascript) => {
+        (/** @type {{registerPlugin: Function, [k: string]: unknown}} */ tern, /** @type {unknown} */ _, /** @type {{cx: Function, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}} */ infer, /** @type {unknown} */ jscs_def, /** @type {unknown} */ ecmascript) => {
           global.tern = tern;
           tern.registerPlugin('transformer', /** @param {{on: Function} & Record<string, unknown>} server */ server => {
             server.on('afterLoad', /** @param {{scope: {props: Record<string, {getFunctionType: Function}>}} & Record<string, unknown>} file */ file => {

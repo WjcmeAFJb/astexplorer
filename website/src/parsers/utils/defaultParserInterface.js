@@ -59,7 +59,7 @@ export default {
   /**
    * Whether or not the provided node should be automatically expanded.
    */
-  opensByDefault(/** @type {ASTNode} */ _node, /** @type {ASTNode} */ _key) {
+  opensByDefault(/** @type {Record<string, unknown>} */ _node, /** @type {Record<string, unknown>} */ _key) {
     return false;
   },
 
@@ -68,14 +68,14 @@ export default {
    * is an array of form `[start, end]`. This is used for highlighting source
    * text and focusing nodes in the tree.
    */
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     return node.range;
   },
 
   /**
    * A more or less human readable name of the node.
    */
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     if (node && typeof node.type !== 'object') {
       return node.type;
     }
@@ -86,7 +86,7 @@ export default {
    * function allows a parser to expose information from a node if the node
    * is not implemented as plain JavaScript object.
    */
-  *forEachProperty(/** @type {ASTNode} */ node) {
+  *forEachProperty(/** @type {Record<string, unknown>} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (this._ignoredProperties.has(prop)) {

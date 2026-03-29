@@ -16,7 +16,7 @@ export default {
   homepage: pkg.repository.url,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['@swc/wasm-web/wasm.js'], (instance) => {
       instance.default(wasm_bg).then(() => {
         callback(instance)
@@ -24,7 +24,7 @@ export default {
     });
   },
 
-  parse(/** @type {DynModule} */ parsers, /** @type {string} */ code, options = {}) {
+  parse(/** @type {Record<string, Function>} */ parsers, /** @type {string} */ code, options = {}) {
     try {
       return parsers.parseSync(code, {...this.getDefaultOptions(), ...options});
     } catch (message) {
@@ -32,13 +32,13 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     if (node && node.span && typeof node.span.start === 'number') {
       return [node.span.start, node.span.end];
     }
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     return node.type;
   },
 

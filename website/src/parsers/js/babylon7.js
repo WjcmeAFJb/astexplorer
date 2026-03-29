@@ -71,7 +71,7 @@ export const parserSettingsConfiguration = {
       title: 'Plugins',
       fields: availablePlugins,
       settings: (/** @type {Record<string, unknown>} */ settings) => settings.plugins || defaultOptions.plugins,
-      values: (/** @type {ASTNode} */ plugins) => availablePlugins.reduce(
+      values: (/** @type {Record<string, unknown>} */ plugins) => availablePlugins.reduce(
         // @ts-expect-error — indexing dynamic object
         (obj, name) => ((obj[name] = plugins.indexOf(name) > -1), obj),
         {},
@@ -117,16 +117,16 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['babylon7'], callback);
   },
 
-  parse(/** @type {DynModule} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, Function>} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     options = {...options};
     // Older versions didn't have the pipelineOptions setting, but
     // only a pipelineProposal string option.
-    const { pipelineOptions = {proposal: options.pipelineProposal}, decoratorOptions, typescriptOptions } = /** @type {DynModule} */ (options);
-    options.plugins = /** @type {DynModule[]} */ (options.plugins || []).map((/** @type {ASTNode} */ plugin) => {
+    const { pipelineOptions = {proposal: options.pipelineProposal}, decoratorOptions, typescriptOptions } = /** @type {Record<string, Function>} */ (options);
+    options.plugins = /** @type {unknown[]} */ (options.plugins || []).map((/** @type {Record<string, unknown>} */ plugin) => {
       switch (plugin) {
         case 'decorators':
           return ['decorators', decoratorOptions];
@@ -144,7 +144,7 @@ export default {
     return babylon.parse(code, options);
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -152,7 +152,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

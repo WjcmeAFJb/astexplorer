@@ -15,12 +15,12 @@ export default {
   _ignoredProperties: new Set(['_type']),
   locationProps: new Set(['span']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['astexplorer-syn'], callback);
   },
 
   /** @this {LineOffsetsMixin} */
-  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
     this.lineOffsets = [];
     let index = 0;
     do {
@@ -29,12 +29,12 @@ export default {
     return parser.parseFile(code);
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     return node._type;
   },
 
   /** @this {LineOffsetsMixin} */
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     if (node.span) {
       return [node.span.start, node.span.end].map(
         ({ line, column }) => this.lineOffsets[line - 1] + column,

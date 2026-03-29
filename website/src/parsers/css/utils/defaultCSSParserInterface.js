@@ -6,16 +6,20 @@ import defaultParserInterface from '../../utils/defaultParserInterface';
  * @property {(pos: {line: number, column: number}) => number} getOffset
  */
 
+/**
+ * @typedef {{line: number, column: number}} CSSPosition
+ */
+
 export default {
   ...defaultParserInterface,
 
   /** @this {LineOffsetsMixin} */
-  getOffset(/** @type {DynModule} */ { line, column }) {
+  getOffset(/** @type {CSSPosition} */ { line, column }) {
     return this.lineOffsets[line - 1] + column - 1;
   },
 
   /** @this {LineOffsetsMixin} */
-  parse(/** @type {DynModule} */ parseCSS, /** @type {string} */ code) {
+  parse(/** @type {(code: string) => object} */ parseCSS, /** @type {string} */ code) {
     this.lineOffsets = [];
     let index = 0;
     do {

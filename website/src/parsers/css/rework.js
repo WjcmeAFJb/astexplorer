@@ -1,6 +1,17 @@
 import defaultParserInterface from './utils/defaultCSSParserInterface';
 import pkg from 'css/package.json';
 
+/**
+ * @typedef {(code: string) => ReworkNode} ReworkParse
+ *
+ * @typedef {{
+ *   type?: string,
+ *   position?: { start: {line: number, column: number}, end: {line: number, column: number} },
+ *   rules?: ReworkNode[],
+ *   [key: string]: unknown,
+ * }} ReworkNode
+ */
+
 const ID = 'rework';
 
 export default {
@@ -12,17 +23,17 @@ export default {
   homepage: pkg.homepage || 'https://github.com/reworkcss/rework',
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
-    require(['css/lib/parse'], callback);
+  loadParser(/** @type {(realParser: ReworkParse) => void} */ callback) {
+    require(['css/lib/parse'], (/** @type {ReworkParse} */ m) => callback(m));
   },
 
   /** @this {import('./utils/defaultCSSParserInterface').LineOffsetsMixin} */
-  nodeToRange(/** @type {DynModule} */ { position: range }) {
+  nodeToRange(/** @type {ReworkNode} */ { position: range }) {
     if (!range) return;
     return [range.start, range.end].map(pos => this.getOffset(pos));
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {ReworkNode} */ node, /** @type {string} */ key) {
     return key === 'rules';
   },
 

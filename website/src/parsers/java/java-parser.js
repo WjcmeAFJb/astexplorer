@@ -1,10 +1,15 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'java-parser/package.json';
 
+/**
+ * @typedef {typeof import('java-parser')} JavaParserModule
+ * @typedef {{ name?: string, location?: { startOffset: number, endOffset: number }, tokenType?: unknown, [key: string]: unknown }} JavaNode
+ */
+
 const ID = 'java-parser';
 
 export const parserSettingsConfiguration = {
-  /** @type {ASTNode} */
+  /** @type {string[]} */
   fields: [],
 };
 
@@ -21,11 +26,11 @@ export default {
   locationProps: new Set(['location']),
   typeProps: new Set(['name']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['java-parser'], callback);
   },
 
-  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
     return parser.parse(code);
   },
 
@@ -35,11 +40,11 @@ export default {
     return {};
   },
 
-  getNodeName(/** @type {DynModule} */ { name }) {
+  getNodeName(/** @type {Record<string, Function>} */ { name }) {
     return name;
   },
 
-  nodeToRange(/** @type {DynModule} */ { location }) {
+  nodeToRange(/** @type {Record<string, Function>} */ { location }) {
     if (!location) {
       return;
     }

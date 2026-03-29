@@ -1,6 +1,20 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'css-tree/package.json';
 
+/**
+ * @typedef {{
+ *   parse: (code: string, options?: Record<string, unknown>) => object,
+ *   toPlainObject: (ast: object) => CSSTreeNode,
+ * }} CSSTreeModule
+ *
+ * @typedef {{
+ *   type?: string,
+ *   loc?: { start: { offset: number, line: number, column: number }, end: { offset: number, line: number, column: number } },
+ *   children?: CSSTreeNode[],
+ *   [key: string]: unknown,
+ * }} CSSTreeNode
+ */
+
 const ID = 'csstree';
 
 export default {
@@ -12,24 +26,24 @@ export default {
   homepage: pkg.homepage || 'https://github.com/csstree/csstree',
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
-    require(['css-tree'], callback);
+  loadParser(/** @type {(realParser: CSSTreeModule) => void} */ callback) {
+    require(['css-tree'], (/** @type {CSSTreeModule} */ m) => callback(m));
   },
 
-  parse(/** @type {DynModule} */ csstree, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {CSSTreeModule} */ csstree, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return csstree.toPlainObject(csstree.parse(code, {
       positions: true,
       ...options,
     }));
   },
 
-  nodeToRange(/** @type {DynModule} */ { loc }) {
+  nodeToRange(/** @type {CSSTreeNode} */ { loc }) {
     if (loc && loc.start && loc.end) {
       return [loc.start.offset, loc.end.offset];
     }
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {CSSTreeNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 

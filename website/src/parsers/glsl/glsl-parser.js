@@ -1,6 +1,18 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'glsl-parser/package.json';
 
+/**
+ * @typedef {{ tokenize: (code: string) => unknown[], parse: (tokens: unknown[]) => GlslNode }} GlslParserModule
+ *
+ * @typedef {{
+ *   type?: string,
+ *   token?: { position?: number, preceding?: Array<{data?: string, [k: string]: unknown}>, [k: string]: unknown },
+ *   children?: GlslNode[],
+ *   loc?: { start: number, end: number },
+ *   [key: string]: unknown,
+ * }} GlslNode
+ */
+
 const ID = 'glsl-parser';
 
 export default {
@@ -17,32 +29,32 @@ export default {
     'stage', // same
   ]),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: GlslParserModule) => void} */ callback) {
     require(['glsl-tokenizer/string', 'glsl-parser/direct'], (
-      tokenize,
-      parse,
+      /** @type {GlslParserModule["tokenize"]} */ tokenize,
+      /** @type {GlslParserModule["parse"]} */ parse,
     ) => {
       callback({ tokenize, parse });
     });
   },
 
-  parse(/** @type {DynModule} */ { tokenize, parse }, /** @type {string} */ code) {
+  parse(/** @type {GlslParserModule} */ { tokenize, parse }, /** @type {string} */ code) {
     const tokens = tokenize(code);
     const ast = parse(tokens);
     // the parser does not yet provide the "end" so this is a workaround https://github.com/stackgl/glsl-parser/issues/17
-    function decoratePosition(/** @type {ASTNode} */ node, /** @type {ASTNode} */ end) {
+    function decoratePosition(/** @type {GlslNode} */ node, /** @type {number} */ end) {
       node.loc = {
         start: node.token.position || 0,
         end,
       };
-      node.children.forEach((/** @type {ASTNode} */ child, /** @type {ASTNode} */ i) => {
+      node.children.forEach((/** @type {GlslNode} */ child, /** @type {number} */ i) => {
         const nextSibling = node.children[i + 1];
         decoratePosition(
           child,
           nextSibling && nextSibling.token && 'position' in nextSibling.token
             ? nextSibling.token.position -
                 (nextSibling.token.preceding || [])
-                  .reduce((/** @type {ASTNode} */ s, /** @type {ASTNode} */ n) => s + (n.data || '').length, 0)
+                  .reduce((/** @type {number} */ s, /** @type {{data?: string}} */ n) => s + (n.data || '').length, 0)
             : end,
         );
       });
@@ -51,13 +63,13 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {DynModule} */ { loc }) {
+  nodeToRange(/** @type {GlslNode} */ { loc }) {
     if (loc) {
       return [loc.start, loc.end];
     }
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {GlslNode} */ node, /** @type {string} */ key) {
     return key === 'children' && node.type === '(program)';
   },
 };

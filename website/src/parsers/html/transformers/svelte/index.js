@@ -11,21 +11,21 @@ export default {
 
   defaultParserID: 'svelte',
 
-  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
     require(
       ['svelte/compiler'],
       callback,
     );
   },
 
-  transform(/** @type {DynModule} */ { preprocess }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, Function>} */ { preprocess }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     /** @type {function(): {markup?: Function, script?: Function, style?: Function}} */
     const transform = compileModule(transformCode);
 
     // Identity functions in case of missing transforms
     const _markupIdentity = (/** @type {string} */ content, /** @type {string} */ _filename) => content;
-    const _scriptIdentity = (/** @type {string} */ content, /** @type {ASTNode} */ _attributes, /** @type {string} */ _filename) => content;
-    const _styleIdentity = (/** @type {string} */ content, /** @type {ASTNode} */ _attributes, /** @type {string} */ _filename) => content;
+    const _scriptIdentity = (/** @type {string} */ content, /** @type {Record<string, unknown>} */ _attributes, /** @type {string} */ _filename) => content;
+    const _styleIdentity = (/** @type {string} */ content, /** @type {Record<string, unknown>} */ _attributes, /** @type {string} */ _filename) => content;
 
     // Check if there is a transform
     // If Yes, set the appropriate transform or else use identity functions
@@ -34,17 +34,17 @@ export default {
     const styleTransform = transform().style || _styleIdentity;
 
     const result = preprocess(code, {
-      markup:(/** @type {DynModule} */ { content, _filename}) => {
+      markup:(/** @type {Record<string, Function>} */ { content, _filename}) => {
         return {
           code: markupTransform(content),
         };
       },
-      script: (/** @type {DynModule} */ {content, attributes, _filename}) => {
+      script: (/** @type {Record<string, Function>} */ {content, attributes, _filename}) => {
         return {
           code: scriptTransform(content, attributes),
         };
       },
-      style: (/** @type {DynModule} */ {content, attributes, _filename}) => {
+      style: (/** @type {Record<string, Function>} */ {content, attributes, _filename}) => {
         return {
           code: styleTransform(content, attributes),
         };

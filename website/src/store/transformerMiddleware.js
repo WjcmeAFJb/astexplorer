@@ -19,9 +19,10 @@ async function transform(transformer, transformCode, code) {
   if (!transformer._promise) {
     transformer._promise = new Promise(transformer.loadTransformer);
   }
-  /** @type {DynModule & {version?: string} | undefined} */
+  /** @type {{version?: string, [key: string]: unknown} | undefined} */
   let realTransformer;
   try {
+    // @ts-expect-error — _promise resolves to unknown; narrowed by typedef above
     realTransformer = await transformer._promise;
     let result = await transformer.transform(realTransformer, transformCode, code);
     let map = null;

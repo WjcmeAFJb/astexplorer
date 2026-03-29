@@ -1,6 +1,11 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'yaml/package.json';
 
+/**
+ * @typedef {typeof import('yaml')} YamlModule
+ * @typedef {{ range?: [number, number], type?: string, key?: YamlNode | null, value?: YamlNode | null, [key: string]: unknown }} YamlNode
+ */
+
 const ID = 'yaml';
 
 export default {
@@ -12,11 +17,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['yaml'], callback);
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     if (node.range) {
       return node.range;
     }
@@ -31,7 +36,7 @@ export default {
     }
   },
 
-  parse(/** @type {DynModule} */ { parseAllDocuments }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, Function>} */ { parseAllDocuments }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parseAllDocuments(code, options);
   },
 

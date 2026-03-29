@@ -133,7 +133,7 @@ export default class Editor extends React.Component {
     this._bindCMHandler('blur', /** @param {CodeMirror.Editor & {doc: CodeMirror.Doc, display: {maxLineLength: number}}} instance */ instance => {
       if (!this.props.enableFormatting) return;
 
-      require(['prettier/standalone', 'prettier/parser-babel'], (prettier, babel) => {
+      require(['prettier/standalone', 'prettier/parser-babel'], (/** @type {{format: (code: string, options: Record<string, unknown>) => string}} */ prettier, /** @type {unknown} */ babel) => {
         const currValue = instance.doc.getValue();
         const options = Object.assign({},
           defaultPrettierOptions,

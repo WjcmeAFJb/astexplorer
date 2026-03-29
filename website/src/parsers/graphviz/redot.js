@@ -1,6 +1,11 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'redot/package.json';
 
+/**
+ * @typedef {((options?: object) => { parse(code: string): RedotNode }) & Record<string, unknown>} RedotParser
+ * @typedef {{ position?: { start: { offset: number }, end: { offset: number } }, children?: RedotNode[], [key: string]: unknown }} RedotNode
+ */
+
 const ID = 'redot';
 
 export default {
@@ -12,21 +17,21 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['redot'], callback);
   },
 
-  parse(/** @type {DynModule} */ redot, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ redot, /** @type {string} */ code) {
     return redot().parse(code);
   },
 
-  nodeToRange(/** @type {DynModule} */ { position }) {
+  nodeToRange(/** @type {Record<string, Function>} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 };

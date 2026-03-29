@@ -10,7 +10,7 @@ export default {
 
   defaultParserID: 'babylon7',
 
-  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
     require([
       '../../../transpilers/babel',
       'babel7',
@@ -19,7 +19,7 @@ export default {
     ], (transpile, babel, recast, macro) => callback({ transpile: transpile.default, babel, recast, macro}));
   },
 
-  transform(/** @type {DynModule} */ { transpile, babel, recast, macro}, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, Function>} */ { transpile, babel, recast, macro}, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

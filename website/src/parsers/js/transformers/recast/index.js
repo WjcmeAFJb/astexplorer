@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'recast',
 
-  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
     require(
       [
         '../../../transpilers/babel',
@@ -41,7 +41,7 @@ export default {
   },
 
   transform(
-    /** @type {DynModule} */ { transpile, recast, parsers },
+    /** @type {Record<string, Function>} */ { transpile, recast, parsers },
     /** @type {string} */ transformCode,
     /** @type {string} */ code,
   ) {

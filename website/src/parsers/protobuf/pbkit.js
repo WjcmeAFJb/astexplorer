@@ -1,6 +1,11 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'pbkit/package.json';
 
+/**
+ * @typedef {{ parse(code: string): { ast: object } }} PbkitParser
+ * @typedef {{ start: number, end: number, type?: string, statements?: object[], [key: string]: unknown }} PbkitNode
+ */
+
 const ID = 'pbkit';
 
 export default {
@@ -12,20 +17,20 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['type']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['pbkit/core/parser/proto'], callback);
   },
 
-  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
     return parser.parse(code).ast;
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     const { start, end } = node;
     return [start, end];
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
     if (key === 'statements') {
       return true;
     }

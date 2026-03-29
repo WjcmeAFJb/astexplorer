@@ -1,6 +1,11 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from '@humanwhocodes/momoa/package.json';
 
+/**
+ * @typedef {{ parse(code: string, options?: Record<string, unknown>): MomoaNode }} MomoaParser
+ * @typedef {{ loc?: { start: { offset: number }, end: { offset: number } }, [key: string]: unknown }} MomoaNode
+ */
+
 const ID = 'momoa';
 
 export default {
@@ -12,15 +17,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['@humanwhocodes/momoa'], callback);
   },
 
-  parse(/** @type {DynModule} */ momoa, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, Function>} */ momoa, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return momoa.parse(code, options);
   },
 
-  nodeToRange(/** @type {DynModule} */ {loc}) {
+  nodeToRange(/** @type {Record<string, Function>} */ {loc}) {
     if (loc) {
       return [
         loc.start.offset,

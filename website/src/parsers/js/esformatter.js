@@ -13,17 +13,17 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc', 'start', 'end', 'range']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['esformatter-parser'], (parser) => {
       callback(parser);
     });
   },
 
-  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
     return parser.parse(code);
   },
 
-  *forEachProperty(/** @type {ASTNode} */ node) {
+  *forEachProperty(/** @type {Record<string, unknown>} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (this._ignoredProperties.has(prop)) {

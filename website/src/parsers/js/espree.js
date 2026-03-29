@@ -13,15 +13,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['espree'], callback);
   },
 
-  parse(/** @type {DynModule} */ espree, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Record<string, Function>} */ espree, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return espree.parse(code, options);
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -51,7 +51,7 @@ export default {
 
     return {
       fields: [
-        ['ecmaVersion', ['latest', 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], (/** @type {ASTNode} */ x) => x === 'latest' ? x : Number(x)],
+        ['ecmaVersion', ['latest', 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], (/** @type {Record<string, unknown>} */ x) => x === 'latest' ? x : Number(x)],
         ['sourceType', ['script', 'module', 'commonjs']],
         'range',
         'loc',

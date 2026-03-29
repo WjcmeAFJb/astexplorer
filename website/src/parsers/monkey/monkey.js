@@ -2,6 +2,11 @@ import pkg from '@gengjiawen/monkey-wasm/package.json';
 
 import defaultParserInterface from '../utils/defaultParserInterface'
 
+/**
+ * @typedef {{ parse(code: string): string }} MonkeyParser
+ * @typedef {{ type?: string, span?: { start: number, end: number }, [key: string]: unknown }} MonkeyNode
+ */
+
 const ID = 'monkey'
 
 export default {
@@ -13,11 +18,11 @@ export default {
   homepage: 'https://monkeylang.org/',
   locationProps: new Set(['span']),
 
-  async loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  async loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['@gengjiawen/monkey-wasm/monkey_wasm.js'], callback);
   },
 
-  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
     try {
       return JSON.parse(parser.parse(code));
     } catch (message) {
@@ -26,11 +31,11 @@ export default {
     }
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     return node.type
   },
 
-  nodeToRange(/** @type {ASTNode} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     if (node && node.span && typeof node.span.start === 'number') {
       return [node.span.start, node.span.end];
     }

@@ -1,6 +1,11 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'intl-messageformat-parser/package.json';
 
+/**
+ * @typedef {typeof import('intl-messageformat-parser')} IntlMFParserModule
+ * @typedef {import('intl-messageformat-parser').MessageFormatElement & { location?: { start: { offset: number }, end: { offset: number } } }} IntlMFNode
+ */
+
 const ID = 'intl-messageformat-parser';
 const TYPES = {};
 
@@ -28,7 +33,7 @@ export default {
     pkg.homepage || 'https://formatjs.io/docs/intl-messageformat-parser/',
   locationProps: new Set(['location']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['intl-messageformat-parser'], (all) => {
       Object.keys(all.TYPE).forEach((k) => {
         // @ts-expect-error — indexing dynamic object
@@ -38,7 +43,7 @@ export default {
     });
   },
 
-  parse(/** @type {DynModule} */ parser, /** @type {string} */ code, /** @type {DynModule} */ opts) {
+  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code, /** @type {Record<string, Function>} */ opts) {
     return parser.parse(code, opts);
   },
 
@@ -50,12 +55,12 @@ export default {
     return defaultOptions;
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     // @ts-expect-error — indexing dynamic object
     return node.type != null && TYPES[node.type];
   },
 
-  nodeToRange(/** @type {DynModule} */ { location }) {
+  nodeToRange(/** @type {Record<string, Function>} */ { location }) {
     if (location && location.start && location.end) {
       return [location.start.offset, location.end.offset];
     }

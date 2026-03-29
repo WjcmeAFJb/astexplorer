@@ -13,14 +13,14 @@ export default {
 
   defaultParserID: 'typescript',
 
-  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
     require(['../../../transpilers/typescript', 'typescript'], (
       transpile,
       typescript,
     ) => callback({ transpile: transpile.default, ts: typescript }));
   },
 
-  transform(/** @type {DynModule} */ { transpile, ts }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, Function>} */ { transpile, ts }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     // basic scaffolding to get a compiled javascript module from the user provided code
     transformCode = transpile(transformCode);
     const mod = compileModule(
@@ -50,10 +50,10 @@ export default {
           true,
         );
       },
-      /** @returns {ASTNode} */
+      /** @returns {Record<string, unknown>} */
       readFile: () => null,
       useCaseSensitiveFileNames: () => true,
-      /** @returns {ASTNode} */
+      /** @returns {Record<string, unknown>} */
       writeFile: () => null,
     };
 

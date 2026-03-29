@@ -6,7 +6,7 @@ import React from 'react';
 /** @type {(v: string) => string | number} */
 const identity = v => v;
 
-function valuesFromArray(/** @type {DynModule} */ settings) {
+function valuesFromArray(/** @type {Record<string, Function>} */ settings) {
   return settings.reduce(
     (/** @type {Record<string, unknown>} */ obj, /** @type {string} */ name) => (
       (obj[name] = settings.indexOf(name) > -1),
@@ -16,18 +16,18 @@ function valuesFromArray(/** @type {DynModule} */ settings) {
   );
 }
 
-function getValuesFromSettings(/** @type {DynModule} */ settings) {
+function getValuesFromSettings(/** @type {Record<string, Function>} */ settings) {
   if (Array.isArray(settings)) {
     return valuesFromArray(settings);
   }
   return settings;
 }
 
-function defaultUpdater(/** @type {DynModule} */ settings, /** @type {string} */ name, /** @type {ASTNodeValue} */ value) {
+function defaultUpdater(/** @type {Record<string, Function>} */ settings, /** @type {string} */ name, /** @type {unknown} */ value) {
   return {...settings, [name]: value};
 }
 
-function arrayUpdater(/** @type {DynModule} */ settings, /** @type {string} */ name, /** @type {ASTNodeValue} */ value) {
+function arrayUpdater(/** @type {Record<string, Function>} */ settings, /** @type {string} */ name, /** @type {unknown} */ value) {
   settings = new Set(settings);
   if (value) {
     settings.add(name);
@@ -37,7 +37,7 @@ function arrayUpdater(/** @type {DynModule} */ settings, /** @type {string} */ n
   return Array.from(settings);
 }
 
-function getUpdateStrategy(/** @type {DynModule} */ settings) {
+function getUpdateStrategy(/** @type {Record<string, Function>} */ settings) {
   if (Array.isArray(settings)) {
     return arrayUpdater;
   }
@@ -47,8 +47,8 @@ function getUpdateStrategy(/** @type {DynModule} */ settings) {
 /**
  * @param {Object} props
  * @param {SettingsConfiguration} props.settingsConfiguration
- * @param {DynModule} props.parserSettings
- * @param {(settings: DynModule) => void} props.onChange
+ * @param {Record<string, unknown>} props.parserSettings
+ * @param {(settings: Record<string, unknown>) => void} props.onChange
  * @returns {React.ReactElement}
  */
 export default function SettingsRenderer(props) {

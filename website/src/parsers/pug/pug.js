@@ -1,6 +1,11 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'pug-parser/package.json';
 
+/**
+ * @typedef {{ lex(code: string, options: object): object, parse(tokens: object, options: object): object }} PugParser
+ * @typedef {{ type?: string, name?: string, val?: string, buffer?: boolean, mode?: string, expr?: string, call?: boolean, optional?: boolean, block?: PugNode, nodes?: PugNode[], [key: string]: unknown }} PugNode
+ */
+
 const ID = 'pug';
 
 export default {
@@ -13,17 +18,17 @@ export default {
   typeProps: new Set(['type', 'name']),
   locationProps: new Set(['line', 'column']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['pug-lexer', 'pug-parser'], (lex, parse) => {
       callback({ lex, parse });
     });
   },
 
-  parse(/** @type {DynModule} */ { lex, parse }, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ { lex, parse }, /** @type {string} */ code) {
     return parse(lex(code, {}), { src: code });
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
     switch (key) {
       case 'block':
       case 'nodes':
@@ -31,7 +36,7 @@ export default {
     }
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     let { type } = node;
     /* eslint-disable no-fallthrough */
     switch (type) {

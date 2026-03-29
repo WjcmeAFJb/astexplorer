@@ -5,7 +5,7 @@ const ID = 'refmt-ml';
 export default {
   ...config,
   id: ID,
-  parse: function(/** @type {ASTNode} */ parser, /** @type {string} */ code) {
+  parse: function(/** @type {Record<string, unknown>} */ parser, /** @type {string} */ code) {
     return parser.parseOcaml(code);
   },
 };

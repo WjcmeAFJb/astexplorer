@@ -2,6 +2,11 @@ import pkg from 'mathjs/package.json';
 
 import defaultParserInterface from '../utils/defaultParserInterface'
 
+/**
+ * @typedef {{ parse(code: string): MathJSNode }} MathJSParser
+ * @typedef {{ type: string, [key: string]: unknown }} MathJSNode
+ */
+
 const ID = 'mathjs'
 
 export default {
@@ -15,11 +20,11 @@ export default {
 
   defaultParserID: 'mathjs',
 
-  async loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  async loadParser(/** @type {(realParser: Record<string, Function>) => void} */ callback) {
     require(['mathjs'], callback);
   },
 
-  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
+  parse(/** @type {Record<string, Function>} */ parser, /** @type {string} */ code) {
     try {
       return parser.parse(code)
     } catch (message) {
@@ -28,7 +33,7 @@ export default {
     }
   },
 
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Record<string, unknown>} */ node) {
     return node.type
   },
 
@@ -36,7 +41,7 @@ export default {
   // nodeToRange(node) {
   // },
 
-  opensByDefault(/** @type {ASTNode} */ node) {
+  opensByDefault(/** @type {Record<string, unknown>} */ node) {
     return node.type === 'BlockNode'
   },
 }

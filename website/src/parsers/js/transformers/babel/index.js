@@ -12,14 +12,14 @@ export default {
 
   defaultParserID: 'babylon',
 
-  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: Record<string, Function>) => void} */ callback) {
     require(
       ['../../../transpilers/babel', 'babel5'],
       (transpile, babel) => callback({ transpile: transpile.default, babel: babel }),
     );
   },
 
-  transform(/** @type {DynModule} */ { transpile, babel }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {Record<string, Function>} */ { transpile, babel }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

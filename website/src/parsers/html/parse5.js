@@ -1,6 +1,9 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'parse5/package.json';
 
+/** @typedef {{ Parser: new (opts: object) => { parse(code: string): Parse5Node }, TreeAdapters: Record<string, object> }} Parse5Module */
+/** @typedef {{ type?: string, name?: string, nodeName?: string, tagName?: string, sourceCodeLocation?: { startOffset: number, endOffset: number }, children?: Parse5Node[], childNodes?: Parse5Node[], [k: string]: unknown }} Parse5Node */
+
 const ID = 'parse5';
 
 export default {
@@ -13,7 +16,7 @@ export default {
   locationProps: new Set(['sourceCodeLocation']),
   typeProps: new Set(['type', 'name', 'nodeName', 'tagName']),
 
-  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
+  loadParser(/** @type {(realParser: Parse5Module) => void} */ callback) {
     require([
       'parse5/lib/parser',
       'parse5/lib/tree-adapters/default',
@@ -30,7 +33,7 @@ export default {
   },
 
   /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  parse(/** @type {DynModule} */ { Parser, TreeAdapters }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {Parse5Module} */ { Parser, TreeAdapters }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     this.options = options;
     return new Parser({
       treeAdapter: TreeAdapters[this.options.treeAdapter],
@@ -39,7 +42,7 @@ export default {
   },
 
   /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  getNodeName(/** @type {ASTNode} */ node) {
+  getNodeName(/** @type {Parse5Node} */ node) {
     if (this.options.treeAdapter === 'htmlparser2') {
       if (node.type) {
         return node.type + (node.name && node.type !== 'root' ? `(${node.name})` : '');
@@ -49,13 +52,13 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {DynModule} */ { sourceCodeLocation: loc }) {
+  nodeToRange(/** @type {Parse5Node} */ { sourceCodeLocation: loc }) {
     if (loc) {
       return [loc.startOffset, loc.endOffset];
     }
   },
 
-  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {Parse5Node} */ node, /** @type {string} */ key) {
     return key === 'children' || key === 'childNodes';
   },
 
