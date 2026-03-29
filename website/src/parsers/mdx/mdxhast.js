@@ -3,9 +3,9 @@ import pkg from '@mdx-js/mdx/package.json';
 
 const ID = 'mdxhast';
 
-function removeNewlines(/** @type {any} */ node) {
+function removeNewlines(/** @type {{children?: {value?: string}[], [key: string]: unknown}} */ node) {
   if (node.children != null) {
-    node.children = node.children.filter((/** @type {any} */ node) => node.value !== '\n');
+    node.children = node.children.filter((/** @type {{value?: string}} */ node) => node.value !== '\n');
     node.children.forEach(removeNewlines);
   }
 }
@@ -23,13 +23,13 @@ export default {
     require(['@mdx-js/mdx', '@mdx-js/mdx/mdx-ast-to-mdx-hast'], (mdx, mdxAstToMdxHast) => callback({mdx, mdxAstToMdxHast}));
   },
 
-  parse(/** @type {any} */ {mdx, mdxAstToMdxHast}, /** @type {string} */ code) {
+  parse(/** @type {{mdx: {sync: (code: string, options: object) => unknown}, mdxAstToMdxHast: unknown}} */ {mdx, mdxAstToMdxHast}, /** @type {string} */ code) {
     let result;
     mdx.sync(code, {
       hastPlugins: [
         mdxAstToMdxHast,
         () => removeNewlines,
-        () => (/** @type {any} */ tree) => {
+        () => (/** @type {Record<string, unknown>} */ tree) => {
           result = tree;
         },
       ],
@@ -38,13 +38,13 @@ export default {
     return result;
   },
 
-  nodeToRange(/** @type {any} */ { position }) {
+  nodeToRange(/** @type {{position?: {start: {offset: number}, end: {offset: number}}, [key: string]: unknown}} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }
   },
 
-  opensByDefault(/** @type {any} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 };

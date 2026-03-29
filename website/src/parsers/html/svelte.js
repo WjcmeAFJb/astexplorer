@@ -21,7 +21,7 @@ export default {
     return parser.compile(code, options).ast;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{type?: string, name?: string, start?: number, end?: number, [key: string]: unknown}} */ node) {
     if (node.type || node.name) {
       return [node.start, node.end];
     }

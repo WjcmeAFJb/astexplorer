@@ -15,7 +15,7 @@ export default {
     require(['sqlite-parser'], callback);
   },
 
-  parse(/** @type {any} */ sqliteParser, /** @type {string} */ code) {
+  parse(/** @type {(code: string) => Record<string, unknown>} */ sqliteParser, /** @type {string} */ code) {
     return sqliteParser(code);
   },
 

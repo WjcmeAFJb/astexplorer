@@ -5,7 +5,7 @@ const ID = 'traceur';
 const FILENAME = 'astExplorer.js';
 
 class Comment {
-  constructor(/** @type {any} */ sourceRange) {
+  constructor(/** @type {{toString(): string, start: {offset: number, line: number, column: number}, end: {offset: number}}} */ sourceRange) {
     this.type = 'COMMENT';
     Object.defineProperty(this, 'location', { value: sourceRange });
     this.value = sourceRange.toString();
@@ -25,10 +25,10 @@ export default {
     require(['exports-loader?traceur!traceur/bin/traceur'], callback);
   },
 
-  parse(/** @type {any} */ traceur, /** @type {string} */ code, /** @type {any} */ options) {
+  parse(/** @type {{syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: Function}, Options: new (opts: Record<string, unknown>) => unknown}}} */ traceur, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     let sourceFile = new traceur.syntax.SourceFile(FILENAME, code);
     let errorReporter = new traceur.util.ErrorReporter();
-    errorReporter.reportMessageInternal = (/** @type {any} */ sourceRange, /** @type {any} */ message) => {
+    errorReporter.reportMessageInternal = (/** @type {{start: {offset: number, line: number, column: number}, end: {offset: number}, toString(): string}} */ sourceRange, /** @type {string} */ message) => {
       if (options.TolerateErrors) {
         return;
       }
@@ -43,28 +43,28 @@ export default {
       err.columnNumber = start.column;
       throw err;
     };
-    let parser = new traceur.syntax.Parser(
+    let parser = /** @type {{handleComment: Function, parseScript: () => Record<string, unknown>, parseModule: () => Record<string, unknown>}} */ (new traceur.syntax.Parser(
       sourceFile,
       errorReporter,
       new traceur.util.Options(options),
-    );
-    /** @type {any} */
+    ));
+    /** @type {Comment[]} */
     let comments = [];
-    parser.handleComment = (/** @type {any} */ sourceRange) => {
+    parser.handleComment = (/** @type {{toString(): string, start: {offset: number, line: number, column: number}, end: {offset: number}}} */ sourceRange) => {
       comments.push(new Comment(sourceRange));
     };
     let ast = options.SourceType === 'Script' ?
       parser.parseScript() :
       parser.parseModule();
-    ast.comments = /** @type {any} */ comments;
+    ast.comments = comments;
     return ast;
   },
 
-  getNodeName(/** @type {any} */ node) {
+  getNodeName(/** @type {{constructor: {name: string}, [key: string]: unknown}} */ node) {
     return node.constructor.name;
   },
 
-  *forEachProperty(/** @type {any} */ node) {
+  *forEachProperty(/** @type {Record<string, unknown>} */ node) {
     if (node && typeof node === 'object') {
       if ('type' in node) {
         yield {
@@ -87,13 +87,13 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {any} */ { location: loc }) {
+  nodeToRange(/** @type {{location?: {start: {offset: number}, end: {offset: number}}, [key: string]: unknown}} */ { location: loc }) {
     if (loc) {
       return [loc.start.offset, loc.end.offset];
     }
   },
 
-  opensByDefault(/** @type {any} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
     return (
       key === 'scriptItemList' ||
       key === 'declarations' ||
@@ -141,7 +141,7 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(/** @type {any} */ defaultOptions) {
+  _getSettingsConfiguration(/** @type {Record<string, unknown>} */ defaultOptions) {
     return {
       fields :[
         ['SourceType', ['Script', 'Module']],

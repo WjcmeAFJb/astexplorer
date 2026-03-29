@@ -16,7 +16,7 @@ export default {
     require(['posthtml-parser'], callback);
   },
 
-  parse(/** @type {any} */ posthtmlParser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {(code: string, options?: Record<string, unknown>) => Record<string, unknown>} */ posthtmlParser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return posthtmlParser(code, options);
   },
 

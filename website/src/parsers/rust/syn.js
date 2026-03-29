@@ -34,7 +34,7 @@ export default {
   },
 
   /** @this {LineOffsetsMixin} */
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{span?: {start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}} */ node) {
     if (node.span) {
       return [node.span.start, node.span.end].map(
         ({ line, column }) => this.lineOffsets[line - 1] + column,

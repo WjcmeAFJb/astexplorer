@@ -37,7 +37,7 @@ export default {
     return type;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{TYPE?: string, start?: {pos: number, endpos: number}, end?: {pos: number, endpos: number}, pos?: number, endpos?: number, [key: string]: unknown}} */ node) {
     let start, end;
     switch (node.TYPE) {
       case 'Token':

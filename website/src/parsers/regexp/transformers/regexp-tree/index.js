@@ -15,7 +15,7 @@ export default {
     require([
       '../../../transpilers/babel',
       'regexp-tree',
-    ], (/** @type {any} */ transpile, /** @type {any} */ regexpTree) => callback({ transpile: transpile.default, regexpTree }));
+    ], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transform: (code: string, handler: unknown) => {toString: () => string}}} */ regexpTree) => callback({ transpile: transpile.default, regexpTree }));
   },
 
   transform(/** @type {Record<string, any>} */ { transpile, regexpTree }, /** @type {string} */ transformCode, /** @type {string} */ code) {

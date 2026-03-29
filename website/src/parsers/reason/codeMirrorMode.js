@@ -1,4 +1,8 @@
-export default function(/** @type {any} */ CodeMirror) {
+/** @typedef {{next: () => string | null, eat: (ch: string) => string | null, peek: () => string}} CMStream */
+/** @typedef {{longString?: boolean, tokenize?: Function | null | false}} CMState */
+/** @typedef {{defineMIME: Function, registerHelper: Function, defineMode: Function, getMode: Function}} CMCodeMirror */
+
+export default function(/** @type {CMCodeMirror} */ CodeMirror) {
   /* https://github.com/facebook/reason/blob/master/src/reason-parser/reason_lexer.mll#L94-L154 */
   const keywords = (
     'and as assert begin class constraint done downto exception external fun ' +
@@ -15,7 +19,7 @@ export default function(/** @type {any} */ CodeMirror) {
   );
   const builtins = 'true false Error Ok None Some'.split(' ');
 
-  function set(/** @type {any} */ words) {
+  function set(/** @type {string[]} */ words) {
     let obj = {};
     // @ts-expect-error — indexing dynamic object
     for (let i = 0; i < words.length; ++i) obj[words[i]] = true;
@@ -30,7 +34,7 @@ export default function(/** @type {any} */ CodeMirror) {
     builtin: set(builtins),
 
     hooks: {
-      '{': function(/** @type {any} */ stream, /** @type {any} */ state) {
+      '{': function(/** @type {CMStream} */ stream, /** @type {CMState} */ state) {
         if (stream.eat('|')) {
           state.longString = true;
           state.tokenize = tokenLongString;
@@ -39,31 +43,31 @@ export default function(/** @type {any} */ CodeMirror) {
       },
 
       // array open [|
-      '[': function(/** @type {any} */ stream, /** @type {any} */ _state) {
+      '[': function(/** @type {CMStream} */ stream, /** @type {CMState} */ _state) {
         if (stream.eat('|')) {
           return 'operator';
         }
         return null;
       },
       // array close |]
-      '|': function(/** @type {any} */ stream, /** @type {any} */ _state) {
+      '|': function(/** @type {CMStream} */ stream, /** @type {CMState} */ _state) {
         if (stream.eat(']')) {
           return 'operator';
         }
         return 'operator';
       },
 
-      '"': function(/** @type {any} */ stream, /** @type {any} */ state) {
+      '"': function(/** @type {CMStream} */ stream, /** @type {CMState} */ state) {
         state.tokenize = tokenString;
         return state.tokenize(stream, state);
       },
 
-      "'": function(/** @type {any} */ stream, /** @type {any} */ state) {
+      "'": function(/** @type {CMStream} */ stream, /** @type {CMState} */ state) {
         state.tokenize = tokenPolymorphicVar;
         return state.tokenize(stream, state);
       },
 
-      '/': function(/** @type {any} */ stream, /** @type {any} */ state) {
+      '/': function(/** @type {CMStream} */ stream, /** @type {CMState} */ state) {
         if (!stream.eat('*')) return false;
         state.tokenize = tokenNestedComment(1);
         return state.tokenize(stream, state);
@@ -71,7 +75,7 @@ export default function(/** @type {any} */ CodeMirror) {
     },
   });
 
-  function tokenPolymorphicVar(/** @type {any} */ stream, /** @type {any} */ state) {
+  function tokenPolymorphicVar(/** @type {CMStream} */ stream, /** @type {CMState} */ state) {
     /* A char can't have more than 4 characters */
     let count = 0;
     let next; //eslint-disable-line no-unused-vars
@@ -92,7 +96,7 @@ export default function(/** @type {any} */ CodeMirror) {
     return null;
   }
 
-  function tokenString(/** @type {any} */ stream, /** @type {any} */ state) {
+  function tokenString(/** @type {CMStream} */ stream, /** @type {CMState} */ state) {
     let next,
       end = false,
       escaped = false;
@@ -109,8 +113,8 @@ export default function(/** @type {any} */ CodeMirror) {
     return 'string';
   }
 
-  function tokenNestedComment(/** @type {any} */ depth) {
-    return function(/** @type {any} */ stream, /** @type {any} */ state) {
+  function tokenNestedComment(/** @type {number} */ depth) {
+    return function(/** @type {CMStream} */ stream, /** @type {CMState} */ state) {
       let ch;
       while ((ch = stream.next())) {
         if (ch == '*' && stream.eat('/')) {
@@ -130,7 +134,7 @@ export default function(/** @type {any} */ CodeMirror) {
     };
   }
 
-  function tokenLongString(/** @type {any} */ stream, /** @type {any} */ state) {
+  function tokenLongString(/** @type {CMStream} */ stream, /** @type {CMState} */ state) {
     let prev, next;
     while (state.longString && (next = stream.next()) != null) {
       if (prev === '|' && next === '}') state.longString = false;
@@ -150,7 +154,7 @@ export default function(/** @type {any} */ CodeMirror) {
 
   CodeMirror.defineMode(
     'reason',
-    function(/** @type {any} */ conf) {
+    function(/** @type {object} */ conf) {
       return Object.assign(CodeMirror.getMode(conf, 'application/reason'), {
         lineComment: undefined, // reason doesn't have line comments
       });

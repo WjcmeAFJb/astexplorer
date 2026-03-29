@@ -12,7 +12,7 @@ export default {
   homepage: pkg.homepage,
 
   loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['ember-template-recast'], (/** @type {any} */ recast) => callback(recast.parse));
+    require(['ember-template-recast'], (/** @type {{parse: (code: string) => Record<string, unknown>}} */ recast) => callback(recast.parse));
   },
 
   opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {

@@ -36,7 +36,7 @@ export default {
     return regjsparser.parse(pattern, flags, options);
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{range?: [number, number], [key: string]: unknown}} */ node) {
     if (node.range != null) {
       return [node.range[0] + 1, node.range[1] + 1];
     }

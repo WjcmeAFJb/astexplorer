@@ -3,7 +3,7 @@ import pkg from 'shift-parser/package.json';
 
 const ID = 'shift';
 
-/** @type {Record<string, unknown>} */
+/** @type {Map<unknown, {start: {offset: number}, end: {offset: number}}> | undefined} */
 let lastParsedLocations;
 
 export default {
@@ -19,7 +19,7 @@ export default {
     require(['shift-parser'], callback);
   },
 
-  parse(/** @type {any} */ shift, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {{parseModuleWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, parseScriptWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, [key: string]: unknown}} */ shift, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     const parseMethod = options.sourceType === 'module' ?
       'parseModuleWithLocation' :
       'parseScriptWithLocation';
@@ -28,9 +28,9 @@ export default {
     return tree;
   },
 
-  nodeToRange(/** @type {any} */ node) {
-    if (/** @type {any} */ (lastParsedLocations) && /** @type {any} */ (lastParsedLocations).has(node)) {
-      let loc = /** @type {any} */ (lastParsedLocations).get(node);
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
+    if (lastParsedLocations && lastParsedLocations.has(node)) {
+      let loc = lastParsedLocations.get(node);
       return [loc.start.offset, loc.end.offset];
     }
   },

@@ -21,11 +21,11 @@ export default {
     require(['redot'], callback);
   },
 
-  parse(/** @type {any} */ redot, /** @type {string} */ code) {
+  parse(/** @type {RedotParser} */ redot, /** @type {string} */ code) {
     return redot().parse(code);
   },
 
-  nodeToRange(/** @type {any} */ { position }) {
+  nodeToRange(/** @type {RedotNode} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }

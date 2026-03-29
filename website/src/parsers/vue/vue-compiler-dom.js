@@ -21,7 +21,7 @@ export default {
     return parser.parse(code, options);
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{type?: string, name?: string, loc?: {start: {offset: number}, end: {offset: number}}, [key: string]: unknown}} */ node) {
     if (node.type || node.name) {
       return [node.loc.start.offset, node.loc.end.offset];
     }

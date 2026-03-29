@@ -57,7 +57,7 @@ export default {
     return node.type;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{loc?: {range?: {start: number, end: number}}, [key: string]: unknown}} */ node) {
     if (node.loc && node.loc.range) {
       return [node.loc.range.start, node.loc.range.end];
     }

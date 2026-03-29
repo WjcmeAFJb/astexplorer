@@ -245,7 +245,7 @@ function def(/** @type {string | string[]} */ mimes, /** @type {CMMode} */ mode)
   }
 
   for (var i = 0; i < mimes.length; ++i)
-    CodeMirror.defineMIME(mimes[i], /** @type {any} */ (mode));
+    CodeMirror.defineMIME(mimes[i], /** @type {string} */ (mode.name));
 }
 
 def(['x-shader/x-vertex', 'x-shader/x-fragment'], {

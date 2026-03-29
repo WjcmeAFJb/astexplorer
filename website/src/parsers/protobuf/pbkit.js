@@ -25,7 +25,7 @@ export default {
     return parser.parse(code).ast;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
     const { start, end } = node;
     return [start, end];
   },

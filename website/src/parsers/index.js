@@ -5,11 +5,12 @@
 const localRequire = require.context('./', true, /^\.\/(?!utils|transpilers)[^/]+\/(transformers\/([^/]+)\/)?(codeExample\.txt|[^/]+?\.js)$/);
 
 /**
- * @param {{__esModule?: boolean, default?: unknown} & any} module
- * @returns {any}
+ * @template {Record<string, unknown>} T
+ * @param {T & {__esModule?: boolean, default?: T}} module
+ * @returns {T}
  */
 function interopRequire(module) {
-  return module.__esModule ? module.default : module;
+  return /** @type {T} */ (module.__esModule ? module.default : module);
 }
 
 const files =

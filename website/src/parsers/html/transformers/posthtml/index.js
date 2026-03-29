@@ -12,7 +12,7 @@ export default {
   defaultParserID: 'posthtml-parser',
 
   loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
-    require(['../../../transpilers/babel', 'posthtml'], (/** @type {any} */ transpile, /** @type {any} */ posthtml) =>
+    require(['../../../transpilers/babel', 'posthtml'], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {() => {use: (plugin: unknown) => {process: (code: string, opts: object) => {html: string}}}} */ posthtml) =>
       callback({ transpile: transpile.default, posthtml }));
   },
 

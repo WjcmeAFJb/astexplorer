@@ -17,7 +17,7 @@ export default {
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
   loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['@swc/wasm-web/wasm.js'], (/** @type {any} */ instance) => {
+    require(['@swc/wasm-web/wasm.js'], (/** @type {{default: (wasm: string) => Promise<void>, parseSync: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ instance) => {
       instance.default(wasm_bg).then(() => {
         callback(instance)
       });
@@ -32,7 +32,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{span?: {start: number, end: number}, [key: string]: unknown}} */ node) {
     if (node && node.span && typeof node.span.start === 'number') {
       return [node.span.start, node.span.end];
     }

@@ -14,7 +14,7 @@ export default {
   loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
     require(
       ['../../../transpilers/babel', 'ember-template-recast'],
-      (/** @type {any} */ transpile, /** @type {any} */ recast) => callback({ transpile: transpile.default, recast }),
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{parse: (code: string) => Record<string, unknown>, transform: (code: string, plugin: unknown) => {code: string}}} */ recast) => callback({ transpile: transpile.default, recast }),
     );
   },
 

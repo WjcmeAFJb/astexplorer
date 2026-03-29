@@ -31,7 +31,7 @@ export default {
     require(['php-parser'], callback);
   },
 
-  parse(/** @type {any} */ Engine, /** @type {string} */ code) {
+  parse(/** @type {PhpParserEngine} */ Engine, /** @type {string} */ code) {
     const parser = new Engine(defaultOptions);
     return parser.parseCode(code, '');
   },
@@ -40,7 +40,7 @@ export default {
     return node.kind;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {PhpNode} */ node) {
     if (node.loc && node.loc.start && node.loc.end) {
       return [node.loc.start.offset, node.loc.end.offset];
     }

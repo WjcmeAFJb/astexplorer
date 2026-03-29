@@ -14,7 +14,7 @@ export default {
   showInMenu: false,
 
   loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['acorn-to-esprima', 'babel5'], (/** @type {any} */ acornToEsprima, /** @type {any} */ {acorn: {tokTypes}, traverse, parse}) => {
+    require(['acorn-to-esprima', 'babel5'], (/** @type {Record<string, unknown>} */ acornToEsprima, /** @type {{acorn: {tokTypes: unknown}, traverse: unknown, parse: Function}} */ {acorn: {tokTypes}, traverse, parse}) => {
       callback({
         ...acornToEsprima,
         tokTypes,
@@ -31,9 +31,9 @@ export default {
     };
 
     // @ts-expect-error — dynamic third-party API
-    const /** @type {any} */ comments = opts.onComment = [];
+    const /** @type {unknown[]} */ comments = opts.onComment = [];
     // @ts-expect-error — dynamic third-party API
-    const /** @type {any} */ tokens = opts.onToken = [];
+    const /** @type {unknown[]} */ tokens = opts.onToken = [];
 
     let ast = parser.parse(code, opts);
 
@@ -46,7 +46,7 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

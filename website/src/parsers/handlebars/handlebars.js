@@ -12,7 +12,7 @@ export default {
   homepage: pkg.homepage,
 
   loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['handlebars'], (/** @type {any} */ handlebars) => callback(handlebars.parse));
+    require(['handlebars'], (/** @type {{parse: (code: string) => Record<string, unknown>}} */ handlebars) => callback(handlebars.parse));
   },
 
   opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {

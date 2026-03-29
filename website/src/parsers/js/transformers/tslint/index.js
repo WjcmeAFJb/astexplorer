@@ -18,13 +18,13 @@ export default {
       'typescript',
     ],
     (
-      /** @type {any} */ transpile,
-      /** @type {any} */ tslint,
-      /** @type {any} */ typescript,
+      /** @type {{default: (code: string) => string}} */ transpile,
+      /** @type {{Linter: new (opts: object) => {getSourceFile: (name: string, code: string) => unknown, applyRule: (rule: unknown, file: unknown) => TslintFailure[]}}} */ tslint,
+      /** @type {typeof import('typescript')} */ typescript,
     ) => callback({transpile: transpile.default, tslint, typescript}));
   },
 
-  transform(/** @type {any} */ { transpile, tslint, typescript }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, tslint: {Linter: new (opts: object) => {getSourceFile: (name: string, code: string) => unknown, applyRule: (rule: unknown, file: unknown) => TslintFailure[]}}, typescript: typeof import('typescript')}} */ { transpile, tslint, typescript }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,
@@ -35,7 +35,8 @@ export default {
     );
 
     let linter = new tslint.Linter({});
-    let rule = new transform.Rule({});
+    let Rule = /** @type {new (opts: Record<string, unknown>) => unknown} */ (transform.Rule);
+    let rule = new Rule({});
     let sourceFile = linter.getSourceFile('astExplorer.ts', code);
     let ruleFailures = linter.applyRule(rule, sourceFile);
     
@@ -43,13 +44,15 @@ export default {
   },
 };
 
-function formatResults(/** @type {any} */ results) {
+/** @typedef {{startPosition: {lineAndCharacter: {line: number, character: number}}, rawLines: string, failure: string}} TslintFailure */
+
+function formatResults(/** @type {TslintFailure[]} */ results) {
   return results.length === 0
     ? 'Lint rule not fired.'
     : results.map(formatResult).join('').trim();
 }
 
-function formatResult(/** @type {any} */ result) {
+function formatResult(/** @type {TslintFailure} */ result) {
   let { line, character } = result.startPosition.lineAndCharacter;
   let rawLine = result.rawLines.split('\n')[line];
   let pointer = '-'.repeat(character) + '^';

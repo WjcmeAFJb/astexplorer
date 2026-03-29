@@ -18,9 +18,9 @@ export default {
     );
   },
 
-  transform(/** @type {any} */ { preprocess }, /** @type {string} */ transformCode, /** @type {string} */ code) {
-    /** @type {function(): {markup?: Function, script?: Function, style?: Function}} */
-    const transform = /** @type {any} */ (compileModule(transformCode));
+  transform(/** @type {{preprocess: (code: string, plugins: object) => unknown}} */ { preprocess }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+    /** @type {() => {markup?: Function, script?: Function, style?: Function}} */
+    const transform = /** @type {() => {markup?: Function, script?: Function, style?: Function}} */ (compileModule(transformCode));
 
     // Identity functions in case of missing transforms
     const _markupIdentity = (/** @type {string} */ content, /** @type {string} */ _filename) => content;
@@ -34,17 +34,17 @@ export default {
     const styleTransform = transform().style || _styleIdentity;
 
     const result = preprocess(code, {
-      markup:(/** @type {any} */ { content, _filename}) => {
+      markup:(/** @type {{content: string, _filename: string}} */ { content, _filename}) => {
         return {
           code: markupTransform(content),
         };
       },
-      script: (/** @type {any} */ {content, attributes, _filename}) => {
+      script: (/** @type {{content: string, attributes: Record<string, unknown>, _filename: string}} */ {content, attributes, _filename}) => {
         return {
           code: scriptTransform(content, attributes),
         };
       },
-      style: (/** @type {any} */ {content, attributes, _filename}) => {
+      style: (/** @type {{content: string, attributes: Record<string, unknown>, _filename: string}} */ {content, attributes, _filename}) => {
         return {
           code: styleTransform(content, attributes),
         };

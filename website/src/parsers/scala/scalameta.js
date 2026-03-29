@@ -41,7 +41,7 @@ export default {
     return parsed;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{pos?: {start: number, end: number}, [key: string]: unknown}} */ node) {
     if (node.pos) {
       return [node.pos.start, node.pos.end];
     }

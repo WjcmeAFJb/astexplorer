@@ -21,11 +21,11 @@ export default {
     require(['json-to-ast'], callback);
   },
 
-  parse(/** @type {any} */ jsonToAst, /** @type {string} */ code) {
+  parse(/** @type {JsonToAstParser} */ jsonToAst, /** @type {string} */ code) {
     return jsonToAst(code);
   },
 
-  nodeToRange(/** @type {any} */ {loc}) {
+  nodeToRange(/** @type {JsonToAstNode} */ {loc}) {
     if (loc) {
       return [
         loc.start.offset,

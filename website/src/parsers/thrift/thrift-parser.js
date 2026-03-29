@@ -25,7 +25,7 @@ export default {
     return parse(code);
   },
 
-  getNodeName(/** @type {any} */ node) {
+  getNodeName(/** @type {ThriftNode} */ node) {
     return node.type;
   },
 
@@ -35,7 +35,7 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {any} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {ThriftNode | string} */ node, /** @type {string} */ key) {
     return node === 'ThriftDocument' || key === 'body';
   },
 };

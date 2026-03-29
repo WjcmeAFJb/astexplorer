@@ -19,7 +19,7 @@ export default {
   defaultParserID: 'postcss',
 
   loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
-    require(['../../../transpilers/babel', 'postcss'], (/** @type {any} */ transpile, /** @type {any} */ postcss) => {
+    require(['../../../transpilers/babel', 'postcss'], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {typeof import('postcss')} */ postcss) => {
       callback({ transpile: transpile.default, postcss });
     });
   },

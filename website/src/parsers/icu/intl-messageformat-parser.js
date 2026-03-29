@@ -34,7 +34,7 @@ export default {
   locationProps: new Set(['location']),
 
   loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['intl-messageformat-parser'], (/** @type {any} */ all) => {
+    require(['intl-messageformat-parser'], (/** @type {IntlMFParserModule} */ all) => {
       Object.keys(all.TYPE).forEach((k) => {
         // @ts-expect-error — indexing dynamic object
         TYPES[k] = all.TYPE[k];

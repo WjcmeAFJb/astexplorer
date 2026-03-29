@@ -98,7 +98,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{start?: number, end?: number, range?: [number, number], [key: string]: unknown}} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }

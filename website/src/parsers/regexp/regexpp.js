@@ -29,7 +29,7 @@ export default {
     return regexpp.parseRegExpLiteral(code, options);
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
     if (typeof node.start === 'number' && typeof node.end === 'number') {
       return [node.start, node.end];
     }

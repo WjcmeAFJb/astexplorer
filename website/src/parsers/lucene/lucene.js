@@ -26,7 +26,7 @@ export default {
     return parse(code);
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {LuceneNode} */ node) {
     let start = [];
     let end = [];
 

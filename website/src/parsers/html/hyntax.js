@@ -9,9 +9,11 @@ import {
   NODE_STYLE,
 } from 'hyntax/lib-es5/constants/ast-nodes';
 
+/** @typedef {{nodeType?: string, content: {name?: string, value?: {startPosition: number, endPosition: number}, start?: {startPosition: number, endPosition: number}, end?: {startPosition: number, endPosition: number}, openStart?: {startPosition: number, endPosition: number}, openEnd?: {startPosition: number, endPosition: number}, close?: {startPosition: number, endPosition: number}}, [key: string]: unknown}} HyntaxNode */
+
 const ID = 'hyntax';
 
-function getTagEndPosition (/** @type {any} */ node) {
+function getTagEndPosition (/** @type {HyntaxNode} */ node) {
   if (node.content.close) {
     return node.content.close.endPosition + 1
   }
@@ -23,14 +25,14 @@ function getTagEndPosition (/** @type {any} */ node) {
   return node.content.openStart.endPosition + 1
 }
 
-function getDoctypeRange (/** @type {any} */ node) {
+function getDoctypeRange (/** @type {HyntaxNode} */ node) {
   return [
     node.content.start.startPosition,
     node.content.end.endPosition + 1,
   ];
 }
 
-function getTagRange (/** @type {any} */ node) {
+function getTagRange (/** @type {HyntaxNode} */ node) {
   const endPosition = getTagEndPosition(node);
 
   return [
@@ -39,14 +41,14 @@ function getTagRange (/** @type {any} */ node) {
   ];
 }
 
-function getTextRange (/** @type {any} */ node) {
+function getTextRange (/** @type {HyntaxNode} */ node) {
   return [
     node.content.value.startPosition,
     node.content.value.endPosition + 1,
   ];
 }
 
-function getCommentRange (/** @type {any} */ node) {
+function getCommentRange (/** @type {HyntaxNode} */ node) {
   return [
     node.content.start.startPosition,
     node.content.end.endPosition + 1,
@@ -78,7 +80,7 @@ export default {
     return ast;
   },
 
-  nodeToRange (/** @type {any} */ node) {
+  nodeToRange (/** @type {HyntaxNode} */ node) {
     if (node.nodeType !== undefined) {
       if (node.nodeType === NODE_DOCTYPE) {
         return getDoctypeRange(node);
@@ -102,7 +104,7 @@ export default {
     }
   },
 
-  opensByDefault (/** @type {any} */ node, /** @type {string} */ key) {
+  opensByDefault (/** @type {HyntaxNode} */ node, /** @type {string} */ key) {
     return [
       'content',
       'children',
@@ -110,7 +112,7 @@ export default {
     ].includes(key)
   },
 
-  getNodeName (/** @type {any} */ node) {
+  getNodeName (/** @type {HyntaxNode} */ node) {
     if (node.nodeType === undefined) {
       return;
     }

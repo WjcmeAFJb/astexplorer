@@ -23,7 +23,7 @@ export default {
         'recast/parsers/flow',
         'recast/parsers/typescript',
       ],
-      (/** @type {any} */ transpile, /** @type {any} */ recast, /** @type {any} */ acorn, /** @type {any} */ babel, /** @type {any} */ babylon, /** @type {any} */ esprima, /** @type {any} */ flow, /** @type {any} */ typescript) => {
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {Record<string, unknown>} */ recast, /** @type {object} */ acorn, /** @type {object} */ babel, /** @type {object} */ babylon, /** @type {object} */ esprima, /** @type {object} */ flow, /** @type {object} */ typescript) => {
         callback({
           transpile: transpile.default,
           recast,

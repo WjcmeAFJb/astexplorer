@@ -12,7 +12,7 @@ export default {
   homepage: pkg.homepage || 'https://github.com/glimmerjs/glimmer-vm',
 
   loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['@glimmer/syntax'], (/** @type {any} */ glimmer) => callback(glimmer.preprocess));
+    require(['@glimmer/syntax'], (/** @type {{preprocess: (code: string, options?: object) => Record<string, unknown>}} */ glimmer) => callback(glimmer.preprocess));
   },
 
   opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {

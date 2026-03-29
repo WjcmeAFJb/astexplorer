@@ -16,7 +16,7 @@ export default {
       'eslint8/lib/linter',
       'eslint8/lib/source-code',
       '../../utils/eslint4Utils',
-    ], (/** @type {any} */ Linter, /** @type {any} */ sourceCode, /** @type {any} */ utils) =>
+    ], (/** @type {{Linter: new () => Record<string, unknown>}} */ Linter, /** @type {new (code: string, ast: unknown) => unknown} */ sourceCode, /** @type {typeof import('../../utils/eslint4Utils')} */ utils) =>
       callback({ eslint: new Linter.Linter(), sourceCode, utils }));
   },
 

@@ -26,7 +26,7 @@ export default {
     return regexpTree.parse(code);
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{loc?: {start: number, end: number}, [key: string]: unknown}} */ node) {
     if (node.loc != null) {
       return [node.loc.start, node.loc.end];
     }

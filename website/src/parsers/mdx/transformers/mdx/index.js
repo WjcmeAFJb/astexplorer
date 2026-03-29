@@ -17,7 +17,7 @@ export default {
       '@mdx-js/mdx',
       'prettier/standalone',
       'prettier/parser-babel',
-    ], (/** @type {any} */ transpile, /** @type {any} */ mdx, /** @type {any} */ prettier, /** @type {any} */ babel) => {
+    ], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{sync: (code: string, options: object) => string}} */ mdx, /** @type {{format: (code: string, options: object) => string}} */ prettier, /** @type {object} */ babel) => {
       callback({ transpile: transpile.default, mdx, prettier, babel });
     });
   },

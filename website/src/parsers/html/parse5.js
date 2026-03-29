@@ -21,7 +21,7 @@ export default {
       'parse5/lib/parser',
       'parse5/lib/tree-adapters/default',
       'parse5-htmlparser2-tree-adapter',
-    ], (/** @type {any} */ Parser, /** @type {any} */ defaultAdapter, /** @type {any} */ htmlparser2Adapter) => {
+    ], (/** @type {new (opts: object) => {parse: (code: string) => Parse5Node}} */ Parser, /** @type {object} */ defaultAdapter, /** @type {object} */ htmlparser2Adapter) => {
       callback({
         Parser,
         TreeAdapters: {
@@ -33,7 +33,7 @@ export default {
   },
 
   /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  parse(/** @type {Parse5Module} */ { Parser, TreeAdapters }, /** @type {string} */ code, /** @type {any} */ options) {
+  parse(/** @type {Parse5Module} */ { Parser, TreeAdapters }, /** @type {string} */ code, /** @type {{treeAdapter?: string, [k: string]: unknown}} */ options) {
     this.options = options;
     return new Parser({
       treeAdapter: TreeAdapters[this.options.treeAdapter],

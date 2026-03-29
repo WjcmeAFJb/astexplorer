@@ -15,7 +15,7 @@ export default {
   loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
     require(
       ['../../../transpilers/babel', 'prettier/standalone', 'prettier/parser-babel'],
-      (/** @type {any} */ transpile, /** @type {any} */ prettier, /** @type {any} */ babel) => callback({ transpile: transpile.default, prettier, babel }),
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{format: (code: string, options: object) => string}} */ prettier, /** @type {object} */ babel) => callback({ transpile: transpile.default, prettier, babel }),
     );
   },
 

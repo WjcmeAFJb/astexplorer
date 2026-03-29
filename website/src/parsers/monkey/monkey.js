@@ -35,7 +35,7 @@ export default {
     return node.type
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{span?: {start: number, end: number}, [key: string]: unknown}} */ node) {
     if (node && node.span && typeof node.span.start === 'number') {
       return [node.span.start, node.span.end];
     }

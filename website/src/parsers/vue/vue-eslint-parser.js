@@ -24,7 +24,7 @@ export default {
     return parser.parse(code, options);
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{type?: string, name?: string, range?: [number, number], [key: string]: unknown}} */ node) {
     if (node.type || node.name) {
       return node.range;
     }

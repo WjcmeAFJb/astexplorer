@@ -2,16 +2,18 @@ import compileModule from '../../utils/compileModule';
 import transpile from '../../transpilers/babel';
 import { parseNoPatch } from 'babel-eslint';
 
-export function formatResults(/** @type {any} */ results, /** @type {string} */ code) {
+/** @typedef {{message: string, line: number, column: number, source?: string}} EslintResult */
+
+export function formatResults(/** @type {EslintResult[]} */ results, /** @type {string} */ code) {
   return results.length === 0
     ? '// Lint rule not fired.'
     : results
-        .map((/** @type {any} */ result) => formatResult(result, code))
+        .map((/** @type {EslintResult} */ result) => formatResult(result, code))
         .join('')
         .trim();
 }
 
-export function formatResult(/** @type {any} */ result, /** @type {string} */ code) {
+export function formatResult(/** @type {EslintResult} */ result, /** @type {string} */ code) {
   var pointer = '-'.repeat(result.column - 1) + '^';
   return `
 // ${result.message} (at ${result.line}:${result.column})
@@ -19,14 +21,14 @@ export function formatResult(/** @type {any} */ result, /** @type {string} */ co
 // ${pointer}
 `;
 }
-function getSourceFromResult(/** @type {any} */ result, /** @type {string} */ code) {
+function getSourceFromResult(/** @type {EslintResult} */ result, /** @type {string} */ code) {
   if (result.source) {
     return result.source;
   }
   let linesOfCode = code.split('\n');
   return linesOfCode[result.line - 1];
 }
-export function defineRule(/** @type {any} */ eslint, /** @type {string} */ code) {
+export function defineRule(/** @type {{defineRule: (name: string, rule: unknown) => void, defineParser: (name: string, parser: object) => void, verifyAndFix: (code: string, config: object) => {messages: EslintResult[], output: string}}} */ eslint, /** @type {string} */ code) {
   // Compile the transform code and install it as an ESLint rule. The rule
   // name doesn't really matter here, so we'll just use a hard-coded name.
   code = transpile(code);
@@ -34,7 +36,7 @@ export function defineRule(/** @type {any} */ eslint, /** @type {string} */ code
   eslint.defineRule('astExplorerRule', rule.default || rule);
 }
 
-export function runRule(/** @type {string} */ code, /** @type {any} */ eslint) {
+export function runRule(/** @type {string} */ code, /** @type {{defineRule: (name: string, rule: unknown) => void, defineParser: (name: string, parser: object) => void, verifyAndFix: (code: string, config: object) => {messages: EslintResult[], output: string}}} */ eslint) {
   // Run the ESLint rule on the AST of the provided code.
   // Reference: http://eslint.org/docs/developer-guide/nodejs-api
   eslint.defineParser('babel-eslint', {

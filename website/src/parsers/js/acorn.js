@@ -47,7 +47,7 @@ export default {
     });
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -73,7 +73,7 @@ export default {
   _getSettingsConfiguration() {
     return {
       fields: [
-        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'latest'], (/** @type {any} */ x) => x === 'latest' ? x : Number(x)],
+        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'latest'], (/** @type {string} */ x) => x === 'latest' ? x : Number(x)],
         ['sourceType', ['script', 'module']],
         'allowReserved',
         'allowReturnOutsideFunction',
@@ -89,7 +89,7 @@ export default {
     };
   },
 
-  renderSettings(/** @type {any} */ parserSettings, /** @type {(settings: any) => void} */ onChange) {
+  renderSettings(/** @type {Record<string, unknown>} */ parserSettings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
     return (
       <div>
         <p>

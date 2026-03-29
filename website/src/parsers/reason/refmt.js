@@ -48,7 +48,7 @@ export default {
     require(['astexplorer-refmt'], callback);
   },
 
-  parse(/** @type {any} */ parser, /** @type {string} */ code) {
+  parse(/** @type {{parseReason: (code: string) => unknown}} */ parser, /** @type {string} */ code) {
     return parser.parseReason(code);
   },
 
@@ -56,12 +56,13 @@ export default {
     return node.type;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {Record<string, unknown>} */ node) {
     const locKey = locKeys.find(key => Object.prototype.hasOwnProperty.call(node, key));
     if (locKey) {
+      const loc = /** @type {{loc_start: {pos_cnum: number}, loc_end: {pos_cnum: number}}} */ (node[locKey]);
       const range = [
-        node[locKey].loc_start.pos_cnum,
-        node[locKey].loc_end.pos_cnum,
+        loc.loc_start.pos_cnum,
+        loc.loc_end.pos_cnum,
       ];
       return range;
     }

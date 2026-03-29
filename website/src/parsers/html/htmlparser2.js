@@ -1,9 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'htmlparser2/package.json';
 
-/** @typedef {import('domhandler').Node & { startIndex: number, endIndex: number }} HtmlParser2Node */
-/** @typedef {{ Parser: { Parser: new (handler: InstanceType<DomHandlerCtor>, options?: object) => { end(code: string): void } }, Handler: DomHandlerCtor }} HtmlParser2Module */
-/** @typedef {new () => import('domhandler').DomHandler & { root: HtmlParser2Node, parser: { endIndex: number, tokenizer: { _index: number } } }} DomHandlerCtor */
+/** @typedef {import('domhandler').Node & { startIndex: number, endIndex: number, name?: string }} HtmlParser2Node */
+/** @typedef {{ Parser: { Parser: new (handler: unknown, options?: object) => { end(code: string): void } }, Handler: new () => { root: HtmlParser2Node, parser: { endIndex: number, tokenizer: { _index: number } } } }} HtmlParser2Module */
 
 const ID = 'htmlparser2';
 
@@ -26,7 +25,7 @@ export default {
 
         // It appears that htmlparser2 doesn't correctly process
         // ProcessingInstructions. Their "endIndex" isn't set properly.
-        onprocessinginstruction(/** @type {string} */ name, /** @type {any} */ data) {
+        onprocessinginstruction(/** @type {string} */ name, /** @type {string} */ data) {
           this.parser.endIndex = this.parser.tokenizer._index;
           super.onprocessinginstruction(name, data);
         }
@@ -37,23 +36,24 @@ export default {
     });
   },
 
-  parse(/** @type {any} */ { Parser: {Parser}, Handler }, /** @type {string} */ code, /** @type {any} */ options) {
+  parse(/** @type {HtmlParser2Module} */ { Parser: {Parser}, Handler }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     let handler = new Handler();
     new Parser(handler, options).end(code);
     return handler.root;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {HtmlParser2Node} */ node) {
     if (node.type) {
       return [node.startIndex, node.endIndex+1];
     }
   },
 
-  opensByDefault(/** @type {any} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {HtmlParser2Node} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
-  getNodeName(/** @type {any} */ node) {
+  getNodeName(/** @type {HtmlParser2Node} */ node) {
+    /** @type {string | undefined} */
     let nodeName = node.type;
     if (nodeName && node.name) {
       nodeName += `(${node.name})`;

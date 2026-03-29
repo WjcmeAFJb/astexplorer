@@ -38,7 +38,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{range?: [number, number] | Record<string, unknown>, [key: string]: unknown}} */ node) {
     const { range } = node;
     if (typeof range === 'object') {
       return range;

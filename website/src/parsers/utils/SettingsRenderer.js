@@ -6,7 +6,7 @@ import React from 'react';
 /** @type {(v: string) => string | number} */
 const identity = v => v;
 
-function valuesFromArray(/** @type {any} */ settings) {
+function valuesFromArray(/** @type {string[]} */ settings) {
   return settings.reduce(
     (/** @type {Record<string, unknown>} */ obj, /** @type {string} */ name) => (
       (obj[name] = settings.indexOf(name) > -1),
@@ -16,28 +16,33 @@ function valuesFromArray(/** @type {any} */ settings) {
   );
 }
 
-function getValuesFromSettings(/** @type {any} */ settings) {
+function getValuesFromSettings(/** @type {string[] | Record<string, unknown>} */ settings) {
   if (Array.isArray(settings)) {
     return valuesFromArray(settings);
   }
   return settings;
 }
 
-function defaultUpdater(/** @type {any} */ settings, /** @type {string} */ name, /** @type {unknown} */ value) {
+/** @typedef {(settings: Record<string, unknown>, name: string, value: unknown) => Record<string, unknown>} SettingsUpdater */
+
+/** @type {SettingsUpdater} */
+function defaultUpdater(settings, name, value) {
   return {...settings, [name]: value};
 }
 
-function arrayUpdater(/** @type {any} */ settings, /** @type {string} */ name, /** @type {unknown} */ value) {
-  settings = /** @type {any} */ (new Set(settings));
+/** @type {SettingsUpdater} */
+function arrayUpdater(settings, name, value) {
+  let settingsSet = /** @type {Set<string>} */ (new Set(/** @type {Iterable<string>} */ (/** @type {unknown} */ (settings))));
   if (value) {
-    settings.add(name);
+    settingsSet.add(name);
   } else {
-    settings.delete(name);
+    settingsSet.delete(name);
   }
-  return Array.from(settings);
+  return /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (Array.from(settingsSet)));
 }
 
-function getUpdateStrategy(/** @type {any} */ settings) {
+/** @returns {SettingsUpdater} */
+function getUpdateStrategy(/** @type {string[] | Record<string, unknown>} */ settings) {
   if (Array.isArray(settings)) {
     return arrayUpdater;
   }
@@ -75,7 +80,7 @@ export default function SettingsRenderer(props) {
                     type="checkbox"
                     readOnly={required.has(setting)}
                     disabled={required.has(setting)}
-                    checked={values[setting]}
+                    checked={/** @type {boolean} */ (values[setting])}
                     onChange={
                       ({target}) => onChange(
                         update(parserSettings, setting, target.checked),
@@ -100,7 +105,7 @@ export default function SettingsRenderer(props) {
                         converter(target.value),
                       ))
                     }
-                    value={values[fieldName]}>
+                    value={/** @type {string | number | readonly string[]} */ (values[fieldName])}>
                     {Array.isArray(options) ?
                       options.map(o => <option key={o} value={o}>{o}</option>) :
                       Object.keys(options).map(

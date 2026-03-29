@@ -1,6 +1,9 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from '@angular/compiler/package.json';
 
+/** @typedef {{startSourceSpan?: {start: {offset: number}, end: {offset: number}}, endSourceSpan?: {start: {offset: number}, end: {offset: number}}, sourceSpan?: {start: {offset: number}, end: {offset: number}}, span?: {start: number, end: number}, name?: string, constructor?: {name: string}, [key: string]: unknown}} AngularNode */
+/** @typedef {{parseTemplate: (code: string, filename: string, options?: object) => Record<string, unknown>, [key: string]: unknown}} AngularCompiler */
+
 const ID = 'angular';
 
 export default {
@@ -22,13 +25,13 @@ export default {
     require(['@angular/compiler'], callback);
   },
 
-  parse(/** @type {any} */ ng, /** @type {string} */ code, /** @type {any} */ options) {
+  parse(/** @type {AngularCompiler} */ ng, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     const ast = ng.parseTemplate(code, 'astexplorer.html', options);
     fixSpan(ast, code);
     return ast;
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {AngularNode} */ node) {
     if (node.startSourceSpan) {
       if (node.endSourceSpan) {
         return [
@@ -49,7 +52,7 @@ export default {
     }
   },
 
-  getNodeName(/** @type {any} */ node) {
+  getNodeName(/** @type {AngularNode} */ node) {
     let name = getNodeCtor(node);
     if (node.name) {
       name += `(${node.name})`;
@@ -64,7 +67,7 @@ export default {
   },
 };
 
-function getNodeCtor(/** @type {any} */ node) {
+function getNodeCtor(/** @type {AngularNode} */ node) {
   return node.constructor && node.constructor.name;
 }
 
@@ -82,27 +85,28 @@ function getNodeCtor(/** @type {any} */ node) {
  *     <tag [attr]="expression">
  *                  ^^^^^^^^^^ sub AST { start: 13, end: 23 }
  */
-function fixSpan(/** @type {any} */ ast, /** @type {string} */ code) {
+function fixSpan(/** @type {Record<string, unknown>} */ ast, /** @type {string} */ code) {
   const fixed = new Set();
   const KEEP_VISIT = 1;
-  function visitTarget(/** @type {any} */ value, /** @type {any} */ isTarget, /** @type {any} */ fn, /** @type {any} */ parent) {
+  function visitTarget(/** @type {unknown} */ value, /** @type {(v: unknown) => boolean} */ isTarget, /** @type {(node: Record<string, unknown>, parent: unknown) => number | void} */ fn, /** @type {unknown} */ parent) {
     if (value !== null && typeof value === 'object') {
-      if (isTarget(value)) {
-        if (fn(value, parent) !== KEEP_VISIT) {
+      const obj = /** @type {Record<string, unknown>} */ (value);
+      if (isTarget(obj)) {
+        if (fn(obj, parent) !== KEEP_VISIT) {
           return;
         }
       }
       if (Array.isArray(value)) {
         value.forEach(subValue => visitTarget(subValue, isTarget, fn, value));
       } else {
-        for (const key in value) {
-          visitTarget(value[key], isTarget, fn, value);
+        for (const key in obj) {
+          visitTarget(obj[key], isTarget, fn, obj);
         }
       }
     }
   }
 
-  function getBaseStart(/** @type {any} */ parent) {
+  function getBaseStart(/** @type {AngularNode} */ parent) {
     const nodeName = getNodeCtor(parent);
     switch (nodeName) {
       case 'BoundAttribute':
@@ -133,16 +137,17 @@ function fixSpan(/** @type {any} */ ast, /** @type {string} */ code) {
 
   visitTarget(
     ast,
-    (/** @type {unknown} */ value) => getNodeCtor(value) === 'ASTWithSource',
-    (/** @type {any} */ node, /** @type {any} */ parent) => {
-      const baseStart = getBaseStart(parent);
+    (/** @type {unknown} */ value) => getNodeCtor(/** @type {AngularNode} */ (value)) === 'ASTWithSource',
+    (/** @type {Record<string, unknown>} */ node, /** @type {unknown} */ parent) => {
+      const baseStart = getBaseStart(/** @type {AngularNode} */ (parent));
       visitTarget(
         node,
-        (/** @type {any} */ value) => value.span,
-        (/** @type {any} */ node) => {
+        (/** @type {unknown} */ value) => /** @type {Record<string, unknown>} */ (value).span != null,
+        (/** @type {Record<string, unknown>} */ node) => {
           if (!fixed.has(node)) {
-            node.span.start += baseStart;
-            node.span.end += baseStart;
+            const span = /** @type {{start: number, end: number}} */ (node.span);
+            span.start += baseStart;
+            span.end += baseStart;
             fixed.add(node);
           }
 

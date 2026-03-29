@@ -4,7 +4,7 @@ import pkg from '@angular-eslint/template-parser/package.json';
 const ID = '@angular-eslint/template-parser';
 
 function wrapParesr(/** @type {(realParser: Record<string, any>) => void} */ callback, /** @type {Record<string, any>} */ { parseForESLint }) {
-  const parse = (/** @type {string} */ code, /** @type {any} */ options) => {
+  const parse = (/** @type {string} */ code, /** @type {Record<string, unknown>} */ options) => {
     const {
       ast,
       visitorKeys,
@@ -12,7 +12,7 @@ function wrapParesr(/** @type {(realParser: Record<string, any>) => void} */ cal
     } = parseForESLint(code, options);
 
     // Traverse AST in order to add `loc` and `range` for each child
-    const addLocation = (/** @type {any} */ node) => {
+    const addLocation = (/** @type {{startSourceSpan?: {start: {offset: number}, end: {offset: number}}, endSourceSpan?: {start: {offset: number}, end: {offset: number}}, sourceSpan?: {start: {offset: number}, end: {offset: number}}, range?: [number, number], loc?: object, [key: string]: unknown}} */ node) => {
       if (!node.startSourceSpan || !node.endSourceSpan) {
         if (!node.sourceSpan) return node;
         const range = node.range || [
@@ -42,20 +42,22 @@ function wrapParesr(/** @type {(realParser: Record<string, any>) => void} */ cal
       }
     };
 
-    const visit = (/** @type {any} */ node) => {
-      const keys = visitorKeys[node.type] || [];
-      const newNode = keys.reduce((/** @type {any} */ acc, /** @type {string} */ key) => {
+    /** @type {(node: Record<string, unknown>) => Record<string, unknown>} */
+    const visit = (node) => {
+      const keys = /** @type {string[]} */ (visitorKeys[/** @type {string} */ (node.type)] || []);
+      /** @type {Record<string, unknown>} */
+      const newNode = keys.reduce((/** @type {Record<string, unknown>} */ acc, /** @type {string} */ key) => {
         const child = node[key];
         if (Array.isArray(child)) {
           const children = child;
-          return { ...acc, [key]: children.map(visit) };
+          return { ...acc, [key]: children.map(c => visit(/** @type {Record<string, unknown>} */ (c))) };
         } else if (child != null) {
-          return { ...acc, [key]: visit(child) };
+          return { ...acc, [key]: visit(/** @type {Record<string, unknown>} */ (child)) };
         } else {
           return acc;
         }
       }, node);
-      return addLocation(newNode);
+      return addLocation(/** @type {Record<string, unknown>} */ (newNode));
     };
     return visit(ast);
   };
@@ -76,7 +78,7 @@ export default {
     require(['@angular-eslint/template-parser'], wrapParesr.bind(null, callback));
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code, /** @type {any} */ options) {
+  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.parse(code, options);
   },
 };

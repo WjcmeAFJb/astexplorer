@@ -15,7 +15,7 @@ export default {
   loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
     require(
       ['../../../transpilers/babel', 'babel5'],
-      (/** @type {any} */ transpile, /** @type {any} */ babel) => callback({ transpile: transpile.default, babel: babel }),
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transform: Function}} */ babel) => callback({ transpile: transpile.default, babel: babel }),
     );
   },
 

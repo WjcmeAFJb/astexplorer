@@ -14,7 +14,7 @@ export default {
   loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
     require(
       ['../../../transpilers/babel', '@glimmer/syntax'],
-      (/** @type {any} */ transpile, /** @type {any} */ glimmer) => callback({ transpile: transpile.default, glimmer }),
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{preprocess: (code: string, options?: object) => Record<string, unknown>, print: (ast: Record<string, unknown>) => string}} */ glimmer) => callback({ transpile: transpile.default, glimmer }),
     );
   },
 

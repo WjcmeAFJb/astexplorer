@@ -15,8 +15,8 @@ export default {
 
   loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
     require(['../../../transpilers/typescript', 'typescript'], (
-      /** @type {any} */ transpile,
-      /** @type {any} */ typescript,
+      /** @type {{default: (code: string) => string}} */ transpile,
+      /** @type {typeof import('typescript')} */ typescript,
     ) => callback({ transpile: transpile.default, ts: typescript }));
   },
 

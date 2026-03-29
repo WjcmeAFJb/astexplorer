@@ -16,7 +16,7 @@ export default {
       '../../../transpilers/babel',
       'babel7',
       'recast',
-    ], (/** @type {any} */ transpile, /** @type {any} */ babel, /** @type {any} */ recast) => callback({ transpile: transpile.default, babel, recast }));
+    ], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transformAsync: Function}} */ babel, /** @type {{parse: Function, print: Function}} */ recast) => callback({ transpile: transpile.default, babel, recast }));
   },
 
   transform(/** @type {Record<string, any>} */ { transpile, babel, recast }, /** @type {string} */ transformCode, /** @type {string} */ code) {

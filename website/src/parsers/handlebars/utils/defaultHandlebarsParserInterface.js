@@ -12,7 +12,7 @@ export default {
   locationProps: new Set(['loc']),
 
   /** @this {LineOffsetsMixin} */
-  parse(/** @type {any} */ parseHandlebars, /** @type {string} */ code) {
+  parse(/** @type {(code: string) => Record<string, unknown>} */ parseHandlebars, /** @type {string} */ code) {
     this.lineOffsets = [];
     let index = 0;
     do {
@@ -22,12 +22,12 @@ export default {
   },
 
   /** @this {LineOffsetsMixin} */
-  getOffset(/** @type {any} */ { line, column }) {
+  getOffset(/** @type {{line: number, column: number}} */ { line, column }) {
     return this.lineOffsets[line - 1] + column;
   },
 
   /** @this {LineOffsetsMixin} */
-  nodeToRange(/** @type {any} */ { loc }) {
+  nodeToRange(/** @type {{loc?: {toJSON?: () => {start: {line: number, column: number}, end: {line: number, column: number}}, start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}} */ { loc }) {
     if (!loc) return;
     const serializedLoc = 'toJSON' in loc ? loc.toJSON() : loc;
     return [serializedLoc.start, serializedLoc.end].map(pos => this.getOffset(pos));

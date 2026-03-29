@@ -16,7 +16,7 @@ export default {
       'babel7',
       'recast',
       'babel-plugin-macros',
-    ], (/** @type {any} */ transpile, /** @type {any} */ babel, /** @type {any} */ recast, /** @type {any} */ macro) => callback({ transpile: transpile.default, babel, recast, macro}));
+    ], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transform: Function}} */ babel, /** @type {{parse: Function, print: Function}} */ recast, /** @type {{createMacro: Function, MacroError: Function}} */ macro) => callback({ transpile: transpile.default, babel, recast, macro}));
   },
 
   transform(/** @type {Record<string, any>} */ { transpile, babel, recast, macro}, /** @type {string} */ transformCode, /** @type {string} */ code) {

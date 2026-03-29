@@ -21,7 +21,7 @@ export default {
     require(['yaml'], callback);
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{range?: [number, number], type?: string, key?: {range?: [number, number]}, value?: {range?: [number, number]}, [key: string]: unknown}} */ node) {
     if (node.range) {
       return node.range;
     }

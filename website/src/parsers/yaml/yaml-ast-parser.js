@@ -22,24 +22,24 @@ export default {
   locationProps: new Set(['startPosition', 'endPosition']),
   typeProps: new Set(['kind']),
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{startPosition?: number, endPosition?: number, [key: string]: unknown}} */ node) {
     if (typeof node.startPosition === 'number') {
       return [node.startPosition, node.endPosition];
     }
   },
 
-  getNodeName(/** @type {any} */ node) {
-    return /** @type {any} */ Kind[node.kind];
+  getNodeName(/** @type {{kind?: number, [key: string]: unknown}} */ node) {
+    return Kind ? Kind[/** @type {number} */ (node.kind)] : undefined;
   },
 
   loadParser(/** @type {(realParser: any) => void} */ callback) {
-    require(['yaml-ast-parser'], function(/** @type {any} */ yamlAstParser) {
+    require(['yaml-ast-parser'], function(/** @type {{Kind: Record<number, string>, load: (code: string) => unknown}} */ yamlAstParser) {
       Kind = yamlAstParser.Kind;
       callback(yamlAstParser);
     });
   },
 
-  parse(/** @type {any} */ { load }, /** @type {string} */ code) {
+  parse(/** @type {{load: (code: string) => unknown}} */ { load }, /** @type {string} */ code) {
     return load(code);
   },
 };

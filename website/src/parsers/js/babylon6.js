@@ -49,8 +49,8 @@ export const parserSettingsConfiguration = {
       key: 'plugins',
       title: 'Plugins',
       fields: availablePlugins,
-      settings: (/** @type {any} */ settings) => settings.plugins || defaultOptions.plugins,
-      values: (/** @type {any} */ plugins) => availablePlugins.reduce(
+      settings: (/** @type {Record<string, unknown>} */ settings) => settings.plugins || defaultOptions.plugins,
+      values: (/** @type {string[]} */ plugins) => availablePlugins.reduce(
         // @ts-expect-error — indexing dynamic object
         (obj, name) => ((obj[name] = plugins.indexOf(name) > -1), obj),
         {},
@@ -73,11 +73,11 @@ export default {
     require(['babylon6'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ babylon, /** @type {string} */ code, /** @type {any} */ options) {
+  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return babylon.parse(code, options);
   },
 
-  getNodeName(/** @type {any} */ node) {
+  getNodeName(/** @type {{type?: string | {label: string}, [key: string]: unknown}} */ node) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -86,7 +86,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {any} */ node) {
+  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }
