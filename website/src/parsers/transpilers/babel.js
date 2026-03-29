@@ -13,7 +13,8 @@ const options = {
 };
 
 export default function transpile(/** @type {string} */ code) {
-  let es5Code = babel.transform(code, options).code;
+  // oxlint-disable-next-line typescript-eslint(no-unsafe-call) -- babel.transform is untyped
+  let es5Code = /** @type {string} */ (/** @type {{code: string}} */ (babel.transform(code, options)).code);
   es5Code = protect(es5Code);
   return es5Code;
 }

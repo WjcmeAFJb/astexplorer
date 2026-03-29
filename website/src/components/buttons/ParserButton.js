@@ -15,6 +15,7 @@ export default class ParserButton extends React.Component {
   /** @param {ParserButtonProps} props */
   constructor(props) {
     super(props);
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._onClick = this._onClick.bind(this);
   }
 

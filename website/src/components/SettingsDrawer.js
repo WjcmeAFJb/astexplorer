@@ -13,7 +13,9 @@ export default class SettingsDrawer extends React.Component {
   /** @param {SettingsDrawerProps} props */
   constructor(props) {
     super(props);
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._expand = this._expand.bind(this);
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._collapse = this._collapse.bind(this);
   }
 

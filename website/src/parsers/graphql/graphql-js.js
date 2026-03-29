@@ -19,12 +19,14 @@ export default {
   typeProps: new Set(['kind']),
 
   loadParser(/** @type {(realParser: GraphQLParser) => void} */ callback) {
-    require(['graphql/language'], ({ parse }) => {
+    require(['graphql/language'], (/** @type {GraphQLParser} */ { parse }) => {
+      // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- import type may not resolve
       callback({ parse });
     });
   },
 
   parse(/** @type {GraphQLParser} */ { parse }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-return), typescript-eslint(no-unsafe-call) -- import type may not resolve
     return parse(code, options);
   },
 

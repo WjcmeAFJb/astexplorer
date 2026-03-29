@@ -10,7 +10,7 @@ let cancelLoad = () => {}
 
 /**
  * @param {import('../storage/index.js').default} storageAdapter
- * @returns {(store: import('redux').MiddlewareAPI) => (next: import('redux').Dispatch) => (action: Action) => unknown}
+ * @returns {(store: import('redux').MiddlewareAPI<import('redux').Dispatch, AppState>) => (next: import('redux').Dispatch) => (action: Action) => unknown}
  */
 export default storageAdapter => store => next => action => {
   switch (action.type) {
@@ -68,7 +68,7 @@ async function loadSnippet(state, next, storageAdapter) {
       }
     }
   } catch(error) {
-    const errorMessage = 'Failed to fetch revision: ' + error.message;
+    const errorMessage = 'Failed to fetch revision: ' + /** @type {Error} */ (error).message;
 
     clearURLOnClearError = true;
     next(actions.setError(new Error(errorMessage)));
@@ -125,6 +125,6 @@ async function saveSnippet({fork}, state, next, storageAdapter) {
       storageAdapter.updateHash(newRevision);
     }
   } catch (error) {
-    next(actions.setError(error));
+    next(actions.setError(/** @type {Error} */ (error)));
   }
 }

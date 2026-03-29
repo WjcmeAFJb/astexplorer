@@ -3,7 +3,7 @@ import pkg from '@angular-eslint/template-parser/package.json';
 
 const ID = '@angular-eslint/template-parser';
 
-function wrapParesr(/** @type {(realParser: Record<string, any>) => void} */ callback, /** @type {Record<string, any>} */ { parseForESLint }) {
+function wrapParesr(/** @type {(realParser: Record<string, unknown>) => void} */ callback, /** @type {{parseForESLint: (code: string, options: Record<string, unknown>) => {ast: Record<string, unknown>, visitorKeys: Record<string, string[]>, services: {convertNodeSourceSpanToLoc: (span: unknown) => {start: unknown, end: unknown}}}}} */ { parseForESLint }) {
   const parse = (/** @type {string} */ code, /** @type {Record<string, unknown>} */ options) => {
     const {
       ast,
@@ -74,7 +74,8 @@ export default {
   homepage: pkg.homepage || 'https://github.com/angular-eslint/angular-eslint',
   locationProps: new Set(['loc', 'start', 'end', 'range', 'startSourceSpan', 'endSourceSpan', 'sourceSpan', 'handlerSpan', 'location']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, unknown>) => void} */ callback) {
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- .bind() returns any; TS limitation
     require(['@angular-eslint/template-parser'], wrapParesr.bind(null, callback));
   },
 

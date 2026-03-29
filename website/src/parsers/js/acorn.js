@@ -31,6 +31,7 @@ export default {
     // @ts-expect-error — indexing dynamic object
     if (options['plugins.jsx'] && !options.loose) {
       const cls = parsers.acorn.Parser.extend(parsers.acornJsx());
+      // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
       parser = cls.parse.bind(cls);
     } else {
       // @ts-expect-error — dynamic third-party API
@@ -39,10 +40,12 @@ export default {
         parsers.acorn.parse;
     }
 
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-return), typescript-eslint(no-unsafe-call) -- parser may be .bind() result (any)
     return parser(code, {
       ...options,
       // Replace `false` with `null` to use the default value calculated from ecmaVersion.
       // @ts-expect-error — dynamic third-party API
+      // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
       allowAwaitOutsideFunction: options.allowAwaitOutsideFunction || null,
     });
   },

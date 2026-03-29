@@ -33,6 +33,7 @@ const locKeys = [
   'pvb_loc',
 ];
 // @ts-expect-error — indexing dynamic object
+// oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
 const parserVersion = esyPkg.dependencies['@esy-ocaml/reason'];
 
 export default {
@@ -40,6 +41,7 @@ export default {
 
   id: ID,
   displayName: ID,
+  // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- parserVersion from @ts-expect-error context
   version: parserVersion,
   homepage: `https://www.npmjs.com/package/@esy-ocaml/reason/v/${parserVersion}`,
   locationProps: new Set(locKeys),

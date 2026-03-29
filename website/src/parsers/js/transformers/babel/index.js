@@ -12,14 +12,14 @@ export default {
 
   defaultParserID: 'babylon',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, babel: {transform: Function}}) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, babel: {transform: (...args: unknown[]) => unknown}}) => void} */ callback) {
     require(
       ['../../../transpilers/babel', 'babel5'],
-      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transform: Function}} */ babel) => callback({ transpile: transpile.default, babel: babel }),
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transform: (...args: unknown[]) => unknown}} */ babel) => callback({ transpile: transpile.default, babel: babel }),
     );
   },
 
-  transform(/** @type {{transpile: (code: string) => string, babel: {transform: Function}}} */ { transpile, babel }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, babel: {transform: (...args: unknown[]) => unknown}}} */ { transpile, babel }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

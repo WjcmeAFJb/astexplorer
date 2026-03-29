@@ -13,11 +13,11 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, unknown>) => void} */ callback) {
     require(['vue-eslint-parser'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => unknown}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }

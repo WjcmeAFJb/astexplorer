@@ -125,7 +125,7 @@
 
 /**
  * @typedef {Object} ParseResult
- * @property {unknown | null} ast
+ * @property {unknown} ast
  * @property {Error | null} error
  * @property {number | null} time
  * @property {TreeAdapterConfig | null} treeAdapter

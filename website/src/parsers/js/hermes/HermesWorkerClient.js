@@ -8,8 +8,10 @@ import HermesWorker from 'worker-loader!./hermes-worker.js';
 export default class HermesWorkerClient {
   constructor() {
     this._nextRequestId = 0;
+    /** @type {Map<number, {resolve: (value: unknown) => void, reject: (reason: unknown) => void}>} */
     this._requests = new Map();
     this._worker = new HermesWorker();
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._worker.onmessage = this._handleMessage.bind(this);
   }
 
@@ -42,7 +44,7 @@ export default class HermesWorkerClient {
     });
   }
 
-  /** @param {...*} args */
+  /** @param {...unknown} args */
   parse(...args) {
     return this._request('parse', args);
   }

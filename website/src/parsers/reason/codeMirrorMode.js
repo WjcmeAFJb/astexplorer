@@ -1,6 +1,6 @@
 /** @typedef {{next: () => string | null, eat: (ch: string) => string | null, peek: () => string}} CMStream */
-/** @typedef {{longString?: boolean, tokenize?: Function | null | false}} CMState */
-/** @typedef {{defineMIME: Function, registerHelper: Function, defineMode: Function, getMode: Function}} CMCodeMirror */
+/** @typedef {{longString?: boolean, tokenize?: ((stream: CMStream, state: CMState) => string | null | false) | null | false}} CMState */
+/** @typedef {{defineMIME: (mime: string, config: unknown) => void, registerHelper: (type: string, name: string, data: unknown) => void, defineMode: (name: string, factory: (...args: unknown[]) => unknown, base?: string) => void, getMode: (conf: object, mime: string) => unknown}} CMCodeMirror */
 
 export default function(/** @type {CMCodeMirror} */ CodeMirror) {
   /* https://github.com/facebook/reason/blob/master/src/reason-parser/reason_lexer.mll#L94-L154 */

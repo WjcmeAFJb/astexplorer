@@ -21,11 +21,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['location']),
 
-  loadParser(/** @type {(realParser: {syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: Function}, Options: new (opts: Record<string, unknown>) => unknown}}) => void} */ callback) {
+  loadParser(/** @type {(realParser: {syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: (...args: unknown[]) => void}, Options: new (opts: Record<string, unknown>) => unknown}}) => void} */ callback) {
     require(['exports-loader?traceur!traceur/bin/traceur'], callback);
   },
 
-  parse(/** @type {{syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: Function}, Options: new (opts: Record<string, unknown>) => unknown}}} */ traceur, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {{syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: (...args: unknown[]) => void}, Options: new (opts: Record<string, unknown>) => unknown}}} */ traceur, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     let sourceFile = new traceur.syntax.SourceFile(FILENAME, code);
     let errorReporter = new traceur.util.ErrorReporter();
     errorReporter.reportMessageInternal = (/** @type {{start: {offset: number, line: number, column: number}, end: {offset: number}, toString(): string}} */ sourceRange, /** @type {string} */ message) => {
@@ -43,7 +43,7 @@ export default {
       err.columnNumber = start.column;
       throw err;
     };
-    let parser = /** @type {{handleComment: Function, parseScript: () => Record<string, unknown>, parseModule: () => Record<string, unknown>}} */ (new traceur.syntax.Parser(
+    let parser = /** @type {{handleComment: (...args: unknown[]) => void, parseScript: () => Record<string, unknown>, parseModule: () => Record<string, unknown>}} */ (new traceur.syntax.Parser(
       sourceFile,
       errorReporter,
       new traceur.util.Options(options),

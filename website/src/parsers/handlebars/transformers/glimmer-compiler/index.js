@@ -35,9 +35,9 @@ export default {
     });
 
     // parse wireformat into JSON
-    let json = JSON.parse(JSON.parse(result).block);
+    let json = /** @type {string} */ (JSON.parse(/** @type {string} */ (/** @type {{block: string}} */ (JSON.parse(result)).block)));
 
     // pretty print JSON
-    return { code: json };
+    return { code: /** @type {string} */ (json) };
   },
 };

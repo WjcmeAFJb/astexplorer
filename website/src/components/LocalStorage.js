@@ -22,7 +22,7 @@ export const readState = storage ?
     try {
       const state = storage.getItem(key);
       if (state) {
-        return JSON.parse(state);
+        return /** @type {AppState} */ (JSON.parse(state));
       }
     } catch(e) {
       // eslint-disable-next-line no-console

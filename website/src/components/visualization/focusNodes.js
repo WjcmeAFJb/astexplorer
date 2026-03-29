@@ -36,7 +36,7 @@ export default function(message, arg) {
       const size = nodes.size;
       try {
         if (size === 1) {
-          nodes.values().next().value.current.scrollIntoView();
+          /** @type {React.RefObject<HTMLElement>} */ (nodes.values().next().value).current.scrollIntoView();
         } else if (size > 1) {
           const rootRect = root.getBoundingClientRect();
           const center = (rootRect.y + rootRect.height) / 2 + rootRect.y;
@@ -62,7 +62,7 @@ export default function(message, arg) {
         }
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error('Unable to scroll node into view:', e.message);
+        console.error('Unable to scroll node into view:', /** @type {Error} */ (e).message);
       }
 
     }

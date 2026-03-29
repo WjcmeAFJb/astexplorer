@@ -28,7 +28,7 @@ export default {
     try {
       return parsers.parseSync(code, {...this.getDefaultOptions(), ...options});
     } catch (message) {
-      throw new SyntaxError(message);
+      throw new SyntaxError(/** @type {string} */ (message));
     }
   },
 

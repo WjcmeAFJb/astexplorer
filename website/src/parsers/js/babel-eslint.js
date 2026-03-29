@@ -13,11 +13,11 @@ export default {
   locationProps: new Set(['loc', 'start', 'end', 'range']),
   showInMenu: false,
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: Record<string, unknown>) => void} */ callback) {
     require(['babel-eslint'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {{parseNoPatch: (code: string, opts: Record<string, unknown>) => Record<string, unknown>}} */ parser, /** @type {string} */ code) {
     const opts = {
       sourceType: 'module',
     };

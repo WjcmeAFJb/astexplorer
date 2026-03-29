@@ -34,17 +34,18 @@ export default {
       'remark-frontmatter',
       'remark-math',
     ], (
-      { remark },
-      { default: gfm },
-      { default: directive },
-      { default: footnotes },
-      { default: frontmatter },
-      { default: math },
+      /** @type {{remark: RemarkParser['remark']}} */ { remark },
+      /** @type {{default: RemarkParser['gfm']}} */ { default: gfm },
+      /** @type {{default: RemarkParser['directive']}} */ { default: directive },
+      /** @type {{default: RemarkParser['footnotes']}} */ { default: footnotes },
+      /** @type {{default: RemarkParser['frontmatter']}} */ { default: frontmatter },
+      /** @type {{default: RemarkParser['math']}} */ { default: math },
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- import type may not resolve
     ) => callback({ remark, gfm, directive, footnotes, frontmatter, math }));
   },
 
   parse(
-    /** @type {{remark: () => {use: Function, parse: (code: string) => object}, gfm: Function, directive: Function, footnotes: Function, frontmatter: Function, math: Function}} */ { remark, gfm, directive, footnotes, frontmatter, math },
+    /** @type {{remark: () => {use: (...args: unknown[]) => {parse: (code: string) => unknown}, parse: (code: string) => unknown}, gfm: (...args: unknown[]) => unknown, directive: (...args: unknown[]) => unknown, footnotes: (...args: unknown[]) => unknown, frontmatter: (...args: unknown[]) => unknown, math: (...args: unknown[]) => unknown}} */ { remark, gfm, directive, footnotes, frontmatter, math },
     /** @type {string} */ code,
     /** @type {Record<string, unknown>} */ options,
   ) {

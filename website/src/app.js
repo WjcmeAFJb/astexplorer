@@ -78,8 +78,9 @@ const AppContainer = connect(
   }),
 )(App);
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const storageAdapter = new StorageHandler([gist, parse]);
+/** @type {typeof compose} */
+const composeEnhancers = /** @type {typeof compose} */ (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+const storageAdapter = new StorageHandler(/** @type {import('./types.js').StorageBackend[]} */ ([gist, parse]));
 const store = createStore(
   astexplorer,
   revive(LocalStorage.readState()),

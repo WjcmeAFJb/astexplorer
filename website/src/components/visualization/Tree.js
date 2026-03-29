@@ -18,7 +18,7 @@ const STORAGE_KEY = 'tree_settings';
 function initSettings() {
   const storedSettings = global.localStorage.getItem(STORAGE_KEY);
   return storedSettings ?
-    JSON.parse(storedSettings) :
+    /** @type {Record<string, boolean>} */ (JSON.parse(storedSettings)) :
     {
       autofocus: true,
       hideFunctions: true,

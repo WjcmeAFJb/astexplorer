@@ -15,11 +15,12 @@ import {getParserByID, getTransformerByID} from '../parsers';
 // dependency return types. Each call site uses @type to declare the actual signature.
 /**
  * @param {Array<(state: AppState) => unknown>} deps
- * @param {Function} f
+ * @param {(...args: unknown[]) => unknown} f
  * @returns {(state: AppState) => *}
  */
 function createSelector(deps, f) {
   return function(state) {
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- Function.apply returns any; TS limitation
     return f.apply(this, deps.map(d => d(state)));
   }
 }

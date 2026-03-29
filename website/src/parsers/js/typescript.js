@@ -75,6 +75,7 @@ export default {
         const nodePos = /** @type {number} */ (isTrailing ? node.end : node.pos);
         const parentPos = isTrailing ? parent.end : parent.pos;
 
+        // oxlint-disable-next-line typescript-eslint(no-unsafe-enum-comparison) -- parent.kind is a number matching SyntaxKind enum
         if (parent.kind === ts.SyntaxKind.SourceFile || nodePos !== parentPos) {
           let comments = isTrailing ?
             ts.getTrailingCommentRanges(sourceFile.text, nodePos) :
@@ -83,6 +84,7 @@ export default {
           if (Array.isArray(comments)) {
             comments.forEach((comment) => {
               // @ts-expect-error — indexing dynamic object
+              // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
               comment.type = syntaxKind[comment.kind];
               /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (comment)).text = sourceFile.text.substring(comment.pos, comment.end);
             });
@@ -99,6 +101,7 @@ export default {
   getNodeName(/** @type {{kind?: number, [key: string]: unknown}} */ node) {
     if (node.kind) {
       // @ts-expect-error — indexing dynamic object
+      // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- @ts-expect-error makes type error
       return syntaxKind[node.kind];
     }
   },

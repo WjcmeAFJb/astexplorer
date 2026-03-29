@@ -35,8 +35,8 @@ export default {
     return codeExample.replace('{{parser}}', `${getJscodeshiftParser(parser, parserSettings)}`)
   },
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, jscodeshift: {registerMethods: (methods: Record<string, Function>) => void, withParser: (parser: string) => unknown, [key: string]: unknown}}) => void} */ callback) {
-    require(['../../../transpilers/babel', 'jscodeshift'], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{registerMethods: (methods: Record<string, Function>) => void, withParser: (parser: string) => unknown, [key: string]: unknown}} */ jscodeshift) => {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, jscodeshift: {registerMethods: (methods: Record<string, (...args: unknown[]) => unknown>) => void, withParser: (parser: string) => unknown, [key: string]: unknown}}) => void} */ callback) {
+    require(['../../../transpilers/babel', 'jscodeshift'], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{registerMethods: (methods: Record<string, (...args: unknown[]) => unknown>) => void, withParser: (parser: string) => unknown, [key: string]: unknown}} */ jscodeshift) => {
         const { registerMethods } = jscodeshift;
 
         /** @type {Set<string> | undefined} */
@@ -53,7 +53,7 @@ export default {
         });
 
         // patch in order to collect user-defined method names
-        jscodeshift.registerMethods = function (/** @type {Record<string, Function>} */ methods) {
+        jscodeshift.registerMethods = function (/** @type {Record<string, (...args: unknown[]) => unknown>} */ methods) {
           registerMethods.apply(this, arguments);
           for (let name in methods) {
             sessionMethods.add(name);
@@ -79,7 +79,7 @@ export default {
       transformModule.default :
       transformModule;
 
-    const counter = Object.create(null);
+    const counter = /** @type {Record<string, number>} */ (Object.create(null));
     let statsWasCalled = false;
 
     const result = transform(

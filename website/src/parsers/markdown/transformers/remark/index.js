@@ -11,14 +11,15 @@ export default {
 
   defaultParserID: ID,
 
-  loadTransformer(/** @type {(realTransformer: {remark: import('remark').remark, 'unist-util-is': Function, 'unist-util-visit': Function, 'unist-util-visit-parents': Function}) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {remark: import('remark').remark, 'unist-util-is': (...args: unknown[]) => unknown, 'unist-util-visit': (...args: unknown[]) => unknown, 'unist-util-visit-parents': (...args: unknown[]) => unknown}) => void} */ callback) {
     require([
       'remark',
       'unist-util-is',
       'unist-util-visit',
       'unist-util-visit-parents',
-    ], ({ remark }, { is }, { visit }, { visitParents }) => {
+    ], (/** @type {{remark: import('remark').remark}} */ { remark }, /** @type {{is: (...args: unknown[]) => unknown}} */ { is }, /** @type {{visit: (...args: unknown[]) => unknown}} */ { visit }, /** @type {{visitParents: (...args: unknown[]) => unknown}} */ { visitParents }) => {
       callback({
+        // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- import type may not resolve
         remark,
         'unist-util-is': is,
         'unist-util-visit': visit,
@@ -27,7 +28,7 @@ export default {
     });
   },
 
-  transform(/** @type {{remark: () => {use: Function, processSync: (code: string) => {value: string}}, [key: string]: unknown}} */ { remark, ...availableModules }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{remark: () => {use: (...args: unknown[]) => {processSync: (code: string) => {value: string}}, processSync: (code: string) => {value: string}}, [key: string]: unknown}} */ { remark, ...availableModules }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     function sandboxRequire(/** @type {string} */ name) {
       if (!Object.getOwnPropertyNames(availableModules).includes(name))
         throw new Error(`Cannot find module '${name}'`);

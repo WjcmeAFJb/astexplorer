@@ -49,10 +49,10 @@ function loadTern() {
           '../defs/jscodeshift.json',
           'tern/defs/ecmascript.json',
         ],
-        (/** @type {{registerPlugin: Function, [k: string]: unknown}} */ tern, /** @type {unknown} */ _, /** @type {{cx: Function, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}} */ infer, /** @type {unknown} */ jscs_def, /** @type {unknown} */ ecmascript) => {
+        (/** @type {{registerPlugin: (name: string, init: (...args: unknown[]) => void) => void, [k: string]: unknown}} */ tern, /** @type {unknown} */ _, /** @type {{cx: () => {topScope: unknown, definitions: Record<string, Record<string, unknown>>}, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}} */ infer, /** @type {unknown} */ jscs_def, /** @type {unknown} */ ecmascript) => {
           global.tern = tern;
-          tern.registerPlugin('transformer', /** @param {{on: Function} & Record<string, unknown>} server */ server => {
-            server.on('afterLoad', /** @param {{scope: {props: Record<string, {getFunctionType: Function}>}} & Record<string, unknown>} file */ file => {
+          tern.registerPlugin('transformer', /** @param {{on: (event: string, handler: (...args: unknown[]) => void) => void} & Record<string, unknown>} server */ server => {
+            server.on('afterLoad', /** @param {{scope: {props: Record<string, {getFunctionType: () => {propagate: (arg: unknown) => void}}>}} & Record<string, unknown>} file */ file => {
               const fnVal = file.scope.props.transformer;
               if (fnVal) {
                 const fnType = fnVal.getFunctionType();

@@ -24,7 +24,7 @@ function parse(parser, code, parserSettings) {
   );
 }
 
-/** @type {(store: import('redux').MiddlewareAPI) => (next: import('redux').Dispatch) => (action: import('../types.js').Action) => unknown} */
+/** @type {(store: import('redux').MiddlewareAPI<import('redux').Dispatch, import('../types.js').AppState>) => (next: import('redux').Dispatch) => (action: import('../types.js').Action) => unknown} */
 export default store => next => action => {
   const oldState = store.getState();
   next(action);
@@ -58,9 +58,13 @@ export default store => next => action => {
         const treeAdapter = {
           type: 'default',
           options: {
+            // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
             openByDefault: (newParser.opensByDefault || (() => false)).bind(newParser),
+            // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
             nodeToRange: newParser.nodeToRange.bind(newParser),
+            // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
             nodeToName: newParser.getNodeName.bind(newParser),
+            // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
             walkNode: newParser.forEachProperty.bind(newParser),
             filters: [
               ignoreKeysFilter(newParser._ignoredProperties),
@@ -82,7 +86,7 @@ export default store => next => action => {
           },
         });
       },
-      error => {
+      /** @param {Error} error */ error => {
         console.error(error); // eslint-disable-line no-console
         next({
           type: 'SET_PARSE_RESULT',

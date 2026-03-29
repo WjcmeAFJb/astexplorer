@@ -32,6 +32,7 @@ const defaultPrettierOptions = {
  * @property {string} [keyMap]
  */
 
+/** @extends {React.Component<EditorProps, {value: string}>} */
 export default class Editor extends React.Component {
 
   /**
@@ -111,11 +112,11 @@ export default class Editor extends React.Component {
    * @returns {{line: number, ch: number}}
    */
   _posFromIndex(doc, index) {
-    return (this.props.posFromIndex ? this.props : doc).posFromIndex(index);
+    return /** @type {{line: number, ch: number}} */ ((this.props.posFromIndex ? this.props : doc).posFromIndex(index));
   }
 
   componentDidMount() {
-    /** @type {Array<*>} */
+    /** @type {Array<string | ((...args: unknown[]) => void)>} */
     this._CMHandlers = [];
     /** @type {Array<() => void>} */
     this._subscriptions = [];
@@ -147,10 +148,12 @@ export default class Editor extends React.Component {
 
     this._bindCMHandler('changes', () => {
       clearTimeout(this._updateTimer);
+      // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- .bind() returns any; TS limitation
       this._updateTimer = setTimeout(this._onContentChange.bind(this), 200);
     });
     this._bindCMHandler('cursorActivity', () => {
       clearTimeout(this._updateTimer);
+      // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- .bind() returns any; TS limitation
       this._updateTimer = setTimeout(this._onActivity.bind(this), 100);
     });
 
@@ -168,7 +171,7 @@ export default class Editor extends React.Component {
       /** @type {CodeMirror.TextMarker | null} */
       this._mark = null;
       this._subscriptions.push(
-        subscribe('HIGHLIGHT', ({range}) => {
+        subscribe('HIGHLIGHT', /** @param {{range?: [number, number]}} data */ ({range}) => {
           if (!range) {
             return;
           }
@@ -190,7 +193,7 @@ export default class Editor extends React.Component {
           );
         }),
 
-        subscribe('CLEAR_HIGHLIGHT', ({range}={}) => {
+        subscribe('CLEAR_HIGHLIGHT', /** @param {{range?: [number, number]}} [data] */ ({range}={}) => {
           if (!range ||
             this._markerRange &&
             range[0] === this._markerRange[0] &&
@@ -234,6 +237,7 @@ export default class Editor extends React.Component {
   _unbindHandlers() {
     const cmHandlers = this._CMHandlers;
     for (let i = 0; i < cmHandlers.length; i += 2) {
+      // @ts-expect-error — CodeMirror.off overloads don't accept generic string event names
       this.codeMirror.off(cmHandlers[i], cmHandlers[i+1]);
     }
     clear(this._subscriptions);

@@ -29,7 +29,7 @@ export default {
       return parser.parse(code)
     } catch (message) {
       // AST Explorer expects the thrown error to be an object, not a string.
-      throw new SyntaxError(message);
+      throw new SyntaxError(/** @type {string} */ (message));
     }
   },
 

@@ -16,17 +16,19 @@ export default class TransformButton extends React.Component {
   /** @param {TransformButtonProps} props */
   constructor(props) {
     super(props);
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._onClick = this._onClick.bind(this);
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._onToggle = this._onToggle.bind(this);
   }
 
   // @ts-expect-error — target is EventTarget but used as HTMLElement; onClick always fires on HTML elements
   _onClick({target}) {
     let transformID;
-    if (target.nodeName.toLowerCase() === 'li') {
-      transformID = target.children[0].value;
+    if (/** @type {HTMLElement} */ (target).nodeName.toLowerCase() === 'li') {
+      transformID = /** @type {HTMLButtonElement} */ (/** @type {HTMLElement} */ (target).children[0]).value;
     } else {
-      transformID = target.value;
+      transformID = /** @type {HTMLButtonElement} */ (target).value;
     }
     this.props.onTransformChange(getTransformerByID(transformID));
   }

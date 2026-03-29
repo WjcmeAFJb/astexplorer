@@ -41,7 +41,7 @@ function fetchSnippet(snippetID, revisionID='latest') {
         throw new Error('Unknown error.');
     }
   })
-  .then(response => new Revision(response));
+  .then(/** @param {GistData} response */ response => new Revision(response));
 }
 
 /**
@@ -92,7 +92,7 @@ export function create(data) {
     }
     throw new Error('Unable to create snippet.');
   })
-  .then(data => new Revision(data));
+  .then(/** @param {GistData} data */ data => new Revision(data));
 }
 
 /**
@@ -126,7 +126,7 @@ export function update(revision, data) {
         }
         throw new Error('Unable to update snippet.');
       })
-      .then(data => new Revision(data));
+      .then(/** @param {GistData} data */ data => new Revision(data));
     });
 }
 
@@ -153,7 +153,7 @@ export function fork(revision, data) {
     }
     throw new Error('Unable to fork snippet.');
   })
-  .then(data => new Revision(data));
+  .then(/** @param {GistData} data */ data => new Revision(data));
 }
 
 /**
@@ -187,8 +187,7 @@ class Revision {
    */
   constructor(gist) {
     this._gist = gist;
-    /** @type {GistConfig} */
-    this._config = JSON.parse(gist.files['astexplorer.json'].content);
+    this._config = /** @type {GistConfig} */ (JSON.parse(gist.files['astexplorer.json'].content));
   }
 
   /** @returns {boolean} */

@@ -13,6 +13,7 @@ export default class ShareDialog extends React.Component {
   /** @param {ShareDialogProps} props */
   constructor(props) {
     super(props);
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._outerClick = this._outerClick.bind(this);
   }
 

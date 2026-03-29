@@ -19,8 +19,8 @@ export default {
   },
 
   transform(/** @type {{preprocess: (code: string, plugins: object) => unknown}} */ { preprocess }, /** @type {string} */ transformCode, /** @type {string} */ code) {
-    /** @type {() => {markup?: Function, script?: Function, style?: Function}} */
-    const transform = /** @type {() => {markup?: Function, script?: Function, style?: Function}} */ (compileModule(transformCode));
+    /** @type {() => {markup?: (...args: unknown[]) => unknown, script?: (...args: unknown[]) => unknown, style?: (...args: unknown[]) => unknown}} */
+    const transform = /** @type {() => {markup?: (...args: unknown[]) => unknown, script?: (...args: unknown[]) => unknown, style?: (...args: unknown[]) => unknown}} */ (compileModule(transformCode));
 
     // Identity functions in case of missing transforms
     const _markupIdentity = (/** @type {string} */ content, /** @type {string} */ _filename) => content;

@@ -14,7 +14,7 @@ export default {
   showInMenu: false,
 
   loadParser(/** @type {(realParser: unknown) => void} */ callback) {
-    require(['acorn-to-esprima', 'babel5'], (/** @type {Record<string, unknown>} */ acornToEsprima, /** @type {{acorn: {tokTypes: unknown}, traverse: unknown, parse: Function}} */ {acorn: {tokTypes}, traverse, parse}) => {
+    require(['acorn-to-esprima', 'babel5'], (/** @type {Record<string, unknown>} */ acornToEsprima, /** @type {{acorn: {tokTypes: unknown}, traverse: unknown, parse: (...args: unknown[]) => unknown}} */ {acorn: {tokTypes}, traverse, parse}) => {
       callback({
         ...acornToEsprima,
         tokTypes,
@@ -24,7 +24,7 @@ export default {
     });
   },
 
-  parse(/** @type {{parse: Function, toTokens: Function, convertComments: Function, attachComments: Function, toAST: Function, tokTypes: unknown, traverse: unknown}} */ parser, /** @type {string} */ code) {
+  parse(/** @type {{parse: (...args: unknown[]) => Record<string, unknown>, toTokens: (...args: unknown[]) => unknown[], convertComments: (...args: unknown[]) => void, attachComments: (...args: unknown[]) => void, toAST: (...args: unknown[]) => void, tokTypes: unknown, traverse: unknown}} */ parser, /** @type {string} */ code) {
     const opts = {
       locations: true,
       ranges: true,

@@ -32,6 +32,7 @@ export default class CategoryButton extends React.Component {
   /** @param {CategoryButtonProps} props */
   constructor(props) {
     super(props);
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._onClick = this._onClick.bind(this);
   }
 

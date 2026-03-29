@@ -17,11 +17,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(/** @type {(realParser: import('luaparse')) => void} */ callback) {
+  loadParser(/** @type {(realParser: LuaparseParser) => void} */ callback) {
     require(['luaparse'], callback);
   },
 
-  parse(/** @type {import('luaparse')} */ luaparse, /** @type {string} */ code, options={}) {
+  parse(/** @type {LuaparseParser} */ luaparse, /** @type {string} */ code, options={}) {
     return luaparse.parse(code, options);
   },
 

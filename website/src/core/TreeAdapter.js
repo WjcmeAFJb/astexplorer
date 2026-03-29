@@ -177,7 +177,7 @@ class TreeAdapter {
 
 }
 
-/** @type {Record<string, *>} */
+/** @type {Record<string, AdapterOptions & Record<string, unknown>>} */
 const TreeAdapterConfigs = {
   default: {
     filters: [],
@@ -201,27 +201,27 @@ const TreeAdapterConfigs = {
       'declarations', // variable declaration
       'expression', // expression statements
     ]),
-    /** @param {Record<string, unknown>} node @param {string} key */
+    /** @this {{openByDefaultNodes: Set<unknown>, openByDefaultKeys: Set<string>}} @param {Record<string, unknown>} node @param {string} key */
     openByDefault(node, key) {
       return node && this.openByDefaultNodes.has(node.type) ||
         this.openByDefaultKeys.has(key);
     },
-    /** @param {Record<string, unknown>} node */
+    /** @param {Record<string, unknown>} node @returns {[number, number] | null} */
     nodeToRange(node) {
       if (!(node && typeof node === 'object')) {
         return null;
       }
       if (node.range) {
-        return node.range;
+        return /** @type {[number, number]} */ (node.range);
       }
       if (typeof node.start === 'number' && typeof node.end === 'number') {
         return [node.start, node.end];
       }
       return null;
     },
-    /** @param {Record<string, unknown>} node */
+    /** @param {Record<string, unknown>} node @returns {string} */
     nodeToName(node) {
-      return node.type;
+      return /** @type {string} */ (node.type);
     },
     /** @param {Record<string, unknown>} node */
     *walkNode(node) {

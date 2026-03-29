@@ -33,6 +33,7 @@ class GistBanner extends React.Component {
     this.state = {
       visible: true,
     };
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._hide = this._hide.bind(this);
   }
 

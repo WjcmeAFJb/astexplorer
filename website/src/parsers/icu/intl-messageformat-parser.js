@@ -37,6 +37,7 @@ export default {
     require(['intl-messageformat-parser'], (/** @type {IntlMFParserModule} */ all) => {
       Object.keys(all.TYPE).forEach((k) => {
         // @ts-expect-error — indexing dynamic object
+        // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
         TYPES[k] = all.TYPE[k];
       });
       callback(all);
@@ -57,6 +58,7 @@ export default {
 
   getNodeName(/** @type {Record<string, unknown>} */ node) {
     // @ts-expect-error — indexing dynamic object
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- @ts-expect-error makes type error
     return node.type != null && TYPES[node.type];
   },
 

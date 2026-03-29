@@ -35,13 +35,13 @@ async function transform(transformer, transformCode, code) {
     return { result, map, version: realTransformer.version, error: null };
   } catch(error) {
     return {
-      error,
+      error: /** @type {Error} */ (error),
       version: realTransformer ? realTransformer.version : '',
     };
   }
 }
 
-/** @type {(store: import('redux').MiddlewareAPI) => (next: import('redux').Dispatch) => (action: import('../types.js').Action) => Promise<void> | void} */
+/** @type {(store: import('redux').MiddlewareAPI<import('redux').Dispatch, import('../types.js').AppState>) => (next: import('redux').Dispatch) => (action: import('../types.js').Action) => Promise<void> | void} */
 export default store => next => async (action) => {
   const oldState = store.getState();
   next(action);
@@ -77,7 +77,7 @@ export default store => next => async (action) => {
     try  {
       result = await transform(newTransformer, newTransformCode, newCode);
     } catch (error) {
-      result = {error}
+      result = {error: /** @type {Error} */ (error)}
     }
 
     // Did anything change in the meantime?

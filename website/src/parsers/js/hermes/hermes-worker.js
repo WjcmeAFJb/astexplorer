@@ -5,24 +5,24 @@
 
 import * as hermesParser from 'hermes-parser';
 
+/** @type {Record<string, (...args: unknown[]) => unknown>} */
 const handlers = {
   parse(/** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
-    return hermesParser.parse(code, options);
+    return /** @type {unknown} */ (hermesParser.parse(code, options));
   },
 };
 
-onmessage = async function(e) {
+onmessage = async function(/** @type {MessageEvent<{type: string, requestId: string, args?: unknown[]}>} */ e) {
   const {type, requestId, args = []} = e.data;
+  /** @type {(...args: unknown[]) => unknown} */
   let handler = () => {
     throw new Error('No handler in Hermes worker for message type: ' + type);
   };
   if (Object.hasOwnProperty.call(handlers, type)) {
-    // @ts-expect-error — indexing dynamic object
-    handler = handlers[type];
+    handler = /** @type {(...args: unknown[]) => unknown} */ (handlers[type]);
   }
   let value;
   try {
-    // @ts-expect-error — args is an array from postMessage; handler expects positional params
     value = handler(...args);
   } catch (e) {
     postMessage({
@@ -32,7 +32,8 @@ onmessage = async function(e) {
       // Errors don't survive the structured clone algorithm very well across
       // browsers - they're either not allowed or lose some of their properties.
       // Send a plain-object copy to be reconstituted by the client.
-      value: {name: e.name, stack: e.stack, message: e.message, ...e},
+      // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- spreading Error produces any properties
+      value: {name: /** @type {Error} */ (e).name, stack: /** @type {Error} */ (e).stack, message: /** @type {Error} */ (e).message, .../** @type {Error} */ (e)},
     });
     return;
   }

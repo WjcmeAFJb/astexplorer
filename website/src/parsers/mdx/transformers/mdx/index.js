@@ -35,7 +35,7 @@ export default {
       });
     } catch (err) {
       return `
-${err.message}
+${/** @type {Error} */ (err).message}
 
 ------------
 Full output:

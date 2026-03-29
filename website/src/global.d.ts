@@ -110,8 +110,55 @@ declare module 'astexplorer-refmt/esy.json' {
   export default value;
 }
 
+// luaparse
+declare module 'luaparse' {
+  function parse(code: string, options?: Record<string, unknown>): Record<string, unknown>;
+  export = { parse };
+}
+
+// babel-eslint — parseNoPatch
+declare module 'babel-eslint' {
+  export function parseNoPatch(code: string, options?: Record<string, unknown>): Record<string, unknown>;
+}
+
+// halting-problem — loop detection
+declare module 'halting-problem' {
+  function halts(code: string): boolean;
+  function loopProtect(code: string, callback: string): string;
+  export default halts;
+  export { loopProtect };
+}
+
 // babel-plugin-macros package metadata
 declare module 'babel-plugin-macros/package' {
   const value: { name: string; version: string; [key: string]: unknown };
   export default value;
+}
+
+// prop-types — runtime prop validation library (not type-checked)
+declare module 'prop-types' {
+  interface Validator<T> {
+    isRequired: Validator<T>;
+  }
+  interface PropTypes {
+    any: Validator<unknown>;
+    array: Validator<unknown[]>;
+    bool: Validator<boolean>;
+    func: Validator<(...args: unknown[]) => unknown>;
+    number: Validator<number>;
+    object: Validator<Record<string, unknown>>;
+    string: Validator<string>;
+    node: Validator<unknown>;
+    element: Validator<unknown>;
+    symbol: Validator<symbol>;
+    instanceOf(expectedClass: unknown): Validator<unknown>;
+    oneOf(values: unknown[]): Validator<unknown>;
+    oneOfType(validators: Validator<unknown>[]): Validator<unknown>;
+    arrayOf(validator: Validator<unknown>): Validator<unknown>;
+    objectOf(validator: Validator<unknown>): Validator<unknown>;
+    shape(object: Record<string, Validator<unknown>>): Validator<unknown>;
+    exact(object: Record<string, Validator<unknown>>): Validator<unknown>;
+  }
+  const PropTypes: PropTypes;
+  export default PropTypes;
 }

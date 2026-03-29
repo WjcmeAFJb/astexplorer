@@ -141,7 +141,7 @@ function useOpenState(openFromParent, isInRange) {
  * @property {boolean} [computed]
  * @property {boolean} [open]
  * @property {number} [level]
- * @property {{isArray: Function, isObject: Function, getNodeName: Function, getRange: Function, opensByDefault: Function, walkNode: Function, isInRange: Function, hasChildrenInRange: Function, isLocationProp: Function}} treeAdapter
+ * @property {{isArray: (node: unknown) => boolean, isObject: (node: unknown) => boolean, getNodeName: (node: unknown) => string, getRange: (node: unknown) => [number, number] | null | undefined, opensByDefault: (node: unknown, key: string) => boolean, walkNode: (node: unknown) => Iterable<import('../../../types.js').WalkResult>, isInRange: (node: unknown, key: string, position: number) => boolean, hasChildrenInRange: (node: unknown, key: string, position: number) => boolean, isLocationProp: (key: string) => boolean}} treeAdapter
  * @property {boolean} [autofocus]
  * @property {unknown} [parent]
  * @property {boolean} [isInRange]
@@ -399,7 +399,7 @@ const NOT_COMPUTED = {};
 
 const FunctionElement = React.memo(/** @param {ElementProps} props */ function FunctionElement(props) {
   const [computedValue, setComputedValue] = useState(NOT_COMPUTED);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(/** @type {Error | null} */ (null));
   const {name, value, parent, computed, treeAdapter} = props;
 
   if (computedValue !== NOT_COMPUTED) {
@@ -430,12 +430,14 @@ const FunctionElement = React.memo(/** @param {ElementProps} props */ function F
           title="Click to invoke function"
           onClick={() => {
             try {
-              const computedValue = /** @type {Function} */ (value).call(parent);
+              // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .call() returns any; dynamic invocation
+              const computedValue = /** @type {(...args: unknown[]) => unknown} */ (value).call(parent);
               console.log(computedValue); // eslint-disable-line no-console
+              // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- computedValue is dynamic
               setComputedValue(computedValue);
             } catch(err) {
-              console.error(`Unable to run "${name}": `, err.message); // eslint-disable-line no-console
-              setError(err);
+              console.error(`Unable to run "${name}": `, /** @type {Error} */ (err).message); // eslint-disable-line no-console
+              setError(/** @type {Error} */ (err));
             }
           }}>
           (...)
@@ -456,6 +458,7 @@ const FunctionElement = React.memo(/** @param {ElementProps} props */ function F
 });
 
 // @ts-expect-error — React 16 memo propTypes (see Element.propTypes above)
+// oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
 FunctionElement.propTypes = Element.propTypes;
 
 /**
@@ -552,4 +555,5 @@ export default function ElementContainer(props) {
 }
 
 // @ts-expect-error — React 16 memo propTypes
+// oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
 ElementContainer.propTypes = Element.propTypes;

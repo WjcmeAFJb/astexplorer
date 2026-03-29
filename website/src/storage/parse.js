@@ -34,7 +34,7 @@ function fetchSnippet(snippetID, revisionID='latest') {
           throw new Error('Unknown error.');
       }
     })
-    .then(response => new Revision(response));
+    .then(/** @param {ParseSnippetData} response */ response => new Revision(response));
 }
 
 /**
@@ -190,7 +190,7 @@ class Revision {
       return null;
     }
     const parserSettings = settings[this.getParserID()];
-    return !!parserSettings && JSON.parse(parserSettings);
+    return !!parserSettings && /** @type {Record<string, unknown>} */ (JSON.parse(parserSettings));
   }
 
   /** @returns {React.ReactElement} */
