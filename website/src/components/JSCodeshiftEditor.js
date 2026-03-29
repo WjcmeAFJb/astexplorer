@@ -9,6 +9,7 @@ import 'codemirror/addon/tern/tern.css';
 let server;
 
 export default class JSCodeshiftEditor extends Editor {
+  /** @param {import('./Editor').EditorProps} props */
   constructor(props) {
     super(props);
     loadTern();
@@ -29,6 +30,7 @@ export default class JSCodeshiftEditor extends Editor {
   }
 }
 
+/** @returns {void} */
 function loadTern() {
   require(
     [

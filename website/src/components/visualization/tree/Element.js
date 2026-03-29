@@ -446,6 +446,14 @@ const FunctionElement = React.memo(function FunctionElement(props) {
 
 FunctionElement.propTypes = Element.propTypes;
 
+/**
+ * @typedef {Object} PrimitiveElementProps
+ * @property {string} [name]
+ * @property {unknown} [value]
+ * @property {boolean} [computed]
+ */
+
+/** @type {React.NamedExoticComponent<PrimitiveElementProps>} */
 const PrimitiveElement = React.memo(function PrimitiveElement({
   name,
   value,
@@ -467,6 +475,14 @@ PrimitiveElement.propTypes = {
   computed: PropTypes.bool,
 };
 
+/**
+ * @typedef {Object} PropertyNameProps
+ * @property {string} [name]
+ * @property {boolean} [computed]
+ * @property {(event: React.MouseEvent) => void} [onClick]
+ */
+
+/** @type {React.NamedExoticComponent<PropertyNameProps>} */
 const PropertyName = React.memo(function PropertyName({name, computed, onClick}) {
   return (
     <span className="key">

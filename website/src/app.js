@@ -33,6 +33,12 @@ function resize() {
   publish('PANEL_RESIZE');
 }
 
+/**
+ * @param {Object} props
+ * @param {boolean} [props.showTransformer]
+ * @param {boolean} [props.hasError]
+ * @returns {React.ReactElement}
+ */
 function App({showTransformer, hasError}) {
   return (
     <>

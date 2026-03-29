@@ -34,6 +34,11 @@ export default class PasteDropTarget extends React.Component {
     };
   }
 
+  /**
+   * @param {string} type
+   * @param {Event} event
+   * @param {Error} ex
+   */
   _onASTError(type, event, ex) {
     this.props.onError(
       type,

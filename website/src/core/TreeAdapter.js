@@ -47,6 +47,7 @@ class TreeAdapter {
     if (node == null) {
       return null;
     }
+    // Typecast: node is unknown but guaranteed non-null here; WeakMap requires object keys
     if (this._ranges.has(/** @type {object} */ (node))) {
       return this._ranges.get(/** @type {object} */ (node));
     }

@@ -16,6 +16,7 @@ import React from 'react';
 /** @extends {React.Component<JSONEditorProps>} */
 export default class Editor extends React.Component {
 
+  /** @param {JSONEditorProps} nextProps */
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.codeMirror.getValue()) {
       // preserve scroll position

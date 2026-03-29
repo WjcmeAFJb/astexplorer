@@ -1,7 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+/**
+ * @typedef {Object} SettingsDialogProps
+ * @property {(parser: import('../../types.js').Parser, settings: Record<string, unknown>) => void} [onSave]
+ * @property {() => void} [onWantToClose]
+ * @property {boolean} [visible]
+ * @property {import('../../types.js').Parser} parser
+ * @property {Record<string, unknown> | null} [parserSettings]
+ */
+
+/** @extends {React.Component<SettingsDialogProps, {parserSettings: Record<string, unknown> | null}>} */
 export default class SettingsDialog extends React.Component {
+  /** @param {SettingsDialogProps} props */
   constructor(props) {
     super(props);
     this._outerClick = this._outerClick.bind(this);
@@ -13,16 +24,19 @@ export default class SettingsDialog extends React.Component {
     };
   }
 
+  /** @param {SettingsDialogProps} nextProps */
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({parserSettings: nextProps.parserSettings});
   }
 
+  /** @param {React.MouseEvent<HTMLDivElement>} event */
   _outerClick(event) {
     if (event.target === document.getElementById('SettingsDialog')) {
       this._saveAndClose();
     }
   }
 
+  /** @param {Record<string, unknown>} newSettings */
   _onChange(newSettings) {
     this.setState({parserSettings: newSettings});
   }
