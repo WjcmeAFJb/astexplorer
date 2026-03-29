@@ -16,7 +16,7 @@ export default {
   homepage: pkg.repository.url,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['@swc/wasm-web/wasm.js'], (instance) => {
       instance.default(wasm_bg).then(() => {
         callback(instance)
@@ -24,7 +24,7 @@ export default {
     });
   },
 
-  parse(parsers, code, options = {}) {
+  parse(/** @type {*} */ parsers, /** @type {*} */ code, options = {}) {
     try {
       return parsers.parseSync(code, {...this.getDefaultOptions(), ...options});
     } catch (message) {
@@ -32,13 +32,13 @@ export default {
     }
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node && node.span && typeof node.span.start === 'number') {
       return [node.span.start, node.span.end];
     }
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.type;
   },
 
@@ -68,7 +68,7 @@ export default {
     };
   },
 
-  renderSettings(parserSettings, onChange) {
+  renderSettings(/** @type {*} */ parserSettings, /** @type {*} */ onChange) {
     return (
       <div>
         <p>

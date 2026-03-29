@@ -12,17 +12,17 @@ export default {
   homepage: pkg.homepage || 'https://github.com/reworkcss/rework',
   locationProps: new Set(['position']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['css/lib/parse'], callback);
   },
 
   /** @this {import('./utils/defaultCSSParserInterface').LineOffsetsMixin} */
-  nodeToRange({ position: range }) {
+  nodeToRange(/** @type {*} */ { position: range }) {
     if (!range) return;
     return [range.start, range.end].map(pos => this.getOffset(pos));
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'rules';
   },
 

@@ -178,7 +178,7 @@ export default class Editor extends React.Component {
           if (this._mark) {
             this._mark.clear();
           }
-          let [start, end] = range.map(index => this._posFromIndex(doc, index));
+          let [start, end] = range.map(/** @param {number} index */ index => this._posFromIndex(doc, index));
           if (!start || !end) {
             this._markerRange = this._mark = null;
             return;

@@ -12,11 +12,11 @@ export default {
   homepage: pkg.homepage || 'https://typescript-eslint.io/',
   locationProps: new Set(['loc', 'start', 'end', 'range']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['@typescript-eslint/parser'], callback);
   },
 
-  parse(parser, code, options) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
     return parser.parse(code, options);
   },
 
@@ -36,10 +36,10 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(defaultOptions) {
+  _getSettingsConfiguration(/** @type {*} */ defaultOptions) {
     return {
       fields: [
-        ['ecmaVersion', [3, 5, 6, 7, 8, 9], value => Number(value)],
+        ['ecmaVersion', [3, 5, 6, 7, 8, 9], (/** @type {*} */ value) => Number(value)],
         ['sourceType', ['script', 'module']],
         'range',
         'loc',
@@ -51,7 +51,7 @@ export default {
           title: 'ecmaFeatures',
           fields: Object.keys(defaultOptions.ecmaFeatures),
           settings:
-          settings => settings.ecmaFeatures || {...defaultOptions.ecmaFeatures},
+          (/** @type {*} */ settings) => settings.ecmaFeatures || {...defaultOptions.ecmaFeatures},
         },
       ],
       required: new Set(['range']),

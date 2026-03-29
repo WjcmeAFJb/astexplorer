@@ -17,7 +17,7 @@ export default {
     'stage', // same
   ]),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['glsl-tokenizer/string', 'glsl-parser/direct'], (
       tokenize,
       parse,
@@ -26,23 +26,23 @@ export default {
     });
   },
 
-  parse({ tokenize, parse }, code) {
+  parse(/** @type {*} */ { tokenize, parse }, /** @type {*} */ code) {
     const tokens = tokenize(code);
     const ast = parse(tokens);
     // the parser does not yet provide the "end" so this is a workaround https://github.com/stackgl/glsl-parser/issues/17
-    function decoratePosition(node, end) {
+    function decoratePosition(/** @type {*} */ node, /** @type {*} */ end) {
       node.loc = {
         start: node.token.position || 0,
         end,
       };
-      node.children.forEach((child, i) => {
+      node.children.forEach((/** @type {*} */ child, /** @type {*} */ i) => {
         const nextSibling = node.children[i + 1];
         decoratePosition(
           child,
           nextSibling && nextSibling.token && 'position' in nextSibling.token
             ? nextSibling.token.position -
                 (nextSibling.token.preceding || [])
-                  .reduce((s, n) => s + (n.data || '').length, 0)
+                  .reduce((/** @type {*} */ s, /** @type {*} */ n) => s + (n.data || '').length, 0)
             : end,
         );
       });
@@ -51,13 +51,13 @@ export default {
     return ast;
   },
 
-  nodeToRange({ loc }) {
+  nodeToRange(/** @type {*} */ { loc }) {
     if (loc) {
       return [loc.start, loc.end];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'children' && node.type === '(program)';
   },
 };

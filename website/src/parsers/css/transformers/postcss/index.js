@@ -11,18 +11,18 @@ export default {
 
   defaultParserID: 'postcss',
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require(['../../../transpilers/babel', 'postcss'], (transpile, postcss) => {
       callback({ transpile: transpile.default, postcss });
     });
   },
 
-  transform({ transpile, postcss }, transformCode, code) {
+  transform(/** @type {*} */ { transpile, postcss }, /** @type {*} */ transformCode, /** @type {*} */ code) {
     transformCode = transpile( transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,
       {
-        require(name) {
+        require(/** @type {*} */ name) {
           switch (name) {
             case 'postcss': return postcss;
             default: throw new Error(`Cannot find module '${name}'`);

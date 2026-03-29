@@ -51,7 +51,7 @@ export default function TransformOutput({transformResult, mode}) {
   transformResult = transformResult == null ? {result: ''} : transformResult;
 
   const posFromIndex = React.useCallback(
-    index => positionFromIndex(index, transformResult.map),
+    /** @param {number} index */ index => positionFromIndex(index, transformResult.map),
     [transformResult],
   );
 

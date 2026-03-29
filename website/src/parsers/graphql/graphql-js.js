@@ -13,27 +13,27 @@ export default {
   locationProps: new Set(['loc']),
   typeProps: new Set(['kind']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['graphql/language'], ({ parse }) => {
       callback({ parse });
     });
   },
 
-  parse({ parse }, code, options) {
+  parse(/** @type {*} */ { parse }, /** @type {*} */ code, /** @type {*} */ options) {
     return parse(code, options);
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.loc) {
       return [node.loc.start, node.loc.end];
     }
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.kind;
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'definitions';
   },
 

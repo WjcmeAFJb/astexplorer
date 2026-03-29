@@ -23,11 +23,11 @@ export default {
   homepage: pkg.homepage || 'https://github.com/scalameta/scalameta',
   locationProps: new Set(['pos']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['scalameta-parsers'], callback);
   },
 
-  parse(scalametaParser, code, options) {
+  parse(/** @type {*} */ scalametaParser, /** @type {*} */ code, /** @type {*} */ options) {
     const parsed = scalametaParser.parseSource(code, options);
     const { error, lineNumber, columnNumber } = parsed;
     if (error) {
@@ -41,13 +41,13 @@ export default {
     return parsed;
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.pos) {
       return [node.pos.start, node.pos.end];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return (
       node.type === 'Program' ||
       key === 'body' ||

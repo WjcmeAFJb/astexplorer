@@ -3,9 +3,9 @@ import pkg from '@mdx-js/mdx/package.json';
 
 const ID = 'mdxhast';
 
-function removeNewlines(node) {
+function removeNewlines(/** @type {*} */ node) {
   if (node.children != null) {
-    node.children = node.children.filter(node => node.value !== '\n');
+    node.children = node.children.filter((/** @type {*} */ node) => node.value !== '\n');
     node.children.forEach(removeNewlines);
   }
 }
@@ -19,17 +19,17 @@ export default {
   homepage: 'https://mdxjs.com',
   locationProps: new Set(['position']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['@mdx-js/mdx', '@mdx-js/mdx/mdx-ast-to-mdx-hast'], (mdx, mdxAstToMdxHast) => callback({mdx, mdxAstToMdxHast}));
   },
 
-  parse({mdx, mdxAstToMdxHast}, code) {
+  parse(/** @type {*} */ {mdx, mdxAstToMdxHast}, /** @type {*} */ code) {
     let result;
     mdx.sync(code, {
       hastPlugins: [
         mdxAstToMdxHast,
         () => removeNewlines,
-        () => tree => {
+        () => (/** @type {*} */ tree) => {
           result = tree;
         },
       ],
@@ -38,13 +38,13 @@ export default {
     return result;
   },
 
-  nodeToRange({ position }) {
+  nodeToRange(/** @type {*} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'children';
   },
 };

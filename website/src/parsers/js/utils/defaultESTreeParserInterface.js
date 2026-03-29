@@ -3,7 +3,7 @@ import defaultParserInterface from '../../utils/defaultParserInterface';
 export default {
   ...defaultParserInterface,
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return (
       Boolean(node) && node.type === 'Program' ||
       key === 'body' ||

@@ -11,7 +11,7 @@ import {
 
 const ID = 'hyntax';
 
-function getTagEndPosition (node) {
+function getTagEndPosition (/** @type {*} */ node) {
   if (node.content.close) {
     return node.content.close.endPosition + 1
   }
@@ -23,14 +23,14 @@ function getTagEndPosition (node) {
   return node.content.openStart.endPosition + 1
 }
 
-function getDoctypeRange (node) {
+function getDoctypeRange (/** @type {*} */ node) {
   return [
     node.content.start.startPosition,
     node.content.end.endPosition + 1,
   ];
 }
 
-function getTagRange (node) {
+function getTagRange (/** @type {*} */ node) {
   const endPosition = getTagEndPosition(node);
 
   return [
@@ -39,14 +39,14 @@ function getTagRange (node) {
   ];
 }
 
-function getTextRange (node) {
+function getTextRange (/** @type {*} */ node) {
   return [
     node.content.value.startPosition,
     node.content.value.endPosition + 1,
   ];
 }
 
-function getCommentRange (node) {
+function getCommentRange (/** @type {*} */ node) {
   return [
     node.content.start.startPosition,
     node.content.end.endPosition + 1,
@@ -62,7 +62,7 @@ export default {
   homepage: pkg.homepage || 'https://github.com/nik-garmash/hyntax',
   locationProps: new Set(['startPosition', 'endPosition']),
 
-  loadParser (callback) {
+  loadParser (/** @type {*} */ callback) {
     require([
       'hyntax/lib-es5/tokenize',
       'hyntax/lib-es5/construct-tree',
@@ -71,14 +71,14 @@ export default {
     });
   },
 
-  parse ({ tokenize, constructTree }, code) {
+  parse (/** @type {*} */ { tokenize, constructTree }, /** @type {*} */ code) {
     const { tokens } = tokenize(code);
     const { ast } = constructTree(tokens);
 
     return ast;
   },
 
-  nodeToRange (node) {
+  nodeToRange (/** @type {*} */ node) {
     if (node.nodeType !== undefined) {
       if (node.nodeType === NODE_DOCTYPE) {
         return getDoctypeRange(node);
@@ -102,7 +102,7 @@ export default {
     }
   },
 
-  opensByDefault (node, key) {
+  opensByDefault (/** @type {*} */ node, /** @type {*} */ key) {
     return [
       'content',
       'children',
@@ -110,7 +110,7 @@ export default {
     ].includes(key)
   },
 
-  getNodeName (node) {
+  getNodeName (/** @type {*} */ node) {
     if (node.nodeType === undefined) {
       return;
     }

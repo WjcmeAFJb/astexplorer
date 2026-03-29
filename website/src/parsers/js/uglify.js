@@ -14,7 +14,7 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['TYPE']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require([
       'raw-loader?esModule=false!uglify-es/lib/utils.js',
       'raw-loader?esModule=false!uglify-es/lib/ast.js',
@@ -25,11 +25,11 @@ export default {
     });
   },
 
-  parse(UglifyJS, code) {
+  parse(/** @type {*} */ UglifyJS, /** @type {*} */ code) {
     return UglifyJS.parse(code);
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     let type = node.TYPE;
     if (type === 'Token') {
       type += `(${node.type})`;
@@ -37,7 +37,7 @@ export default {
     return type;
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     let start, end;
     switch (node.TYPE) {
       case 'Token':
@@ -55,7 +55,7 @@ export default {
     return null;
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return (
       key === 'body' ||
       key === 'elements' || // array literals

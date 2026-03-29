@@ -19,7 +19,7 @@ function mapStateToProps(state) {
  */
 function mapDispatchToProps(dispatch) {
   return {
-    onSave: (parser, newSettings) => dispatch(setParserSettings(newSettings)),
+    onSave: (/** @type {import('../types.js').Parser} */ parser, /** @type {Record<string, unknown>} */ newSettings) => dispatch(setParserSettings(newSettings)),
     onWantToClose: () => dispatch(closeSettingsDialog()),
   };
 }

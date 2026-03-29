@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'babel-eslint',
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require([
       'eslint8/lib/linter',
       'eslint8/lib/source-code',
@@ -20,7 +20,7 @@ export default {
       callback({ eslint: new Linter.Linter(), sourceCode, utils }));
   },
 
-  transform({ eslint, sourceCode, utils }, transformCode, code) {
+  transform(/** @type {*} */ { eslint, sourceCode, utils }, /** @type {*} */ transformCode, /** @type {*} */ code) {
     utils.defineRule(eslint, transformCode);
     return utils.runRule(code, eslint, sourceCode);
   },

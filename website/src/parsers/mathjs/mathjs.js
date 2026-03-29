@@ -15,11 +15,11 @@ export default {
 
   defaultParserID: 'mathjs',
 
-  async loadParser(callback) {
+  async loadParser(/** @type {*} */ callback) {
     require(['mathjs'], callback);
   },
 
-  parse(parser, code) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code) {
     try {
       return parser.parse(code)
     } catch (message) {
@@ -28,7 +28,7 @@ export default {
     }
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.type
   },
 
@@ -36,7 +36,7 @@ export default {
   // nodeToRange(node) {
   // },
 
-  opensByDefault(node) {
+  opensByDefault(/** @type {*} */ node) {
     return node.type === 'BlockNode'
   },
 }

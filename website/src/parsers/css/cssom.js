@@ -13,19 +13,19 @@ export default {
   locationProps: new Set(['__starts', '__ends']),
   typeProps: new Set(),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['cssom/lib/parse'], callback);
   },
 
-  parse(CSSOM, code) {
+  parse(/** @type {*} */ CSSOM, /** @type {*} */ code) {
     return CSSOM.parse(code);
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.constructor.name;
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     let { __starts, __ends } = node;
     if (__ends === undefined && node.parentRule) {
       ({ __ends } = node.parentRule);
@@ -35,7 +35,7 @@ export default {
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'cssRules' || key === 'style';
   },
 

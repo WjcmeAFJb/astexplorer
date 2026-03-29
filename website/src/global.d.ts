@@ -26,7 +26,7 @@ interface Window {
 
 // Webpack AMD-style require used by the project
 interface WebpackRequire {
-  // Callback params are `any` because webpack require loads arbitrary modules at runtime
+  // Callback params are `any` — webpack require loads arbitrary third-party modules at runtime
   (deps: string[], callback: (...modules: any[]) => void): void;
   context(directory: string, useSubdirectories: boolean, regExp: RegExp): {
     keys(): string[];

@@ -18,11 +18,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['regjsparser'], callback);
   },
 
-  parse(regjsparser, code, options) {
+  parse(/** @type {*} */ regjsparser, /** @type {*} */ code, /** @type {*} */ options) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
@@ -36,13 +36,13 @@ export default {
     return regjsparser.parse(pattern, flags, options);
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.range != null) {
       return [node.range[0] + 1, node.range[1] + 1];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return (
         key === 'body'
     );

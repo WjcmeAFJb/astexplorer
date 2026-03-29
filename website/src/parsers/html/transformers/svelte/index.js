@@ -11,21 +11,21 @@ export default {
 
   defaultParserID: 'svelte',
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require(
       ['svelte/compiler'],
       callback,
     );
   },
 
-  transform({ preprocess }, transformCode, code) {
+  transform(/** @type {*} */ { preprocess }, /** @type {*} */ transformCode, /** @type {*} */ code) {
     /** @type {function(): {markup?: Function, script?: Function, style?: Function}} */
     const transform = compileModule(transformCode);
 
     // Identity functions in case of missing transforms
-    const _markupIdentity = (content, _filename) => content;
-    const _scriptIdentity = (content, _attributes, _filename) => content;
-    const _styleIdentity = (content, _attributes, _filename) => content;
+    const _markupIdentity = (/** @type {*} */ content, /** @type {*} */ _filename) => content;
+    const _scriptIdentity = (/** @type {*} */ content, /** @type {*} */ _attributes, /** @type {*} */ _filename) => content;
+    const _styleIdentity = (/** @type {*} */ content, /** @type {*} */ _attributes, /** @type {*} */ _filename) => content;
 
     // Check if there is a transform
     // If Yes, set the appropriate transform or else use identity functions
@@ -34,17 +34,17 @@ export default {
     const styleTransform = transform().style || _styleIdentity;
 
     const result = preprocess(code, {
-      markup:({ content, _filename}) => {
+      markup:(/** @type {*} */ { content, _filename}) => {
         return {
           code: markupTransform(content),
         };
       },
-      script: ({content, attributes, _filename}) => {
+      script: (/** @type {*} */ {content, attributes, _filename}) => {
         return {
           code: scriptTransform(content, attributes),
         };
       },
-      style: ({content, attributes, _filename}) => {
+      style: (/** @type {*} */ {content, attributes, _filename}) => {
         return {
           code: styleTransform(content, attributes),
         };

@@ -5,7 +5,7 @@ const ID = 'traceur';
 const FILENAME = 'astExplorer.js';
 
 class Comment {
-  constructor(sourceRange) {
+  constructor(/** @type {*} */ sourceRange) {
     this.type = 'COMMENT';
     Object.defineProperty(this, 'location', { value: sourceRange });
     this.value = sourceRange.toString();
@@ -21,14 +21,14 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['location']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['exports-loader?traceur!traceur/bin/traceur'], callback);
   },
 
-  parse(traceur, code, options) {
+  parse(/** @type {*} */ traceur, /** @type {*} */ code, /** @type {*} */ options) {
     let sourceFile = new traceur.syntax.SourceFile(FILENAME, code);
     let errorReporter = new traceur.util.ErrorReporter();
-    errorReporter.reportMessageInternal = (sourceRange, message) => {
+    errorReporter.reportMessageInternal = (/** @type {*} */ sourceRange, /** @type {*} */ message) => {
       if (options.TolerateErrors) {
         return;
       }
@@ -48,22 +48,23 @@ export default {
       errorReporter,
       new traceur.util.Options(options),
     );
+    /** @type {*} */
     let comments = [];
-    parser.handleComment = sourceRange => {
+    parser.handleComment = (/** @type {*} */ sourceRange) => {
       comments.push(new Comment(sourceRange));
     };
     let ast = options.SourceType === 'Script' ?
       parser.parseScript() :
       parser.parseModule();
-    ast.comments = comments;
+    ast.comments = /** @type {*} */ comments;
     return ast;
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.constructor.name;
   },
 
-  *forEachProperty(node) {
+  *forEachProperty(/** @type {*} */ node) {
     if (node && typeof node === 'object') {
       if ('type' in node) {
         yield {
@@ -86,13 +87,13 @@ export default {
     }
   },
 
-  nodeToRange({ location: loc }) {
+  nodeToRange(/** @type {*} */ { location: loc }) {
     if (loc) {
       return [loc.start.offset, loc.end.offset];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return (
       key === 'scriptItemList' ||
       key === 'declarations' ||
@@ -140,7 +141,7 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(defaultOptions) {
+  _getSettingsConfiguration(/** @type {*} */ defaultOptions) {
     return {
       fields :[
         ['SourceType', ['Script', 'Module']],

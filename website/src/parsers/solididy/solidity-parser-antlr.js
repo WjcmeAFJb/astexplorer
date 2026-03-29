@@ -11,15 +11,15 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/federicobond/solidity-parser-antlr',
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['solidity-parser-antlr'], callback);
   },
 
-  parse(parser, code, options) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
     return parser.parse(code, options);
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return node.type === 'SourceUnit' ||
       node.type === 'ContractDefinition' ||
       key === 'children' ||

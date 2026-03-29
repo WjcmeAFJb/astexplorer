@@ -3,8 +3,8 @@ import pkg from '@angular-eslint/template-parser/package.json';
 
 const ID = '@angular-eslint/template-parser';
 
-function wrapParesr(callback, { parseForESLint }) {
-  const parse = (code, options) => {
+function wrapParesr(/** @type {*} */ callback, /** @type {*} */ { parseForESLint }) {
+  const parse = (/** @type {*} */ code, /** @type {*} */ options) => {
     const {
       ast,
       visitorKeys,
@@ -12,7 +12,7 @@ function wrapParesr(callback, { parseForESLint }) {
     } = parseForESLint(code, options);
 
     // Traverse AST in order to add `loc` and `range` for each child
-    const addLocation = node => {
+    const addLocation = (/** @type {*} */ node) => {
       if (!node.startSourceSpan || !node.endSourceSpan) {
         if (!node.sourceSpan) return node;
         const range = node.range || [
@@ -42,9 +42,9 @@ function wrapParesr(callback, { parseForESLint }) {
       }
     };
 
-    const visit = node => {
+    const visit = (/** @type {*} */ node) => {
       const keys = visitorKeys[node.type] || [];
-      const newNode = keys.reduce((acc, key) => {
+      const newNode = keys.reduce((/** @type {*} */ acc, /** @type {*} */ key) => {
         const child = node[key];
         if (Array.isArray(child)) {
           const children = child;
@@ -72,11 +72,11 @@ export default {
   homepage: pkg.homepage || 'https://github.com/angular-eslint/angular-eslint',
   locationProps: new Set(['loc', 'start', 'end', 'range', 'startSourceSpan', 'endSourceSpan', 'sourceSpan', 'handlerSpan', 'location']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['@angular-eslint/template-parser'], wrapParesr.bind(null, callback));
   },
 
-  parse(parser, code, options) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
     return parser.parse(code, options);
   },
 };

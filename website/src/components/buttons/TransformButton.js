@@ -13,12 +13,14 @@ import {getTransformerByID} from '../../parsers';
 
 /** @extends {React.Component<TransformButtonProps>} */
 export default class TransformButton extends React.Component {
+  /** @param {TransformButtonProps} props */
   constructor(props) {
     super(props);
     this._onClick = this._onClick.bind(this);
     this._onToggle = this._onToggle.bind(this);
   }
 
+  // @ts-expect-error — target is EventTarget but used as HTMLElement; onClick always fires on HTML elements
   _onClick({target}) {
     let transformID;
     if (target.nodeName.toLowerCase() === 'li') {

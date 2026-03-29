@@ -6,9 +6,9 @@ import React from 'react';
 /** @type {(v: *) => *} */
 const identity = v => v;
 
-function valuesFromArray(settings) {
+function valuesFromArray(/** @type {*} */ settings) {
   return settings.reduce(
-    (obj, name) => (
+    (/** @type {*} */ obj, /** @type {*} */ name) => (
       (obj[name] = settings.indexOf(name) > -1),
       obj
     ),
@@ -16,18 +16,18 @@ function valuesFromArray(settings) {
   );
 }
 
-function getValuesFromSettings(settings) {
+function getValuesFromSettings(/** @type {*} */ settings) {
   if (Array.isArray(settings)) {
     return valuesFromArray(settings);
   }
   return settings;
 }
 
-function defaultUpdater(settings, name, value) {
+function defaultUpdater(/** @type {*} */ settings, /** @type {*} */ name, /** @type {*} */ value) {
   return {...settings, [name]: value};
 }
 
-function arrayUpdater(settings, name, value) {
+function arrayUpdater(/** @type {*} */ settings, /** @type {*} */ name, /** @type {*} */ value) {
   settings = new Set(settings);
   if (value) {
     settings.add(name);
@@ -37,7 +37,7 @@ function arrayUpdater(settings, name, value) {
   return Array.from(settings);
 }
 
-function getUpdateStrategy(settings) {
+function getUpdateStrategy(/** @type {*} */ settings) {
   if (Array.isArray(settings)) {
     return arrayUpdater;
   }

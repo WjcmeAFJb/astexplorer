@@ -1,4 +1,4 @@
 export const id = 'monkey';
 export const displayName = 'Monkey';
-export const mimeTypes = [];
+export const /** @type {*} */ mimeTypes = [];
 export const fileExtension = 'monkey';

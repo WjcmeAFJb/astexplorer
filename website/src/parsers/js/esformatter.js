@@ -13,17 +13,17 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc', 'start', 'end', 'range']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['esformatter-parser'], (parser) => {
       callback(parser);
     });
   },
 
-  parse(parser, code) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code) {
     return parser.parse(code);
   },
 
-  *forEachProperty(node) {
+  *forEachProperty(/** @type {*} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (this._ignoredProperties.has(prop)) {

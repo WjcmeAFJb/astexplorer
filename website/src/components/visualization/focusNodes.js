@@ -40,7 +40,7 @@ export default function(message, arg) {
         } else if (size > 1) {
           const rootRect = root.getBoundingClientRect();
           const center = (rootRect.y + rootRect.height) / 2 + rootRect.y;
-          const closest = Array.from(nodes).reduce((closest, element) => {
+          const closest = Array.from(nodes).reduce(/** @type {(closest: [HTMLElement, number] | null, element: React.RefObject<HTMLElement>) => [HTMLElement, number] | null} */ (closest, element) => {
             if (!element.current) {
               return closest;
             }

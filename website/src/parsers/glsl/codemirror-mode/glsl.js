@@ -5,6 +5,7 @@
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 import CodeMirror from 'codemirror';
+// @ts-expect-error — dynamic third-party API
 CodeMirror.defineMode('clike', function(config, parserConfig) {
   var indentUnit = config.indentUnit,
     statementIndentUnit = parserConfig.statementIndentUnit || indentUnit,
@@ -20,7 +21,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
 
   var curPunc;
 
-  function tokenBase(stream, state) {
+  function tokenBase(/** @type {*} */ stream, /** @type {*} */ state) {
     var ch = stream.next();
     if (hooks[ch]) {
       var result = hooks[ch](stream, state);
@@ -66,8 +67,8 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
     return 'variable';
   }
 
-  function tokenString(quote) {
-    return function(stream, state) {
+  function tokenString(/** @type {*} */ quote) {
+    return function(/** @type {*} */ stream, /** @type {*} */ state) {
       var escaped = false, next, end = false;
       while ((next = stream.next()) != null) {
         if (next == quote && !escaped) {
@@ -81,7 +82,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
     };
   }
 
-  function tokenComment(stream, state) {
+  function tokenComment(/** @type {*} */ stream, /** @type {*} */ state) {
     var maybeEnd = false, ch;
     while ((ch = stream.next())) {
       if (ch == '/' && maybeEnd) {
@@ -93,14 +94,14 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
     return 'comment';
   }
 
-  function Context(indented, column, type, align, prev) {
+  function Context(/** @type {*} */ indented, /** @type {*} */ column, /** @type {*} */ type, /** @type {*} */ align, /** @type {*} */ prev) {
     this.indented = indented;
     this.column = column;
     this.type = type;
     this.align = align;
     this.prev = prev;
   }
-  function pushContext(state, col, type) {
+  function pushContext(/** @type {*} */ state, /** @type {*} */ col, /** @type {*} */ type) {
     var indent = state.indented;
     if (state.context && state.context.type == 'statement')
       indent = state.context.indented;
@@ -112,7 +113,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
       state.context,
     ));
   }
-  function popContext(state) {
+  function popContext(/** @type {*} */ state) {
     var t = state.context.type;
     if (t == ')' || t == ']' || t == '}')
       state.indented = state.context.indented;
@@ -122,8 +123,9 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
   // Interface
 
   return {
-    startState: function(basecolumn) {
+    startState: function(/** @type {*} */ basecolumn) {
       return {
+        /** @type {*} */
         tokenize: null,
         context: new Context((basecolumn || 0) - indentUnit, 0, 'top', false),
         indented: 0,
@@ -192,14 +194,15 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
   };
 });
 
-function words(str) {
+function words(/** @type {*} */ str) {
   var obj = {}, words = str.split(' ');
   for (var i = 0; i < words.length; ++i)
+    // @ts-expect-error — indexing dynamic object
     obj[words[i]] = true;
   return obj;
 }
 
-function cppHook(stream, state) {
+function cppHook(/** @type {*} */ stream, /** @type {*} */ state) {
   if (!state.startOfLine) return false;
   for (;;) {
     if (stream.skipTo('\\')) {
@@ -217,10 +220,11 @@ function cppHook(stream, state) {
   return 'meta';
 }
 
-function def(mimes, mode) {
+function def(/** @type {*} */ mimes, /** @type {*} */ mode) {
   if (typeof mimes == 'string') mimes = [mimes];
+  /** @type {*} */
   var words = [];
-  function add(obj) {
+  function add(/** @type {*} */ obj) {
     if (obj)
       for (var prop in obj)
         if (Object.prototype.hasOwnProperty.call(obj, prop)) words.push(prop);
@@ -230,7 +234,7 @@ function def(mimes, mode) {
   add(mode.atoms);
   if (words.length) {
     mode.helperType = mimes[0];
-    CodeMirror.registerHelper('hintWords', mimes[0], words);
+    CodeMirror.registerHelper('hintWords', mimes[0], /** @type {*} */ words);
   }
 
   for (var i = 0; i < mimes.length; ++i)

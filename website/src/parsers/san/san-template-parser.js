@@ -13,19 +13,19 @@ export default {
   locationProps: new Set([]),
   typeProps: new Set(['tag']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['san'], callback);
   },
 
-  parse(parser, code, options) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
     return parser.parseTemplate(code, options).children[0];
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'children';
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.tagName;
   },
 

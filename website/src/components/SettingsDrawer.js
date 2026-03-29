@@ -10,6 +10,7 @@ import React from 'react';
 
 /** @extends {React.Component<SettingsDrawerProps>} */
 export default class SettingsDrawer extends React.Component {
+  /** @param {SettingsDrawerProps} props */
   constructor(props) {
     super(props);
     this._expand = this._expand.bind(this);

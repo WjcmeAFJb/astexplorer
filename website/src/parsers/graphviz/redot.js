@@ -12,21 +12,21 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['redot'], callback);
   },
 
-  parse(redot, code) {
+  parse(/** @type {*} */ redot, /** @type {*} */ code) {
     return redot().parse(code);
   },
 
-  nodeToRange({ position }) {
+  nodeToRange(/** @type {*} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'children';
   },
 };

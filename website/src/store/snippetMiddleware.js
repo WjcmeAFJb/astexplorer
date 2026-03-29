@@ -93,6 +93,7 @@ async function saveSnippet({fork}, state, next, storageAdapter) {
   const transformer = selectors.getTransformer(state);
   const showTransformPanel = selectors.showTransformer(state);
 
+  /** @type {import('../types.js').SnippetData} */
   const data = {
     parserID: parser.id,
     settings: {

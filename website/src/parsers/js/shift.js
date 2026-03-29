@@ -3,6 +3,7 @@ import pkg from 'shift-parser/package.json';
 
 const ID = 'shift';
 
+/** @type {*} */
 let lastParsedLocations;
 
 export default {
@@ -14,11 +15,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['shift-parser'], callback);
   },
 
-  parse(shift, code, options) {
+  parse(/** @type {*} */ shift, /** @type {*} */ code, /** @type {*} */ options) {
     const parseMethod = options.sourceType === 'module' ?
       'parseModuleWithLocation' :
       'parseScriptWithLocation';
@@ -27,14 +28,14 @@ export default {
     return tree;
   },
 
-  nodeToRange(node) {
-    if (lastParsedLocations && lastParsedLocations.has(node)) {
-      let loc = lastParsedLocations.get(node);
+  nodeToRange(/** @type {*} */ node) {
+    if (/** @type {*} */ lastParsedLocations && /** @type {*} */ lastParsedLocations.has(node)) {
+      let loc = /** @type {*} */ lastParsedLocations.get(node);
       return [loc.start.offset, loc.end.offset];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return (
       key === 'items' ||
       key === 'declaration' ||

@@ -533,8 +533,8 @@ function activeRevision(state=initialState.selectedRevision, action) {
  * @returns {Partial<T>}
  */
 function pick(obj, ...properties) {
-  return properties.reduce(
-    (result, prop) => (result[prop] = obj[prop], result),
-    {},
-  );
+  return /** @type {Partial<T>} */ (properties.reduce(
+    (/** @type {Record<string, unknown>} */ result, /** @type {string} */ prop) => (result[prop] = obj[prop], result),
+    /** @type {Record<string, unknown>} */ ({}),
+  ));
 }

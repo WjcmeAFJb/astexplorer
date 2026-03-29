@@ -161,7 +161,7 @@ export function getKeyMap (state) {
 /** @type {(state: AppState) => boolean} */
 const isCodeDirty = createSelector(
   [getCode, getInitialCode],
-  (code, initialCode) => code !== initialCode,
+  (/** @type {string} */ code, /** @type {string} */ initialCode) => code !== initialCode,
 );
 
 // Transform related
@@ -209,19 +209,19 @@ export function showTransformer(state) {
 /** @type {(state: AppState) => boolean} */
 const isTransformDirty = createSelector(
   [getTransformCode, getInitialTransformCode],
-  (code, initialCode) => code !== initialCode,
+  (/** @type {string} */ code, /** @type {string} */ initialCode) => code !== initialCode,
 );
 
 /** @type {(state: AppState) => boolean} */
 export const canFork = createSelector(
   [getRevision],
-  (revision) => !!revision,
+  (/** @type {Revision | null | undefined} */ revision) => !!revision,
 );
 
 /** @type {(state: AppState) => boolean} */
 const canSaveCode = createSelector(
   [getRevision, isCodeDirty],
-  (revision, dirty) => (
+  (/** @type {Revision | null | undefined} */ revision, /** @type {boolean} */ dirty) => (
     !revision || // can always save if there is no revision
     dirty
   ),
@@ -230,13 +230,13 @@ const canSaveCode = createSelector(
 /** @type {(state: AppState) => boolean} */
 export const canSaveTransform = createSelector(
   [showTransformer, isTransformDirty],
-  (showTransformer, dirty) => showTransformer && dirty,
+  (/** @type {boolean} */ showTransformer, /** @type {boolean} */ dirty) => showTransformer && dirty,
 );
 
 /** @type {(state: AppState) => boolean} */
 const didParserSettingsChange = createSelector(
   [getParserSettings, getRevision, getParser],
-  (parserSettings, revision, parser) => {
+  (/** @type {Record<string, unknown> | null} */ parserSettings, /** @type {Revision | null | undefined} */ revision, /** @type {Parser} */ parser) => {
     const savedParserSettings = revision && revision.getParserSettings();
     return (
       !!revision &&
@@ -252,7 +252,7 @@ const didParserSettingsChange = createSelector(
 /** @type {(state: AppState) => boolean} */
 export const canSave = createSelector(
   [getRevision, canSaveCode, canSaveTransform, didParserSettingsChange],
-  (revision, canSaveCode, canSaveTransform, didParserSettingsChange) => (
+  (/** @type {Revision | null | undefined} */ revision, /** @type {boolean} */ canSaveCode, /** @type {boolean} */ canSaveTransform, /** @type {boolean} */ didParserSettingsChange) => (
     (canSaveCode || canSaveTransform || didParserSettingsChange) &&
     (!revision || revision.canSave())
   ),

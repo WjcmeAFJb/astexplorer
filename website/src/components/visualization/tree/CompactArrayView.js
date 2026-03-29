@@ -9,6 +9,7 @@ import React from 'react';
 
 /** @extends {React.Component<CompactArrayViewProps>} */
 export default class CompactArrayView extends React.Component {
+  /** @param {CompactArrayViewProps} nextProps */
   shouldComponentUpdate(nextProps) {
     return nextProps.array.length !== this.props.array.length;
   }

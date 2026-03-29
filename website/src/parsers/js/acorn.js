@@ -13,7 +13,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['acorn', 'acorn-loose', 'acorn-jsx'], (acorn, acornLoose, acornJsx) => {
       callback({
         acorn,
@@ -23,15 +23,17 @@ export default {
     });
   },
 
-  parse(parsers, code, options={}) {
+  parse(/** @type {*} */ parsers, /** @type {*} */ code, options={}) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
     let parser;
+    // @ts-expect-error — indexing dynamic object
     if (options['plugins.jsx'] && !options.loose) {
       const cls = parsers.acorn.Parser.extend(parsers.acornJsx());
       parser = cls.parse.bind(cls);
     } else {
+      // @ts-expect-error — dynamic third-party API
       parser = options.loose ?
         parsers.acornLoose.parse:
         parsers.acorn.parse;
@@ -40,11 +42,12 @@ export default {
     return parser(code, {
       ...options,
       // Replace `false` with `null` to use the default value calculated from ecmaVersion.
+      // @ts-expect-error — dynamic third-party API
       allowAwaitOutsideFunction: options.allowAwaitOutsideFunction || null,
     });
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -70,7 +73,7 @@ export default {
   _getSettingsConfiguration() {
     return {
       fields: [
-        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'latest'], x => x === 'latest' ? x : Number(x)],
+        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'latest'], (/** @type {*} */ x) => x === 'latest' ? x : Number(x)],
         ['sourceType', ['script', 'module']],
         'allowReserved',
         'allowReturnOutsideFunction',
@@ -86,7 +89,7 @@ export default {
     };
   },
 
-  renderSettings(parserSettings, onChange) {
+  renderSettings(/** @type {*} */ parserSettings, /** @type {*} */ onChange) {
     return (
       <div>
         <p>

@@ -11,14 +11,14 @@ export default {
 
   defaultParserID: 'ember-template-recast',
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require(
       ['../../../transpilers/babel', 'ember-template-recast'],
       (transpile, recast) => callback({ transpile: transpile.default, recast }),
     );
   },
 
-  transform({ transpile, recast }, transformCode, code) {
+  transform(/** @type {*} */ { transpile, recast }, /** @type {*} */ transformCode, /** @type {*} */ code) {
     transformCode = transpile(transformCode);
     const transformModule = compileModule(transformCode);
 

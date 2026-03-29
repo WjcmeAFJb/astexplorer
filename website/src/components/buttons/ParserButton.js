@@ -12,12 +12,13 @@ import {getParserByID} from '../../parsers';
 
 /** @extends {React.Component<ParserButtonProps>} */
 export default class ParserButton extends React.Component {
+  /** @param {ParserButtonProps} props */
   constructor(props) {
     super(props);
     this._onClick = this._onClick.bind(this);
   }
 
-  _onClick({currentTarget}) {
+  _onClick(/** @type {{currentTarget: HTMLElement}} */ {currentTarget}) {
     let parserID = currentTarget.getAttribute('data-id');
     this.props.onParserChange(getParserByID(parserID));
   }

@@ -12,22 +12,22 @@ export default {
   _ignoredProperties: new Set(['_type']),
   locationProps: new Set(['Loc']),
 
-  async loadParser(callback) {
+  async loadParser(/** @type {*} */ callback) {
     require(['astexplorer-go'], async parser => {
       await parser.init()
       callback(parser)
     })
   },
 
-  parse(parser, code) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code) {
     return parser.parseFile(code)
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node._type
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.Loc) {
       return [node.Loc.Start, node.Loc.End].map(({ Offset }) => Offset)
     }

@@ -11,15 +11,15 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/codeschool/sqlite-parser',
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['sqlite-parser'], callback);
   },
 
-  parse(sqliteParser, code) {
+  parse(/** @type {*} */ sqliteParser, /** @type {*} */ code) {
     return sqliteParser(code);
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'statement';
   },
 

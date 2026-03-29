@@ -13,15 +13,15 @@ export default {
   locationProps: new Set(['loc', 'start', 'end']),
   showInMenu: false,
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['babylon5'], callback);
   },
 
-  parse(babylon, code, parserSettings) {
+  parse(/** @type {*} */ babylon, /** @type {*} */ code, /** @type {*} */ parserSettings) {
     return babylon.parse(code, parserSettings);
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -30,7 +30,7 @@ export default {
     }
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }
@@ -59,7 +59,7 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(defaultOptions) {
+  _getSettingsConfiguration(/** @type {*} */ defaultOptions) {
     return {
       fields: [
         ['sourceType', ['module', 'script']],
@@ -71,18 +71,19 @@ export default {
           key: 'features',
           title: 'Features',
           fields: Object.keys(defaultOptions.features),
-          settings: settings => settings.features || {...defaultOptions.features},
+          settings: (/** @type {*} */ settings) => settings.features || {...defaultOptions.features},
         },
         {
           key: 'plugins',
           title: 'Plugins',
           fields: Object.keys(defaultOptions.plugins),
-          settings: settings => settings.plugins || {...defaultOptions.plugins},
-          values: plugins => Object.keys(defaultOptions.plugins).reduce(
+          settings: (/** @type {*} */ settings) => settings.plugins || {...defaultOptions.plugins},
+          values: (/** @type {*} */ plugins) => Object.keys(defaultOptions.plugins).reduce(
+            // @ts-expect-error — indexing dynamic object
             (obj, name) => ((obj[name] = name in plugins), obj),
             {},
           ),
-          update: (plugins, name, value) => {
+          update: (/** @type {*} */ plugins, /** @type {*} */ name, /** @type {*} */ value) => {
             if (value) {
               return {...plugins, [name]: true};
             }

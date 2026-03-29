@@ -31,6 +31,7 @@ export default class Editor extends React.Component {
   }
 
   componentDidMount() {
+    /** @type {Array<() => void>} */
     this._subscriptions = [];
     this.codeMirror = CodeMirror( // eslint-disable-line new-cap
       this.container,

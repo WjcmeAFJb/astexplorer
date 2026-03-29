@@ -12,25 +12,25 @@ export default {
   homepage: 'https://github.com/creditkarma/thrift-parser',
   locationProps: new Set(['location']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['@creditkarma/thrift-parser'], callback);
   },
 
-  parse({parse}, code) {
+  parse(/** @type {*} */ {parse}, /** @type {*} */ code) {
     return parse(code);
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.type;
   },
 
-  nodeToRange({ loc }) {
+  nodeToRange(/** @type {*} */ { loc }) {
     if (loc !== null && loc !== undefined) {
       return [loc.start.index, loc.end.index];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return node === 'ThriftDocument' || key === 'body';
   },
 };

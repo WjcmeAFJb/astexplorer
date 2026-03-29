@@ -4,6 +4,7 @@ import pkg from 'java-parser/package.json';
 const ID = 'java-parser';
 
 export const parserSettingsConfiguration = {
+  /** @type {*} */
   fields: [],
 };
 
@@ -20,11 +21,11 @@ export default {
   locationProps: new Set(['location']),
   typeProps: new Set(['name']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['java-parser'], callback);
   },
 
-  parse(parser, code) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code) {
     return parser.parse(code);
   },
 
@@ -34,11 +35,11 @@ export default {
     return {};
   },
 
-  getNodeName({ name }) {
+  getNodeName(/** @type {*} */ { name }) {
     return name;
   },
 
-  nodeToRange({ location }) {
+  nodeToRange(/** @type {*} */ { location }) {
     if (!location) {
       return;
     }

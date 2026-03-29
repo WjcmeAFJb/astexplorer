@@ -12,15 +12,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['@humanwhocodes/momoa'], callback);
   },
 
-  parse(momoa, code, options) {
+  parse(/** @type {*} */ momoa, /** @type {*} */ code, /** @type {*} */ options) {
     return momoa.parse(code, options);
   },
 
-  nodeToRange({loc}) {
+  nodeToRange(/** @type {*} */ {loc}) {
     if (loc) {
       return [
         loc.start.offset,

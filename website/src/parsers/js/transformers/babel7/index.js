@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'babylon7',
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require([
       '../../../transpilers/babel',
       'babel7',
@@ -19,7 +19,7 @@ export default {
     ], (transpile, babel, recast) => callback({ transpile: transpile.default, babel, recast }));
   },
 
-  transform({ transpile, babel, recast }, transformCode, code) {
+  transform(/** @type {*} */ { transpile, babel, recast }, /** @type {*} */ transformCode, /** @type {*} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

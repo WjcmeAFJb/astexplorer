@@ -12,15 +12,15 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage,
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['seafox'], callback);
   },
 
-  parse(parser, code, options) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
     return parser.parse(code, options);
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -57,7 +57,7 @@ export default {
     };
   },
 
-  renderSettings(parserSettings, onChange) {
+  renderSettings(/** @type {*} */ parserSettings, /** @type {*} */ onChange) {
     return (
       <div>
         <p>

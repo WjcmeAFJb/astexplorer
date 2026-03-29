@@ -13,28 +13,28 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['tag']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['vue-eslint-parser'], callback);
   },
 
-  parse(parser, code, options) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
     return parser.parse(code, options);
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.type || node.name) {
       return node.range;
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'children';
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.tag;
   },
 
@@ -54,14 +54,14 @@ export default {
 
     return {
       fields: [
-        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11], value => Number(value)],
+        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11], (/** @type {*} */ value) => Number(value)],
         ['sourceType', ['script', 'module']],
         {
           key: 'vueFeatures',
           title: 'vueFeatures',
           fields: Object.keys(defaultOptions.vueFeatures),
           settings:
-          settings => settings.vueFeatures || {...defaultOptions.vueFeatures},
+          (/** @type {*} */ settings) => settings.vueFeatures || {...defaultOptions.vueFeatures},
         },
       ],
     };

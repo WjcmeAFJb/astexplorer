@@ -18,17 +18,17 @@ export default {
   ]),
   typeProps: new Set(['name']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['@angular/compiler'], callback);
   },
 
-  parse(ng, code, options) {
+  parse(/** @type {*} */ ng, /** @type {*} */ code, /** @type {*} */ options) {
     const ast = ng.parseTemplate(code, 'astexplorer.html', options);
     fixSpan(ast, code);
     return ast;
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.startSourceSpan) {
       if (node.endSourceSpan) {
         return [
@@ -49,7 +49,7 @@ export default {
     }
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     let name = getNodeCtor(node);
     if (node.name) {
       name += `(${node.name})`;
@@ -64,7 +64,7 @@ export default {
   },
 };
 
-function getNodeCtor(node) {
+function getNodeCtor(/** @type {*} */ node) {
   return node.constructor && node.constructor.name;
 }
 
@@ -82,10 +82,10 @@ function getNodeCtor(node) {
  *     <tag [attr]="expression">
  *                  ^^^^^^^^^^ sub AST { start: 13, end: 23 }
  */
-function fixSpan(ast, code) {
+function fixSpan(/** @type {*} */ ast, /** @type {*} */ code) {
   const fixed = new Set();
   const KEEP_VISIT = 1;
-  function visitTarget(value, isTarget, fn, parent) {
+  function visitTarget(/** @type {*} */ value, /** @type {*} */ isTarget, /** @type {*} */ fn, /** @type {*} */ parent) {
     if (value !== null && typeof value === 'object') {
       if (isTarget(value)) {
         if (fn(value, parent) !== KEEP_VISIT) {
@@ -102,7 +102,7 @@ function fixSpan(ast, code) {
     }
   }
 
-  function getBaseStart(parent) {
+  function getBaseStart(/** @type {*} */ parent) {
     const nodeName = getNodeCtor(parent);
     switch (nodeName) {
       case 'BoundAttribute':
@@ -133,13 +133,13 @@ function fixSpan(ast, code) {
 
   visitTarget(
     ast,
-    value => getNodeCtor(value) === 'ASTWithSource',
-    (node, parent) => {
+    (/** @type {*} */ value) => getNodeCtor(value) === 'ASTWithSource',
+    (/** @type {*} */ node, /** @type {*} */ parent) => {
       const baseStart = getBaseStart(parent);
       visitTarget(
         node,
-        value => value.span,
-        node => {
+        (/** @type {*} */ value) => value.span,
+        (/** @type {*} */ node) => {
           if (!fixed.has(node)) {
             node.span.start += baseStart;
             node.span.end += baseStart;

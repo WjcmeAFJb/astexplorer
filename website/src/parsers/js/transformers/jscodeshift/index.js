@@ -6,7 +6,7 @@ const ID = 'jscodeshift';
 const sessionMethods = new Set();
 
 // https://github.com/facebook/jscodeshift#parser
-const getJscodeshiftParser = (parser, parserSettings) => {
+const getJscodeshiftParser = (/** @type {*} */ parser, /** @type {*} */ parserSettings) => {
   if (parser === 'typescript') {
     if (parserSettings.typescript && parserSettings.typescript.jsx === false) {
       return 'ts'
@@ -31,28 +31,29 @@ export default {
     'flow',
   ]),
 
-  formatCodeExample(codeExample, { parser, parserSettings }) {
+  formatCodeExample(/** @type {*} */ codeExample, /** @type {*} */ { parser, parserSettings }) {
     return codeExample.replace('{{parser}}', `${getJscodeshiftParser(parser, parserSettings)}`)
   },
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require(['../../../transpilers/babel', 'jscodeshift'], (transpile, jscodeshift) => {
         const { registerMethods } = jscodeshift;
 
+        /** @type {*} */
         let origMethods;
 
         jscodeshift.registerMethods({
-          hasOwnProperty(name) {
+          hasOwnProperty(/** @type {*} */ name) {
             // compare only against current-session & very original methods
-            if (!origMethods) {
+            if (!/** @type {*} */ origMethods) {
               origMethods = new Set(Object.getOwnPropertyNames(this));
             }
-            return origMethods.has(name) || sessionMethods.has(name);
+            return /** @type {*} */ origMethods.has(name) || sessionMethods.has(name);
           },
         });
 
         // patch in order to collect user-defined method names
-        jscodeshift.registerMethods = function (methods) {
+        jscodeshift.registerMethods = function (/** @type {*} */ methods) {
           registerMethods.apply(this, arguments);
           for (let name in methods) {
             sessionMethods.add(name);
@@ -65,9 +66,9 @@ export default {
   },
 
   transform(
-    { transpile, jscodeshift },
-    transformCode,
-    code,
+    /** @type {*} */ { transpile, jscodeshift },
+    /** @type {*} */ transformCode,
+    /** @type {*} */ code,
   ) {
     sessionMethods.clear();
     transformCode = transpile(transformCode);
@@ -90,7 +91,7 @@ export default {
         jscodeshift: transformModule.parser ?
           jscodeshift.withParser(transformModule.parser) :
           jscodeshift,
-        stats: (value, quantity=1) => {
+        stats: (/** @type {*} */ value, quantity=1) => {
           statsWasCalled = true;
           counter[value] = (counter[value] ? counter[value] : 0) + quantity;
         },

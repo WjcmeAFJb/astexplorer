@@ -51,8 +51,8 @@ function loadTern() {
         ],
         (tern, _, infer, jscs_def, ecmascript) => {
           global.tern = tern;
-          tern.registerPlugin('transformer', server => {
-            server.on('afterLoad', file => {
+          tern.registerPlugin('transformer', /** @param {{on: Function} & Record<string, unknown>} server */ server => {
+            server.on('afterLoad', /** @param {{scope: {props: Record<string, {getFunctionType: Function}>}} & Record<string, unknown>} file */ file => {
               const fnVal = file.scope.props.transformer;
               if (fnVal) {
                 const fnType = fnVal.getFunctionType();

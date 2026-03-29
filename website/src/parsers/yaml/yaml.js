@@ -12,11 +12,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['yaml'], callback);
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.range) {
       return node.range;
     }
@@ -31,7 +31,7 @@ export default {
     }
   },
 
-  parse({ parseAllDocuments }, code, options) {
+  parse(/** @type {*} */ { parseAllDocuments }, /** @type {*} */ code, /** @type {*} */ options) {
     return parseAllDocuments(code, options);
   },
 

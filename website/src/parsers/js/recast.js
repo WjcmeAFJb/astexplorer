@@ -17,7 +17,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(
       ['recast', 'babel5', 'babylon6', 'babylon7', 'flow-parser', 'recast/parsers/typescript'],
       (recast, babelCore, babylon6, babylon7, flow, typescript) => {
@@ -35,7 +35,7 @@ export default {
     );
   },
 
-  parse({ recast, parsers }, code, options) {
+  parse(/** @type {*} */ { recast, parsers }, /** @type {*} */ code, /** @type {*} */ options) {
     options = {...options}; // a copy is needed since we are mutating options
     const flowOptions = options.flow;
     const babylon6Options = options.babylon6;
@@ -47,21 +47,21 @@ export default {
     switch (options.parser) {
       case 'flow':
         options.parser = {
-          parse(code) {
+          parse(/** @type {*} */ code) {
             return flowParser.parse(parsers.flow, code, flowOptions);
           },
         };
         break;
       case 'babylon6':
         options.parser = {
-          parse(code) {
+          parse(/** @type {*} */ code) {
             return babylon6Parser.parse(parsers.babylon6, code, babylon6Options);
           },
         };
         break;
       case 'babylon7':
         options.parser = {
-          parse(code) {
+          parse(/** @type {*} */ code) {
             return babylon7Parser.parse(parsers.babylon7, code, babylon7Options);
           },
         };
@@ -81,7 +81,7 @@ export default {
 
   _ignoredProperties: new Set(['__clone']),
 
-  *forEachProperty(node) {
+  *forEachProperty(/** @type {*} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (
@@ -98,7 +98,7 @@ export default {
     }
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -116,7 +116,7 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(defaultOptions) {
+  _getSettingsConfiguration(/** @type {*} */ defaultOptions) {
     return {
       fields: [
         ['parser', ['esprima', 'babel5', 'babylon6', 'babylon7', 'flow', 'typescript']],
@@ -126,19 +126,19 @@ export default {
           key: 'flow',
           title: 'Flow Settings',
           fields: flowSettings.parserSettingsConfiguration.fields,
-          settings: settings => settings.flow || defaultOptions.flow,
+          settings: (/** @type {*} */ settings) => settings.flow || defaultOptions.flow,
         },
         {
           key: 'babylon6',
           title: 'Babylon 6 Settings',
           fields: babylon6Settings.parserSettingsConfiguration.fields,
-          settings: settings => settings.babylon6 || defaultOptions.babylon6,
+          settings: (/** @type {*} */ settings) => settings.babylon6 || defaultOptions.babylon6,
         },
         {
           key: 'babylon7',
           title: 'Babylon 7 Settings',
           fields: babylon7Settings.parserSettingsConfiguration.fields,
-          settings: settings => settings.babylon7 || defaultOptions.babylon7,
+          settings: (/** @type {*} */ settings) => settings.babylon7 || defaultOptions.babylon7,
         },
       ],
       required: new Set(['range']),

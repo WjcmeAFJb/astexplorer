@@ -12,15 +12,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['json-to-ast'], callback);
   },
 
-  parse(jsonToAst, code) {
+  parse(/** @type {*} */ jsonToAst, /** @type {*} */ code) {
     return jsonToAst(code);
   },
 
-  nodeToRange({loc}) {
+  nodeToRange(/** @type {*} */ {loc}) {
     if (loc) {
       return [
         loc.start.offset,

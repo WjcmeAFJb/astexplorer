@@ -18,24 +18,24 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['end', 'start']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['regexpp'], callback);
   },
 
-  parse(regexpp, code, options) {
+  parse(/** @type {*} */ regexpp, /** @type {*} */ code, /** @type {*} */ options) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
     return regexpp.parseRegExpLiteral(code, options);
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (typeof node.start === 'number' && typeof node.end === 'number') {
       return [node.start, node.end];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return (
       key === 'pattern' ||
       key === 'elements' ||

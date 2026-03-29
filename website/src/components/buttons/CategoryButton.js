@@ -3,6 +3,7 @@ import React from 'react';
 import cx from '../../utils/classnames.js';
 import {getCategoryByID, categories} from '../../parsers';
 
+/** @type {Record<string, string>} */
 const categoryIcon = {
   'text/x-scala': 'icon-scala',
   css: 'fa-css3',
@@ -28,12 +29,13 @@ const categoryIcon = {
 
 /** @extends {React.Component<CategoryButtonProps>} */
 export default class CategoryButton extends React.Component {
+  /** @param {CategoryButtonProps} props */
   constructor(props) {
     super(props);
     this._onClick = this._onClick.bind(this);
   }
 
-  _onClick({currentTarget}) {
+  _onClick(/** @type {{currentTarget: HTMLElement}} */ {currentTarget}) {
     let categoryID = currentTarget.getAttribute('data-id');
     this.props.onCategoryChange(getCategoryByID(categoryID));
   }

@@ -11,11 +11,11 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage,
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['ember-template-recast'], (recast) => callback(recast.parse));
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'body';
   },
 };

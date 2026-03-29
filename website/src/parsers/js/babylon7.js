@@ -70,8 +70,9 @@ export const parserSettingsConfiguration = {
       key: 'plugins',
       title: 'Plugins',
       fields: availablePlugins,
-      settings: settings => settings.plugins || defaultOptions.plugins,
-      values: plugins => availablePlugins.reduce(
+      settings: (/** @type {*} */ settings) => settings.plugins || defaultOptions.plugins,
+      values: (/** @type {*} */ plugins) => availablePlugins.reduce(
+        // @ts-expect-error — indexing dynamic object
         (obj, name) => ((obj[name] = plugins.indexOf(name) > -1), obj),
         {},
       ),
@@ -83,7 +84,7 @@ export const parserSettingsConfiguration = {
         ['proposal', ['minimal', 'smart', 'hack', 'fsharp']],
         ['hackTopicToken', ['%', '#', '^', '^^', '@@']],
       ],
-      settings: settings => settings.pipelineOptions || defaultOptions.pipelineOptions,
+      settings: (/** @type {*} */ settings) => settings.pipelineOptions || defaultOptions.pipelineOptions,
     },
     {
       key: 'decoratorOptions',
@@ -93,7 +94,7 @@ export const parserSettingsConfiguration = {
         "decoratorsBeforeExport",
         ['version', ["2018-09", "2021-12", "2022-03"]],
       ],
-      settings: settings => settings.decoratorOptions || defaultOptions.decoratorOptions,
+      settings: (/** @type {*} */ settings) => settings.decoratorOptions || defaultOptions.decoratorOptions,
     },
     {
       key: 'typescriptOptions',
@@ -102,7 +103,7 @@ export const parserSettingsConfiguration = {
         'dts',
         'disallowAmbiguousJSXLike'
       ],
-      settings: settings => settings.typescriptOptions || defaultOptions.typescriptOptions,
+      settings: (/** @type {*} */ settings) => settings.typescriptOptions || defaultOptions.typescriptOptions,
     }
   ],
 };
@@ -116,16 +117,16 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['babylon7'], callback);
   },
 
-  parse(babylon, code, options) {
+  parse(/** @type {*} */ babylon, /** @type {*} */ code, /** @type {*} */ options) {
     options = {...options};
     // Older versions didn't have the pipelineOptions setting, but
     // only a pipelineProposal string option.
     const { pipelineOptions = {proposal: options.pipelineProposal}, decoratorOptions, typescriptOptions } = options;
-    options.plugins = (options.plugins || []).map(plugin => {
+    options.plugins = (options.plugins || []).map((/** @type {*} */ plugin) => {
       switch (plugin) {
         case 'decorators':
           return ['decorators', decoratorOptions];
@@ -143,7 +144,7 @@ export default {
     return babylon.parse(code, options);
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -151,7 +152,7 @@ export default {
     }
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

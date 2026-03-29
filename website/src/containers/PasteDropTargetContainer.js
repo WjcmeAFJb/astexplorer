@@ -10,7 +10,7 @@ function mapDispatchToProps(dispatch) {
     onText: (/** @type {string} */ type, /** @type {Event} */ event, /** @type {string} */ code, /** @type {string} */ categoryId) => {
       dispatch(dropText(code, categoryId));
     },
-    onError: error => dispatch(setError(error)),
+    onError: (/** @type {Error} */ error) => dispatch(setError(error)),
   };
 }
 

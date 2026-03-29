@@ -182,9 +182,9 @@ const TreeAdapterConfigs = {
   default: {
     filters: [],
     openByDefault: () => false,
-    nodeToRange: () => null,
-    nodeToName: () => { throw new Error('nodeToName must be passed');},
-    walkNode: () => { throw new Error('walkNode must be passed');},
+    nodeToRange: /** @returns {null} */ () => null,
+    nodeToName: /** @returns {string} */ () => { throw new Error('nodeToName must be passed');},
+    walkNode: /** @returns {never} */ () => { throw new Error('walkNode must be passed');},
   },
 
   estree: {
@@ -201,10 +201,12 @@ const TreeAdapterConfigs = {
       'declarations', // variable declaration
       'expression', // expression statements
     ]),
+    /** @param {Record<string, unknown>} node @param {string} key */
     openByDefault(node, key) {
       return node && this.openByDefaultNodes.has(node.type) ||
         this.openByDefaultKeys.has(key);
     },
+    /** @param {Record<string, unknown>} node */
     nodeToRange(node) {
       if (!(node && typeof node === 'object')) {
         return null;
@@ -217,9 +219,11 @@ const TreeAdapterConfigs = {
       }
       return null;
     },
+    /** @param {Record<string, unknown>} node */
     nodeToName(node) {
       return node.type;
     },
+    /** @param {Record<string, unknown>} node */
     *walkNode(node) {
       if (node && typeof node === 'object') {
         for (let prop in node) {

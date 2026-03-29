@@ -12,7 +12,7 @@ export default {
   homepage: pkg.homepage || 'https://github.com/w3c/webidl2.js',
   typeProps: new Set(['name', 'type', 'idlType', 'escapedName']),
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     if (node.name) {
         return node.name + (node.optional ? '?' : '');
     } else if (node.type) {
@@ -22,15 +22,15 @@ export default {
     }
   },
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['webidl2'], callback);
   },
 
-  parse({ parse }, code, options) {
+  parse(/** @type {*} */ { parse }, /** @type {*} */ code, /** @type {*} */ options) {
     return parse(code, options);
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'members';
   },
 

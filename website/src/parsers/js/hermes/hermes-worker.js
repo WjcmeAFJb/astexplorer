@@ -6,7 +6,7 @@
 import * as hermesParser from 'hermes-parser';
 
 const handlers = {
-  parse(code, options) {
+  parse(/** @type {*} */ code, /** @type {*} */ options) {
     return hermesParser.parse(code, options);
   },
 };
@@ -17,6 +17,7 @@ onmessage = async function(e) {
     throw new Error('No handler in Hermes worker for message type: ' + type);
   };
   if (Object.hasOwnProperty.call(handlers, type)) {
+    // @ts-expect-error — indexing dynamic object
     handler = handlers[type];
   }
   let value;

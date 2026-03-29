@@ -32,6 +32,7 @@ const locKeys = [
   'pval_loc',
   'pvb_loc',
 ];
+// @ts-expect-error — indexing dynamic object
 const parserVersion = esyPkg.dependencies['@esy-ocaml/reason'];
 
 export default {
@@ -43,19 +44,19 @@ export default {
   homepage: `https://www.npmjs.com/package/@esy-ocaml/reason/v/${parserVersion}`,
   locationProps: new Set(locKeys),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['astexplorer-refmt'], callback);
   },
 
-  parse(parser, code) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code) {
     return parser.parseReason(code);
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.type;
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     const locKey = locKeys.find(key => Object.prototype.hasOwnProperty.call(node, key));
     if (locKey) {
       const range = [

@@ -30,7 +30,7 @@ export default function SplitPane({vertical, className, children, onResize}) {
   const [position, setPosition] = React.useState(50)
   const container = React.useRef(/** @type {HTMLDivElement | null} */ (null))
 
-  const onMouseDown = React.useCallback(function(event) {
+  const onMouseDown = React.useCallback(/** @param {React.MouseEvent<HTMLDivElement>} event */ function(event) {
     if (!container.current) {
       return;
     }
@@ -41,7 +41,7 @@ export default function SplitPane({vertical, className, children, onResize}) {
     const offset = vertical ? container.current.offsetTop : container.current.offsetLeft;
     const size = vertical ? container.current.offsetHeight : container.current.offsetWidth;
     global.document.body.style.cursor = vertical ? 'row-resize' : 'col-resize';
-    let moveHandler = event => {
+    let moveHandler = /** @param {MouseEvent} event */ event => {
       event.preventDefault();
       const newPosition = ((vertical ? event.pageY : event.pageX) - offset) / size * 100;
       // Using 99% as the max value prevents the divider from disappearing
@@ -89,6 +89,7 @@ export default function SplitPane({vertical, className, children, onResize}) {
       className={className}
       style={{display: 'flex', flexDirection: vertical ? 'column' : 'row'}}>
       <div style={styleA}>
+        {/* @ts-expect-error — children reassigned to ReactChild[] via toArray; TS doesn't track reassignment */}
         {children[0]}
       </div>
       <div
@@ -100,6 +101,7 @@ export default function SplitPane({vertical, className, children, onResize}) {
         onMouseDown={onMouseDown}
       />
       <div style={styleB}>
+        {/* @ts-expect-error — children reassigned to ReactChild[] via toArray; TS doesn't track reassignment */}
         {children[1]}
       </div>
     </div>

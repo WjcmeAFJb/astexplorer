@@ -13,7 +13,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require([
       'remark',
       'remark-gfm',
@@ -32,9 +32,9 @@ export default {
   },
 
   parse(
-    { remark, gfm, directive, footnotes, frontmatter, math },
-    code,
-    options,
+    /** @type {*} */ { remark, gfm, directive, footnotes, frontmatter, math },
+    /** @type {*} */ code,
+    /** @type {*} */ options,
   ) {
     const plugins = [
       options['remark-gfm'] ? gfm : false,
@@ -46,13 +46,13 @@ export default {
     return remark().use(plugins).parse(code);
   },
 
-  nodeToRange({ position }) {
+  nodeToRange(/** @type {*} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'children';
   },
 
@@ -66,7 +66,7 @@ export default {
     };
   },
 
-  renderSettings(parserSettings, onChange) {
+  renderSettings(/** @type {*} */ parserSettings, /** @type {*} */ onChange) {
     return (
       <div>
         <p>

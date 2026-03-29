@@ -13,25 +13,25 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['tag']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['@vue/compiler-dom'], callback);
   },
 
-  parse(parser, code, options) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
     return parser.parse(code, options);
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.type || node.name) {
       return [node.loc.start.offset, node.loc.end.offset];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'children';
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.tag;
   },
 

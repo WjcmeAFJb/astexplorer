@@ -13,11 +13,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['luaparse'], callback);
   },
 
-  parse(luaparse, code, options={}) {
+  parse(/** @type {*} */ luaparse, /** @type {*} */ code, options={}) {
     return luaparse.parse(code, options);
   },
 
@@ -45,7 +45,7 @@ export default {
 
   },
 
-  renderSettings(parserSettings, onChange) {
+  renderSettings(/** @type {*} */ parserSettings, /** @type {*} */ onChange) {
     return (
       <div>
         <p>

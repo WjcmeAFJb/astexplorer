@@ -12,15 +12,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['esprima'], callback);
   },
 
-  parse(esprima, code, options) {
+  parse(/** @type {*} */ esprima, /** @type {*} */ code, /** @type {*} */ options) {
     return esprima.parse(code, options);
   },
 
-  *forEachProperty(node) {
+  *forEachProperty(/** @type {*} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (typeof node[prop] === 'function') {

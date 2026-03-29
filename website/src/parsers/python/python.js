@@ -12,20 +12,20 @@ export default {
   homepage: pkg.homepage || 'https://github.com/differentmatt/filbert',
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['filbert'], (parser) => {
       callback({ parser });
     });
   },
 
-  parse({ parser }, code) {
+  parse(/** @type {*} */ { parser }, /** @type {*} */ code) {
     return parser.parse(code, {
         locations: true,
         ranges: true,
     });
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     switch (key) {
       case 'block':
       case 'nodes':
@@ -33,7 +33,7 @@ export default {
     }
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     const { range } = node;
     if (typeof range === 'object') {
       return range;

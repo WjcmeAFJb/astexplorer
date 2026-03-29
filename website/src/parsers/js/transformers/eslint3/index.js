@@ -12,7 +12,7 @@ export default {
 
   defaultParserID: 'babel-eslint',
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require(
       [
         // Explicitly require just the stuff we care about to avoid loading
@@ -27,7 +27,7 @@ export default {
     );
   },
 
-  transform({ eslint, rules, sourceCode, utils }, transformCode, code) {
+  transform(/** @type {*} */ { eslint, rules, sourceCode, utils }, /** @type {*} */ transformCode, /** @type {*} */ code) {
     utils.defineRule(rules, transformCode);
     return utils.runRule(code, eslint, sourceCode);
   },

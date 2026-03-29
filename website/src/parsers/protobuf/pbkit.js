@@ -12,20 +12,20 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['type']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['pbkit/core/parser/proto'], callback);
   },
 
-  parse(parser, code) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code) {
     return parser.parse(code).ast;
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     const { start, end } = node;
     return [start, end];
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     if (key === 'statements') {
       return true;
     }

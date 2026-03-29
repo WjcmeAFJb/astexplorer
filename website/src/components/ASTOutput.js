@@ -86,6 +86,7 @@ ASTOutput.propTypes = {
 
 /** @extends {React.Component<{children: React.ReactNode}, {hasError: boolean}>} */
 class ErrorBoundary extends React.Component {
+  /** @param {{children: React.ReactNode}} props */
   constructor(props) {
     super(props);
     this.state = { hasError: false };

@@ -13,7 +13,7 @@ export default {
   locationProps: new Set(['sourceCodeLocation']),
   typeProps: new Set(['type', 'name', 'nodeName', 'tagName']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require([
       'parse5/lib/parser',
       'parse5/lib/tree-adapters/default',
@@ -30,7 +30,7 @@ export default {
   },
 
   /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  parse({ Parser, TreeAdapters }, code, options) {
+  parse(/** @type {*} */ { Parser, TreeAdapters }, /** @type {*} */ code, /** @type {*} */ options) {
     this.options = options;
     return new Parser({
       treeAdapter: TreeAdapters[this.options.treeAdapter],
@@ -39,7 +39,7 @@ export default {
   },
 
   /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     if (this.options.treeAdapter === 'htmlparser2') {
       if (node.type) {
         return node.type + (node.name && node.type !== 'root' ? `(${node.name})` : '');
@@ -49,13 +49,13 @@ export default {
     }
   },
 
-  nodeToRange({ sourceCodeLocation: loc }) {
+  nodeToRange(/** @type {*} */ { sourceCodeLocation: loc }) {
     if (loc) {
       return [loc.startOffset, loc.endOffset];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'children' || key === 'childNodes';
   },
 

@@ -13,7 +13,7 @@ export default {
   locationProps: new Set(['startIndex', 'endIndex']),
   typeProps: new Set(['type', 'name']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['htmlparser2/lib/Parser', 'domhandler'], (Parser, {DomHandler}) => {
       class Handler extends DomHandler {
         constructor() {
@@ -22,7 +22,7 @@ export default {
 
         // It appears that htmlparser2 doesn't correctly process
         // ProcessingInstructions. Their "endIndex" isn't set properly.
-        onprocessinginstruction(name, data) {
+        onprocessinginstruction(/** @type {*} */ name, /** @type {*} */ data) {
           this.parser.endIndex = this.parser.tokenizer._index;
           super.onprocessinginstruction(name, data);
         }
@@ -33,23 +33,23 @@ export default {
     });
   },
 
-  parse({ Parser: {Parser}, Handler }, code, options) {
+  parse(/** @type {*} */ { Parser: {Parser}, Handler }, /** @type {*} */ code, /** @type {*} */ options) {
     let handler = new Handler();
     new Parser(handler, options).end(code);
     return handler.root;
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.type) {
       return [node.startIndex, node.endIndex+1];
     }
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'children';
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     let nodeName = node.type;
     if (nodeName && node.name) {
       nodeName += `(${node.name})`;

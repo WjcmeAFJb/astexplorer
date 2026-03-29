@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: ID,
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require([
       'remark',
       'unist-util-is',
@@ -27,8 +27,8 @@ export default {
     });
   },
 
-  transform({ remark, ...availableModules }, transformCode, code) {
-    function sandboxRequire(name) {
+  transform(/** @type {*} */ { remark, ...availableModules }, /** @type {*} */ transformCode, /** @type {*} */ code) {
+    function sandboxRequire(/** @type {*} */ name) {
       if (!Object.getOwnPropertyNames(availableModules).includes(name))
         throw new Error(`Cannot find module '${name}'`);
       return availableModules[name];

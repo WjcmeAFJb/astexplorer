@@ -11,11 +11,11 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/glimmerjs/glimmer-vm',
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['@glimmer/syntax'], (glimmer) => callback(glimmer.preprocess));
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'body';
   },
 };

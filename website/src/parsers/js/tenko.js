@@ -45,19 +45,19 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['tenko'], callback);
   },
 
-  parse(tenko, code, options) {
+  parse(/** @type {*} */ tenko, /** @type {*} */ code, /** @type {*} */ options) {
     return tenko.Tenko(code, {...options});
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node.type;
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.loc && node.loc.range) {
       return [node.loc.range.start, node.loc.range.end];
     }

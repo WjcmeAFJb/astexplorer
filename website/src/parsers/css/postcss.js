@@ -12,7 +12,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['source']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['postcss/lib/parse', 'postcss-scss/lib/scss-parse', 'postcss-less/lib/', 'postcss-safe-parser'], (builtIn, scss, less, safe) => {
       callback({
         'built-in': builtIn,
@@ -23,7 +23,7 @@ export default {
     });
   },
 
-  parse(parsers, code, options) {
+  parse(/** @type {*} */ parsers, /** @type {*} */ code, /** @type {*} */ options) {
     return defaultParserInterface.parse.call(
       this,
       parsers[options.parser],
@@ -32,7 +32,7 @@ export default {
   },
 
   /** @this {import('./utils/defaultCSSParserInterface').LineOffsetsMixin} */
-  nodeToRange({ source: range }) {
+  nodeToRange(/** @type {*} */ { source: range }) {
     if (!range || !range.end) return;
     return [
       this.getOffset(range.start),
@@ -40,7 +40,7 @@ export default {
     ];
   },
 
-  opensByDefault(node, key) {
+  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
     return key === 'nodes';
   },
 

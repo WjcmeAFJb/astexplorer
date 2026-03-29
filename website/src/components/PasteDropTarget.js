@@ -12,7 +12,7 @@ const acceptedFileTypes = new Map([
 ]);
 
 categories.forEach(({ id, mimeTypes }) => {
-  mimeTypes.forEach(mimeType => {
+  mimeTypes.forEach(/** @param {string} mimeType */ mimeType => {
     acceptedFileTypes.set(mimeType, id);
   });
 });
@@ -20,7 +20,7 @@ categories.forEach(({ id, mimeTypes }) => {
 /**
  * @typedef {Object} PasteDropTargetOwnProps
  * @property {(type: string, event: Event, code: string, categoryId?: string) => void} [onText]
- * @property {(type: string, event: Event, message: string) => void} [onError]
+ * @property {Function} [onError]
  * @property {React.ReactNode} [children]
  */
 
@@ -53,6 +53,7 @@ export default class PasteDropTarget extends React.Component {
   }
 
   componentDidMount() {
+    /** @type {Array<() => void>} */
     this._listeners = [];
     let target = this.container;
 
@@ -80,6 +81,7 @@ export default class PasteDropTarget extends React.Component {
       );
     }, true);
 
+    /** @type {ReturnType<typeof setTimeout> | undefined} */
     let timer;
 
     // Handle file drops

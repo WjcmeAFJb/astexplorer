@@ -183,7 +183,7 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
     openState !== OPEN_STATES.CLOSED;
 
   const onToggleClick = useCallback(
-    event => {
+    /** @param {React.MouseEvent} event */ event => {
       const shiftKey = event.shiftKey;
       const newOpenState = shiftKey ? OPEN_STATES.DEEP_OPEN : (isOpen ? OPEN_STATES.CLOSED : OPEN_STATES.OPEN);
       if (onClick) {
@@ -200,12 +200,12 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
 
   // enable highlight on hover if node has a range
   if (range && level !== 0) {
-    onMouseOver = event => {
+    onMouseOver = /** @param {React.MouseEvent} event */ event => {
       event.stopPropagation();
       publish('HIGHLIGHT', {node: value, range});
     };
 
-    onMouseLeave = event => {
+    onMouseLeave = /** @param {React.MouseEvent} event */ event => {
       event.stopPropagation();
       publish('CLEAR_HIGHLIGHT', {node: value, range});
     };
@@ -221,6 +221,13 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
     [onClick],
   );
 
+  /**
+   * @param {string} key
+   * @param {unknown} value
+   * @param {unknown} parent
+   * @param {string | undefined} name
+   * @param {boolean} computed
+   */
   function renderChild(key, value, parent, name, computed) {
     if (treeAdapter.isArray(value) || treeAdapter.isObject(value) || typeof value === 'function') {
       const ElementType = typeof value === 'function' ? FunctionElement : ElementContainer;
@@ -510,7 +517,7 @@ export default function ElementContainer(props) {
   const setSelectedNode = useSelectedNode();
   const isInRange = props.treeAdapter.isInRange(props.value, props.name, props.position);
   const onClick = useCallback(
-    (state, own) => {
+    (/** @type {number} */ state, /** @type {boolean | undefined} */ own) => {
       if (own) {
         if (state === OPEN_STATES.CLOSED) {
           setSelectedNode(null);

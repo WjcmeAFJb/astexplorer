@@ -11,14 +11,14 @@ export default {
 
   defaultParserID: 'glimmer',
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require(
       ['../../../transpilers/babel', '@glimmer/syntax'],
       (transpile, glimmer) => callback({ transpile: transpile.default, glimmer }),
     );
   },
 
-  transform({ transpile, glimmer }, transformCode, code) {
+  transform(/** @type {*} */ { transpile, glimmer }, /** @type {*} */ transformCode, /** @type {*} */ code) {
     transformCode = transpile(transformCode);
     const transformModule = compileModule(transformCode);
 

@@ -12,15 +12,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['fieldLocation', 'termLocation', 'location']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['lucene'], callback);
   },
 
-  parse({parse}, code) {
+  parse(/** @type {*} */ {parse}, /** @type {*} */ code) {
     return parse(code);
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     let start = [];
     let end = [];
 

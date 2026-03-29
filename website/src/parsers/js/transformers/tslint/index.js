@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'typescript',
 
-  loadTransformer(callback) {
+  loadTransformer(/** @type {*} */ callback) {
     require([
       '../../../transpilers/typescript',
       'tslint/lib/index',
@@ -24,7 +24,7 @@ export default {
     ) => callback({transpile: transpile.default, tslint, typescript}));
   },
 
-  transform({ transpile, tslint, typescript }, transformCode, code) {
+  transform(/** @type {*} */ { transpile, tslint, typescript }, /** @type {*} */ transformCode, /** @type {*} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,
@@ -43,13 +43,13 @@ export default {
   },
 };
 
-function formatResults(results) {
+function formatResults(/** @type {*} */ results) {
   return results.length === 0
     ? 'Lint rule not fired.'
     : results.map(formatResult).join('').trim();
 }
 
-function formatResult(result) {
+function formatResult(/** @type {*} */ result) {
   let { line, character } = result.startPosition.lineAndCharacter;
   let rawLine = result.rawLines.split('\n')[line];
   let pointer = '-'.repeat(character) + '^';

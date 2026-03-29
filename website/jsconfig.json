@@ -7,7 +7,8 @@
     "module": "es2020",
     "moduleResolution": "bundler",
     "skipLibCheck": true,
-    "resolveJsonModule": false
+    "resolveJsonModule": false,
+    "noImplicitAny": true
   },
   "include": ["src/**/*.js", "src/**/*.d.ts"],
   "exclude": ["node_modules"]

@@ -15,12 +15,12 @@ export default {
   _ignoredProperties: new Set(['_type']),
   locationProps: new Set(['span']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['astexplorer-syn'], callback);
   },
 
   /** @this {LineOffsetsMixin} */
-  parse(parser, code) {
+  parse(/** @type {*} */ parser, /** @type {*} */ code) {
     this.lineOffsets = [];
     let index = 0;
     do {
@@ -29,12 +29,12 @@ export default {
     return parser.parseFile(code);
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     return node._type;
   },
 
   /** @this {LineOffsetsMixin} */
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (node.span) {
       return [node.span.start, node.span.end].map(
         ({ line, column }) => this.lineOffsets[line - 1] + column,

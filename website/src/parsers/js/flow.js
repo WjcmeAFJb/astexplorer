@@ -36,11 +36,11 @@ export default {
   homepage: pkg.homepage || 'https://flow.org/',
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['flow-parser'], callback);
   },
 
-  parse(flowParser, code, options) {
+  parse(/** @type {*} */ flowParser, /** @type {*} */ code, /** @type {*} */ options) {
     return flowParser.parse(code, options);
   },
 

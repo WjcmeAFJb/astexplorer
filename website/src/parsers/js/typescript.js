@@ -4,6 +4,7 @@ import pkg from 'typescript/package.json';
 const ID = 'typescript';
 const FILENAME = 'astExplorer.ts';
 
+/** @type {*} */
 let getComments;
 const syntaxKind = {};
 
@@ -23,12 +24,14 @@ export default {
   locationProps: new Set(['pos', 'end']),
   typeProps: new Set(['kind']),
 
-  loadParser(callback) {
+  loadParser(/** @type {*} */ callback) {
     require(['typescript'], _ts => {
         // workarounds issue described at https://github.com/Microsoft/TypeScript/issues/18062
         for (const name of Object.keys(_ts.SyntaxKind).filter(x => isNaN(parseInt(x)))) {
             const value = _ts.SyntaxKind[name];
+            // @ts-expect-error — indexing dynamic object
             if (!syntaxKind[value]) {
+                // @ts-expect-error — indexing dynamic object
                 syntaxKind[value] = name;
             }
         }
@@ -37,18 +40,20 @@ export default {
     });
   },
 
-  parse(ts, code, options) {
+  parse(/** @type {*} */ ts, /** @type {*} */ code, /** @type {*} */ options) {
     const compilerHost/*: ts.CompilerHost*/ = {
       fileExists: () => true,
-      getCanonicalFileName: filename => filename,
+      getCanonicalFileName: (/** @type {*} */ filename) => filename,
       getCurrentDirectory: () => '',
       getDefaultLibFileName: () => 'lib.d.ts',
       getNewLine: () => '\n',
-      getSourceFile: filename => {
+      getSourceFile: (/** @type {*} */ filename) => {
         return ts.createSourceFile(filename, code, ts.ScriptTarget.Latest, true);
       },
+      /** @returns {*} */
       readFile: () => null,
       useCaseSensitiveFileNames: () => true,
+      /** @returns {*} */
       writeFile: () => null,
     };
 
@@ -64,7 +69,7 @@ export default {
 
     const sourceFile = program.getSourceFile(filename);
 
-    getComments = (node, isTrailing) => {
+    getComments = (/** @type {*} */ node, /** @type {*} */ isTrailing) => {
       if (node.parent) {
         const nodePos = isTrailing ? node.end : node.pos;
         const parentPos = isTrailing ? node.parent.end : node.parent.pos;
@@ -76,6 +81,7 @@ export default {
 
           if (Array.isArray(comments)) {
             comments.forEach((comment) => {
+              // @ts-expect-error — indexing dynamic object
               comment.type = syntaxKind[comment.kind];
               comment.text = sourceFile.text.substring(comment.pos, comment.end);
             });
@@ -89,8 +95,9 @@ export default {
     return sourceFile;
   },
 
-  getNodeName(node) {
+  getNodeName(/** @type {*} */ node) {
     if (node.kind) {
+      // @ts-expect-error — indexing dynamic object
       return syntaxKind[node.kind];
     }
   },
@@ -100,7 +107,7 @@ export default {
     'parent',
   ]),
 
-  *forEachProperty(node) {
+  *forEachProperty(/** @type {*} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (this._ignoredProperties.has(prop) || prop.charAt(0) === '_') {
@@ -113,12 +120,12 @@ export default {
       }
       if (node.parent) {
         yield {
-          value: getComments(node),
+          value: /** @type {*} */ getComments(node),
           key: 'leadingComments',
           computed: true,
         };
         yield {
-          value: getComments(node, true),
+          value: /** @type {*} */ getComments(node, true),
           key: 'trailingComments',
           computed: true,
         };
@@ -126,7 +133,7 @@ export default {
     }
   },
 
-  nodeToRange(node) {
+  nodeToRange(/** @type {*} */ node) {
     if (typeof node.getStart === 'function' &&
         typeof node.getEnd === 'function') {
       return [node.getStart(), node.getEnd()];
@@ -136,7 +143,7 @@ export default {
     }
   },
 
-  opensByDefault(_, key) {
+  opensByDefault(/** @type {*} */ _, /** @type {*} */ key) {
     return (
       key === 'statements' ||
       key === 'declarationList' ||
