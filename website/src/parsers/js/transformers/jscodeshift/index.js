@@ -35,7 +35,7 @@ export default {
     return codeExample.replace('{{parser}}', `${getJscodeshiftParser(parser, parserSettings)}`)
   },
 
-  loadTransformer(/** @type {(realTransformer: any) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, jscodeshift: {registerMethods: (methods: Record<string, Function>) => void, withParser: (parser: string) => unknown, [key: string]: unknown}}) => void} */ callback) {
     require(['../../../transpilers/babel', 'jscodeshift'], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{registerMethods: (methods: Record<string, Function>) => void, withParser: (parser: string) => unknown, [key: string]: unknown}} */ jscodeshift) => {
         const { registerMethods } = jscodeshift;
 

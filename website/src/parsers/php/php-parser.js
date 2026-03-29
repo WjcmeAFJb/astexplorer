@@ -27,7 +27,7 @@ export default {
   locationProps: new Set(['loc']),
   typeProps: new Set(['kind']),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: PhpParserEngine) => void} */ callback) {
     require(['php-parser'], callback);
   },
 

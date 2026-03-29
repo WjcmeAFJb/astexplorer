@@ -20,11 +20,11 @@ export default {
 
   defaultParserID: 'mathjs',
 
-  async loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  async loadParser(/** @type {(realParser: {parse: (code: string) => object}) => void} */ callback) {
     require(['mathjs'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {{parse: (code: string) => object}} */ parser, /** @type {string} */ code) {
     try {
       return parser.parse(code)
     } catch (message) {

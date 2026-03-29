@@ -19,8 +19,8 @@ export default {
   homepage: 'https://mdxjs.com',
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
-    require(['@mdx-js/mdx', '@mdx-js/mdx/mdx-ast-to-mdx-hast'], (mdx, mdxAstToMdxHast) => callback({mdx, mdxAstToMdxHast}));
+  loadParser(/** @type {(realParser: unknown) => void} */ callback) {
+    require(['@mdx-js/mdx', '@mdx-js/mdx/mdx-ast-to-mdx-hast'], (/** @type {{sync: (code: string, options: object) => unknown}} */ mdx, /** @type {unknown} */ mdxAstToMdxHast) => callback({mdx, mdxAstToMdxHast}));
   },
 
   parse(/** @type {{mdx: {sync: (code: string, options: object) => unknown}, mdxAstToMdxHast: unknown}} */ {mdx, mdxAstToMdxHast}, /** @type {string} */ code) {

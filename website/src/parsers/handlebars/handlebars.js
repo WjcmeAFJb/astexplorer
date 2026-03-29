@@ -11,7 +11,7 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage,
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: (code: string) => Record<string, unknown>) => void} */ callback) {
     require(['handlebars'], (/** @type {{parse: (code: string) => Record<string, unknown>}} */ handlebars) => callback(handlebars.parse));
   },
 

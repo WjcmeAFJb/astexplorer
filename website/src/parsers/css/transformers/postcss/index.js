@@ -4,7 +4,7 @@ import pkg from 'postcss/package.json';
 /**
  * @typedef {{
  *   transpile: (code: string) => string,
- *   postcss: import('postcss').Postcss,
+ *   postcss: (plugins: Array<unknown>) => import('postcss').Processor,
  * }} PostCSSTransformerModule
  */
 
@@ -18,13 +18,13 @@ export default {
 
   defaultParserID: 'postcss',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
-    require(['../../../transpilers/babel', 'postcss'], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {typeof import('postcss')} */ postcss) => {
+  loadTransformer(/** @type {(realTransformer: PostCSSTransformerModule) => void} */ callback) {
+    require(['../../../transpilers/babel', 'postcss'], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {(plugins: Array<unknown>) => import('postcss').Processor} */ postcss) => {
       callback({ transpile: transpile.default, postcss });
     });
   },
 
-  transform(/** @type {Record<string, any>} */ { transpile, postcss }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {PostCSSTransformerModule} */ { transpile, postcss }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile( transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

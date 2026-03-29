@@ -17,7 +17,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('yaml')) => void} */ callback) {
     require(['yaml'], callback);
   },
 
@@ -36,7 +36,7 @@ export default {
     }
   },
 
-  parse(/** @type {Record<string, any>} */ { parseAllDocuments }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {{parseAllDocuments: (code: string, options?: Record<string, unknown>) => object}} */ { parseAllDocuments }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parseAllDocuments(code, options);
   },
 

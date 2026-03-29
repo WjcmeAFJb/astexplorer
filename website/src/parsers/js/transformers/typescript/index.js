@@ -13,14 +13,14 @@ export default {
 
   defaultParserID: 'typescript',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, ts: {createSourceFile: Function, createProgram: Function, transform: Function, createPrinter: Function, ScriptTarget: Record<string, unknown>, [key: string]: unknown}}) => void} */ callback) {
     require(['../../../transpilers/typescript', 'typescript'], (
       /** @type {{default: (code: string) => string}} */ transpile,
-      /** @type {typeof import('typescript')} */ typescript,
+      /** @type {{createSourceFile: Function, createProgram: Function, transform: Function, createPrinter: Function, ScriptTarget: Record<string, unknown>, [key: string]: unknown}} */ typescript,
     ) => callback({ transpile: transpile.default, ts: typescript }));
   },
 
-  transform(/** @type {Record<string, any>} */ { transpile, ts }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, ts: {createSourceFile: Function, createProgram: Function, transform: Function, createPrinter: Function, ScriptTarget: Record<string, unknown>, [key: string]: unknown}}} */ { transpile, ts }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     // basic scaffolding to get a compiled javascript module from the user provided code
     transformCode = transpile(transformCode);
     const mod = compileModule(

@@ -32,7 +32,7 @@ export default {
     return Kind ? Kind[/** @type {number} */ (node.kind)] : undefined;
   },
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: {Kind: Record<number, string>, load: (code: string) => unknown}) => void} */ callback) {
     require(['yaml-ast-parser'], function(/** @type {{Kind: Record<number, string>, load: (code: string) => unknown}} */ yamlAstParser) {
       Kind = yamlAstParser.Kind;
       callback(yamlAstParser);

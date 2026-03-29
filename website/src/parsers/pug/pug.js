@@ -18,13 +18,13 @@ export default {
   typeProps: new Set(['type', 'name']),
   locationProps: new Set(['line', 'column']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['pug-lexer', 'pug-parser'], (lex, parse) => {
+  loadParser(/** @type {(realParser: unknown) => void} */ callback) {
+    require(['pug-lexer', 'pug-parser'], (/** @type {(code: string, options: object) => object} */ lex, /** @type {(tokens: object, options: object) => object} */ parse) => {
       callback({ lex, parse });
     });
   },
 
-  parse(/** @type {Record<string, any>} */ { lex, parse }, /** @type {string} */ code) {
+  parse(/** @type {{lex: (code: string, options: object) => object, parse: (tokens: object, options: object) => object}} */ { lex, parse }, /** @type {string} */ code) {
     return parse(lex(code, {}), { src: code });
   },
 

@@ -18,13 +18,13 @@ export default {
   locationProps: new Set(['loc']),
   typeProps: new Set(['kind']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: GraphQLParser) => void} */ callback) {
     require(['graphql/language'], ({ parse }) => {
       callback({ parse });
     });
   },
 
-  parse(/** @type {Record<string, any>} */ { parse }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {GraphQLParser} */ { parse }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parse(code, options);
   },
 

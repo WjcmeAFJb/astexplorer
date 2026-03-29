@@ -13,7 +13,7 @@ export default {
   locationProps: new Set(['loc', 'start', 'end', 'range']),
   showInMenu: false,
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: unknown) => void} */ callback) {
     require(['acorn-to-esprima', 'babel5'], (/** @type {Record<string, unknown>} */ acornToEsprima, /** @type {{acorn: {tokTypes: unknown}, traverse: unknown, parse: Function}} */ {acorn: {tokTypes}, traverse, parse}) => {
       callback({
         ...acornToEsprima,
@@ -24,7 +24,7 @@ export default {
     });
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {{parse: Function, toTokens: Function, convertComments: Function, attachComments: Function, toAST: Function, tokTypes: unknown, traverse: unknown}} */ parser, /** @type {string} */ code) {
     const opts = {
       locations: true,
       ranges: true,

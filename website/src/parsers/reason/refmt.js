@@ -44,7 +44,7 @@ export default {
   homepage: `https://www.npmjs.com/package/@esy-ocaml/reason/v/${parserVersion}`,
   locationProps: new Set(locKeys),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: {parseReason: (code: string) => unknown}) => void} */ callback) {
     require(['astexplorer-refmt'], callback);
   },
 

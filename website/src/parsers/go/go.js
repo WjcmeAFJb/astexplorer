@@ -1,5 +1,9 @@
 import defaultParserInterface from '../utils/defaultParserInterface'
 
+/**
+ * @typedef {{init: () => Promise<void>, parseFile: (code: string) => Record<string, unknown>}} GoParser
+ */
+
 const ID = 'go'
 
 export default {
@@ -12,14 +16,14 @@ export default {
   _ignoredProperties: new Set(['_type']),
   locationProps: new Set(['Loc']),
 
-  async loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['astexplorer-go'], async (/** @type {{init: () => Promise<void>, parseFile: (code: string) => Record<string, unknown>}} */ parser) => {
+  async loadParser(/** @type {(realParser: GoParser) => void} */ callback) {
+    require(['astexplorer-go'], async (/** @type {GoParser} */ parser) => {
       await parser.init()
       callback(parser)
     })
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {GoParser} */ parser, /** @type {string} */ code) {
     return parser.parseFile(code)
   },
 

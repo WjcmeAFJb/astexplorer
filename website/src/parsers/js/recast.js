@@ -8,6 +8,11 @@ import babylon7Parser, * as babylon7Settings from './babylon7';
 
 const ID = 'recast';
 
+/**
+ * @typedef {{parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>, [key: string]: unknown}} RecastSubParser
+ * @typedef {{recast: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}, parsers: Record<string, RecastSubParser>}} RecastBundle
+ */
+
 export default {
   ...defaultParserInterface,
 
@@ -17,10 +22,10 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: RecastBundle) => void} */ callback) {
     require(
       ['recast', 'babel5', 'babylon6', 'babylon7', 'flow-parser', 'recast/parsers/typescript'],
-      (recast, babelCore, babylon6, babylon7, flow, typescript) => {
+      (/** @type {{parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}} */ recast, /** @type {RecastSubParser} */ babelCore, /** @type {RecastSubParser} */ babylon6, /** @type {RecastSubParser} */ babylon7, /** @type {RecastSubParser} */ flow, /** @type {RecastSubParser} */ typescript) => {
         callback({
           recast,
           parsers: {
@@ -35,7 +40,7 @@ export default {
     );
   },
 
-  parse(/** @type {Record<string, any>} */ { recast, parsers }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {RecastBundle} */ { recast, parsers }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     options = {...options}; // a copy is needed since we are mutating options
     const flowOptions = /** @type {Record<string, unknown>} */ (options.flow);
     const babylon6Options = /** @type {Record<string, unknown>} */ (options.babylon6);

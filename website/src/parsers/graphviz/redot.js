@@ -17,7 +17,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: RedotParser) => void} */ callback) {
     require(['redot'], callback);
   },
 

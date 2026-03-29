@@ -18,11 +18,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['fieldLocation', 'termLocation', 'location']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {parse: (code: string) => object}) => void} */ callback) {
     require(['lucene'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ {parse}, /** @type {string} */ code) {
+  parse(/** @type {{parse: (code: string) => object}} */ {parse}, /** @type {string} */ code) {
     return parse(code);
   },
 

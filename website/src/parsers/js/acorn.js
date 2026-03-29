@@ -13,8 +13,8 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['acorn', 'acorn-loose', 'acorn-jsx'], (acorn, acornLoose, acornJsx) => {
+  loadParser(/** @type {(realParser: {acorn: typeof import('acorn'), acornLoose: {parse: typeof import('acorn').parse}, acornJsx: () => (BaseParser: typeof import('acorn').Parser) => typeof import('acorn').Parser}) => void} */ callback) {
+    require(['acorn', 'acorn-loose', 'acorn-jsx'], (/** @type {typeof import('acorn')} */ acorn, /** @type {{parse: typeof import('acorn').parse}} */ acornLoose, /** @type {() => (BaseParser: typeof import('acorn').Parser) => typeof import('acorn').Parser} */ acornJsx) => {
       callback({
         acorn,
         acornLoose,
@@ -23,7 +23,7 @@ export default {
     });
   },
 
-  parse(/** @type {Record<string, any>} */ parsers, /** @type {string} */ code, options={}) {
+  parse(/** @type {{acorn: typeof import('acorn'), acornLoose: {parse: typeof import('acorn').parse}, acornJsx: () => (BaseParser: typeof import('acorn').Parser) => typeof import('acorn').Parser}} */ parsers, /** @type {string} */ code, options={}) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }

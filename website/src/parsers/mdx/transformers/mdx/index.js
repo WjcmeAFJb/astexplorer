@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'mdxhast',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, mdx: {sync: (code: string, options: object) => string}, prettier: {format: (code: string, options: object) => string}, babel: object}) => void} */ callback) {
     require([
       '../../../transpilers/babel',
       '@mdx-js/mdx',
@@ -22,7 +22,7 @@ export default {
     });
   },
 
-  transform(/** @type {Record<string, any>} */ { transpile, mdx, prettier, babylon }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, mdx: {sync: (code: string, options: object) => string}, prettier: {format: (code: string, options: object) => string}, babylon: object}} */ { transpile, mdx, prettier, babylon }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     const transform = compileModule(transformCode);
     const jsxCode = mdx.sync(code, {

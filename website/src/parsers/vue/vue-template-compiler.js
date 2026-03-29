@@ -13,11 +13,11 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {compile: (code: string, options: Record<string, unknown>) => {ast: object}}) => void} */ callback) {
     require(['vue-template-compiler/browser'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {{compile: (code: string, options: Record<string, unknown>) => {ast: object}}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.compile(code, options).ast;
   },
 

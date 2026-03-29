@@ -12,13 +12,13 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: unknown) => void} */ callback) {
     require(['regexp-tree'], (regexpTree) => {
       callback(regexpTree);
     });
   },
 
-  parse(/** @type {Record<string, any>} */ regexpTree, /** @type {string} */ code, options={}) {
+  parse(/** @type {{parse: (code: string) => object, parser: {setOptions: (options: object) => void}}} */ regexpTree, /** @type {string} */ code, options={}) {
     regexpTree
       .parser
       .setOptions(options);

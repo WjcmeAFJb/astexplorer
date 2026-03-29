@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'recast',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, recast: Record<string, unknown>, parsers: Record<string, object>}) => void} */ callback) {
     require(
       [
         '../../../transpilers/babel',
@@ -41,7 +41,7 @@ export default {
   },
 
   transform(
-    /** @type {Record<string, any>} */ { transpile, recast, parsers },
+    /** @type {{transpile: (code: string) => string, recast: Record<string, unknown>, parsers: Record<string, object>}} */ { transpile, recast, parsers },
     /** @type {string} */ transformCode,
     /** @type {string} */ code,
   ) {

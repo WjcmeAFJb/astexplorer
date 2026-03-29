@@ -20,24 +20,24 @@ export default {
   locationProps: new Set(['loc']),
 
   /** @this {LineOffsetsMixin} */
-  getOffset(/** @type {Record<string, any>} */ { line, column }) {
+  getOffset(/** @type {{line: number, column: number}} */ { line, column }) {
     return this.lineOffsets[line - 1] + column;
   },
 
   /** @this {LineOffsetsMixin} */
-  nodeToRange(/** @type {Record<string, any>} */ { loc }) {
+  nodeToRange(/** @type {{loc?: {start: {line: number, column: number}, end: {line: number, column: number}}}} */ { loc }) {
     if (!loc) return;
     return [loc.start, loc.end].map(pos => this.getOffset(pos));
   },
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: unknown) => void} */ callback) {
     require(['@webassemblyjs/wast-parser'], function(parser) {
       callback(parser);
     });
   },
 
   /** @this {LineOffsetsMixin} */
-  parse(/** @type {Record<string, any>} */ { parse }, /** @type {string} */ code) {
+  parse(/** @type {{parse: (code: string) => object}} */ { parse }, /** @type {string} */ code) {
     this.lineOffsets = [];
     let index = 0;
     do {

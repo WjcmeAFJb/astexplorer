@@ -18,11 +18,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {parse: (pattern: string, flags: string, options: object) => object}) => void} */ callback) {
     require(['regjsparser'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ regjsparser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {{parse: (pattern: string, flags: string, options: object) => object}} */ regjsparser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }

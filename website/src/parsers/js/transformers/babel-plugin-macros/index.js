@@ -10,16 +10,16 @@ export default {
 
   defaultParserID: 'babylon7',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, babel: {transform: Function}, recast: {parse: Function, print: Function}, macro: {(babel: object, options: object): unknown, createMacro: Function, MacroError: Function}}) => void} */ callback) {
     require([
       '../../../transpilers/babel',
       'babel7',
       'recast',
       'babel-plugin-macros',
-    ], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transform: Function}} */ babel, /** @type {{parse: Function, print: Function}} */ recast, /** @type {{createMacro: Function, MacroError: Function}} */ macro) => callback({ transpile: transpile.default, babel, recast, macro}));
+    ], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transform: Function}} */ babel, /** @type {{parse: Function, print: Function}} */ recast, /** @type {{(babel: object, options: object): unknown, createMacro: Function, MacroError: Function}} */ macro) => callback({ transpile: transpile.default, babel, recast, macro}));
   },
 
-  transform(/** @type {Record<string, any>} */ { transpile, babel, recast, macro}, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, babel: {transform: Function}, recast: {parse: Function, print: Function}, macro: {(babel: object, options: object): unknown, createMacro: Function, MacroError: Function}}} */ { transpile, babel, recast, macro}, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

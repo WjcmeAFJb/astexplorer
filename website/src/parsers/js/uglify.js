@@ -14,7 +14,7 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['TYPE']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: unknown) => void} */ callback) {
     require([
       'raw-loader?esModule=false!uglify-es/lib/utils.js',
       'raw-loader?esModule=false!uglify-es/lib/ast.js',
@@ -25,7 +25,7 @@ export default {
     });
   },
 
-  parse(/** @type {Record<string, any>} */ UglifyJS, /** @type {string} */ code) {
+  parse(/** @type {{parse: (code: string, options?: object) => object}} */ UglifyJS, /** @type {string} */ code) {
     return UglifyJS.parse(code);
   },
 

@@ -15,7 +15,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: {parseModuleWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, parseScriptWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, [key: string]: unknown}) => void} */ callback) {
     require(['shift-parser'], callback);
   },
 

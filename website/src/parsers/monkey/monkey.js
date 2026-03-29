@@ -18,11 +18,11 @@ export default {
   homepage: 'https://monkeylang.org/',
   locationProps: new Set(['span']),
 
-  async loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  async loadParser(/** @type {(realParser: {parse: (code: string) => string}) => void} */ callback) {
     require(['@gengjiawen/monkey-wasm/monkey_wasm.js'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {{parse: (code: string) => string}} */ parser, /** @type {string} */ code) {
     try {
       return JSON.parse(parser.parse(code));
     } catch (message) {

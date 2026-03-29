@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'typescript',
 
-  loadTransformer(/** @type {(realTransformer: any) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, tslint: {Linter: new (opts: object) => {getSourceFile: (name: string, code: string) => unknown, applyRule: (rule: unknown, file: unknown) => TslintFailure[]}}, typescript: typeof import('typescript')}) => void} */ callback) {
     require([
       '../../../transpilers/typescript',
       'tslint/lib/index',

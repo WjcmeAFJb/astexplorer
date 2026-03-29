@@ -11,7 +11,7 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/codeschool/sqlite-parser',
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: (code: string) => Record<string, unknown>) => void} */ callback) {
     require(['sqlite-parser'], callback);
   },
 

@@ -16,7 +16,7 @@ export default {
   homepage: pkg.repository.url,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {default: (wasm: string) => Promise<void>, parseSync: (code: string, options: Record<string, unknown>) => Record<string, unknown>}) => void} */ callback) {
     require(['@swc/wasm-web/wasm.js'], (/** @type {{default: (wasm: string) => Promise<void>, parseSync: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ instance) => {
       instance.default(wasm_bg).then(() => {
         callback(instance)
@@ -24,7 +24,7 @@ export default {
     });
   },
 
-  parse(/** @type {Record<string, any>} */ parsers, /** @type {string} */ code, options = {}) {
+  parse(/** @type {{parseSync: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ parsers, /** @type {string} */ code, options = {}) {
     try {
       return parsers.parseSync(code, {...this.getDefaultOptions(), ...options});
     } catch (message) {

@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: ID,
 
-  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {remark: import('remark').remark, 'unist-util-is': Function, 'unist-util-visit': Function, 'unist-util-visit-parents': Function}) => void} */ callback) {
     require([
       'remark',
       'unist-util-is',
@@ -27,7 +27,7 @@ export default {
     });
   },
 
-  transform(/** @type {Record<string, any>} */ { remark, ...availableModules }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{remark: () => {use: Function, processSync: (code: string) => {value: string}}, [key: string]: unknown}} */ { remark, ...availableModules }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     function sandboxRequire(/** @type {string} */ name) {
       if (!Object.getOwnPropertyNames(availableModules).includes(name))
         throw new Error(`Cannot find module '${name}'`);

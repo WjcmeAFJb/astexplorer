@@ -13,11 +13,11 @@ export default {
   locationProps: new Set([]),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {parseTemplate: (code: string, options: Record<string, unknown>) => {children: object[]}}) => void} */ callback) {
     require(['san'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {{parseTemplate: (code: string, options: Record<string, unknown>) => {children: object[]}}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.parseTemplate(code, options).children[0];
   },
 

@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'svelte',
 
-  loadTransformer(/** @type {(realTransformer: any) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {preprocess: (code: string, plugins: object) => unknown}) => void} */ callback) {
     require(
       ['svelte/compiler'],
       callback,

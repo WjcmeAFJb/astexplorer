@@ -21,7 +21,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['location']),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: {syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: Function}, Options: new (opts: Record<string, unknown>) => unknown}}) => void} */ callback) {
     require(['exports-loader?traceur!traceur/bin/traceur'], callback);
   },
 

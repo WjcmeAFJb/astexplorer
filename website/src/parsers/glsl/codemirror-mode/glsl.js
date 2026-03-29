@@ -8,7 +8,7 @@
  * @typedef {{ next: () => string | null, eat: (ch: string) => string | null, eatWhile: (re: RegExp) => boolean, eatSpace: () => boolean, skipToEnd: () => void, skipTo: (ch: string) => boolean, peek: () => string, current: () => string, sol: () => boolean, eol: () => boolean, indentation: () => number, column: () => number, [k: string]: unknown }} CMStream
  * @typedef {{ tokenize: ((stream: CMStream, state: CMState) => string | false | null) | null, context: CMContext, indented: number, startOfLine: boolean, longString?: boolean, [k: string]: unknown }} CMState
  * @typedef {{ indented: number, column: number, type: string, align: boolean | null, prev: CMContext | null }} CMContext
- * @typedef {{ keywords?: any, builtin?: any, blockKeywords?: any, atoms?: any, hooks?: Record<string, any>, helperType?: string, [k: string]: unknown }} CMMode
+ * @typedef {{ keywords?: Record<string, boolean>, builtin?: Record<string, boolean>, blockKeywords?: Record<string, boolean>, atoms?: Record<string, boolean>, hooks?: Record<string, (stream: CMStream, state: CMState) => string | false>, helperType?: string, [k: string]: unknown }} CMMode
  */
 
 import CodeMirror from 'codemirror';
@@ -201,10 +201,11 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
   };
 });
 
+/** @returns {Record<string, boolean>} */
 function words(/** @type {string} */ str) {
+  /** @type {Record<string, boolean>} */
   var obj = {}, words = str.split(' ');
   for (var i = 0; i < words.length; ++i)
-    // @ts-expect-error — indexing dynamic object
     obj[words[i]] = true;
   return obj;
 }
@@ -231,7 +232,7 @@ function def(/** @type {string | string[]} */ mimes, /** @type {CMMode} */ mode)
   if (typeof mimes == 'string') mimes = [mimes];
   /** @type {string[]} */
   var words = [];
-  function add(/** @type {any | undefined} */ obj) {
+  function add(/** @type {Record<string, boolean> | undefined} */ obj) {
     if (obj)
       for (var prop in obj)
         if (Object.prototype.hasOwnProperty.call(obj, prop)) words.push(prop);

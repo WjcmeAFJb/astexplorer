@@ -17,11 +17,11 @@ export default {
   homepage: 'https://github.com/creditkarma/thrift-parser',
   locationProps: new Set(['location']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {parse: (code: string) => object}) => void} */ callback) {
     require(['@creditkarma/thrift-parser'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ {parse}, /** @type {string} */ code) {
+  parse(/** @type {{parse: (code: string) => object}} */ {parse}, /** @type {string} */ code) {
     return parse(code);
   },
 
@@ -29,7 +29,7 @@ export default {
     return node.type;
   },
 
-  nodeToRange(/** @type {Record<string, any>} */ { loc }) {
+  nodeToRange(/** @type {ThriftNode} */ { loc }) {
     if (loc !== null && loc !== undefined) {
       return [loc.start.index, loc.end.index];
     }

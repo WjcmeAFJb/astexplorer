@@ -17,11 +17,11 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['type']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: PbkitParser) => void} */ callback) {
     require(['pbkit/core/parser/proto'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {PbkitParser} */ parser, /** @type {string} */ code) {
     return parser.parse(code).ast;
   },
 

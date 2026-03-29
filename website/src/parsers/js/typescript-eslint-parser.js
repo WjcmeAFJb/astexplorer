@@ -12,11 +12,11 @@ export default {
   homepage: pkg.homepage || 'https://typescript-eslint.io/',
   locationProps: new Set(['loc', 'start', 'end', 'range']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}) => void} */ callback) {
     require(['@typescript-eslint/parser'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {{parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.parse(code, options);
   },
 

@@ -15,12 +15,12 @@ export default {
   _ignoredProperties: new Set(['_type']),
   locationProps: new Set(['span']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {parseFile: (code: string) => object}) => void} */ callback) {
     require(['astexplorer-syn'], callback);
   },
 
   /** @this {LineOffsetsMixin} */
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {{parseFile: (code: string) => object}} */ parser, /** @type {string} */ code) {
     this.lineOffsets = [];
     let index = 0;
     do {

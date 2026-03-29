@@ -13,7 +13,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {parse: (code: string, options?: Record<string, unknown>) => import('estree').Program}) => void} */ callback) {
     require(['espree'], callback);
   },
 

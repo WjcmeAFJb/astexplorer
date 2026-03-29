@@ -24,7 +24,7 @@ export default {
   locationProps: new Set(['pos', 'end']),
   typeProps: new Set(['kind']),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('typescript')) => void} */ callback) {
     require(['typescript'], (/** @type {typeof import('typescript')} */ _ts) => {
         // workarounds issue described at https://github.com/Microsoft/TypeScript/issues/18062
         for (const name of Object.keys(_ts.SyntaxKind).filter(x => isNaN(parseInt(x)))) {

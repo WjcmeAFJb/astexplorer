@@ -64,16 +64,16 @@ export default {
   homepage: pkg.homepage || 'https://github.com/nik-garmash/hyntax',
   locationProps: new Set(['startPosition', 'endPosition']),
 
-  loadParser (/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser (/** @type {(realParser: {tokenize: (code: string) => {tokens: unknown[]}, constructTree: (tokens: unknown[]) => {ast: Record<string, unknown>}}) => void} */ callback) {
     require([
       'hyntax/lib-es5/tokenize',
       'hyntax/lib-es5/construct-tree',
-    ], (tokenize, constructTree) => {
+    ], (/** @type {(code: string) => {tokens: unknown[]}} */ tokenize, /** @type {(tokens: unknown[]) => {ast: Record<string, unknown>}} */ constructTree) => {
       callback({ tokenize, constructTree });
     });
   },
 
-  parse (/** @type {Record<string, any>} */ { tokenize, constructTree }, /** @type {string} */ code) {
+  parse (/** @type {{tokenize: (code: string) => {tokens: unknown[]}, constructTree: (tokens: unknown[]) => {ast: Record<string, unknown>}}} */ { tokenize, constructTree }, /** @type {string} */ code) {
     const { tokens } = tokenize(code);
     const { ast } = constructTree(tokens);
 

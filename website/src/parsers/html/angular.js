@@ -21,7 +21,7 @@ export default {
   ]),
   typeProps: new Set(['name']),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: AngularCompiler) => void} */ callback) {
     require(['@angular/compiler'], callback);
   },
 

@@ -45,11 +45,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: {Tenko: (code: string, options: Record<string, unknown>) => Record<string, unknown>}) => void} */ callback) {
     require(['tenko'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ tenko, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {{Tenko: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ tenko, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return tenko.Tenko(code, {...options});
   },
 

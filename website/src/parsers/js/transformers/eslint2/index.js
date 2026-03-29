@@ -12,7 +12,7 @@ export default {
 
   defaultParserID: 'babel-eslint',
 
-  loadTransformer(/** @type {(realTransformer: Record<string, any>) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {eslint: {verify: (source: unknown, config: object) => Array<{message: string, line: number, column: number, source?: string}>}, sourceCode: new (code: string, ast: unknown) => unknown, rules: {define: (name: string, rule: unknown) => void}, utils: typeof import('../../utils/eslintUtils')}) => void} */ callback) {
     require(
       [
         // Explicitly require just the stuff we care about to avoid loading
@@ -23,11 +23,11 @@ export default {
         'eslint2/lib/rules',
         '../../utils/eslintUtils',
       ],
-      (eslint, sourceCode, rules, utils) => callback({eslint, sourceCode, rules, utils}),
+      (/** @type {{verify: (source: unknown, config: object) => Array<{message: string, line: number, column: number, source?: string}>}} */ eslint, /** @type {new (code: string, ast: unknown) => unknown} */ sourceCode, /** @type {{define: (name: string, rule: unknown) => void}} */ rules, /** @type {typeof import('../../utils/eslintUtils')} */ utils) => callback({eslint, sourceCode, rules, utils}),
     );
   },
 
-  transform(/** @type {Record<string, any>} */ { eslint, rules, sourceCode, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{eslint: {verify: (source: unknown, config: object) => Array<{message: string, line: number, column: number, source?: string}>}, sourceCode: new (code: string, ast: unknown) => unknown, rules: {define: (name: string, rule: unknown) => void}, utils: typeof import('../../utils/eslintUtils')}} */ { eslint, rules, sourceCode, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     utils.defineRule(rules, transformCode);
     return utils.runRule(code, eslint, sourceCode);
   },

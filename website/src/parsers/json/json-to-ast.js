@@ -17,7 +17,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
+  loadParser(/** @type {(realParser: JsonToAstParser) => void} */ callback) {
     require(['json-to-ast'], callback);
   },
 

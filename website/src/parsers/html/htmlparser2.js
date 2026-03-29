@@ -16,8 +16,8 @@ export default {
   locationProps: new Set(['startIndex', 'endIndex']),
   typeProps: new Set(['type', 'name']),
 
-  loadParser(/** @type {(realParser: any) => void} */ callback) {
-    require(['htmlparser2/lib/Parser', 'domhandler'], (Parser, {DomHandler}) => {
+  loadParser(/** @type {(realParser: HtmlParser2Module) => void} */ callback) {
+    require(['htmlparser2/lib/Parser', 'domhandler'], (/** @type {{Parser: new (handler: unknown, options?: object) => {end(code: string): void}}} */ Parser, /** @type {{DomHandler: new (options: object) => {root: HtmlParser2Node, parser: {endIndex: number, tokenizer: {_index: number}}, onprocessinginstruction(name: string, data: string): void}}} */ {DomHandler}) => {
       class Handler extends DomHandler {
         constructor() {
           super({ withStartIndices: true, withEndIndices: true });
@@ -32,7 +32,7 @@ export default {
 
       }
 
-      callback({ Parser, Handler });
+      callback(/** @type {HtmlParser2Module} */ ({ Parser, Handler }));
     });
   },
 

@@ -26,11 +26,11 @@ export default {
   locationProps: new Set(['location']),
   typeProps: new Set(['name']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
+  loadParser(/** @type {(realParser: JavaParserModule) => void} */ callback) {
     require(['java-parser'], callback);
   },
 
-  parse(/** @type {Record<string, any>} */ parser, /** @type {string} */ code) {
+  parse(/** @type {JavaParserModule} */ parser, /** @type {string} */ code) {
     return parser.parse(code);
   },
 
@@ -40,11 +40,11 @@ export default {
     return {};
   },
 
-  getNodeName(/** @type {Record<string, any>} */ { name }) {
+  getNodeName(/** @type {JavaNode} */ { name }) {
     return name;
   },
 
-  nodeToRange(/** @type {Record<string, any>} */ { location }) {
+  nodeToRange(/** @type {JavaNode} */ { location }) {
     if (!location) {
       return;
     }

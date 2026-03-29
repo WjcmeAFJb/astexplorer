@@ -17,13 +17,13 @@ export default {
   homepage: pkg.homepage || 'https://github.com/differentmatt/filbert',
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: Record<string, any>) => void} */ callback) {
-    require(['filbert'], (parser) => {
+  loadParser(/** @type {(realParser: unknown) => void} */ callback) {
+    require(['filbert'], (/** @type {{parse: (code: string, options: object) => object}} */ parser) => {
       callback({ parser });
     });
   },
 
-  parse(/** @type {Record<string, any>} */ { parser }, /** @type {string} */ code) {
+  parse(/** @type {FilbertParser} */ { parser }, /** @type {string} */ code) {
     return parser.parse(code, {
         locations: true,
         ranges: true,
