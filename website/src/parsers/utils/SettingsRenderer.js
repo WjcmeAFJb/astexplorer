@@ -3,31 +3,31 @@ import React from 'react';
 
 /** @typedef {import('../../types.js').SettingsConfiguration} SettingsConfiguration */
 
-/** @type {(v: *) => *} */
+/** @type {(v: string) => string | number} */
 const identity = v => v;
 
-function valuesFromArray(/** @type {*} */ settings) {
+function valuesFromArray(/** @type {DynModule} */ settings) {
   return settings.reduce(
-    (/** @type {*} */ obj, /** @type {*} */ name) => (
+    (/** @type {Record<string, unknown>} */ obj, /** @type {string} */ name) => (
       (obj[name] = settings.indexOf(name) > -1),
       obj
     ),
-    {},
+    /** @type {Record<string, unknown>} */ ({}),
   );
 }
 
-function getValuesFromSettings(/** @type {*} */ settings) {
+function getValuesFromSettings(/** @type {DynModule} */ settings) {
   if (Array.isArray(settings)) {
     return valuesFromArray(settings);
   }
   return settings;
 }
 
-function defaultUpdater(/** @type {*} */ settings, /** @type {*} */ name, /** @type {*} */ value) {
+function defaultUpdater(/** @type {DynModule} */ settings, /** @type {string} */ name, /** @type {ASTNodeValue} */ value) {
   return {...settings, [name]: value};
 }
 
-function arrayUpdater(/** @type {*} */ settings, /** @type {*} */ name, /** @type {*} */ value) {
+function arrayUpdater(/** @type {DynModule} */ settings, /** @type {string} */ name, /** @type {ASTNodeValue} */ value) {
   settings = new Set(settings);
   if (value) {
     settings.add(name);
@@ -37,7 +37,7 @@ function arrayUpdater(/** @type {*} */ settings, /** @type {*} */ name, /** @typ
   return Array.from(settings);
 }
 
-function getUpdateStrategy(/** @type {*} */ settings) {
+function getUpdateStrategy(/** @type {DynModule} */ settings) {
   if (Array.isArray(settings)) {
     return arrayUpdater;
   }
@@ -47,8 +47,8 @@ function getUpdateStrategy(/** @type {*} */ settings) {
 /**
  * @param {Object} props
  * @param {SettingsConfiguration} props.settingsConfiguration
- * @param {Record<string, unknown>} props.parserSettings
- * @param {(settings: Record<string, unknown>) => void} props.onChange
+ * @param {DynModule} props.parserSettings
+ * @param {(settings: DynModule) => void} props.onChange
  * @returns {React.ReactElement}
  */
 export default function SettingsRenderer(props) {

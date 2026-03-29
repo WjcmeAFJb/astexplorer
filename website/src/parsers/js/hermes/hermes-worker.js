@@ -6,7 +6,7 @@
 import * as hermesParser from 'hermes-parser';
 
 const handlers = {
-  parse(/** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return hermesParser.parse(code, options);
   },
 };

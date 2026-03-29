@@ -14,7 +14,7 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['TYPE']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require([
       'raw-loader?esModule=false!uglify-es/lib/utils.js',
       'raw-loader?esModule=false!uglify-es/lib/ast.js',
@@ -25,11 +25,11 @@ export default {
     });
   },
 
-  parse(/** @type {*} */ UglifyJS, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ UglifyJS, /** @type {string} */ code) {
     return UglifyJS.parse(code);
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     let type = node.TYPE;
     if (type === 'Token') {
       type += `(${node.type})`;
@@ -37,7 +37,7 @@ export default {
     return type;
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     let start, end;
     switch (node.TYPE) {
       case 'Token':
@@ -55,7 +55,7 @@ export default {
     return null;
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return (
       key === 'body' ||
       key === 'elements' || // array literals

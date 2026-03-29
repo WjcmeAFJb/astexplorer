@@ -12,7 +12,7 @@ export default {
 
   defaultParserID: 'acorn-to-esprima',
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require(
       [
         // Explicitly require just the stuff we care about to avoid loading
@@ -27,7 +27,7 @@ export default {
     );
   },
 
-  transform(/** @type {*} */ { eslint, sourceCode, rules, utils }, /** @type {*} */ transformCode, /** @type {*} */ code) {
+  transform(/** @type {DynModule} */ { eslint, sourceCode, rules, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     utils.defineRule(rules, transformCode);
     return utils.runRule(code, eslint, sourceCode);
   },

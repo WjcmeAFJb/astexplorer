@@ -12,24 +12,24 @@ export default {
   homepage: pkg.homepage || 'https://github.com/csstree/csstree',
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['css-tree'], callback);
   },
 
-  parse(/** @type {*} */ csstree, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ csstree, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return csstree.toPlainObject(csstree.parse(code, {
       positions: true,
       ...options,
     }));
   },
 
-  nodeToRange(/** @type {*} */ { loc }) {
+  nodeToRange(/** @type {DynModule} */ { loc }) {
     if (loc && loc.start && loc.end) {
       return [loc.start.offset, loc.end.offset];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 

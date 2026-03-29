@@ -55,18 +55,18 @@
  * @property {Set<string>} locationProps
  * @property {Set<string>} typeProps
  * @property {Category} category
- * @property {(callback: (realParser: unknown) => void) => void} loadParser
- * @property {(realParser: unknown, code: string, options: Record<string, unknown>) => unknown} parse
- * @property {(node: unknown, key: string) => boolean} opensByDefault
- * @property {(node: unknown) => [number, number] | null | undefined} nodeToRange
- * @property {(node: unknown) => string | undefined} getNodeName
- * @property {(node: unknown) => Iterable<WalkResult>} forEachProperty
+ * @property {(callback: (realParser: DynModule) => void) => void} loadParser
+ * @property {(realParser: DynModule, code: string, options: Record<string, unknown>) => ASTNode} parse
+ * @property {(node: ASTNode, key: string) => boolean} opensByDefault
+ * @property {(node: ASTNode) => [number, number] | null | undefined} nodeToRange
+ * @property {(node: ASTNode) => string | undefined} getNodeName
+ * @property {(node: ASTNode) => Iterable<WalkResult>} forEachProperty
  * @property {(defaultOptions: Record<string, unknown>) => SettingsConfiguration | null} _getSettingsConfiguration
  * @property {() => boolean} hasSettings
  * @property {() => Record<string, unknown>} getDefaultOptions
  * @property {(currentOptions: Record<string, unknown>, defaultOptions: Record<string, unknown>) => Record<string, unknown>} _mergeDefaultOptions
  * @property {((settings: Record<string, unknown> | null, onChange: (settings: Record<string, unknown>) => void) => React.ReactElement | null) | undefined} renderSettings
- * @property {Promise<unknown>} [_promise]
+ * @property {Promise<DynModule>} [_promise]
  */
 
 // ---------------------------------------------------------------------------
@@ -84,9 +84,9 @@
  * @property {string} defaultTransform
  * @property {boolean} [showInMenu]
  * @property {((code: string, context: {parser: string, parserSettings: Record<string,unknown>}) => string) | undefined} [formatCodeExample]
- * @property {(callback: (realTransformer: unknown) => void) => void} loadTransformer
- * @property {(realTransformer: unknown, transformCode: string, code: string) => Promise<string | TransformResultWithMap>} transform
- * @property {Promise<unknown>} [_promise]
+ * @property {(callback: (realTransformer: DynModule) => void) => void} loadTransformer
+ * @property {(realTransformer: DynModule, transformCode: string, code: string) => Promise<string | TransformResultWithMap>} transform
+ * @property {Promise<DynModule>} [_promise]
  */
 
 /**
@@ -125,7 +125,7 @@
 
 /**
  * @typedef {Object} ParseResult
- * @property {unknown} ast
+ * @property {ASTNode | null} ast
  * @property {Error | null} error
  * @property {number | null} time
  * @property {TreeAdapterConfig | null} treeAdapter
@@ -137,7 +137,7 @@
 
 /**
  * @typedef {Object} WalkResult
- * @property {unknown} value
+ * @property {ASTNodeValue} value
  * @property {string} key
  * @property {boolean} computed
  */
@@ -146,16 +146,16 @@
  * @typedef {Object} TreeFilter
  * @property {string} [key]
  * @property {string} [label]
- * @property {(value: unknown, key: string, fromArray?: boolean) => boolean} test
+ * @property {(value: ASTNodeValue, key: string, fromArray?: boolean) => boolean} test
  */
 
 /**
  * @typedef {Object} AdapterOptions
  * @property {TreeFilter[]} [filters]
- * @property {(node: unknown, key: string) => boolean} openByDefault
- * @property {(node: unknown) => [number, number] | null} nodeToRange
- * @property {(node: unknown) => string} nodeToName
- * @property {(node: unknown) => Iterable<WalkResult>} walkNode
+ * @property {(node: ASTNode, key: string) => boolean} openByDefault
+ * @property {(node: ASTNode) => [number, number] | null} nodeToRange
+ * @property {(node: ASTNode) => string} nodeToName
+ * @property {(node: ASTNode) => Iterable<WalkResult>} walkNode
  * @property {Set<string>} [locationProps]
  */
 

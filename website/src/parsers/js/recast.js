@@ -17,7 +17,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(
       ['recast', 'babel5', 'babylon6', 'babylon7', 'flow-parser', 'recast/parsers/typescript'],
       (recast, babelCore, babylon6, babylon7, flow, typescript) => {
@@ -35,11 +35,11 @@ export default {
     );
   },
 
-  parse(/** @type {*} */ { recast, parsers }, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ { recast, parsers }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     options = {...options}; // a copy is needed since we are mutating options
-    const flowOptions = options.flow;
-    const babylon6Options = options.babylon6;
-    const babylon7Options = options.babylon7;
+    const flowOptions = /** @type {Record<string, unknown>} */ (options.flow);
+    const babylon6Options = /** @type {Record<string, unknown>} */ (options.babylon6);
+    const babylon7Options = /** @type {Record<string, unknown>} */ (options.babylon7);
     delete options.flow;
     delete options.babylon6;
     delete options.babylon7;
@@ -47,21 +47,21 @@ export default {
     switch (options.parser) {
       case 'flow':
         options.parser = {
-          parse(/** @type {*} */ code) {
+          parse(/** @type {string} */ code) {
             return flowParser.parse(parsers.flow, code, flowOptions);
           },
         };
         break;
       case 'babylon6':
         options.parser = {
-          parse(/** @type {*} */ code) {
+          parse(/** @type {string} */ code) {
             return babylon6Parser.parse(parsers.babylon6, code, babylon6Options);
           },
         };
         break;
       case 'babylon7':
         options.parser = {
-          parse(/** @type {*} */ code) {
+          parse(/** @type {string} */ code) {
             return babylon7Parser.parse(parsers.babylon7, code, babylon7Options);
           },
         };
@@ -81,7 +81,7 @@ export default {
 
   _ignoredProperties: new Set(['__clone']),
 
-  *forEachProperty(/** @type {*} */ node) {
+  *forEachProperty(/** @type {ASTNode} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (
@@ -98,7 +98,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -116,7 +116,7 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(/** @type {*} */ defaultOptions) {
+  _getSettingsConfiguration(/** @type {Record<string, unknown>} */ defaultOptions) {
     return {
       fields: [
         ['parser', ['esprima', 'babel5', 'babylon6', 'babylon7', 'flow', 'typescript']],
@@ -126,19 +126,19 @@ export default {
           key: 'flow',
           title: 'Flow Settings',
           fields: flowSettings.parserSettingsConfiguration.fields,
-          settings: (/** @type {*} */ settings) => settings.flow || defaultOptions.flow,
+          settings: (/** @type {Record<string, unknown>} */ settings) => settings.flow || defaultOptions.flow,
         },
         {
           key: 'babylon6',
           title: 'Babylon 6 Settings',
           fields: babylon6Settings.parserSettingsConfiguration.fields,
-          settings: (/** @type {*} */ settings) => settings.babylon6 || defaultOptions.babylon6,
+          settings: (/** @type {Record<string, unknown>} */ settings) => settings.babylon6 || defaultOptions.babylon6,
         },
         {
           key: 'babylon7',
           title: 'Babylon 7 Settings',
           fields: babylon7Settings.parserSettingsConfiguration.fields,
-          settings: (/** @type {*} */ settings) => settings.babylon7 || defaultOptions.babylon7,
+          settings: (/** @type {Record<string, unknown>} */ settings) => settings.babylon7 || defaultOptions.babylon7,
         },
       ],
       required: new Set(['range']),

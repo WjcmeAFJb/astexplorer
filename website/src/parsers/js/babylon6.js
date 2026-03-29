@@ -49,8 +49,8 @@ export const parserSettingsConfiguration = {
       key: 'plugins',
       title: 'Plugins',
       fields: availablePlugins,
-      settings: (/** @type {*} */ settings) => settings.plugins || defaultOptions.plugins,
-      values: (/** @type {*} */ plugins) => availablePlugins.reduce(
+      settings: (/** @type {Record<string, unknown>} */ settings) => settings.plugins || defaultOptions.plugins,
+      values: (/** @type {ASTNode} */ plugins) => availablePlugins.reduce(
         // @ts-expect-error — indexing dynamic object
         (obj, name) => ((obj[name] = plugins.indexOf(name) > -1), obj),
         {},
@@ -69,15 +69,15 @@ export default {
   locationProps: new Set(['loc', 'start', 'end']),
   showInMenu: false,
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['babylon6'], callback);
   },
 
-  parse(/** @type {*} */ babylon, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return babylon.parse(code, options);
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -86,7 +86,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

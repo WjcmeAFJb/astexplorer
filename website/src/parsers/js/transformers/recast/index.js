@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'recast',
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require(
       [
         '../../../transpilers/babel',
@@ -41,9 +41,9 @@ export default {
   },
 
   transform(
-    /** @type {*} */ { transpile, recast, parsers },
-    /** @type {*} */ transformCode,
-    /** @type {*} */ code,
+    /** @type {DynModule} */ { transpile, recast, parsers },
+    /** @type {string} */ transformCode,
+    /** @type {string} */ code,
   ) {
     transformCode = transpile(transformCode);
     const transformModule = compileModule( // eslint-disable-line no-shadow

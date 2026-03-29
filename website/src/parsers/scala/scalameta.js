@@ -23,11 +23,11 @@ export default {
   homepage: pkg.homepage || 'https://github.com/scalameta/scalameta',
   locationProps: new Set(['pos']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['scalameta-parsers'], callback);
   },
 
-  parse(/** @type {*} */ scalametaParser, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ scalametaParser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     const parsed = scalametaParser.parseSource(code, options);
     const { error, lineNumber, columnNumber } = parsed;
     if (error) {
@@ -41,13 +41,13 @@ export default {
     return parsed;
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.pos) {
       return [node.pos.start, node.pos.end];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return (
       node.type === 'Program' ||
       key === 'body' ||

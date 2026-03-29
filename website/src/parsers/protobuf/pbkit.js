@@ -12,20 +12,20 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['type']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['pbkit/core/parser/proto'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
     return parser.parse(code).ast;
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     const { start, end } = node;
     return [start, end];
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     if (key === 'statements') {
       return true;
     }

@@ -15,11 +15,11 @@ export default {
 
   defaultParserID: 'mathjs',
 
-  async loadParser(/** @type {*} */ callback) {
+  async loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['mathjs'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
     try {
       return parser.parse(code)
     } catch (message) {
@@ -28,7 +28,7 @@ export default {
     }
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.type
   },
 
@@ -36,7 +36,7 @@ export default {
   // nodeToRange(node) {
   // },
 
-  opensByDefault(/** @type {*} */ node) {
+  opensByDefault(/** @type {ASTNode} */ node) {
     return node.type === 'BlockNode'
   },
 }

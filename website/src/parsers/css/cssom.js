@@ -13,19 +13,19 @@ export default {
   locationProps: new Set(['__starts', '__ends']),
   typeProps: new Set(),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['cssom/lib/parse'], callback);
   },
 
-  parse(/** @type {*} */ CSSOM, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ CSSOM, /** @type {string} */ code) {
     return CSSOM.parse(code);
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.constructor.name;
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     let { __starts, __ends } = node;
     if (__ends === undefined && node.parentRule) {
       ({ __ends } = node.parentRule);
@@ -35,7 +35,7 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'cssRules' || key === 'style';
   },
 

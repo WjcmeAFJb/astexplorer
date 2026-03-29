@@ -18,11 +18,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['regjsparser'], callback);
   },
 
-  parse(/** @type {*} */ regjsparser, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ regjsparser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
@@ -36,13 +36,13 @@ export default {
     return regjsparser.parse(pattern, flags, options);
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.range != null) {
       return [node.range[0] + 1, node.range[1] + 1];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return (
         key === 'body'
     );

@@ -3,7 +3,7 @@ import protect from '../utils/protectFromLoops';
 
 let compilerOptions = { module: ts.ModuleKind.System };
 
-export default function transpile(/** @type {*} */ code) {
+export default function transpile(/** @type {string} */ code) {
   // @ts-expect-error — compilerOptions passed directly; should be {compilerOptions} but kept for compat
   let es5Code = ts.transpileModule(code, compilerOptions).outputText;
   es5Code = protect(es5Code);

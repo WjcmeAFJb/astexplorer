@@ -11,15 +11,15 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/codeschool/sqlite-parser',
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['sqlite-parser'], callback);
   },
 
-  parse(/** @type {*} */ sqliteParser, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ sqliteParser, /** @type {string} */ code) {
     return sqliteParser(code);
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'statement';
   },
 

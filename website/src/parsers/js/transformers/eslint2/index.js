@@ -12,7 +12,7 @@ export default {
 
   defaultParserID: 'babel-eslint',
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require(
       [
         // Explicitly require just the stuff we care about to avoid loading
@@ -27,7 +27,7 @@ export default {
     );
   },
 
-  transform(/** @type {*} */ { eslint, rules, sourceCode, utils }, /** @type {*} */ transformCode, /** @type {*} */ code) {
+  transform(/** @type {DynModule} */ { eslint, rules, sourceCode, utils }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     utils.defineRule(rules, transformCode);
     return utils.runRule(code, eslint, sourceCode);
   },

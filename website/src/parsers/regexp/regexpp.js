@@ -18,24 +18,24 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['end', 'start']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['regexpp'], callback);
   },
 
-  parse(/** @type {*} */ regexpp, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ regexpp, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     if (Object.keys(options).length === 0) {
-      options = this.getDefaultOptions();
+      options = /** @type {Record<string, unknown>} */ (this.getDefaultOptions());
     }
     return regexpp.parseRegExpLiteral(code, options);
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (typeof node.start === 'number' && typeof node.end === 'number') {
       return [node.start, node.end];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return (
       key === 'pattern' ||
       key === 'elements' ||

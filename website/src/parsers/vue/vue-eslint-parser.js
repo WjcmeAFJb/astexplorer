@@ -13,28 +13,28 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['vue-eslint-parser'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
     return parser.parse(code, options);
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.type || node.name) {
       return node.range;
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.tag;
   },
 
@@ -54,14 +54,14 @@ export default {
 
     return {
       fields: [
-        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11], (/** @type {*} */ value) => Number(value)],
+        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11], (/** @type {ASTNodeValue} */ value) => Number(value)],
         ['sourceType', ['script', 'module']],
         {
           key: 'vueFeatures',
           title: 'vueFeatures',
           fields: Object.keys(defaultOptions.vueFeatures),
           settings:
-          (/** @type {*} */ settings) => settings.vueFeatures || {...defaultOptions.vueFeatures},
+          (/** @type {Record<string, unknown>} */ settings) => settings.vueFeatures || {...defaultOptions.vueFeatures},
         },
       ],
     };

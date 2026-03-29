@@ -13,11 +13,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['luaparse'], callback);
   },
 
-  parse(/** @type {*} */ luaparse, /** @type {*} */ code, options={}) {
+  parse(/** @type {DynModule} */ luaparse, /** @type {string} */ code, options={}) {
     return luaparse.parse(code, options);
   },
 
@@ -45,7 +45,7 @@ export default {
 
   },
 
-  renderSettings(/** @type {*} */ parserSettings, /** @type {*} */ onChange) {
+  renderSettings(/** @type {Record<string, unknown>} */ parserSettings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
     return (
       <div>
         <p>

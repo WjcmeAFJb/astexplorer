@@ -12,15 +12,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['fieldLocation', 'termLocation', 'location']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['lucene'], callback);
   },
 
-  parse(/** @type {*} */ {parse}, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ {parse}, /** @type {string} */ code) {
     return parse(code);
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     let start = [];
     let end = [];
 

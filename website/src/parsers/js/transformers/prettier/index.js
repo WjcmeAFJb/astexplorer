@@ -12,14 +12,14 @@ export default {
 
   defaultParserID: 'babylon7',
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require(
       ['../../../transpilers/babel', 'prettier/standalone', 'prettier/parser-babel'],
       (transpile, prettier, babel) => callback({ transpile: transpile.default, prettier, babel }),
     );
   },
 
-  transform(/** @type {*} */ { transpile, prettier, babel }, /** @type {*} */ transformCode, /** @type {*} */ code) {
+  transform(/** @type {DynModule} */ { transpile, prettier, babel }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     const options = compileModule(transformCode);
     return prettier.format(

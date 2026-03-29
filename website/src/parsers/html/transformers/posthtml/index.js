@@ -11,12 +11,12 @@ export default {
 
   defaultParserID: 'posthtml-parser',
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require(['../../../transpilers/babel', 'posthtml'], (transpile, posthtml) =>
       callback({ transpile: transpile.default, posthtml }));
   },
 
-  transform(/** @type {*} */ { transpile, posthtml }, /** @type {*} */ transformCode, /** @type {*} */ code) {
+  transform(/** @type {DynModule} */ { transpile, posthtml }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     // transpile with babel for es6+ support
     transformCode = transpile(transformCode);
     // compile to turn from string into a module

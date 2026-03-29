@@ -10,12 +10,12 @@ export default {
   ...defaultParserInterface,
 
   /** @this {LineOffsetsMixin} */
-  getOffset(/** @type {*} */ { line, column }) {
+  getOffset(/** @type {DynModule} */ { line, column }) {
     return this.lineOffsets[line - 1] + column - 1;
   },
 
   /** @this {LineOffsetsMixin} */
-  parse(/** @type {*} */ parseCSS, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ parseCSS, /** @type {string} */ code) {
     this.lineOffsets = [];
     let index = 0;
     do {

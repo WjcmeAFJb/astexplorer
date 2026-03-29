@@ -5,8 +5,8 @@
 const localRequire = require.context('./', true, /^\.\/(?!utils|transpilers)[^/]+\/(transformers\/([^/]+)\/)?(codeExample\.txt|[^/]+?\.js)$/);
 
 /**
- * @param {*} module
- * @returns {*}
+ * @param {{__esModule?: boolean, default?: unknown} & Record<string, unknown>} module
+ * @returns {DynModule}
  */
 function interopRequire(module) {
   return module.__esModule ? module.default : module;

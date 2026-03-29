@@ -21,7 +21,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
 
   var curPunc;
 
-  function tokenBase(/** @type {*} */ stream, /** @type {*} */ state) {
+  function tokenBase(/** @type {ASTNode} */ stream, /** @type {ASTNode} */ state) {
     var ch = stream.next();
     if (hooks[ch]) {
       var result = hooks[ch](stream, state);
@@ -67,8 +67,8 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
     return 'variable';
   }
 
-  function tokenString(/** @type {*} */ quote) {
-    return function(/** @type {*} */ stream, /** @type {*} */ state) {
+  function tokenString(/** @type {ASTNode} */ quote) {
+    return function(/** @type {ASTNode} */ stream, /** @type {ASTNode} */ state) {
       var escaped = false, next, end = false;
       while ((next = stream.next()) != null) {
         if (next == quote && !escaped) {
@@ -82,7 +82,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
     };
   }
 
-  function tokenComment(/** @type {*} */ stream, /** @type {*} */ state) {
+  function tokenComment(/** @type {ASTNode} */ stream, /** @type {ASTNode} */ state) {
     var maybeEnd = false, ch;
     while ((ch = stream.next())) {
       if (ch == '/' && maybeEnd) {
@@ -94,14 +94,14 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
     return 'comment';
   }
 
-  function Context(/** @type {*} */ indented, /** @type {*} */ column, /** @type {*} */ type, /** @type {*} */ align, /** @type {*} */ prev) {
+  function Context(/** @type {ASTNode} */ indented, /** @type {ASTNode} */ column, /** @type {ASTNode} */ type, /** @type {ASTNode} */ align, /** @type {ASTNode} */ prev) {
     this.indented = indented;
     this.column = column;
     this.type = type;
     this.align = align;
     this.prev = prev;
   }
-  function pushContext(/** @type {*} */ state, /** @type {*} */ col, /** @type {*} */ type) {
+  function pushContext(/** @type {ASTNode} */ state, /** @type {ASTNode} */ col, /** @type {ASTNode} */ type) {
     var indent = state.indented;
     if (state.context && state.context.type == 'statement')
       indent = state.context.indented;
@@ -113,7 +113,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
       state.context,
     ));
   }
-  function popContext(/** @type {*} */ state) {
+  function popContext(/** @type {ASTNode} */ state) {
     var t = state.context.type;
     if (t == ')' || t == ']' || t == '}')
       state.indented = state.context.indented;
@@ -123,9 +123,9 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
   // Interface
 
   return {
-    startState: function(/** @type {*} */ basecolumn) {
+    startState: function(/** @type {ASTNode} */ basecolumn) {
       return {
-        /** @type {*} */
+        /** @type {ASTNode} */
         tokenize: null,
         context: new Context((basecolumn || 0) - indentUnit, 0, 'top', false),
         indented: 0,
@@ -194,7 +194,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
   };
 });
 
-function words(/** @type {*} */ str) {
+function words(/** @type {ASTNode} */ str) {
   var obj = {}, words = str.split(' ');
   for (var i = 0; i < words.length; ++i)
     // @ts-expect-error — indexing dynamic object
@@ -202,7 +202,7 @@ function words(/** @type {*} */ str) {
   return obj;
 }
 
-function cppHook(/** @type {*} */ stream, /** @type {*} */ state) {
+function cppHook(/** @type {ASTNode} */ stream, /** @type {ASTNode} */ state) {
   if (!state.startOfLine) return false;
   for (;;) {
     if (stream.skipTo('\\')) {
@@ -220,11 +220,11 @@ function cppHook(/** @type {*} */ stream, /** @type {*} */ state) {
   return 'meta';
 }
 
-function def(/** @type {*} */ mimes, /** @type {*} */ mode) {
+function def(/** @type {ASTNode} */ mimes, /** @type {ASTNode} */ mode) {
   if (typeof mimes == 'string') mimes = [mimes];
-  /** @type {*} */
+  /** @type {ASTNode} */
   var words = [];
-  function add(/** @type {*} */ obj) {
+  function add(/** @type {ASTNode} */ obj) {
     if (obj)
       for (var prop in obj)
         if (Object.prototype.hasOwnProperty.call(obj, prop)) words.push(prop);
@@ -234,7 +234,7 @@ function def(/** @type {*} */ mimes, /** @type {*} */ mode) {
   add(mode.atoms);
   if (words.length) {
     mode.helperType = mimes[0];
-    CodeMirror.registerHelper('hintWords', mimes[0], /** @type {*} */ words);
+    CodeMirror.registerHelper('hintWords', mimes[0], /** @type {ASTNode} */ words);
   }
 
   for (var i = 0; i < mimes.length; ++i)

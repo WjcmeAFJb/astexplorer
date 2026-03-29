@@ -13,25 +13,25 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['@vue/compiler-dom'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.parse(code, options);
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.type || node.name) {
       return [node.loc.start.offset, node.loc.end.offset];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.tag;
   },
 

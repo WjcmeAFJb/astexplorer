@@ -12,15 +12,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['esprima'], callback);
   },
 
-  parse(/** @type {*} */ esprima, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ esprima, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return esprima.parse(code, options);
   },
 
-  *forEachProperty(/** @type {*} */ node) {
+  *forEachProperty(/** @type {ASTNode} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (typeof node[prop] === 'function') {

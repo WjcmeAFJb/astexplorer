@@ -4,7 +4,7 @@ import pkg from 'java-parser/package.json';
 const ID = 'java-parser';
 
 export const parserSettingsConfiguration = {
-  /** @type {*} */
+  /** @type {ASTNode} */
   fields: [],
 };
 
@@ -21,11 +21,11 @@ export default {
   locationProps: new Set(['location']),
   typeProps: new Set(['name']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['java-parser'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
     return parser.parse(code);
   },
 
@@ -35,11 +35,11 @@ export default {
     return {};
   },
 
-  getNodeName(/** @type {*} */ { name }) {
+  getNodeName(/** @type {DynModule} */ { name }) {
     return name;
   },
 
-  nodeToRange(/** @type {*} */ { location }) {
+  nodeToRange(/** @type {DynModule} */ { location }) {
     if (!location) {
       return;
     }

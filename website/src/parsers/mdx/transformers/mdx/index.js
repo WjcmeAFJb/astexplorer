@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'mdxhast',
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require([
       '../../../transpilers/babel',
       '@mdx-js/mdx',
@@ -22,7 +22,7 @@ export default {
     });
   },
 
-  transform(/** @type {*} */ { transpile, mdx, prettier, babylon }, /** @type {*} */ transformCode, /** @type {*} */ code) {
+  transform(/** @type {DynModule} */ { transpile, mdx, prettier, babylon }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     const transform = compileModule(transformCode);
     const jsxCode = mdx.sync(code, {

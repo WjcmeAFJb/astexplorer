@@ -13,7 +13,7 @@ export default {
   locationProps: new Set(['sourceCodeLocation']),
   typeProps: new Set(['type', 'name', 'nodeName', 'tagName']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require([
       'parse5/lib/parser',
       'parse5/lib/tree-adapters/default',
@@ -30,7 +30,7 @@ export default {
   },
 
   /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  parse(/** @type {*} */ { Parser, TreeAdapters }, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ { Parser, TreeAdapters }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     this.options = options;
     return new Parser({
       treeAdapter: TreeAdapters[this.options.treeAdapter],
@@ -39,7 +39,7 @@ export default {
   },
 
   /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     if (this.options.treeAdapter === 'htmlparser2') {
       if (node.type) {
         return node.type + (node.name && node.type !== 'root' ? `(${node.name})` : '');
@@ -49,13 +49,13 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {*} */ { sourceCodeLocation: loc }) {
+  nodeToRange(/** @type {DynModule} */ { sourceCodeLocation: loc }) {
     if (loc) {
       return [loc.startOffset, loc.endOffset];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'children' || key === 'childNodes';
   },
 

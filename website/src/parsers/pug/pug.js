@@ -13,17 +13,17 @@ export default {
   typeProps: new Set(['type', 'name']),
   locationProps: new Set(['line', 'column']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['pug-lexer', 'pug-parser'], (lex, parse) => {
       callback({ lex, parse });
     });
   },
 
-  parse(/** @type {*} */ { lex, parse }, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ { lex, parse }, /** @type {string} */ code) {
     return parse(lex(code, {}), { src: code });
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     switch (key) {
       case 'block':
       case 'nodes':
@@ -31,7 +31,7 @@ export default {
     }
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     let { type } = node;
     /* eslint-disable no-fallthrough */
     switch (type) {

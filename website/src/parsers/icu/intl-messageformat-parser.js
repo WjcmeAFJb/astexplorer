@@ -28,7 +28,7 @@ export default {
     pkg.homepage || 'https://formatjs.io/docs/intl-messageformat-parser/',
   locationProps: new Set(['location']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['intl-messageformat-parser'], (all) => {
       Object.keys(all.TYPE).forEach((k) => {
         // @ts-expect-error — indexing dynamic object
@@ -38,7 +38,7 @@ export default {
     });
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ opts) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code, /** @type {DynModule} */ opts) {
     return parser.parse(code, opts);
   },
 
@@ -50,12 +50,12 @@ export default {
     return defaultOptions;
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     // @ts-expect-error — indexing dynamic object
     return node.type != null && TYPES[node.type];
   },
 
-  nodeToRange(/** @type {*} */ { location }) {
+  nodeToRange(/** @type {DynModule} */ { location }) {
     if (location && location.start && location.end) {
       return [location.start.offset, location.end.offset];
     }

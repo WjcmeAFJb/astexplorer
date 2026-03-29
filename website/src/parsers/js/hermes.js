@@ -32,15 +32,15 @@ export default {
   homepage: pkg.homepage || 'https://hermesengine.dev/',
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     callback(new HermesWorkerClient());
   },
 
-  async parse(/** @type {*} */ hermes, /** @type {*} */ code, /** @type {*} */ options) {
+  async parse(/** @type {DynModule} */ hermes, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return await hermes.parse(code, options);
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     // For `babel: true` mode
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];

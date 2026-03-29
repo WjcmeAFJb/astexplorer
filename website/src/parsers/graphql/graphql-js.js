@@ -13,27 +13,27 @@ export default {
   locationProps: new Set(['loc']),
   typeProps: new Set(['kind']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['graphql/language'], ({ parse }) => {
       callback({ parse });
     });
   },
 
-  parse(/** @type {*} */ { parse }, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ { parse }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parse(code, options);
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.loc) {
       return [node.loc.start, node.loc.end];
     }
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.kind;
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'definitions';
   },
 

@@ -19,7 +19,7 @@ async function transform(transformer, transformCode, code) {
   if (!transformer._promise) {
     transformer._promise = new Promise(transformer.loadTransformer);
   }
-  /** @type {{version?: string} | undefined} */
+  /** @type {DynModule & {version?: string} | undefined} */
   let realTransformer;
   try {
     realTransformer = await transformer._promise;

@@ -44,19 +44,19 @@ export default {
   homepage: `https://www.npmjs.com/package/@esy-ocaml/reason/v/${parserVersion}`,
   locationProps: new Set(locKeys),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['astexplorer-refmt'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
     return parser.parseReason(code);
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.type;
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     const locKey = locKeys.find(key => Object.prototype.hasOwnProperty.call(node, key));
     if (locKey) {
       const range = [

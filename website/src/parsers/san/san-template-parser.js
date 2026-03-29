@@ -13,19 +13,19 @@ export default {
   locationProps: new Set([]),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['san'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.parseTemplate(code, options).children[0];
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.tagName;
   },
 

@@ -10,7 +10,7 @@ export default {
 
   defaultParserID: 'babylon7',
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require([
       '../../../transpilers/babel',
       'babel7',
@@ -19,7 +19,7 @@ export default {
     ], (transpile, babel, recast, macro) => callback({ transpile: transpile.default, babel, recast, macro}));
   },
 
-  transform(/** @type {*} */ { transpile, babel, recast, macro}, /** @type {*} */ transformCode, /** @type {*} */ code) {
+  transform(/** @type {DynModule} */ { transpile, babel, recast, macro}, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,
@@ -59,7 +59,7 @@ export default {
       generatorOpts: {
         generator: recast.print,
       },
-      plugins: [macro(babel, {require: () => transform, resolvePath: (/** @type {*} */ src) => src})],
+      plugins: [macro(babel, {require: () => transform, resolvePath: (/** @type {string} */ src) => src})],
       sourceMaps: true,
     });
   },

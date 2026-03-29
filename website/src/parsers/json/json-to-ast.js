@@ -12,15 +12,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['json-to-ast'], callback);
   },
 
-  parse(/** @type {*} */ jsonToAst, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ jsonToAst, /** @type {string} */ code) {
     return jsonToAst(code);
   },
 
-  nodeToRange(/** @type {*} */ {loc}) {
+  nodeToRange(/** @type {DynModule} */ {loc}) {
     if (loc) {
       return [
         loc.start.offset,

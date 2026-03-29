@@ -11,7 +11,7 @@ export default class HermesWorkerClient {
     this._worker.onmessage = this._handleMessage.bind(this);
   }
 
-  _handleMessage(/** @type {*} */ e) {
+  _handleMessage(/** @type {ASTNode} */ e) {
     const {type, action, value, requestId} = e.data;
     const request = this._requests.get(requestId);
     if (!request) {
@@ -32,7 +32,7 @@ export default class HermesWorkerClient {
     }
   }
 
-  _request(/** @type {*} */ type, /** @type {*} */ args) {
+  _request(/** @type {ASTNode} */ type, /** @type {ASTNode} */ args) {
     return new Promise((resolve, reject) => {
       const requestId = this._nextRequestId++;
       this._requests.set(requestId, {resolve, reject});

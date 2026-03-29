@@ -4,7 +4,7 @@ import pkg from 'typescript/package.json';
 const ID = 'typescript';
 const FILENAME = 'astExplorer.ts';
 
-/** @type {*} */
+/** @type {ASTNode} */
 let getComments;
 const syntaxKind = {};
 
@@ -24,7 +24,7 @@ export default {
   locationProps: new Set(['pos', 'end']),
   typeProps: new Set(['kind']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['typescript'], _ts => {
         // workarounds issue described at https://github.com/Microsoft/TypeScript/issues/18062
         for (const name of Object.keys(_ts.SyntaxKind).filter(x => isNaN(parseInt(x)))) {
@@ -40,20 +40,20 @@ export default {
     });
   },
 
-  parse(/** @type {*} */ ts, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ ts, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     const compilerHost/*: ts.CompilerHost*/ = {
       fileExists: () => true,
-      getCanonicalFileName: (/** @type {*} */ filename) => filename,
+      getCanonicalFileName: (/** @type {string} */ filename) => filename,
       getCurrentDirectory: () => '',
       getDefaultLibFileName: () => 'lib.d.ts',
       getNewLine: () => '\n',
-      getSourceFile: (/** @type {*} */ filename) => {
+      getSourceFile: (/** @type {string} */ filename) => {
         return ts.createSourceFile(filename, code, ts.ScriptTarget.Latest, true);
       },
-      /** @returns {*} */
+      /** @returns {ASTNode} */
       readFile: () => null,
       useCaseSensitiveFileNames: () => true,
-      /** @returns {*} */
+      /** @returns {ASTNode} */
       writeFile: () => null,
     };
 
@@ -69,7 +69,7 @@ export default {
 
     const sourceFile = program.getSourceFile(filename);
 
-    getComments = (/** @type {*} */ node, /** @type {*} */ isTrailing) => {
+    getComments = (/** @type {ASTNode} */ node, /** @type {ASTNode} */ isTrailing) => {
       if (node.parent) {
         const nodePos = isTrailing ? node.end : node.pos;
         const parentPos = isTrailing ? node.parent.end : node.parent.pos;
@@ -95,7 +95,7 @@ export default {
     return sourceFile;
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     if (node.kind) {
       // @ts-expect-error — indexing dynamic object
       return syntaxKind[node.kind];
@@ -107,7 +107,7 @@ export default {
     'parent',
   ]),
 
-  *forEachProperty(/** @type {*} */ node) {
+  *forEachProperty(/** @type {ASTNode} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (this._ignoredProperties.has(prop) || prop.charAt(0) === '_') {
@@ -120,12 +120,12 @@ export default {
       }
       if (node.parent) {
         yield {
-          value: /** @type {*} */ getComments(node),
+          value: /** @type {ASTNode} */ getComments(node),
           key: 'leadingComments',
           computed: true,
         };
         yield {
-          value: /** @type {*} */ getComments(node, true),
+          value: /** @type {ASTNode} */ getComments(node, true),
           key: 'trailingComments',
           computed: true,
         };
@@ -133,7 +133,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (typeof node.getStart === 'function' &&
         typeof node.getEnd === 'function') {
       return [node.getStart(), node.getEnd()];
@@ -143,7 +143,7 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {*} */ _, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ _, /** @type {string} */ key) {
     return (
       key === 'statements' ||
       key === 'declarationList' ||

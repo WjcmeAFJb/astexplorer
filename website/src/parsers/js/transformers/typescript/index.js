@@ -13,14 +13,14 @@ export default {
 
   defaultParserID: 'typescript',
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require(['../../../transpilers/typescript', 'typescript'], (
       transpile,
       typescript,
     ) => callback({ transpile: transpile.default, ts: typescript }));
   },
 
-  transform(/** @type {*} */ { transpile, ts }, /** @type {*} */ transformCode, /** @type {*} */ code) {
+  transform(/** @type {DynModule} */ { transpile, ts }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     // basic scaffolding to get a compiled javascript module from the user provided code
     transformCode = transpile(transformCode);
     const mod = compileModule(
@@ -38,11 +38,11 @@ export default {
     // Create a minimal typescript host object needed for the rest of the compiler api
     const host /*: ts.host*/ = {
       fileExists: () => true,
-      getCanonicalFileName: (/** @type {*} */ filename) => filename,
+      getCanonicalFileName: (/** @type {string} */ filename) => filename,
       getCurrentDirectory: () => '',
       getDefaultLibFileName: () => 'lib.d.ts',
       getNewLine: () => '\n',
-      getSourceFile: (/** @type {*} */ filename) => {
+      getSourceFile: (/** @type {string} */ filename) => {
         return ts.createSourceFile(
           filename,
           code,
@@ -50,10 +50,10 @@ export default {
           true,
         );
       },
-      /** @returns {*} */
+      /** @returns {ASTNode} */
       readFile: () => null,
       useCaseSensitiveFileNames: () => true,
-      /** @returns {*} */
+      /** @returns {ASTNode} */
       writeFile: () => null,
     };
 

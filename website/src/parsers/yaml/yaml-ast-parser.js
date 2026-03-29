@@ -2,7 +2,7 @@ import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'yaml-ast-parser/package.json';
 
 const ID = 'yaml-ast-parser';
-/** @type {*} */
+/** @type {ASTNode} */
 let Kind = null;
 
 export default {
@@ -17,24 +17,24 @@ export default {
   locationProps: new Set(['startPosition', 'endPosition']),
   typeProps: new Set(['kind']),
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (typeof node.startPosition === 'number') {
       return [node.startPosition, node.endPosition];
     }
   },
 
-  getNodeName(/** @type {*} */ node) {
-    return /** @type {*} */ Kind[node.kind];
+  getNodeName(/** @type {ASTNode} */ node) {
+    return /** @type {ASTNode} */ Kind[node.kind];
   },
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['yaml-ast-parser'], function(yamlAstParser) {
       Kind = yamlAstParser.Kind;
       callback(yamlAstParser);
     });
   },
 
-  parse(/** @type {*} */ { load }, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ { load }, /** @type {string} */ code) {
     return load(code);
   },
 };

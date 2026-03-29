@@ -12,7 +12,7 @@ const options = {
   highlightCode: false,
 };
 
-export default function transpile(/** @type {*} */ code) {
+export default function transpile(/** @type {string} */ code) {
   let es5Code = babel.transform(code, options).code;
   es5Code = protect(es5Code);
   return es5Code;

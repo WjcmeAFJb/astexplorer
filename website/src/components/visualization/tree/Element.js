@@ -137,7 +137,7 @@ function useOpenState(openFromParent, isInRange) {
 /**
  * @typedef {Object} ElementProps
  * @property {string} [name]
- * @property {*} [value]
+ * @property {ASTNodeValue} [value]
  * @property {boolean} [computed]
  * @property {boolean} [open]
  * @property {number} [level]

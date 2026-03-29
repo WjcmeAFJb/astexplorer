@@ -12,7 +12,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['source']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['postcss/lib/parse', 'postcss-scss/lib/scss-parse', 'postcss-less/lib/', 'postcss-safe-parser'], (builtIn, scss, less, safe) => {
       callback({
         'built-in': builtIn,
@@ -23,16 +23,16 @@ export default {
     });
   },
 
-  parse(/** @type {*} */ parsers, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ parsers, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return defaultParserInterface.parse.call(
       this,
-      parsers[options.parser],
+      parsers[/** @type {DynModule} */ (options.parser)],
       code,
     );
   },
 
   /** @this {import('./utils/defaultCSSParserInterface').LineOffsetsMixin} */
-  nodeToRange(/** @type {*} */ { source: range }) {
+  nodeToRange(/** @type {DynModule} */ { source: range }) {
     if (!range || !range.end) return;
     return [
       this.getOffset(range.start),
@@ -40,7 +40,7 @@ export default {
     ];
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'nodes';
   },
 

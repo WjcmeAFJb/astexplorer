@@ -29,7 +29,7 @@ class TreeAdapter {
 
   /**
    * A more or less human readable name of the node.
-   * @param {unknown} node
+   * @param {ASTNode} node
    * @returns {string}
    */
   getNodeName(node) {
@@ -40,7 +40,7 @@ class TreeAdapter {
    * The start and end indicies of the node in the source text. The return value
    * is an array of form `[start, end]`. This is used for highlighting source
    * text and focusing nodes in the tree.
-   * @param {unknown} node
+   * @param {ASTNode} node
    * @returns {[number, number] | null | undefined}
    */
   getRange(node) {
@@ -60,7 +60,7 @@ class TreeAdapter {
   }
 
   /**
-   * @param {unknown} node
+   * @param {ASTNode} node
    * @param {string} key
    * @param {number} position
    * @returns {boolean}
@@ -80,10 +80,10 @@ class TreeAdapter {
   }
 
   /**
-   * @param {unknown} node
+   * @param {ASTNode} node
    * @param {string} key
    * @param {number} position
-   * @param {Set<unknown>} [seen]
+   * @param {Set<ASTNode>} [seen]
    * @returns {boolean}
    */
   hasChildrenInRange(node, key, position, seen=new Set()) {
@@ -127,7 +127,7 @@ class TreeAdapter {
 
   /**
    * Whether or not the provided node should be automatically expanded.
-   * @param {unknown} node
+   * @param {ASTNode} node
    * @param {string} key
    * @returns {boolean}
    */
@@ -136,7 +136,7 @@ class TreeAdapter {
   }
 
   /**
-   * @param {unknown} node
+   * @param {ASTNode} node
    * @returns {boolean}
    */
   isArray(node) {
@@ -144,7 +144,7 @@ class TreeAdapter {
   }
 
   /**
-   * @param {unknown} node
+   * @param {ASTNode} node
    * @returns {boolean}
    */
   isObject(node) {
@@ -153,7 +153,7 @@ class TreeAdapter {
 
   /**
    * A generator to iterate over each "property" of the node.
-   * @param {unknown} node
+   * @param {ASTNode} node
    * @yields {WalkResult}
    * @returns {Generator<WalkResult>}
    */

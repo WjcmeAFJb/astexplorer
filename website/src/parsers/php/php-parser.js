@@ -22,26 +22,26 @@ export default {
   locationProps: new Set(['loc']),
   typeProps: new Set(['kind']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['php-parser'], callback);
   },
 
-  parse(/** @type {*} */ Engine, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ Engine, /** @type {string} */ code) {
     const parser = new Engine(defaultOptions);
     return parser.parseCode(code, '');
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.kind;
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.loc && node.loc.start && node.loc.end) {
       return [node.loc.start.offset, node.loc.end.offset];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'body' || key === 'what' || key === 'items';
   },
 };

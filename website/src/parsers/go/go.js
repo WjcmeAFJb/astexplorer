@@ -12,22 +12,22 @@ export default {
   _ignoredProperties: new Set(['_type']),
   locationProps: new Set(['Loc']),
 
-  async loadParser(/** @type {*} */ callback) {
+  async loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['astexplorer-go'], async parser => {
       await parser.init()
       callback(parser)
     })
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
     return parser.parseFile(code)
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node._type
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.Loc) {
       return [node.Loc.Start, node.Loc.End].map(({ Offset }) => Offset)
     }

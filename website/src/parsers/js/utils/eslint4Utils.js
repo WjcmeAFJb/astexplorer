@@ -2,16 +2,16 @@ import compileModule from '../../utils/compileModule';
 import transpile from '../../transpilers/babel';
 import { parseNoPatch } from 'babel-eslint';
 
-export function formatResults(/** @type {*} */ results, /** @type {*} */ code) {
+export function formatResults(/** @type {ASTNode} */ results, /** @type {string} */ code) {
   return results.length === 0
     ? '// Lint rule not fired.'
     : results
-        .map((/** @type {*} */ result) => formatResult(result, code))
+        .map((/** @type {ASTNode} */ result) => formatResult(result, code))
         .join('')
         .trim();
 }
 
-export function formatResult(/** @type {*} */ result, /** @type {*} */ code) {
+export function formatResult(/** @type {ASTNode} */ result, /** @type {string} */ code) {
   var pointer = '-'.repeat(result.column - 1) + '^';
   return `
 // ${result.message} (at ${result.line}:${result.column})
@@ -19,14 +19,14 @@ export function formatResult(/** @type {*} */ result, /** @type {*} */ code) {
 // ${pointer}
 `;
 }
-function getSourceFromResult(/** @type {*} */ result, /** @type {*} */ code) {
+function getSourceFromResult(/** @type {ASTNode} */ result, /** @type {string} */ code) {
   if (result.source) {
     return result.source;
   }
   let linesOfCode = code.split('\n');
   return linesOfCode[result.line - 1];
 }
-export function defineRule(/** @type {*} */ eslint, /** @type {*} */ code) {
+export function defineRule(/** @type {ASTNode} */ eslint, /** @type {string} */ code) {
   // Compile the transform code and install it as an ESLint rule. The rule
   // name doesn't really matter here, so we'll just use a hard-coded name.
   code = transpile(code);
@@ -34,11 +34,11 @@ export function defineRule(/** @type {*} */ eslint, /** @type {*} */ code) {
   eslint.defineRule('astExplorerRule', rule.default || rule);
 }
 
-export function runRule(/** @type {*} */ code, /** @type {*} */ eslint) {
+export function runRule(/** @type {string} */ code, /** @type {ASTNode} */ eslint) {
   // Run the ESLint rule on the AST of the provided code.
   // Reference: http://eslint.org/docs/developer-guide/nodejs-api
   eslint.defineParser('babel-eslint', {
-    parse(/** @type {*} */ code) {
+    parse(/** @type {string} */ code) {
       return parseNoPatch(code, { sourceType: 'module' });
     },
   });

@@ -45,19 +45,19 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['tenko'], callback);
   },
 
-  parse(/** @type {*} */ tenko, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ tenko, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return tenko.Tenko(code, {...options});
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.type;
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.loc && node.loc.range) {
       return [node.loc.range.start, node.loc.range.end];
     }

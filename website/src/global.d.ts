@@ -24,10 +24,32 @@ interface Window {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: Function;
 }
 
-// Webpack AMD-style require used by the project
+/**
+ * An AST node produced by a parser.  Nodes are deeply nested objects whose
+ * exact shape depends on the parser.  A structural interface cannot capture
+ * all valid operations (property access, typeof checks, comparisons,
+ * iteration, spread) without `any`.  The named alias documents intent.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ASTNode = any;
+/** Possible AST value — a node, array, or primitive. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ASTNodeValue = any;
+
+/**
+ * A module loaded via webpack's AMD-style require().  The concrete shape
+ * depends on which package is loaded: it can be an object with methods,
+ * a constructor, a factory function, or even a raw string (via raw-loader).
+ * A named alias for documentation; resolves to `any` because TS has no
+ * single type that is simultaneously callable, constructable, indexable,
+ * spreadable, and assignable to all primitives.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DynModule = any;
+
+// Webpack AMD-style require used by the project.
 interface WebpackRequire {
-  // Callback params are `any` — webpack require loads arbitrary third-party modules at runtime
-  (deps: string[], callback: (...modules: any[]) => void): void;
+  (deps: string[], callback: (...modules: DynModule[]) => void): void;
   context(directory: string, useSubdirectories: boolean, regExp: RegExp): {
     keys(): string[];
     <T>(id: string): T;

@@ -12,15 +12,15 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage,
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['seafox'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.parse(code, options);
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -57,7 +57,7 @@ export default {
     };
   },
 
-  renderSettings(/** @type {*} */ parserSettings, /** @type {*} */ onChange) {
+  renderSettings(/** @type {Record<string, unknown>} */ parserSettings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
     return (
       <div>
         <p>

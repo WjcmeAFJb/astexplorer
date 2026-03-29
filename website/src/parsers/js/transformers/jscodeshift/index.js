@@ -6,9 +6,9 @@ const ID = 'jscodeshift';
 const sessionMethods = new Set();
 
 // https://github.com/facebook/jscodeshift#parser
-const getJscodeshiftParser = (/** @type {*} */ parser, /** @type {*} */ parserSettings) => {
+const getJscodeshiftParser = (/** @type {ASTNode} */ parser, /** @type {Record<string, unknown>} */ parserSettings) => {
   if (parser === 'typescript') {
-    if (parserSettings.typescript && parserSettings.typescript.jsx === false) {
+    if (parserSettings.typescript && /** @type {DynModule} */ (parserSettings.typescript).jsx === false) {
       return 'ts'
     }
     return 'tsx'
@@ -31,29 +31,29 @@ export default {
     'flow',
   ]),
 
-  formatCodeExample(/** @type {*} */ codeExample, /** @type {*} */ { parser, parserSettings }) {
+  formatCodeExample(/** @type {ASTNode} */ codeExample, /** @type {DynModule} */ { parser, parserSettings }) {
     return codeExample.replace('{{parser}}', `${getJscodeshiftParser(parser, parserSettings)}`)
   },
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require(['../../../transpilers/babel', 'jscodeshift'], (transpile, jscodeshift) => {
         const { registerMethods } = jscodeshift;
 
-        /** @type {*} */
+        /** @type {ASTNode} */
         let origMethods;
 
         jscodeshift.registerMethods({
-          hasOwnProperty(/** @type {*} */ name) {
+          hasOwnProperty(/** @type {string} */ name) {
             // compare only against current-session & very original methods
-            if (!/** @type {*} */ origMethods) {
+            if (!/** @type {ASTNode} */ origMethods) {
               origMethods = new Set(Object.getOwnPropertyNames(this));
             }
-            return /** @type {*} */ origMethods.has(name) || sessionMethods.has(name);
+            return /** @type {ASTNode} */ origMethods.has(name) || sessionMethods.has(name);
           },
         });
 
         // patch in order to collect user-defined method names
-        jscodeshift.registerMethods = function (/** @type {*} */ methods) {
+        jscodeshift.registerMethods = function (/** @type {ASTNode} */ methods) {
           registerMethods.apply(this, arguments);
           for (let name in methods) {
             sessionMethods.add(name);
@@ -66,9 +66,9 @@ export default {
   },
 
   transform(
-    /** @type {*} */ { transpile, jscodeshift },
-    /** @type {*} */ transformCode,
-    /** @type {*} */ code,
+    /** @type {DynModule} */ { transpile, jscodeshift },
+    /** @type {string} */ transformCode,
+    /** @type {string} */ code,
   ) {
     sessionMethods.clear();
     transformCode = transpile(transformCode);
@@ -91,7 +91,7 @@ export default {
         jscodeshift: transformModule.parser ?
           jscodeshift.withParser(transformModule.parser) :
           jscodeshift,
-        stats: (/** @type {*} */ value, quantity=1) => {
+        stats: (/** @type {ASTNodeValue} */ value, quantity=1) => {
           statsWasCalled = true;
           counter[value] = (counter[value] ? counter[value] : 0) + quantity;
         },

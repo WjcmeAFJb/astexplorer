@@ -2,13 +2,13 @@ import compileModule from '../../utils/compileModule';
 import transpile from '../../transpilers/babel';
 import {parseNoPatch} from 'babel-eslint';
 
-export function formatResults(/** @type {*} */ results) {
+export function formatResults(/** @type {ASTNode} */ results) {
   return results.length === 0
     ? 'Lint rule not fired.'
     : results.map(formatResult).join('').trim();
 }
 
-export function formatResult(/** @type {*} */ result) {
+export function formatResult(/** @type {ASTNode} */ result) {
   var pointer = '-'.repeat(result.column - 1) + '^';
   return `
 // ${result.message} (at ${result.line}:${result.column})
@@ -17,7 +17,7 @@ export function formatResult(/** @type {*} */ result) {
 `;
 }
 
-export function defineRule(/** @type {*} */ eslintRules, /** @type {*} */ code) {
+export function defineRule(/** @type {ASTNode} */ eslintRules, /** @type {string} */ code) {
   // Compile the transform code and install it as an ESLint rule. The rule
   // name doesn't really matter here, so we'll just use a hard-coded name.
   code = transpile(code);
@@ -25,7 +25,7 @@ export function defineRule(/** @type {*} */ eslintRules, /** @type {*} */ code) 
   eslintRules.define('astExplorerRule', rule.default || rule);
 }
 
-export function runRule(/** @type {*} */ code, /** @type {*} */ eslint, /** @type {*} */ sourceCode) {
+export function runRule(/** @type {string} */ code, /** @type {ASTNode} */ eslint, /** @type {ASTNode} */ sourceCode) {
   // Run the ESLint rule on the AST of the provided code.
   // Reference: http://eslint.org/docs/developer-guide/nodejs-api
   const ast = parseNoPatch(code, {

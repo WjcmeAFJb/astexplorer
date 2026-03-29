@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: ID,
 
-  loadTransformer(/** @type {*} */ callback) {
+  loadTransformer(/** @type {(realTransformer: DynModule) => void} */ callback) {
     require([
       'remark',
       'unist-util-is',
@@ -27,8 +27,8 @@ export default {
     });
   },
 
-  transform(/** @type {*} */ { remark, ...availableModules }, /** @type {*} */ transformCode, /** @type {*} */ code) {
-    function sandboxRequire(/** @type {*} */ name) {
+  transform(/** @type {DynModule} */ { remark, ...availableModules }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+    function sandboxRequire(/** @type {string} */ name) {
       if (!Object.getOwnPropertyNames(availableModules).includes(name))
         throw new Error(`Cannot find module '${name}'`);
       return availableModules[name];

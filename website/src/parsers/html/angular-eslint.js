@@ -3,8 +3,8 @@ import pkg from '@angular-eslint/template-parser/package.json';
 
 const ID = '@angular-eslint/template-parser';
 
-function wrapParesr(/** @type {*} */ callback, /** @type {*} */ { parseForESLint }) {
-  const parse = (/** @type {*} */ code, /** @type {*} */ options) => {
+function wrapParesr(/** @type {(realParser: DynModule) => void} */ callback, /** @type {DynModule} */ { parseForESLint }) {
+  const parse = (/** @type {string} */ code, /** @type {Record<string, unknown>} */ options) => {
     const {
       ast,
       visitorKeys,
@@ -12,7 +12,7 @@ function wrapParesr(/** @type {*} */ callback, /** @type {*} */ { parseForESLint
     } = parseForESLint(code, options);
 
     // Traverse AST in order to add `loc` and `range` for each child
-    const addLocation = (/** @type {*} */ node) => {
+    const addLocation = (/** @type {ASTNode} */ node) => {
       if (!node.startSourceSpan || !node.endSourceSpan) {
         if (!node.sourceSpan) return node;
         const range = node.range || [
@@ -42,9 +42,9 @@ function wrapParesr(/** @type {*} */ callback, /** @type {*} */ { parseForESLint
       }
     };
 
-    const visit = (/** @type {*} */ node) => {
+    const visit = (/** @type {ASTNode} */ node) => {
       const keys = visitorKeys[node.type] || [];
-      const newNode = keys.reduce((/** @type {*} */ acc, /** @type {*} */ key) => {
+      const newNode = keys.reduce((/** @type {ASTNode} */ acc, /** @type {string} */ key) => {
         const child = node[key];
         if (Array.isArray(child)) {
           const children = child;
@@ -72,11 +72,11 @@ export default {
   homepage: pkg.homepage || 'https://github.com/angular-eslint/angular-eslint',
   locationProps: new Set(['loc', 'start', 'end', 'range', 'startSourceSpan', 'endSourceSpan', 'sourceSpan', 'handlerSpan', 'location']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['@angular-eslint/template-parser'], wrapParesr.bind(null, callback));
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.parse(code, options);
   },
 };

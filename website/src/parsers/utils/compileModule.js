@@ -1,7 +1,7 @@
 /**
  * @param {string} code
  * @param {Record<string, unknown>} [globals]
- * @returns {*}
+ * @returns {DynModule}
  */
 export default function compileModule(code, globals = {}) {
   let exports = {};

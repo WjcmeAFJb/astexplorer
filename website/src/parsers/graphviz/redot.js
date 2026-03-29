@@ -12,21 +12,21 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['redot'], callback);
   },
 
-  parse(/** @type {*} */ redot, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ redot, /** @type {string} */ code) {
     return redot().parse(code);
   },
 
-  nodeToRange(/** @type {*} */ { position }) {
+  nodeToRange(/** @type {DynModule} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 };

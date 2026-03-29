@@ -12,11 +12,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['yaml'], callback);
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.range) {
       return node.range;
     }
@@ -31,7 +31,7 @@ export default {
     }
   },
 
-  parse(/** @type {*} */ { parseAllDocuments }, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ { parseAllDocuments }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parseAllDocuments(code, options);
   },
 

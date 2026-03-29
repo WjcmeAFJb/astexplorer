@@ -3,7 +3,7 @@ import pkg from 'shift-parser/package.json';
 
 const ID = 'shift';
 
-/** @type {*} */
+/** @type {ASTNode} */
 let lastParsedLocations;
 
 export default {
@@ -15,11 +15,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['shift-parser'], callback);
   },
 
-  parse(/** @type {*} */ shift, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ shift, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     const parseMethod = options.sourceType === 'module' ?
       'parseModuleWithLocation' :
       'parseScriptWithLocation';
@@ -28,14 +28,14 @@ export default {
     return tree;
   },
 
-  nodeToRange(/** @type {*} */ node) {
-    if (/** @type {*} */ lastParsedLocations && /** @type {*} */ lastParsedLocations.has(node)) {
-      let loc = /** @type {*} */ lastParsedLocations.get(node);
+  nodeToRange(/** @type {ASTNode} */ node) {
+    if (/** @type {ASTNode} */ lastParsedLocations && /** @type {ASTNode} */ lastParsedLocations.has(node)) {
+      let loc = /** @type {ASTNode} */ lastParsedLocations.get(node);
       return [loc.start.offset, loc.end.offset];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return (
       key === 'items' ||
       key === 'declaration' ||

@@ -18,17 +18,17 @@ export default {
   ]),
   typeProps: new Set(['name']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['@angular/compiler'], callback);
   },
 
-  parse(/** @type {*} */ ng, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ ng, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     const ast = ng.parseTemplate(code, 'astexplorer.html', options);
     fixSpan(ast, code);
     return ast;
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node.startSourceSpan) {
       if (node.endSourceSpan) {
         return [
@@ -49,7 +49,7 @@ export default {
     }
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     let name = getNodeCtor(node);
     if (node.name) {
       name += `(${node.name})`;
@@ -64,7 +64,7 @@ export default {
   },
 };
 
-function getNodeCtor(/** @type {*} */ node) {
+function getNodeCtor(/** @type {ASTNode} */ node) {
   return node.constructor && node.constructor.name;
 }
 
@@ -82,10 +82,10 @@ function getNodeCtor(/** @type {*} */ node) {
  *     <tag [attr]="expression">
  *                  ^^^^^^^^^^ sub AST { start: 13, end: 23 }
  */
-function fixSpan(/** @type {*} */ ast, /** @type {*} */ code) {
+function fixSpan(/** @type {ASTNode} */ ast, /** @type {string} */ code) {
   const fixed = new Set();
   const KEEP_VISIT = 1;
-  function visitTarget(/** @type {*} */ value, /** @type {*} */ isTarget, /** @type {*} */ fn, /** @type {*} */ parent) {
+  function visitTarget(/** @type {ASTNodeValue} */ value, /** @type {ASTNode} */ isTarget, /** @type {ASTNode} */ fn, /** @type {ASTNode} */ parent) {
     if (value !== null && typeof value === 'object') {
       if (isTarget(value)) {
         if (fn(value, parent) !== KEEP_VISIT) {
@@ -102,7 +102,7 @@ function fixSpan(/** @type {*} */ ast, /** @type {*} */ code) {
     }
   }
 
-  function getBaseStart(/** @type {*} */ parent) {
+  function getBaseStart(/** @type {ASTNode} */ parent) {
     const nodeName = getNodeCtor(parent);
     switch (nodeName) {
       case 'BoundAttribute':
@@ -133,13 +133,13 @@ function fixSpan(/** @type {*} */ ast, /** @type {*} */ code) {
 
   visitTarget(
     ast,
-    (/** @type {*} */ value) => getNodeCtor(value) === 'ASTWithSource',
-    (/** @type {*} */ node, /** @type {*} */ parent) => {
+    (/** @type {ASTNodeValue} */ value) => getNodeCtor(value) === 'ASTWithSource',
+    (/** @type {ASTNode} */ node, /** @type {ASTNode} */ parent) => {
       const baseStart = getBaseStart(parent);
       visitTarget(
         node,
-        (/** @type {*} */ value) => value.span,
-        (/** @type {*} */ node) => {
+        (/** @type {ASTNodeValue} */ value) => value.span,
+        (/** @type {ASTNode} */ node) => {
           if (!fixed.has(node)) {
             node.span.start += baseStart;
             node.span.end += baseStart;

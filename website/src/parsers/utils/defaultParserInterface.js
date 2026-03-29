@@ -59,7 +59,7 @@ export default {
   /**
    * Whether or not the provided node should be automatically expanded.
    */
-  opensByDefault(/** @type {*} */ _node, /** @type {*} */ _key) {
+  opensByDefault(/** @type {ASTNode} */ _node, /** @type {ASTNode} */ _key) {
     return false;
   },
 
@@ -68,14 +68,14 @@ export default {
    * is an array of form `[start, end]`. This is used for highlighting source
    * text and focusing nodes in the tree.
    */
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     return node.range;
   },
 
   /**
    * A more or less human readable name of the node.
    */
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     if (node && typeof node.type !== 'object') {
       return node.type;
     }
@@ -86,7 +86,7 @@ export default {
    * function allows a parser to expose information from a node if the node
    * is not implemented as plain JavaScript object.
    */
-  *forEachProperty(/** @type {*} */ node) {
+  *forEachProperty(/** @type {ASTNode} */ node) {
     if (node && typeof node === 'object') {
       for (let prop in node) {
         if (this._ignoredProperties.has(prop)) {
@@ -142,7 +142,7 @@ export default {
    *                                      used to describe nested options.
    *
    */
-  _getSettingsConfiguration(/** @type {*} */ defaultOptions) {
+  _getSettingsConfiguration(/** @type {Record<string, unknown>} */ defaultOptions) {
     const keys = Object.keys(defaultOptions);
     return keys.length > 0 ?
       {
@@ -169,7 +169,7 @@ export default {
    * in a snippet or the client browser, so this function is called to ensure
    * that all options are set.
    */
-  _mergeDefaultOptions(/** @type {*} */ currentOptions, /** @type {*} */ defaultOptions) {
+  _mergeDefaultOptions(/** @type {Record<string, unknown>} */ currentOptions, /** @type {Record<string, unknown>} */ defaultOptions) {
     return {...defaultOptions, ...currentOptions};
   },
 
@@ -178,7 +178,7 @@ export default {
    * current parser settings and a callback that should be called with the
    * updated settings object.
    */
-  renderSettings(/** @type {*} */ settings, /** @type {*} */ onChange) {
+  renderSettings(/** @type {Record<string, unknown> | null} */ settings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
     const defaultOptions = this.getDefaultOptions();
     const settingsConfiguration = this._getSettingsConfiguration(
       defaultOptions,

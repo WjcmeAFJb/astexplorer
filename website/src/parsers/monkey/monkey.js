@@ -13,11 +13,11 @@ export default {
   homepage: 'https://monkeylang.org/',
   locationProps: new Set(['span']),
 
-  async loadParser(/** @type {*} */ callback) {
+  async loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['@gengjiawen/monkey-wasm/monkey_wasm.js'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
     try {
       return JSON.parse(parser.parse(code));
     } catch (message) {
@@ -26,11 +26,11 @@ export default {
     }
   },
 
-  getNodeName(/** @type {*} */ node) {
+  getNodeName(/** @type {ASTNode} */ node) {
     return node.type
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (node && node.span && typeof node.span.start === 'number') {
       return [node.span.start, node.span.end];
     }

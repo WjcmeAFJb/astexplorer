@@ -13,7 +13,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['acorn', 'acorn-loose', 'acorn-jsx'], (acorn, acornLoose, acornJsx) => {
       callback({
         acorn,
@@ -23,7 +23,7 @@ export default {
     });
   },
 
-  parse(/** @type {*} */ parsers, /** @type {*} */ code, options={}) {
+  parse(/** @type {DynModule} */ parsers, /** @type {string} */ code, options={}) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
@@ -47,7 +47,7 @@ export default {
     });
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }
@@ -73,7 +73,7 @@ export default {
   _getSettingsConfiguration() {
     return {
       fields: [
-        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'latest'], (/** @type {*} */ x) => x === 'latest' ? x : Number(x)],
+        ['ecmaVersion', [3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'latest'], (/** @type {ASTNode} */ x) => x === 'latest' ? x : Number(x)],
         ['sourceType', ['script', 'module']],
         'allowReserved',
         'allowReturnOutsideFunction',
@@ -89,7 +89,7 @@ export default {
     };
   },
 
-  renderSettings(/** @type {*} */ parserSettings, /** @type {*} */ onChange) {
+  renderSettings(/** @type {Record<string, unknown>} */ parserSettings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
     return (
       <div>
         <p>

@@ -12,11 +12,11 @@ export default {
   homepage: pkg.homepage || 'https://typescript-eslint.io/',
   locationProps: new Set(['loc', 'start', 'end', 'range']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['@typescript-eslint/parser'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return parser.parse(code, options);
   },
 
@@ -36,10 +36,10 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(/** @type {*} */ defaultOptions) {
+  _getSettingsConfiguration(/** @type {Record<string, unknown>} */ defaultOptions) {
     return {
       fields: [
-        ['ecmaVersion', [3, 5, 6, 7, 8, 9], (/** @type {*} */ value) => Number(value)],
+        ['ecmaVersion', [3, 5, 6, 7, 8, 9], (/** @type {ASTNodeValue} */ value) => Number(value)],
         ['sourceType', ['script', 'module']],
         'range',
         'loc',
@@ -51,7 +51,7 @@ export default {
           title: 'ecmaFeatures',
           fields: Object.keys(defaultOptions.ecmaFeatures),
           settings:
-          (/** @type {*} */ settings) => settings.ecmaFeatures || {...defaultOptions.ecmaFeatures},
+          (/** @type {Record<string, unknown>} */ settings) => settings.ecmaFeatures || {.../** @type {Record<string, unknown>} */ (defaultOptions.ecmaFeatures)},
         },
       ],
       required: new Set(['range']),

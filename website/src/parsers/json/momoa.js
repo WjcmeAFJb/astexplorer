@@ -12,15 +12,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['@humanwhocodes/momoa'], callback);
   },
 
-  parse(/** @type {*} */ momoa, /** @type {*} */ code, /** @type {*} */ options) {
+  parse(/** @type {DynModule} */ momoa, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     return momoa.parse(code, options);
   },
 
-  nodeToRange(/** @type {*} */ {loc}) {
+  nodeToRange(/** @type {DynModule} */ {loc}) {
     if (loc) {
       return [
         loc.start.offset,

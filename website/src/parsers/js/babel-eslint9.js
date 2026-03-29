@@ -12,11 +12,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc', 'start', 'end', 'range']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require(['babel-eslint9'], callback);
   },
 
-  parse(/** @type {*} */ parser, /** @type {*} */ code) {
+  parse(/** @type {DynModule} */ parser, /** @type {string} */ code) {
     const opts = {
       sourceType: 'module',
     };
@@ -26,7 +26,7 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {*} */ node) {
+  nodeToRange(/** @type {ASTNode} */ node) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

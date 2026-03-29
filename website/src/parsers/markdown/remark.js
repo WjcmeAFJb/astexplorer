@@ -13,7 +13,7 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['position']),
 
-  loadParser(/** @type {*} */ callback) {
+  loadParser(/** @type {(realParser: DynModule) => void} */ callback) {
     require([
       'remark',
       'remark-gfm',
@@ -32,9 +32,9 @@ export default {
   },
 
   parse(
-    /** @type {*} */ { remark, gfm, directive, footnotes, frontmatter, math },
-    /** @type {*} */ code,
-    /** @type {*} */ options,
+    /** @type {DynModule} */ { remark, gfm, directive, footnotes, frontmatter, math },
+    /** @type {string} */ code,
+    /** @type {Record<string, unknown>} */ options,
   ) {
     const plugins = [
       options['remark-gfm'] ? gfm : false,
@@ -46,13 +46,13 @@ export default {
     return remark().use(plugins).parse(code);
   },
 
-  nodeToRange(/** @type {*} */ { position }) {
+  nodeToRange(/** @type {DynModule} */ { position }) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }
   },
 
-  opensByDefault(/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault(/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
@@ -66,7 +66,7 @@ export default {
     };
   },
 
-  renderSettings(/** @type {*} */ parserSettings, /** @type {*} */ onChange) {
+  renderSettings(/** @type {Record<string, unknown>} */ parserSettings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
     return (
       <div>
         <p>

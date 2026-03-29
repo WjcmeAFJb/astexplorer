@@ -11,7 +11,7 @@ import {
 
 const ID = 'hyntax';
 
-function getTagEndPosition (/** @type {*} */ node) {
+function getTagEndPosition (/** @type {ASTNode} */ node) {
   if (node.content.close) {
     return node.content.close.endPosition + 1
   }
@@ -23,14 +23,14 @@ function getTagEndPosition (/** @type {*} */ node) {
   return node.content.openStart.endPosition + 1
 }
 
-function getDoctypeRange (/** @type {*} */ node) {
+function getDoctypeRange (/** @type {ASTNode} */ node) {
   return [
     node.content.start.startPosition,
     node.content.end.endPosition + 1,
   ];
 }
 
-function getTagRange (/** @type {*} */ node) {
+function getTagRange (/** @type {ASTNode} */ node) {
   const endPosition = getTagEndPosition(node);
 
   return [
@@ -39,14 +39,14 @@ function getTagRange (/** @type {*} */ node) {
   ];
 }
 
-function getTextRange (/** @type {*} */ node) {
+function getTextRange (/** @type {ASTNode} */ node) {
   return [
     node.content.value.startPosition,
     node.content.value.endPosition + 1,
   ];
 }
 
-function getCommentRange (/** @type {*} */ node) {
+function getCommentRange (/** @type {ASTNode} */ node) {
   return [
     node.content.start.startPosition,
     node.content.end.endPosition + 1,
@@ -62,7 +62,7 @@ export default {
   homepage: pkg.homepage || 'https://github.com/nik-garmash/hyntax',
   locationProps: new Set(['startPosition', 'endPosition']),
 
-  loadParser (/** @type {*} */ callback) {
+  loadParser (/** @type {(realParser: DynModule) => void} */ callback) {
     require([
       'hyntax/lib-es5/tokenize',
       'hyntax/lib-es5/construct-tree',
@@ -71,14 +71,14 @@ export default {
     });
   },
 
-  parse (/** @type {*} */ { tokenize, constructTree }, /** @type {*} */ code) {
+  parse (/** @type {DynModule} */ { tokenize, constructTree }, /** @type {string} */ code) {
     const { tokens } = tokenize(code);
     const { ast } = constructTree(tokens);
 
     return ast;
   },
 
-  nodeToRange (/** @type {*} */ node) {
+  nodeToRange (/** @type {ASTNode} */ node) {
     if (node.nodeType !== undefined) {
       if (node.nodeType === NODE_DOCTYPE) {
         return getDoctypeRange(node);
@@ -102,7 +102,7 @@ export default {
     }
   },
 
-  opensByDefault (/** @type {*} */ node, /** @type {*} */ key) {
+  opensByDefault (/** @type {ASTNode} */ node, /** @type {string} */ key) {
     return [
       'content',
       'children',
@@ -110,7 +110,7 @@ export default {
     ].includes(key)
   },
 
-  getNodeName (/** @type {*} */ node) {
+  getNodeName (/** @type {ASTNode} */ node) {
     if (node.nodeType === undefined) {
       return;
     }
