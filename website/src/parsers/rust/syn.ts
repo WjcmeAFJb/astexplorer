@@ -16,8 +16,8 @@ export default {
   locationProps: new Set(['span']),
 
   loadParser(callback: (realParser: typeof import('astexplorer-syn')) => void) {
-    require(['astexplorer-syn'], async (syn: typeof import('astexplorer-syn')) => {
-      await syn.default();
+    require(['astexplorer-syn', 'astexplorer-syn/astexplorer_syn_bg.wasm'], async (syn: typeof import('astexplorer-syn'), wasmModule: {default: string}) => {
+      await syn.default(wasmModule.default);
       callback(syn);
     });
   },
