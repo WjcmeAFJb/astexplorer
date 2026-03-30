@@ -1,6 +1,6 @@
 type CompiledModule = ((...args: unknown[]) => unknown) & {[key: string]: unknown, __esModule?: boolean, default?: ((...args: unknown[]) => unknown)};
 
-export default function compileModule(code: string, globals?: Record<string, unknown>): CompiledModule {
+export default function compileModule(code: string, globals: Record<string, unknown> = {}): CompiledModule {
   let exports = ({} as Record<string, unknown>);
   let module = { exports };
   let globalNames = Object.keys(globals);
