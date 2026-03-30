@@ -38,6 +38,7 @@ const plugins = [
     require.resolve('astexplorer-go/go'),
   ),
 
+
   // eslint //
 
   // Shim ESLint stuff that's only relevant for Node.js
@@ -152,14 +153,20 @@ module.exports = Object.assign({
       // in here, augment import.meta with custom loader, also provides path to wasm binary
       // for its initializer to correctly import wasm binary.
       {
-        test: /\wasm.js$/,
-        include: [path.join(__dirname, 'node_modules', '@swc', 'wasm-web')],
+        test: /\.js$/,
+        include: [
+          path.join(__dirname, 'node_modules', '@swc', 'wasm-web'),
+          path.join(__dirname, 'node_modules', 'astexplorer-syn'),
+        ],
         loader: require.resolve('@open-wc/webpack-import-meta-loader'),
       },
       {
         test: /.wasm$/,
         type: "javascript/auto",
-        include: [path.join(__dirname, 'node_modules', '@swc', 'wasm-web')],
+        include: [
+          path.join(__dirname, 'node_modules', '@swc', 'wasm-web'),
+          path.join(__dirname, 'node_modules', 'astexplorer-syn'),
+        ],
         loader: "file-loader"
       },
       // This rule is needed to make sure *.mjs files in node_modules are
@@ -214,6 +221,9 @@ module.exports = Object.assign({
           path.join(__dirname, 'node_modules', 'tslint'),
           path.join(__dirname, 'node_modules', 'tslib'),
           path.join(__dirname, 'node_modules', 'svelte'),
+          path.join(__dirname, 'node_modules', 'meriyah'),
+          path.join(__dirname, 'node_modules', 'css-tree'),
+          path.join(__dirname, 'node_modules', 'astexplorer-syn'),
           path.join(__dirname, 'src'),
         ],
         loader: 'babel-loader',
@@ -234,6 +244,7 @@ module.exports = Object.assign({
           ],
           plugins: [
             require.resolve('@babel/plugin-proposal-class-properties'),
+            require.resolve('@babel/plugin-proposal-optional-chaining'),
             require.resolve('@babel/plugin-transform-runtime'),
           ],
         },
@@ -260,6 +271,7 @@ module.exports = Object.assign({
     ],
 
     noParse: [
+      /java-parser\/src/,
       /traceur\/bin/,
       /typescript\/lib/,
       /esprima\/dist\/esprima\.js/,
@@ -284,6 +296,16 @@ module.exports = Object.assign({
 
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
+    alias: {
+      // These packages use "exports" in package.json which blocks subpath
+      // access to package.json under webpack 4. Alias the subpath directly.
+      'java-parser$': path.join(__dirname, 'node_modules', 'java-parser', 'src', 'index.js'),
+      'java-parser/package.json': path.join(__dirname, 'node_modules', 'java-parser', 'package.json'),
+      'meriyah$': path.join(__dirname, 'node_modules', 'meriyah', 'dist', 'meriyah.esm.js'),
+      'meriyah/package.json': path.join(__dirname, 'node_modules', 'meriyah', 'package.json'),
+      // Go wasm runtime import
+      'gojs': path.join(__dirname, 'node_modules', 'astexplorer-go', 'go.js'),
+    },
   },
 
   entry: {

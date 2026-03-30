@@ -69,7 +69,7 @@ class TreeAdapter {
     return range[0] <= position && position <= range[1];
   }
 
-    hasChildrenInRange(node: unknown, key: string, position: number, seen?: Set<unknown>): boolean {
+    hasChildrenInRange(node: unknown, key: string, position: number, seen: Set<unknown> = new Set()): boolean {
     if (this.isLocationProp(key)) {
       return false;
     }

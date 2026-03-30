@@ -27,7 +27,7 @@ export default {
     require(['java-parser'], callback);
   },
 
-  parse(parser: typeof import('java-parser'), code: string) {
+  parse(parser: JavaParserModule, code: string) {
     return parser.parse(code);
   },
 
@@ -41,7 +41,7 @@ export default {
     return name;
   },
 
-  nodeToRange({ location }: {location?: import('java-parser').CstNode['location']}) {
+  nodeToRange({ location }: {location?: JavaNode['location']}) {
     if (!location) {
       return;
     }
