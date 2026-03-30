@@ -15,7 +15,7 @@ export default {
   locationProps: new Set(['Loc']),
 
   async loadParser(callback: (realParser: GoParser) => void) {
-    require(['astexplorer-go/go', 'astexplorer-go'], async (_go: unknown, parser: GoParser) => {
+    require(['astexplorer-go'], async (parser: GoParser) => {
       await parser.init()
       callback(parser)
     })
