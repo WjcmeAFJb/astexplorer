@@ -38,6 +38,12 @@ const plugins = [
     require.resolve('astexplorer-go/go'),
   ),
 
+  // java-parser uses "exports" field which blocks webpack 4 resolution
+  new webpack.NormalModuleReplacementPlugin(
+    /^java-parser$/,
+    path.join(__dirname, 'node_modules', 'java-parser', 'src', 'index.js'),
+  ),
+
 
   // eslint //
 
@@ -166,6 +172,7 @@ module.exports = Object.assign({
         include: [
           path.join(__dirname, 'node_modules', '@swc', 'wasm-web'),
           path.join(__dirname, 'node_modules', 'astexplorer-syn'),
+          path.join(__dirname, 'node_modules', 'astexplorer-go'),
         ],
         loader: "file-loader"
       },
@@ -224,6 +231,9 @@ module.exports = Object.assign({
           path.join(__dirname, 'node_modules', 'meriyah'),
           path.join(__dirname, 'node_modules', 'css-tree'),
           path.join(__dirname, 'node_modules', 'astexplorer-syn'),
+          path.join(__dirname, 'node_modules', 'java-parser'),
+          path.join(__dirname, 'node_modules', 'chevrotain'),
+          path.join(__dirname, 'node_modules', 'chevrotain-allstar'),
           path.join(__dirname, 'src'),
         ],
         loader: 'babel-loader',
@@ -298,8 +308,9 @@ module.exports = Object.assign({
     alias: {
       // These packages use "exports" in package.json which blocks subpath
       // access to package.json under webpack 4. Alias the subpath directly.
-      'java-parser$': path.join(__dirname, 'node_modules', 'java-parser', 'src', 'index.js'),
       'java-parser/package.json': path.join(__dirname, 'node_modules', 'java-parser', 'package.json'),
+      'chevrotain$': path.join(__dirname, 'node_modules', 'chevrotain', 'lib', 'chevrotain.mjs'),
+      'chevrotain-allstar$': path.join(__dirname, 'node_modules', 'chevrotain-allstar', 'lib', 'index.js'),
       'meriyah$': path.join(__dirname, 'node_modules', 'meriyah', 'dist', 'meriyah.esm.js'),
       'meriyah/package.json': path.join(__dirname, 'node_modules', 'meriyah', 'package.json'),
       // Go wasm runtime import
