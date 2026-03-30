@@ -172,6 +172,7 @@ module.exports = Object.assign({
         include: [
           path.join(__dirname, 'node_modules', '@swc', 'wasm-web'),
           path.join(__dirname, 'node_modules', 'astexplorer-syn'),
+          path.join(__dirname, 'node_modules', 'astexplorer-go'),
         ],
         loader: "file-loader"
       },
