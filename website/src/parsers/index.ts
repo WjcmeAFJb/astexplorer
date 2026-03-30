@@ -62,8 +62,7 @@ export const categories: Category[] =
     return category;
   });
 
-/** @returns {Category} */
-export function getDefaultCategory() {
+export function getDefaultCategory(): Category {
   return categoryByID.javascript;
 }
 

@@ -14,8 +14,7 @@ async function transform(transformer: Transformer, transformCode: string, code: 
   if (!transformer._promise) {
     transformer._promise = new Promise(transformer.loadTransformer);
   }
-  /** @type {{version?: string, [key: string]: unknown} | undefined} */
-  let realTransformer;
+  let realTransformer: {version?: string, [key: string]: unknown} | undefined;
   try {
     realTransformer = await transformer._promise as any;
     let result = await transformer.transform(realTransformer, transformCode, code);

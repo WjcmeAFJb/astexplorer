@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { categories } from '../parsers';
 
-/** @returns {Promise<{generate: (ast: unknown, options: unknown) => string}>} */
-function importEscodegen() {
+function importEscodegen(): Promise<{generate: (ast: unknown, options: unknown) => string}> {
   return new Promise(resolve => require(['escodegen'], resolve));
 }
 

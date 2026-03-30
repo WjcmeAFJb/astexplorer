@@ -62,53 +62,43 @@ export function selectCategory(category: Category): {type: typeof SELECT_CATEGOR
   return {type: SELECT_CATEGORY, category};
 }
 
-/** @returns {{type: typeof CLEAR_SNIPPET}} */
-export function clearSnippet() {
+export function clearSnippet(): {type: typeof CLEAR_SNIPPET} {
   return {type: CLEAR_SNIPPET};
 }
 
-/** @returns {{type: typeof START_LOADING_SNIPPET}} */
-export function startLoadingSnippet() {
+export function startLoadingSnippet(): {type: typeof START_LOADING_SNIPPET} {
   return {type: START_LOADING_SNIPPET};
 }
 
-/** @returns {{type: typeof DONE_LOADING_SNIPPET}} */
-export function doneLoadingSnippet() {
+export function doneLoadingSnippet(): {type: typeof DONE_LOADING_SNIPPET} {
   return {type: DONE_LOADING_SNIPPET};
 }
 
-/** @returns {{type: typeof LOAD_SNIPPET}} */
-export function loadSnippet() {
+export function loadSnippet(): {type: typeof LOAD_SNIPPET} {
   return {type: LOAD_SNIPPET};
 }
 
-/** @returns {{type: typeof OPEN_SETTINGS_DIALOG}} */
-export function openSettingsDialog() {
+export function openSettingsDialog(): {type: typeof OPEN_SETTINGS_DIALOG} {
   return {type: OPEN_SETTINGS_DIALOG};
 }
 
-/** @returns {{type: typeof CLOSE_SETTINGS_DIALOG}} */
-export function closeSettingsDialog() {
+export function closeSettingsDialog(): {type: typeof CLOSE_SETTINGS_DIALOG} {
   return {type: CLOSE_SETTINGS_DIALOG};
 }
 
-/** @returns {{type: typeof EXPAND_SETTINGS_DRAWER}} */
-export function expandSettingsDrawer() {
+export function expandSettingsDrawer(): {type: typeof EXPAND_SETTINGS_DRAWER} {
   return {type: EXPAND_SETTINGS_DRAWER};
 }
 
-/** @returns {{type: typeof COLLAPSE_SETTINGS_DRAWER}} */
-export function collapseSettingsDrawer() {
+export function collapseSettingsDrawer(): {type: typeof COLLAPSE_SETTINGS_DRAWER} {
   return {type: COLLAPSE_SETTINGS_DRAWER};
 }
 
-/** @returns {{type: typeof OPEN_SHARE_DIALOG}} */
-export function openShareDialog() {
+export function openShareDialog(): {type: typeof OPEN_SHARE_DIALOG} {
   return {type: OPEN_SHARE_DIALOG};
 }
 
-/** @returns {{type: typeof CLOSE_SHARE_DIALOG}} */
-export function closeShareDialog() {
+export function closeShareDialog(): {type: typeof CLOSE_SHARE_DIALOG} {
   return {type: CLOSE_SHARE_DIALOG};
 }
 
@@ -116,8 +106,7 @@ export function setError(error: Error | null): {type: typeof SET_ERROR, error: E
   return {type: SET_ERROR, error};
 }
 
-/** @returns {{type: typeof CLEAR_ERROR}} */
-export function clearError() {
+export function clearError(): {type: typeof CLEAR_ERROR} {
   return {type: CLEAR_ERROR};
 }
 
@@ -125,8 +114,7 @@ export function selectTransformer(transformer: Transformer): {type: typeof SELEC
   return {type: SELECT_TRANSFORMER, transformer};
 }
 
-/** @returns {{type: typeof HIDE_TRANSFORMER}} */
-export function hideTransformer() {
+export function hideTransformer(): {type: typeof HIDE_TRANSFORMER} {
   return {type: HIDE_TRANSFORMER};
 }
 
@@ -146,13 +134,11 @@ export function dropText(text: string, categoryId: string): {type: typeof DROP_T
   return {type: DROP_TEXT, text, categoryId};
 }
 
-/** @returns {{type: typeof RESET}} */
-export function reset() {
+export function reset(): {type: typeof RESET} {
   return {type: RESET};
 }
 
-/** @returns {{type: typeof TOGGLE_FORMATTING}} */
-export function toggleFormatting() {
+export function toggleFormatting(): {type: typeof TOGGLE_FORMATTING} {
   return {type: TOGGLE_FORMATTING};
 }
 

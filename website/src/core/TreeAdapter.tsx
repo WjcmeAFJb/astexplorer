@@ -149,9 +149,9 @@ const TreeAdapterConfigs: Record<string, AdapterOptions & Record<string, unknown
   default: {
     filters: [],
     openByDefault: () => false,
-    nodeToRange: /** @returns {null} */ () => null,
-    nodeToName: /** @returns {string} */ () => { throw new Error('nodeToName must be passed');},
-    walkNode: /** @returns {never} */ () => { throw new Error('walkNode must be passed');},
+    nodeToRange: (): null => null,
+    nodeToName: (): string => { throw new Error('nodeToName must be passed');},
+    walkNode: (): never => { throw new Error('walkNode must be passed');},
   },
 
   estree: {

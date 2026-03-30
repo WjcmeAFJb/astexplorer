@@ -19,8 +19,7 @@ export default {
     require(['astexplorer-syn'], callback);
   },
 
-  /** @this {LineOffsetsMixin} */
-  parse(parser: typeof import('astexplorer-syn'), code: string) {
+  parse(this: LineOffsetsMixin, parser: typeof import('astexplorer-syn'), code: string) {
     this.lineOffsets = [];
     let index = 0;
     do {
@@ -34,8 +33,7 @@ export default {
     return node._type;
   },
 
-  /** @this {LineOffsetsMixin} */
-  nodeToRange(node: {span?: {start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}) {
+  nodeToRange(this: LineOffsetsMixin, node: {span?: {start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}) {
     if (node.span) {
       return [node.span.start, node.span.end].map(
         ({ line, column }) => this.lineOffsets[line - 1] + column,

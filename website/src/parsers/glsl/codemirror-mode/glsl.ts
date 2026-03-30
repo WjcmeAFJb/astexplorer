@@ -200,8 +200,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
   };
 });
 
-/** @returns {Record<string, boolean>} */
-function words(str: string) {
+function words(str: string): Record<string, boolean> {
     var obj: Record<string, boolean> = {}, words = str.split(' ');
   for (var i = 0; i < words.length; ++i)
     obj[words[i]] = true;

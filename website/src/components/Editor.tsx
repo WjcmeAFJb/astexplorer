@@ -69,8 +69,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     return false;
   }
 
-  /** @returns {string | undefined} */
-  getValue() {
+  getValue(): string | undefined {
     return this.codeMirror && this.codeMirror.getValue();
   }
 
@@ -153,7 +152,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
             this._markerRange = null;
             this._mark = null;
       this._subscriptions.push(
-        subscribe('HIGHLIGHT', /** @param {{range?: [number, number]}} data */ ({range}) => {
+        subscribe('HIGHLIGHT', ({range}: {range?: [number, number]}) => {
           if (!range) {
             return;
           }
@@ -175,7 +174,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
           );
         }),
 
-        subscribe('CLEAR_HIGHLIGHT', /** @param {{range?: [number, number]}} [data] */ ({range}={}) => {
+        subscribe('CLEAR_HIGHLIGHT', ({range}: {range?: [number, number]}={}) => {
           if (!range ||
             this._markerRange &&
             range[0] === this._markerRange[0] &&

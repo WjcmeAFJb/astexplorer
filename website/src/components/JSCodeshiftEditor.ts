@@ -28,8 +28,7 @@ export default class JSCodeshiftEditor extends Editor {
   }
 }
 
-/** @returns {void} */
-function loadTern() {
+function loadTern(): void {
   require(
     [
       'codemirror/addon/hint/show-hint',
@@ -48,7 +47,7 @@ function loadTern() {
         ],
         (tern: {registerPlugin: (name: string, init: (...args: unknown[]) => void) => void, [k: string]: unknown}, _: unknown, infer: {cx: () => {topScope: unknown, definitions: Record<string, Record<string, unknown>>}, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}, jscs_def: unknown, ecmascript: unknown) => {
           global.tern = tern;
-          tern.registerPlugin('transformer', /** @param {{on: (event: string, handler: (...args: unknown[]) => void) => void} & Record<string, unknown>} server */ (server: any) => {
+          tern.registerPlugin('transformer', (server: any) => {
             server.on('afterLoad', (file: any) => {
               const fnVal = file.scope.props.transformer;
               if (fnVal) {

@@ -2,6 +2,7 @@ import defaultParserInterface from '../../utils/defaultParserInterface';
 
 type LineOffsetsMixin = {
   lineOffsets: number[];
+  getOffset(pos: {line: number, column: number}): number;
 };
 
 export default {
@@ -9,8 +10,7 @@ export default {
 
   locationProps: new Set(['loc']),
 
-  /** @this {LineOffsetsMixin} */
-  parse(parseHandlebars: (code: string) => import('@glimmer/syntax').ASTv1.Template | ReturnType<typeof import('handlebars').parse>, code: string) {
+  parse(this: LineOffsetsMixin, parseHandlebars: (code: string) => import('@glimmer/syntax').ASTv1.Template | ReturnType<typeof import('handlebars').parse>, code: string) {
     this.lineOffsets = [];
     let index = 0;
     do {
@@ -19,13 +19,11 @@ export default {
     return parseHandlebars(code);
   },
 
-  /** @this {LineOffsetsMixin} */
-  getOffset({ line, column }: {line: number, column: number}) {
+  getOffset(this: LineOffsetsMixin, { line, column }: {line: number, column: number}) {
     return this.lineOffsets[line - 1] + column;
   },
 
-  /** @this {LineOffsetsMixin} */
-  nodeToRange({ loc }: {loc?: {toJSON?: () => {start: {line: number, column: number}, end: {line: number, column: number}}, start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}) {
+  nodeToRange(this: LineOffsetsMixin, { loc }: {loc?: {toJSON?: () => {start: {line: number, column: number}, end: {line: number, column: number}}, start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}) {
     if (!loc) return;
     const serializedLoc = 'toJSON' in loc ? loc.toJSON() : loc;
     return [serializedLoc.start, serializedLoc.end].map(pos => this.getOffset(pos));

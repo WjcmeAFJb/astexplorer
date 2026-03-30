@@ -32,8 +32,7 @@ export default {
     });
   },
 
-  /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  parse({ Parser, TreeAdapters }: Parse5Module, code: string, options: {treeAdapter?: string, [k: string]: unknown}) {
+  parse(this: {options: {treeAdapter?: string; [k: string]: unknown}}, { Parser, TreeAdapters }: Parse5Module, code: string, options: {treeAdapter?: string, [k: string]: unknown}) {
     this.options = options;
     return new Parser({
       treeAdapter: TreeAdapters[this.options.treeAdapter],
@@ -41,8 +40,7 @@ export default {
     }).parse(code);
   },
 
-  /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  getNodeName(node: Parse5Node) {
+  getNodeName(this: {options: {treeAdapter?: string; [k: string]: unknown}}, node: Parse5Node) {
     if (this.options.treeAdapter === 'htmlparser2') {
       if (node.type) {
         return node.type + (node.name && node.type !== 'root' ? `(${node.name})` : '');

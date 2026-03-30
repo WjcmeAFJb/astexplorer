@@ -1,7 +1,8 @@
 import defaultParserInterface from '../../utils/defaultParserInterface';
 
-type LineOffsetsMixin = {
+export type LineOffsetsMixin = {
   lineOffsets: number[];
+  getOffset(pos: {line: number, column: number}): number;
 };
 
 type CSSPosition = {line: number, column: number};
@@ -9,13 +10,11 @@ type CSSPosition = {line: number, column: number};
 export default {
   ...defaultParserInterface,
 
-  /** @this {LineOffsetsMixin} */
-  getOffset({ line, column }: CSSPosition) {
+  getOffset(this: LineOffsetsMixin, { line, column }: CSSPosition) {
     return this.lineOffsets[line - 1] + column - 1;
   },
 
-  /** @this {LineOffsetsMixin} */
-  parse(parseCSS: (code: string) => object, code: string) {
+  parse(this: LineOffsetsMixin, parseCSS: (code: string) => object, code: string) {
     this.lineOffsets = [];
     let index = 0;
     do {

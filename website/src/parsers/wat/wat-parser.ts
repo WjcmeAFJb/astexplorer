@@ -3,6 +3,7 @@ import pkg from '@webassemblyjs/wast-parser/package.json';
 
 type LineOffsetsMixin = {
   lineOffsets: number[];
+  getOffset(pos: {line: number, column: number}): number;
 };
 
 const ID = 'wat-parser';
@@ -17,13 +18,11 @@ export default {
 
   locationProps: new Set(['loc']),
 
-  /** @this {LineOffsetsMixin} */
-  getOffset({ line, column }: {line: number, column: number}) {
+  getOffset(this: LineOffsetsMixin, { line, column }: {line: number, column: number}) {
     return this.lineOffsets[line - 1] + column;
   },
 
-  /** @this {LineOffsetsMixin} */
-  nodeToRange({ loc }: {loc?: {start: {line: number, column: number}, end: {line: number, column: number}}}) {
+  nodeToRange(this: LineOffsetsMixin, { loc }: {loc?: {start: {line: number, column: number}, end: {line: number, column: number}}}) {
     if (!loc) return;
     return [loc.start, loc.end].map(pos => this.getOffset(pos));
   },
@@ -34,8 +33,7 @@ export default {
     });
   },
 
-  /** @this {LineOffsetsMixin} */
-  parse({ parse }: {parse: (code: string) => object}, code: string) {
+  parse(this: LineOffsetsMixin, { parse }: {parse: (code: string) => object}, code: string) {
     this.lineOffsets = [];
     let index = 0;
     do {

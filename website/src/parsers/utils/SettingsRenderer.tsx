@@ -37,8 +37,7 @@ function arrayUpdater(settings: Record<string, unknown>, name: string, value: un
   return ((Array.from(settingsSet) as unknown) as Record<string, unknown>);
 }
 
-/** @returns {SettingsUpdater} */
-function getUpdateStrategy(settings: string[] | Record<string, unknown>) {
+function getUpdateStrategy(settings: string[] | Record<string, unknown>): SettingsUpdater {
   if (Array.isArray(settings)) {
     return arrayUpdater;
   }

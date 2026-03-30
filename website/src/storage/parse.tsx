@@ -107,29 +107,24 @@ class Revision {
     this._data = data;
 	}
 
-  /** @returns {boolean} */
-  canSave() {
+  canSave(): boolean {
     return false;
   }
 
-  /** @returns {string} */
-  getPath() {
+  getPath(): string {
     const rev = this.getRevisionID();
     return '/' + this.getSnippetID() + (rev && rev !== 0 ? '/' + rev : '');
   }
 
-  /** @returns {string} */
-  getSnippetID() {
+  getSnippetID(): string {
     return this._data.snippetID;
   }
 
-  /** @returns {string | number} */
-  getRevisionID() {
+  getRevisionID(): string | number {
     return this._data.revisionID;
   }
 
-  /** @returns {string | undefined} */
-  getTransformerID() {
+  getTransformerID(): string | undefined {
     const transformerID = this._data.toolID;
     if (!transformerID && this.getTransformCode()) {
       // jscodeshift was the first transformer tool. Instead of updating
@@ -139,8 +134,7 @@ class Revision {
     return transformerID;
   }
 
-  /** @returns {string} */
-  getTransformCode() {
+  getTransformCode(): string {
     const transform = this._data.transform;
     if (transform) {
       return transform;
@@ -152,8 +146,7 @@ class Revision {
     return '';
   }
 
-  /** @returns {string} */
-  getParserID() {
+  getParserID(): string {
     const transformerID = this.getTransformerID();
     if (transformerID) {
       return getTransformerByID(transformerID).defaultParserID;
@@ -161,15 +154,13 @@ class Revision {
     return this._data.parserID;
   }
 
-  /** @returns {string} */
-  getCode() {
+  getCode(): string {
     const parserID = this.getParserID();
     // Code examples where never stored
     return this._data.code || getParserByID(parserID).category.codeExample;
   }
 
-  /** @returns {Record<string, unknown> | false | null} */
-  getParserSettings() {
+  getParserSettings(): Record<string, unknown> | false | null {
     const settings = this._data.settings;
     if (!settings) {
       return null;
@@ -178,8 +169,7 @@ class Revision {
     return !!parserSettings && (JSON.parse(parserSettings) as Record<string, unknown>);
   }
 
-  /** @returns {React.ReactElement} */
-  getShareInfo() {
+  getShareInfo(): React.ReactElement {
     const snippetID = this.getSnippetID();
     const revisionID = this.getRevisionID();
     return (

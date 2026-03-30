@@ -35,8 +35,7 @@ export default {
     );
   },
 
-  /** @this {import('./utils/defaultCSSParserInterface').LineOffsetsMixin} */
-  nodeToRange({ source: range }: PostCSSNode) {
+  nodeToRange(this: import('./utils/defaultCSSParserInterface').LineOffsetsMixin, { source: range }: PostCSSNode) {
     if (!range || !range.end) return;
     return [
       this.getOffset(range.start),

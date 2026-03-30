@@ -24,8 +24,7 @@ export default {
     require(['css/lib/parse'], (m: ReworkParse) => callback(m));
   },
 
-  /** @this {import('./utils/defaultCSSParserInterface').LineOffsetsMixin} */
-  nodeToRange({ position: range }: ReworkNode) {
+  nodeToRange(this: import('./utils/defaultCSSParserInterface').LineOffsetsMixin, { position: range }: ReworkNode) {
     if (!range) return;
     return [range.start, range.end].map(pos => this.getOffset(pos));
   },

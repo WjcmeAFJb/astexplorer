@@ -3,8 +3,7 @@ import pkg from 'shift-parser/package.json';
 
 const ID = 'shift';
 
-/** @type {Map<unknown, {start: {offset: number}, end: {offset: number}}> | undefined} */
-let lastParsedLocations: any;
+let lastParsedLocations: Map<unknown, {start: {offset: number}, end: {offset: number}}> | undefined;
 
 export default {
   ...defaultParserInterface,

@@ -5,10 +5,7 @@ import api from './api';
 import {getParserByID} from '../parsers';
 import type { SnippetData } from '../types';
 
-/**
- * @returns {{id: string, rev: string | undefined} | null}
- */
-function getIDAndRevisionFromHash() {
+function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | null {
   let match = global.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);
   if (match) {
     return {
@@ -44,17 +41,11 @@ export function owns(snippet: unknown): boolean {
   return snippet instanceof Revision;
 }
 
-/**
- * @returns {boolean}
- */
-export function matchesURL() {
+export function matchesURL(): boolean {
   return getIDAndRevisionFromHash() !== null;
 }
 
-/**
- * @returns {Promise<Revision | null>}
- */
-export function fetchFromURL() {
+export function fetchFromURL(): Promise<Revision | null> {
   const data = getIDAndRevisionFromHash();
   if (!data) {
     return Promise.resolve(null);
@@ -174,57 +165,47 @@ class Revision {
     this._config = (JSON.parse(gist.files['astexplorer.json'].content) as GistConfig);
   }
 
-  /** @returns {boolean} */
-  canSave() {
+  canSave(): boolean {
     return true;
   }
 
-  /** @returns {string} */
-  getPath() {
+  getPath(): string {
     return `/gist/${this.getSnippetID()}/${this.getRevisionID()}`;
   }
 
-  /** @returns {string} */
-  getSnippetID() {
+  getSnippetID(): string {
     return this._gist.id;
   }
 
-  /** @returns {string} */
-  getRevisionID() {
+  getRevisionID(): string {
     return this._gist.history[0].version;
   }
 
-  /** @returns {string | undefined} */
-  getTransformerID() {
+  getTransformerID(): string | undefined {
     return this._config.toolID;
   }
 
-  /** @returns {string} */
-  getTransformCode() {
+  getTransformCode(): string {
     const transformFile = this._gist.files['transform.js'];
     return transformFile ? transformFile.content : '';
   }
 
-  /** @returns {string} */
-  getParserID() {
+  getParserID(): string {
     return this._config.parserID;
   }
 
-  /** @returns {string} */
-  getCode() {
+  getCode(): string {
     if (this._code == null) {
       this._code = getSource(this._config, this._gist) || '';
     }
     return this._code;
   }
 
-  /** @returns {Record<string, unknown> | undefined} */
-  getParserSettings() {
+  getParserSettings(): Record<string, unknown> | undefined {
     return this._config.settings[this._config.parserID];
   }
 
-  /** @returns {React.ReactElement} */
-  getShareInfo() {
+  getShareInfo(): React.ReactElement {
     const snippetID = this.getSnippetID();
     const revisionID = this.getRevisionID();
     return (
