@@ -15,9 +15,9 @@ export default {
   locationProps: new Set(['Loc']),
 
   async loadParser(callback: (realParser: GoParser) => void) {
-    require(['astexplorer-go/go', 'astexplorer-go/parser.wasm'], async (_goRuntime: unknown, wasmUrl: string) => {
+    require(['astexplorer-go/go', 'astexplorer-go/parser.wasm'], async (_goRuntime: unknown, wasmModule: {default: string}) => {
       const go = (window as unknown as {_go: {run: (inst: WebAssembly.Instance) => void, importObject: WebAssembly.Imports}})._go;
-      const result = await WebAssembly.instantiateStreaming(fetch(wasmUrl), go.importObject);
+      const result = await WebAssembly.instantiateStreaming(fetch(wasmModule.default), go.importObject);
       go.run(result.instance);
       callback({
         parseFile: (code: string) => JSON.parse((window as unknown as {__GO_PARSE_FILE__: (code: string) => string}).__GO_PARSE_FILE__(code)),
