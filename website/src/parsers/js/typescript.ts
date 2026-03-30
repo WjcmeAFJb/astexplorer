@@ -61,7 +61,7 @@ export default {
       target: ts.ScriptTarget.Latest,
       experimentalDecorators: options.experimentalDecorators,
       experimentalAsyncFunctions: options.experimentalAsyncFunctions,
-      jsx: options.jsx ? (('preserve' as unknown) as import('typescript').JsxEmit) : undefined,
+      jsx: options.jsx ? 1 as import('typescript').JsxEmit : undefined, // ts.JsxEmit.Preserve = 1
     }, compilerHost);
 
     const sourceFile = program.getSourceFile(filename);
