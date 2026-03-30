@@ -61,7 +61,7 @@ export default {
       target: ts.ScriptTarget.Latest,
       experimentalDecorators: true,
       experimentalAsyncFunctions: true,
-      jsx: ts.JsxEmit.React,
+      jsx: 2 as import('typescript').JsxEmit, // ts.JsxEmit.React
     }, host);
 
     // create the user provided transformer by invoking the factory
