@@ -12,6 +12,7 @@ const CACHE_BREAKER = Number(fs.readFileSync(path.join(__dirname, 'CACHE_BREAKER
 const plugins = [
   new webpack.DefinePlugin({
     'process.env.API_HOST': JSON.stringify(process.env.API_HOST || ''),
+    'process.version': JSON.stringify(process.version),
   }),
   new webpack.IgnorePlugin(/\.md$/),
   new webpack.IgnorePlugin(/node\/nodeLoader.js/),
