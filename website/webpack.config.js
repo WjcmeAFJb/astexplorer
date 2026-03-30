@@ -233,6 +233,7 @@ module.exports = Object.assign({
             require.resolve('@babel/preset-typescript'),
           ],
           plugins: [
+            require.resolve('@babel/plugin-proposal-class-properties'),
             require.resolve('@babel/plugin-transform-runtime'),
           ],
         },
