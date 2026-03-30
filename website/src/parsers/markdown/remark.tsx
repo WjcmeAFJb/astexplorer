@@ -1,7 +1,7 @@
 import React from 'react';
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'remark/package.json';
-import type { Node as RemarkNode } from 'unist';
+type RemarkNode = import('unist').Node;
 
 type RemarkParser = { remark: typeof import('remark').remark, gfm: typeof import('remark-gfm').default, directive: typeof import('remark-directive').default, footnotes: typeof import('remark-footnotes').default, frontmatter: typeof import('remark-frontmatter').default, math: typeof import('remark-math').default, };
 

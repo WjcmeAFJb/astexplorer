@@ -1,8 +1,8 @@
-import type { Transformer } from '../types';
-import type { Parser } from '../types';
-import type { Category } from '../types';
+type Transformer = import('../types').Transformer;
+type Parser = import('../types').Parser;
+type Category = import('../types').Category;
 
-const localRequire = require.context('./', true, /^\.\/(?!utils|transpilers)[^/]+\/(transformers\/([^/]+)\/)?(codeExample\.txt|[^/]+?\.js)$/);
+const localRequire = require.context('./', true, /^\.\/(?!utils|transpilers)[^/]+\/(transformers\/([^/]+)\/)?(codeExample\.txt|[^/]+?\.tsx?)$/);
 
 function interopRequire<T extends Record<string, unknown>>(module: {__esModule?: boolean, default?: T, [key: string]: unknown}): T {
   return (module.__esModule ? module.default : module as T);
@@ -17,7 +17,7 @@ const parserByID: Record<string, Parser> = {};
 const transformerByID: Record<string, Transformer> = {};
 
 const restrictedParserNames = new Set([
-  'index.js',
+  'index.ts',
   'codeExample.txt',
   'transformers',
   'utils',
@@ -25,9 +25,9 @@ const restrictedParserNames = new Set([
 
 export const categories: Category[] =
   files
-  .filter(name => name[1] === 'index.js')
+  .filter(name => name[1] === 'index.ts')
   .map(([catName]) => {
-        let category: Category = localRequire(`./${catName}/index.js`);
+        let category: Category = localRequire(`./${catName}/index.ts`);
 
     categoryByID[category.id] = category;
 
@@ -50,10 +50,10 @@ export const categories: Category[] =
 
     category.transformers =
       catFiles
-      .filter(([dirName, , fileName]) => dirName === 'transformers' && fileName === 'index.js')
+      .filter(([dirName, , fileName]) => dirName === 'transformers' && fileName === 'index.ts')
       .map(([, transformerName]) => {
         const transformerDir = `./${catName}/transformers/${transformerName}`;
-                const transformer: Transformer = interopRequire(localRequire(`${transformerDir}/index.js`));
+                const transformer: Transformer = interopRequire(localRequire(`${transformerDir}/index.ts`));
         transformerByID[transformer.id] = transformer;
         transformer.defaultTransform = ((interopRequire(localRequire(`${transformerDir}/codeExample.txt`)) as unknown) as string);
         return transformer;

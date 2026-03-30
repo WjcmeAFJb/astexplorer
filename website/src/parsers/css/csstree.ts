@@ -1,7 +1,7 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'css-tree/package.json';
-import type { CssNodePlain as CSSTreeNode } from 'css-tree';
 
+type CSSTreeNode = import('css-tree').CssNodePlain;
 type CSSTreeModule = typeof import('css-tree');
 
 const ID = 'csstree';

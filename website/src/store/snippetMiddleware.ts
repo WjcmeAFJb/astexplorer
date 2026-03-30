@@ -2,8 +2,8 @@
 
 import * as selectors from './selectors';
 import * as actions from './actions';
-import type { AppState } from '../types';
-import type { Action } from '../types';
+type AppState = import('../types').AppState;
+type Action = import('../types').Action;
 
 let clearURLOnClearError = false;
 let cancelLoad: () => void = () => {}

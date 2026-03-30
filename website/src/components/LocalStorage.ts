@@ -1,4 +1,4 @@
-import type { AppState } from '../types';
+type AppState = import('../types').AppState;
 
 const storage = global.localStorage;
 const key = 'explorerSettingsV1';

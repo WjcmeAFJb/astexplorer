@@ -1,6 +1,6 @@
 import defaultParserInterface from './utils/defaultCSSParserInterface';
 import pkg from 'postcss/package.json';
-import type { ChildNode as PostCSSNode } from 'postcss';
+type PostCSSNode = import('postcss').ChildNode;
 
 type PostCSSParsers = { 'built-in': import('postcss').Parser, scss: import('postcss').Parser, less: import('postcss').Parser, 'safe-parser': import('postcss').Parser, [key: string]: import('postcss').Parser, };
 

@@ -1,8 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'java-parser/package.json';
-import type { CstNode as JavaNode } from 'java-parser';
 
-type JavaParserModule = typeof import('java-parser');
+type JavaNode = { name?: string, location?: { startOffset?: number, endOffset?: number }, [key: string]: unknown };
+type JavaParserModule = { parse: (code: string, options?: Record<string, unknown>) => JavaNode, [key: string]: unknown };
 
 const ID = 'java-parser';
 

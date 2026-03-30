@@ -2,8 +2,8 @@
 
 import {getTransformer, getTransformCode, getCode, showTransformer} from './selectors';
 import {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
-import type { TransformResult } from '../types';
-import type { Transformer } from '../types';
+type TransformResult = import('../types').TransformResult;
+type Transformer = import('../types').Transformer;
 
 async function transform(transformer: Transformer, transformCode: string, code: string): Promise<TransformResult> {
   // Transforms may make use of Node's __filename global. See GitHub issue #420.

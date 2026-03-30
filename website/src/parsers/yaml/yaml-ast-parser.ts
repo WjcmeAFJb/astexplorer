@@ -1,6 +1,6 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'yaml-ast-parser/package.json';
-import type { YAMLNode as YamlAstNode } from 'yaml-ast-parser';
+type YamlAstNode = import('yaml-ast-parser').YAMLNode;
 
 type YamlAstParserModule = typeof import('yaml-ast-parser');
 

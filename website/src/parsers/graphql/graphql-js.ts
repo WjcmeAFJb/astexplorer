@@ -1,6 +1,6 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'graphql/package.json';
-import type { ASTNode as GraphQLASTNode } from 'graphql/language';
+type GraphQLASTNode = import('graphql/language').ASTNode;
 
 type GraphQLParser = { parse: typeof import('graphql/language').parse };
 

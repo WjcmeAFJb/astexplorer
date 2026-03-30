@@ -3,7 +3,7 @@
 import {connect} from 'react-redux';
 import ASTOutput from '../components/ASTOutput';
 import * as selectors from '../store/selectors';
-import type { AppState } from '../types';
+type AppState = import('../types').AppState;
 
 function mapStateToProps(state: AppState) {
   return {

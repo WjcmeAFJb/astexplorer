@@ -2,7 +2,7 @@ type WorkerMessageEvent = MessageEvent<{type: string, action: string, value: unk
 
 // Some ESLint rules don't understand the Webpack loader syntax.
 // eslint-disable-next-line require-in-package/require-in-package, import/default
-import HermesWorker from 'worker-loader!./hermes-worker.js';
+import HermesWorker from 'worker-loader!./hermes-worker.ts';
 
 // A Promise-based client for making requests to hermes-worker.js.
 export default class HermesWorkerClient {

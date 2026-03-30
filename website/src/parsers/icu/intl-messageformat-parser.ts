@@ -1,6 +1,6 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'intl-messageformat-parser/package.json';
-import type { MessageFormatElement as IntlMFNode } from 'intl-messageformat-parser';
+type IntlMFNode = import('intl-messageformat-parser').MessageFormatElement;
 
 type IntlMFParserModule = typeof import('intl-messageformat-parser');
 

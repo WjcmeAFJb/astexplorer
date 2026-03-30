@@ -3,12 +3,12 @@
 // @ts-expect-error — no declaration file
 import isEqual from 'lodash.isequal';
 import {getParserByID, getTransformerByID} from '../parsers';
-import type { TransformResult } from '../types';
-import type { ParseResult } from '../types';
-import type { Revision } from '../types';
-import type { Transformer } from '../types';
-import type { Parser } from '../types';
-import type { AppState } from '../types';
+type TransformResult = import('../types').TransformResult;
+type ParseResult = import('../types').ParseResult;
+type Revision = import('../types').Revision;
+type Transformer = import('../types').Transformer;
+type Parser = import('../types').Parser;
+type AppState = import('../types').AppState;
 
 // Our selectors are not computationally expensive so we can just use this
 // implementation.

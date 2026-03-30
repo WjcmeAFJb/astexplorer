@@ -88,7 +88,7 @@ declare module 'json-stringify-safe' {
 }
 
 // Worker-loader import for hermes web worker
-declare module 'worker-loader!./hermes-worker.js' {
+declare module 'worker-loader!./hermes-worker.ts' {
   class HermesWorker extends Worker {
     constructor();
   }

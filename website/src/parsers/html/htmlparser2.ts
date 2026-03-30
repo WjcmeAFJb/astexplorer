@@ -1,6 +1,6 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'htmlparser2/package.json';
-import type { Node as HtmlParser2Node } from 'domhandler';
+type HtmlParser2Node = import('domhandler').Node;
 
 type HtmlParser2Module = { Parser: { Parser: new (handler: unknown, options?: object) => { end(code: string): void } }, Handler: new () => { root: HtmlParser2Node, parser: { endIndex: number, tokenizer: { _index: number } } } };
 

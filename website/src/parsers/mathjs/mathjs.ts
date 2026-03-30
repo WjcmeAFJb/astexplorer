@@ -1,6 +1,6 @@
 import pkg from 'mathjs/package.json';
-import type { MathJsStatic as MathJSParser } from 'mathjs';
-import type { MathNode as MathJSNode } from 'mathjs';
+type MathJSParser = import('mathjs').MathJsStatic;
+type MathJSNode = import('mathjs').MathNode;
 
 import defaultParserInterface from '../utils/defaultParserInterface'
 

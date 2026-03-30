@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {setCode, setCursor} from '../store/actions';
 import Editor from '../components/Editor';
 import {getCode, getParser, getParseResult, getKeyMap} from '../store/selectors';
-import type { AppState } from '../types';
+type AppState = import('../types').AppState;
 
 function mapStateToProps(state: AppState) {
   return {

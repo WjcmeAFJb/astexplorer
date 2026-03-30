@@ -1,6 +1,6 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'json-to-ast/package.json';
-import type { ValueNode as JsonToAstNode } from 'json-to-ast';
+type JsonToAstNode = import('json-to-ast').ValueNode;
 
 type JsonToAstParser = typeof import('json-to-ast');
 

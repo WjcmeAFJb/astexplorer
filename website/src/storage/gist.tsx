@@ -3,7 +3,7 @@
 import React from 'react';
 import api from './api';
 import {getParserByID} from '../parsers';
-import type { SnippetData } from '../types';
+type SnippetData = import('../types').SnippetData;
 
 function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | null {
   let match = global.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);

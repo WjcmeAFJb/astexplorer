@@ -2,13 +2,13 @@
 
 import * as actions from './actions';
 import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from '../parsers';
-import type { Revision } from '../types';
-import type { Category } from '../types';
-import type { Transformer } from '../types';
-import type { Action } from '../types';
-import type { TransformState } from '../types';
-import type { WorkbenchState } from '../types';
-import type { AppState } from '../types';
+type Revision = import('../types').Revision;
+type Category = import('../types').Category;
+type Transformer = import('../types').Transformer;
+type Action = import('../types').Action;
+type TransformState = import('../types').TransformState;
+type WorkbenchState = import('../types').WorkbenchState;
+type AppState = import('../types').AppState;
 
 const defaultParser = getDefaultParser(getCategoryByID('javascript'));
 

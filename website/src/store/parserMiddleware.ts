@@ -2,9 +2,9 @@
 
 import {getParser, getParserSettings, getCode} from './selectors';
 import {ignoreKeysFilter, locationInformationFilter, functionFilter, emptyKeysFilter, typeKeysFilter} from '../core/TreeAdapter';
-import type { TreeFilter } from '../types';
-import type { ParseResult } from '../types';
-import type { Parser } from '../types';
+type TreeFilter = import('../types').TreeFilter;
+type ParseResult = import('../types').ParseResult;
+type Parser = import('../types').Parser;
 
 function parse(parser: Parser, code: string, parserSettings: Record<string, unknown> | null): Promise<unknown> {
   if (!parser._promise) {

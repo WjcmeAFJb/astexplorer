@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import type { SettingsConfiguration } from '../../types';
+type SettingsConfiguration = import('../../types').SettingsConfiguration;
 
 const identity: (v: string) => string | number = v => v;
 

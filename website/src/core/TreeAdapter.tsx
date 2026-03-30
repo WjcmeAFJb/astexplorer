@@ -1,7 +1,7 @@
-import type { ParseResult } from '../types';
-import type { TreeFilter } from '../types';
-import type { WalkResult } from '../types';
-import type { AdapterOptions } from '../types';
+type ParseResult = import('../types').ParseResult;
+type TreeFilter = import('../types').TreeFilter;
+type WalkResult = import('../types').WalkResult;
+type AdapterOptions = import('../types').AdapterOptions;
 
 /**
  * Configurable base class for all tree traversal.

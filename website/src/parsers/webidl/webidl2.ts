@@ -1,6 +1,6 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'webidl2/package.json';
-import type { IDLRootType as WebIDL2Node } from 'webidl2';
+type WebIDL2Node = import('webidl2').IDLRootType;
 
 type WebIDL2Module = typeof import('webidl2');
 
