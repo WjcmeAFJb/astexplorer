@@ -44,7 +44,7 @@ export default {
     });
   },
 
-  parse(/** @type {IntlMFParserModule} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ opts) {
+  parse(/** @type {IntlMFParserModule} */ parser, /** @type {string} */ code, /** @type {import('intl-messageformat-parser').ParseOptions} */ opts) {
     return parser.parse(code, opts);
   },
 
@@ -56,7 +56,7 @@ export default {
     return defaultOptions;
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {IntlMFNode} */ node) {
     // @ts-expect-error — indexing dynamic object
     // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- @ts-expect-error makes type error
     return node.type != null && TYPES[node.type];

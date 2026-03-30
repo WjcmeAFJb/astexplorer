@@ -35,8 +35,8 @@ export default {
     return codeExample.replace('{{parser}}', `${getJscodeshiftParser(parser, parserSettings)}`)
   },
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, jscodeshift: {registerMethods: (methods: Record<string, (...args: unknown[]) => unknown>) => void, withParser: (parser: string) => unknown, [key: string]: unknown}}) => void} */ callback) {
-    require(['../../../transpilers/babel', 'jscodeshift'], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{registerMethods: (methods: Record<string, (...args: unknown[]) => unknown>) => void, withParser: (parser: string) => unknown, [key: string]: unknown}} */ jscodeshift) => {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, jscodeshift: import('jscodeshift').JSCodeshift}) => void} */ callback) {
+    require(['../../../transpilers/babel', 'jscodeshift'], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {import('jscodeshift').JSCodeshift} */ jscodeshift) => {
         const { registerMethods } = jscodeshift;
 
         /** @type {Set<string> | undefined} */
@@ -53,7 +53,7 @@ export default {
         });
 
         // patch in order to collect user-defined method names
-        jscodeshift.registerMethods = function (/** @type {Record<string, (...args: unknown[]) => unknown>} */ methods) {
+        jscodeshift.registerMethods = function (/** @type {object} */ methods) {
           registerMethods.apply(this, arguments);
           for (let name in methods) {
             sessionMethods.add(name);
@@ -66,7 +66,7 @@ export default {
   },
 
   transform(
-    /** @type {{transpile: (code: string) => string, jscodeshift: {withParser: (parser: string) => unknown, [key: string]: unknown}}} */ { transpile, jscodeshift },
+    /** @type {{transpile: (code: string) => string, jscodeshift: import('jscodeshift').JSCodeshift}} */ { transpile, jscodeshift },
     /** @type {string} */ transformCode,
     /** @type {string} */ code,
   ) {

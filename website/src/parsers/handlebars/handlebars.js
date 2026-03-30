@@ -11,11 +11,11 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage,
 
-  loadParser(/** @type {(realParser: (code: string) => Record<string, unknown>) => void} */ callback) {
-    require(['handlebars'], (/** @type {{parse: (code: string) => Record<string, unknown>}} */ handlebars) => callback(handlebars.parse));
+  loadParser(/** @type {(realParser: typeof import('handlebars').parse) => void} */ callback) {
+    require(['handlebars'], (/** @type {typeof import('handlebars')} */ handlebars) => callback(handlebars.parse));
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {ReturnType<typeof import('handlebars').parse>} */ node, /** @type {string} */ key) {
     return key === 'body';
   },
 };

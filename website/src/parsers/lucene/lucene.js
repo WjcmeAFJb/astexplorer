@@ -2,9 +2,8 @@ import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'lucene/package.json';
 
 /**
- * @typedef {{ parse(code: string): object }} LuceneParser
- * @typedef {{ location?: LuceneLocation, fieldLocation?: LuceneLocation, termLocation?: LuceneLocation, [key: string]: unknown }} LuceneNode
- * @typedef {{ start: { offset: number }, end: { offset: number } }} LuceneLocation
+ * @typedef {typeof import('lucene')} LuceneModule
+ * @typedef {{ location?: {start: import('lucene').TermLocation, end: import('lucene').TermLocation}, fieldLocation?: {start: import('lucene').TermLocation, end: import('lucene').TermLocation} | null, termLocation?: {start: import('lucene').TermLocation, end: import('lucene').TermLocation} }} LuceneNodeWithLocations
  */
 
 const ID = 'lucene';
@@ -18,15 +17,15 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['fieldLocation', 'termLocation', 'location']),
 
-  loadParser(/** @type {(realParser: {parse: (code: string) => object}) => void} */ callback) {
+  loadParser(/** @type {(realParser: LuceneModule) => void} */ callback) {
     require(['lucene'], callback);
   },
 
-  parse(/** @type {{parse: (code: string) => object}} */ {parse}, /** @type {string} */ code) {
+  parse(/** @type {LuceneModule} */ {parse}, /** @type {string} */ code) {
     return parse(code);
   },
 
-  nodeToRange(/** @type {LuceneNode} */ node) {
+  nodeToRange(/** @type {LuceneNodeWithLocations} */ node) {
     let start = [];
     let end = [];
 

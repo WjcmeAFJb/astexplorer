@@ -45,9 +45,9 @@ export default {
   },
 
   parse(
-    /** @type {{remark: () => {use: (...args: unknown[]) => {parse: (code: string) => unknown}, parse: (code: string) => unknown}, gfm: (...args: unknown[]) => unknown, directive: (...args: unknown[]) => unknown, footnotes: (...args: unknown[]) => unknown, frontmatter: (...args: unknown[]) => unknown, math: (...args: unknown[]) => unknown}} */ { remark, gfm, directive, footnotes, frontmatter, math },
+    /** @type {RemarkParser} */ { remark, gfm, directive, footnotes, frontmatter, math },
     /** @type {string} */ code,
-    /** @type {Record<string, unknown>} */ options,
+    /** @type {{ 'remark-gfm'?: boolean, 'remark-directive'?: boolean, 'remark-footnotes'?: boolean, 'remark-frontmatter'?: boolean, 'remark-math'?: boolean }} */ options,
   ) {
     const plugins = [
       options['remark-gfm'] ? gfm : false,
@@ -56,7 +56,8 @@ export default {
       options['remark-frontmatter'] ? [frontmatter, ['yaml', 'toml']] : false,
       options['remark-math'] ? math : false,
     ].filter((plugin) => plugin !== false);
-    return remark().use(plugins).parse(code);
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-return), typescript-eslint(no-unsafe-member-access), typescript-eslint(no-unsafe-call) -- remark's FrozenProcessor type params mismatch between remark/unified .d.ts
+    return remark().use(/** @type {Parameters<ReturnType<import('remark').remark>['use']>[0]} */ (/** @type {unknown} */ (plugins))).parse(code);
   },
 
   nodeToRange(/** @type {RemarkNode} */ { position }) {
@@ -65,7 +66,7 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {RemarkNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
@@ -79,7 +80,7 @@ export default {
     };
   },
 
-  renderSettings(/** @type {Record<string, unknown>} */ parserSettings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
+  renderSettings(/** @type {{ 'remark-gfm'?: boolean, 'remark-directive'?: boolean, 'remark-footnotes'?: boolean, 'remark-frontmatter'?: boolean, 'remark-math'?: boolean }} */ parserSettings, /** @type {(settings: { 'remark-gfm'?: boolean, 'remark-directive'?: boolean, 'remark-footnotes'?: boolean, 'remark-frontmatter'?: boolean, 'remark-math'?: boolean }) => void} */ onChange) {
     return (
       <div>
         <p>

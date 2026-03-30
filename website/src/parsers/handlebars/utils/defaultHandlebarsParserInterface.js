@@ -12,7 +12,7 @@ export default {
   locationProps: new Set(['loc']),
 
   /** @this {LineOffsetsMixin} */
-  parse(/** @type {(code: string) => Record<string, unknown>} */ parseHandlebars, /** @type {string} */ code) {
+  parse(/** @type {(code: string) => import('@glimmer/syntax').ASTv1.Template | ReturnType<typeof import('handlebars').parse>} */ parseHandlebars, /** @type {string} */ code) {
     this.lineOffsets = [];
     let index = 0;
     do {

@@ -3,7 +3,7 @@ import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'luaparse/package.json';
 
 /**
- * @typedef {{ parse(code: string, options?: object): object }} LuaparseParser
+ * @typedef {typeof import('luaparse')} LuaparseParser
  */
 
 const ID = 'luaparse';
@@ -49,7 +49,7 @@ export default {
 
   },
 
-  renderSettings(/** @type {Record<string, unknown>} */ parserSettings, /** @type {(settings: Record<string, unknown>) => void} */ onChange) {
+  renderSettings(/** @type {Partial<Parameters<LuaparseParser['parse']>[1] & object>} */ parserSettings, /** @type {(settings: Partial<Parameters<LuaparseParser['parse']>[1] & object>) => void} */ onChange) {
     return (
       <div>
         <p>

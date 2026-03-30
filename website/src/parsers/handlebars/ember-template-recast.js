@@ -11,11 +11,11 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage,
 
-  loadParser(/** @type {(realParser: (code: string) => Record<string, unknown>) => void} */ callback) {
-    require(['ember-template-recast'], (/** @type {{parse: (code: string) => Record<string, unknown>}} */ recast) => callback(recast.parse));
+  loadParser(/** @type {(realParser: typeof import('ember-template-recast').parse) => void} */ callback) {
+    require(['ember-template-recast'], (/** @type {typeof import('ember-template-recast')} */ recast) => callback(recast.parse));
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {import('@glimmer/syntax').ASTv1.Node} */ node, /** @type {string} */ key) {
     return key === 'body';
   },
 };

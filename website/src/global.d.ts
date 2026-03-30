@@ -8,17 +8,14 @@ declare module '*.css' {
   export default content;
 }
 
-declare var global: Window & typeof globalThis & {
-  document: Document;
-  location: Location;
-  localStorage: Storage;
-  onhashchange: ((this: WindowEventHandlers, ev: HashChangeEvent) => unknown) | null;
-  onbeforeunload: ((this: WindowEventHandlers, ev: BeforeUnloadEvent) => unknown) | null;
-  $node: unknown;
-  acorn: import('acorn');
-  tern: Record<string, unknown>;
-  __filename: string;
-};
+declare namespace globalThis {
+  var $node: unknown;
+  var acorn: typeof import('acorn');
+  var tern: Record<string, unknown>;
+  var __filename: string;
+}
+
+declare var global: typeof globalThis & Window;
 
 interface Window {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: (...args: unknown[]) => unknown;

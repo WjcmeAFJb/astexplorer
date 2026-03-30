@@ -10,7 +10,7 @@ const ID = 'recast';
 
 /**
  * @typedef {{parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>, [key: string]: unknown}} RecastSubParser
- * @typedef {{recast: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}, parsers: Record<string, RecastSubParser>}} RecastBundle
+ * @typedef {{recast: Pick<typeof import('recast'), 'parse'>, parsers: Record<string, RecastSubParser>}} RecastBundle
  */
 
 export default {
@@ -67,7 +67,7 @@ export default {
       case 'babylon7':
         options.parser = {
           parse(/** @type {string} */ code) {
-            return babylon7Parser.parse(parsers.babylon7, code, babylon7Options);
+            return babylon7Parser.parse(/** @type {typeof import('babylon7')} */ (/** @type {unknown} */ (parsers.babylon7)), code, babylon7Options);
           },
         };
         break;
@@ -81,6 +81,7 @@ export default {
         delete options.parser; // default parser
         break;
     }
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- recast.parse() is typed as returning any in its .d.ts
     return recast.parse(code, options);
   },
 

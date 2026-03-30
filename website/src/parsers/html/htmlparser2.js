@@ -36,7 +36,7 @@ export default {
     });
   },
 
-  parse(/** @type {HtmlParser2Module} */ { Parser: {Parser}, Handler }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {HtmlParser2Module} */ { Parser: {Parser}, Handler }, /** @type {string} */ code, /** @type {import('htmlparser2').ParserOptions} */ options) {
     let handler = new Handler();
     new Parser(handler, options).end(code);
     return handler.root;

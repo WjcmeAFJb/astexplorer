@@ -28,7 +28,7 @@ export default {
     });
   },
 
-  transform(/** @type {{remark: () => {use: (...args: unknown[]) => {processSync: (code: string) => {value: string}}, processSync: (code: string) => {value: string}}, [key: string]: unknown}} */ { remark, ...availableModules }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{remark: import('remark').remark, [key: string]: (...args: unknown[]) => unknown}} */ { remark, ...availableModules }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     function sandboxRequire(/** @type {string} */ name) {
       if (!Object.getOwnPropertyNames(availableModules).includes(name))
         throw new Error(`Cannot find module '${name}'`);
@@ -36,6 +36,7 @@ export default {
     }
 
     const transform = compileModule(transformCode, { require: sandboxRequire });
-    return remark().use(transform).processSync(code).value;
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-return), typescript-eslint(no-unsafe-member-access), typescript-eslint(no-unsafe-call) -- remark's FrozenProcessor type params mismatch between remark/unified .d.ts
+    return remark().use(/** @type {Parameters<ReturnType<import('remark').remark>['use']>[0]} */ (/** @type {unknown} */ (transform))).processSync(code).value;
   },
 };

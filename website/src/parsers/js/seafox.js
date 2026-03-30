@@ -16,7 +16,7 @@ export default {
     require(['seafox'], callback);
   },
 
-  parse(/** @type {typeof import('seafox')} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('seafox')} */ parser, /** @type {string} */ code, /** @type {import('seafox').Options} */ options) {
     return parser.parse(code, options);
   },
 

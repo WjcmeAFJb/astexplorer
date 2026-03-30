@@ -2,17 +2,9 @@ import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'css-tree/package.json';
 
 /**
- * @typedef {{
- *   parse: (code: string, options?: Record<string, unknown>) => object,
- *   toPlainObject: (ast: object) => CSSTreeNode,
- * }} CSSTreeModule
+ * @typedef {typeof import('css-tree')} CSSTreeModule
  *
- * @typedef {{
- *   type?: string,
- *   loc?: { start: { offset: number, line: number, column: number }, end: { offset: number, line: number, column: number } },
- *   children?: CSSTreeNode[],
- *   [key: string]: unknown,
- * }} CSSTreeNode
+ * @typedef {import('css-tree').CssNodePlain} CSSTreeNode
  */
 
 const ID = 'csstree';
@@ -30,7 +22,7 @@ export default {
     require(['css-tree'], (/** @type {CSSTreeModule} */ m) => callback(m));
   },
 
-  parse(/** @type {CSSTreeModule} */ csstree, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {CSSTreeModule} */ csstree, /** @type {string} */ code, /** @type {import('css-tree').ParseOptions} */ options) {
     return csstree.toPlainObject(csstree.parse(code, {
       positions: true,
       ...options,

@@ -16,7 +16,7 @@ export default {
     require(['meriyah'], callback);
   },
 
-  parse(/** @type {typeof import('meriyah')} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('meriyah')} */ parser, /** @type {string} */ code, /** @type {import('meriyah').Options} */ options) {
     return parser.parse(code, options);
   },
 

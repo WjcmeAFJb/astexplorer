@@ -35,7 +35,7 @@ export default {
     });
   },
 
-  parse(/** @type {PostCSSParsers} */ parsers, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {PostCSSParsers} */ parsers, /** @type {string} */ code, /** @type {{parser: string}} */ options) {
     // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- .call() returns any; TS limitation
     return defaultParserInterface.parse.call(
       this,

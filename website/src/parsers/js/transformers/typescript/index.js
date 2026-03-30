@@ -13,14 +13,14 @@ export default {
 
   defaultParserID: 'typescript',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, ts: {createSourceFile: (...args: unknown[]) => unknown, createProgram: (...args: unknown[]) => {getSourceFile: (name: string) => unknown, getCompilerOptions: () => unknown}, transform: (...args: unknown[]) => {transformed: unknown[]}, createPrinter: () => {printFile: (file: unknown) => string}, ScriptTarget: Record<string, unknown>, [key: string]: unknown}}) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, ts: typeof import('typescript')}) => void} */ callback) {
     require(['../../../transpilers/typescript', 'typescript'], (
       /** @type {{default: (code: string) => string}} */ transpile,
-      /** @type {{createSourceFile: (...args: unknown[]) => unknown, createProgram: (...args: unknown[]) => {getSourceFile: (name: string) => unknown, getCompilerOptions: () => unknown}, transform: (...args: unknown[]) => {transformed: unknown[]}, createPrinter: () => {printFile: (file: unknown) => string}, ScriptTarget: Record<string, unknown>, [key: string]: unknown}} */ typescript,
+      /** @type {typeof import('typescript')} */ typescript,
     ) => callback({ transpile: transpile.default, ts: typescript }));
   },
 
-  transform(/** @type {{transpile: (code: string) => string, ts: {createSourceFile: (...args: unknown[]) => unknown, createProgram: (...args: unknown[]) => {getSourceFile: (name: string) => unknown, getCompilerOptions: () => unknown}, transform: (...args: unknown[]) => {transformed: unknown[]}, createPrinter: () => {printFile: (file: unknown) => string}, ScriptTarget: Record<string, unknown>, [key: string]: unknown}}} */ { transpile, ts }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, ts: typeof import('typescript')}} */ { transpile, ts }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     // basic scaffolding to get a compiled javascript module from the user provided code
     transformCode = transpile(transformCode);
     const mod = compileModule(
@@ -50,11 +50,11 @@ export default {
           true,
         );
       },
-      /** @returns {Record<string, unknown>} */
-      readFile: () => null,
+      /** @returns {undefined} */
+      readFile: () => undefined,
       useCaseSensitiveFileNames: () => true,
-      /** @returns {Record<string, unknown>} */
-      writeFile: () => null,
+      /** @returns {undefined} */
+      writeFile: () => undefined,
     };
 
     // create the program with the provided file as entry point
@@ -63,11 +63,11 @@ export default {
       target: ts.ScriptTarget.Latest,
       experimentalDecorators: true,
       experimentalAsyncFunctions: true,
-      jsx: true,
+      jsx: /** @type {import('typescript').JsxEmit} */ (/** @type {unknown} */ (true)),
     }, host);
 
     // create the user provided transformer by invoking the factory
-    const transformerFactory = createTransformer(program);
+    const transformerFactory = /** @type {import('typescript').TransformerFactory<import('typescript').SourceFile>} */ (createTransformer(program));
 
     // create a source file node from the file contents
     const sourceFile = program.getSourceFile(FILENAME)

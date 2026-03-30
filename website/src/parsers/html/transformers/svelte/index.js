@@ -11,21 +11,21 @@ export default {
 
   defaultParserID: 'svelte',
 
-  loadTransformer(/** @type {(realTransformer: {preprocess: (code: string, plugins: object) => unknown}) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: typeof import('svelte/compiler')) => void} */ callback) {
     require(
       ['svelte/compiler'],
       callback,
     );
   },
 
-  transform(/** @type {{preprocess: (code: string, plugins: object) => unknown}} */ { preprocess }, /** @type {string} */ transformCode, /** @type {string} */ code) {
-    /** @type {() => {markup?: (...args: unknown[]) => unknown, script?: (...args: unknown[]) => unknown, style?: (...args: unknown[]) => unknown}} */
-    const transform = /** @type {() => {markup?: (...args: unknown[]) => unknown, script?: (...args: unknown[]) => unknown, style?: (...args: unknown[]) => unknown}} */ (compileModule(transformCode));
+  transform(/** @type {{preprocess: (source: string, preprocessor: object) => unknown}} */ { preprocess }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+    /** @type {() => {markup?: (...args: unknown[]) => string, script?: (...args: unknown[]) => string, style?: (...args: unknown[]) => string}} */
+    const transform = /** @type {() => {markup?: (...args: unknown[]) => string, script?: (...args: unknown[]) => string, style?: (...args: unknown[]) => string}} */ (compileModule(transformCode));
 
     // Identity functions in case of missing transforms
     const _markupIdentity = (/** @type {string} */ content, /** @type {string} */ _filename) => content;
-    const _scriptIdentity = (/** @type {string} */ content, /** @type {Record<string, unknown>} */ _attributes, /** @type {string} */ _filename) => content;
-    const _styleIdentity = (/** @type {string} */ content, /** @type {Record<string, unknown>} */ _attributes, /** @type {string} */ _filename) => content;
+    const _scriptIdentity = (/** @type {string} */ content, /** @type {Record<string, string | boolean>} */ _attributes, /** @type {string} */ _filename) => content;
+    const _styleIdentity = (/** @type {string} */ content, /** @type {Record<string, string | boolean>} */ _attributes, /** @type {string} */ _filename) => content;
 
     // Check if there is a transform
     // If Yes, set the appropriate transform or else use identity functions
@@ -39,12 +39,12 @@ export default {
           code: markupTransform(content),
         };
       },
-      script: (/** @type {{content: string, attributes: Record<string, unknown>, _filename: string}} */ {content, attributes, _filename}) => {
+      script: (/** @type {{content: string, attributes: Record<string, string | boolean>, _filename: string}} */ {content, attributes, _filename}) => {
         return {
           code: scriptTransform(content, attributes),
         };
       },
-      style: (/** @type {{content: string, attributes: Record<string, unknown>, _filename: string}} */ {content, attributes, _filename}) => {
+      style: (/** @type {{content: string, attributes: Record<string, string | boolean>, _filename: string}} */ {content, attributes, _filename}) => {
         return {
           code: styleTransform(content, attributes),
         };

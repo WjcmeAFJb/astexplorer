@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'recast',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, recast: Record<string, unknown>, parsers: Record<string, object>}) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, recast: typeof import('recast'), parsers: Record<string, object>}) => void} */ callback) {
     require(
       [
         '../../../transpilers/babel',
@@ -23,7 +23,7 @@ export default {
         'recast/parsers/flow',
         'recast/parsers/typescript',
       ],
-      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {Record<string, unknown>} */ recast, /** @type {object} */ acorn, /** @type {object} */ babel, /** @type {object} */ babylon, /** @type {object} */ esprima, /** @type {object} */ flow, /** @type {object} */ typescript) => {
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {typeof import('recast')} */ recast, /** @type {object} */ acorn, /** @type {object} */ babel, /** @type {object} */ babylon, /** @type {object} */ esprima, /** @type {object} */ flow, /** @type {object} */ typescript) => {
         callback({
           transpile: transpile.default,
           recast,
@@ -41,7 +41,7 @@ export default {
   },
 
   transform(
-    /** @type {{transpile: (code: string) => string, recast: Record<string, unknown>, parsers: Record<string, object>}} */ { transpile, recast, parsers },
+    /** @type {{transpile: (code: string) => string, recast: typeof import('recast'), parsers: Record<string, object>}} */ { transpile, recast, parsers },
     /** @type {string} */ transformCode,
     /** @type {string} */ code,
   ) {

@@ -13,11 +13,11 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {(realParser: Record<string, unknown>) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('vue-eslint-parser')) => void} */ callback) {
     require(['vue-eslint-parser'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => unknown}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('vue-eslint-parser')} */ parser, /** @type {string} */ code, /** @type {{ecmaVersion?: number, sourceType?: string, vueFeatures?: {filter?: boolean, interpolationAsNonHTML?: boolean}}} */ options) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
@@ -30,11 +30,11 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {import('vue-eslint-parser/ast').Node} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {{tag?: string}} */ node) {
     return node.tag;
   },
 
@@ -61,7 +61,7 @@ export default {
           title: 'vueFeatures',
           fields: Object.keys(defaultOptions.vueFeatures),
           settings:
-          (/** @type {Record<string, unknown>} */ settings) => settings.vueFeatures || {...defaultOptions.vueFeatures},
+          (/** @type {{vueFeatures?: {filter?: boolean, interpolationAsNonHTML?: boolean}}} */ settings) => settings.vueFeatures || {...defaultOptions.vueFeatures},
         },
       ],
     };

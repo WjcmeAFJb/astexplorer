@@ -17,7 +17,7 @@ export default {
     require(['@vue/compiler-dom'], callback);
   },
 
-  parse(/** @type {typeof import('@vue/compiler-dom')} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('@vue/compiler-dom')} */ parser, /** @type {string} */ code, /** @type {import('@vue/compiler-dom').ParserOptions} */ options) {
     return parser.parse(code, options);
   },
 
@@ -27,11 +27,11 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {import('@vue/compiler-dom').TemplateChildNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {{tag?: string}} */ node) {
     return node.tag;
   },
 

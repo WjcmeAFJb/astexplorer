@@ -13,19 +13,19 @@ export default {
   locationProps: new Set([]),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {(realParser: {parseTemplate: (code: string, options: Record<string, unknown>) => {children: object[]}}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('san')) => void} */ callback) {
     require(['san'], callback);
   },
 
-  parse(/** @type {{parseTemplate: (code: string, options: Record<string, unknown>) => {children: object[]}}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
-    return parser.parseTemplate(code, options).children[0];
+  parse(/** @type {typeof import('san')} */ parser, /** @type {string} */ code, /** @type {Parameters<typeof import('san').parseTemplate>[1]} */ options) {
+    return /** @type {import('san').AElement} */ ((/** @type {import('san').AElement} */ (parser.parseTemplate(code, options))).children[0]);
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {import('san').AElement} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {import('san').AElement} */ node) {
     return node.tagName;
   },
 

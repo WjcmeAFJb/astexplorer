@@ -7,8 +7,8 @@ import pkg from 'yaml-ast-parser/package.json';
  */
 
 const ID = 'yaml-ast-parser';
-/** @type {Record<number, string> | null} */
-let Kind = null;
+/** @type {typeof import('yaml-ast-parser').Kind | null} */
+let Kind = /** @type {typeof import('yaml-ast-parser').Kind | null} */ (null);
 
 export default {
   ...defaultParserInterface,
@@ -32,14 +32,14 @@ export default {
     return Kind ? Kind[/** @type {number} */ (node.kind)] : undefined;
   },
 
-  loadParser(/** @type {(realParser: {Kind: Record<number, string>, load: (code: string) => unknown}) => void} */ callback) {
-    require(['yaml-ast-parser'], function(/** @type {{Kind: Record<number, string>, load: (code: string) => unknown}} */ yamlAstParser) {
+  loadParser(/** @type {(realParser: typeof import('yaml-ast-parser')) => void} */ callback) {
+    require(['yaml-ast-parser'], function(/** @type {typeof import('yaml-ast-parser')} */ yamlAstParser) {
       Kind = yamlAstParser.Kind;
       callback(yamlAstParser);
     });
   },
 
-  parse(/** @type {{load: (code: string) => unknown}} */ { load }, /** @type {string} */ code) {
+  parse(/** @type {typeof import('yaml-ast-parser')} */ { load }, /** @type {string} */ code) {
     return load(code);
   },
 };

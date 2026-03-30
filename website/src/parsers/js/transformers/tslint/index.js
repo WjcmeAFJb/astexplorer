@@ -11,7 +11,7 @@ export default {
 
   defaultParserID: 'typescript',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, tslint: {Linter: new (opts: object) => {getSourceFile: (name: string, code: string) => unknown, applyRule: (rule: unknown, file: unknown) => TslintFailure[]}}, typescript: typeof import('typescript')}) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, tslint: typeof import('tslint'), typescript: typeof import('typescript')}) => void} */ callback) {
     require([
       '../../../transpilers/typescript',
       'tslint/lib/index',
@@ -19,12 +19,12 @@ export default {
     ],
     (
       /** @type {{default: (code: string) => string}} */ transpile,
-      /** @type {{Linter: new (opts: object) => {getSourceFile: (name: string, code: string) => unknown, applyRule: (rule: unknown, file: unknown) => TslintFailure[]}}} */ tslint,
+      /** @type {typeof import('tslint')} */ tslint,
       /** @type {typeof import('typescript')} */ typescript,
     ) => callback({transpile: transpile.default, tslint, typescript}));
   },
 
-  transform(/** @type {{transpile: (code: string) => string, tslint: {Linter: new (opts: object) => {getSourceFile: (name: string, code: string) => unknown, applyRule: (rule: unknown, file: unknown) => TslintFailure[]}}, typescript: typeof import('typescript')}} */ { transpile, tslint, typescript }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, tslint: typeof import('tslint'), typescript: typeof import('typescript')}} */ { transpile, tslint, typescript }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,
@@ -34,12 +34,14 @@ export default {
       },
     );
 
-    let linter = new tslint.Linter({});
+    let linter = new tslint.Linter(/** @type {import('tslint').ILinterOptions} */ ({fix: false}));
     let Rule = /** @type {new (opts: Record<string, unknown>) => unknown} */ (transform.Rule);
     let rule = new Rule({});
-    let sourceFile = linter.getSourceFile('astExplorer.ts', code);
-    let ruleFailures = linter.applyRule(rule, sourceFile);
-    
+    // getSourceFile and applyRule are private in the typings but accessible at runtime
+    const linterInternal = /** @type {{getSourceFile: (name: string, code: string) => unknown, applyRule: (rule: unknown, file: unknown) => TslintFailure[]}} */ (/** @type {unknown} */ (linter));
+    let sourceFile = linterInternal.getSourceFile('astExplorer.ts', code);
+    let ruleFailures = linterInternal.applyRule(rule, sourceFile);
+
     return formatResults(ruleFailures);
   },
 };

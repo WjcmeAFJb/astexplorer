@@ -13,11 +13,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: {parse: (code: string, options?: Record<string, unknown>) => import('estree').Program}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('espree')) => void} */ callback) {
     require(['espree'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ espree, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('espree')} */ espree, /** @type {string} */ code, /** @type {import('espree').Options} */ options) {
     return espree.parse(code, options);
   },
 

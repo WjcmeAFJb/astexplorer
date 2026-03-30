@@ -12,11 +12,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(/** @type {(realParser: {parse: (code: string, options?: Record<string, unknown>) => import('estree').Program}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('esprima') & {parse: typeof import('esprima').parseScript}) => void} */ callback) {
     require(['esprima'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, options?: Record<string, unknown>) => import('estree').Program}} */ esprima, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('esprima') & {parse: typeof import('esprima').parseScript}} */ esprima, /** @type {string} */ code, /** @type {import('esprima').ParseOptions} */ options) {
     return esprima.parse(code, options);
   },
 

@@ -11,11 +11,11 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/glimmerjs/glimmer-vm',
 
-  loadParser(/** @type {(realParser: (code: string, options?: object) => Record<string, unknown>) => void} */ callback) {
-    require(['@glimmer/syntax'], (/** @type {{preprocess: (code: string, options?: object) => Record<string, unknown>}} */ glimmer) => callback(glimmer.preprocess));
+  loadParser(/** @type {(realParser: typeof import('@glimmer/syntax').preprocess) => void} */ callback) {
+    require(['@glimmer/syntax'], (/** @type {typeof import('@glimmer/syntax')} */ glimmer) => callback(glimmer.preprocess));
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {import('@glimmer/syntax').ASTv1.Node} */ node, /** @type {string} */ key) {
     return key === 'body';
   },
 };

@@ -2,7 +2,7 @@ import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from '@angular/compiler/package.json';
 
 /** @typedef {{startSourceSpan?: {start: {offset: number}, end: {offset: number}}, endSourceSpan?: {start: {offset: number}, end: {offset: number}}, sourceSpan?: {start: {offset: number}, end: {offset: number}}, span?: {start: number, end: number}, name?: string, constructor?: {name: string}, [key: string]: unknown}} AngularNode */
-/** @typedef {{parseTemplate: (code: string, filename: string, options?: object) => Record<string, unknown>, [key: string]: unknown}} AngularCompiler */
+/** @typedef {typeof import('@angular/compiler')} AngularCompiler */
 
 const ID = 'angular';
 
@@ -25,7 +25,7 @@ export default {
     require(['@angular/compiler'], callback);
   },
 
-  parse(/** @type {AngularCompiler} */ ng, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {AngularCompiler} */ ng, /** @type {string} */ code, /** @type {import('@angular/compiler').ParseTemplateOptions} */ options) {
     const ast = ng.parseTemplate(code, 'astexplorer.html', options);
     fixSpan(ast, code);
     return ast;
@@ -85,7 +85,7 @@ function getNodeCtor(/** @type {AngularNode} */ node) {
  *     <tag [attr]="expression">
  *                  ^^^^^^^^^^ sub AST { start: 13, end: 23 }
  */
-function fixSpan(/** @type {Record<string, unknown>} */ ast, /** @type {string} */ code) {
+function fixSpan(/** @type {import('@angular/compiler').ParsedTemplate} */ ast, /** @type {string} */ code) {
   const fixed = new Set();
   const KEEP_VISIT = 1;
   function visitTarget(/** @type {unknown} */ value, /** @type {(v: unknown) => boolean} */ isTarget, /** @type {(node: Record<string, unknown>, parent: unknown) => number | void} */ fn, /** @type {unknown} */ parent) {

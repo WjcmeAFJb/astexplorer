@@ -13,11 +13,11 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {(realParser: {compile: (code: string, options?: Record<string, unknown>) => {ast: Record<string, unknown>}}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('svelte/compiler')) => void} */ callback) {
     require(['svelte/compiler'], callback);
   },
 
-  parse(/** @type {{compile: (code: string, options?: Record<string, unknown>) => {ast: Record<string, unknown>}}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('svelte/compiler')} */ parser, /** @type {string} */ code, /** @type {import('svelte/compiler').CompileOptions} */ options) {
     return parser.compile(code, options).ast;
   },
 
@@ -27,11 +27,11 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {ReturnType<typeof import('svelte/compiler').compile>['ast']} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {{tag?: string}} */ node) {
     return node.tag;
   },
 

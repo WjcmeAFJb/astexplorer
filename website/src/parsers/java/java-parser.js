@@ -3,7 +3,7 @@ import pkg from 'java-parser/package.json';
 
 /**
  * @typedef {typeof import('java-parser')} JavaParserModule
- * @typedef {{ name?: string, location?: { startOffset: number, endOffset: number }, tokenType?: unknown, [key: string]: unknown }} JavaNode
+ * @typedef {import('java-parser').CstNode | import('java-parser').IToken} JavaNode
  */
 
 const ID = 'java-parser';
@@ -30,7 +30,7 @@ export default {
     require(['java-parser'], callback);
   },
 
-  parse(/** @type {JavaParserModule} */ parser, /** @type {string} */ code) {
+  parse(/** @type {typeof import('java-parser')} */ parser, /** @type {string} */ code) {
     return parser.parse(code);
   },
 
@@ -40,11 +40,11 @@ export default {
     return {};
   },
 
-  getNodeName(/** @type {JavaNode} */ { name }) {
+  getNodeName(/** @type {{name?: string}} */ { name }) {
     return name;
   },
 
-  nodeToRange(/** @type {JavaNode} */ { location }) {
+  nodeToRange(/** @type {{location?: import('java-parser').CstNode['location']}} */ { location }) {
     if (!location) {
       return;
     }

@@ -11,14 +11,14 @@ export default {
 
   defaultParserID: 'glimmer',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, glimmer: {precompile: (code: string, options?: object) => string}}) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, glimmer: typeof import('@glimmer/compiler')}) => void} */ callback) {
     require(
       ['../../../transpilers/babel', '@glimmer/compiler'],
-      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{precompile: (code: string, options?: object) => string}} */ glimmer) => callback({ transpile: transpile.default, glimmer }),
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {typeof import('@glimmer/compiler')} */ glimmer) => callback({ transpile: transpile.default, glimmer }),
     );
   },
 
-  transform(/** @type {{transpile: (code: string) => string, glimmer: {precompile: (code: string, options?: object) => string}}} */ { transpile, glimmer }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, glimmer: typeof import('@glimmer/compiler')}} */ { transpile, glimmer }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     const transformModule = compileModule(transformCode);
 
@@ -30,7 +30,7 @@ export default {
     // compile template to wireformat
     let result = glimmer.precompile(code, {
       plugins: {
-        ast: [transform],
+        ast: [/** @type {import('@glimmer/syntax').ASTPluginBuilder} */ (/** @type {unknown} */ (transform))],
       },
     });
 

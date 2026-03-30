@@ -13,11 +13,11 @@ export default {
   locationProps: new Set(['start', 'end']),
   typeProps: new Set(['tag']),
 
-  loadParser(/** @type {(realParser: {compile: (code: string, options: Record<string, unknown>) => {ast: object}}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('vue-template-compiler')) => void} */ callback) {
     require(['vue-template-compiler/browser'], callback);
   },
 
-  parse(/** @type {{compile: (code: string, options: Record<string, unknown>) => {ast: object}}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('vue-template-compiler')} */ parser, /** @type {string} */ code, /** @type {Parameters<typeof import('vue-template-compiler').compile>[1]} */ options) {
     return parser.compile(code, options).ast;
   },
 
@@ -27,11 +27,11 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {import('vue-template-compiler').ASTNode} */ node, /** @type {string} */ key) {
     return key === 'children';
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {{tag?: string}} */ node) {
     return node.tag;
   },
 

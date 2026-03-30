@@ -16,17 +16,17 @@ export default {
   homepage: pkg.repository.url,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: {default: (wasm: string) => Promise<void>, parseSync: (code: string, options: Record<string, unknown>) => Record<string, unknown>}) => void} */ callback) {
-    require(['@swc/wasm-web/wasm.js'], (/** @type {{default: (wasm: string) => Promise<void>, parseSync: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ instance) => {
+  loadParser(/** @type {(realParser: typeof import('@swc/wasm-web')) => void} */ callback) {
+    require(['@swc/wasm-web/wasm.js'], (/** @type {typeof import('@swc/wasm-web')} */ instance) => {
       instance.default(wasm_bg).then(() => {
         callback(instance)
       });
     });
   },
 
-  parse(/** @type {{parseSync: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ parsers, /** @type {string} */ code, options = {}) {
+  parse(/** @type {typeof import('@swc/wasm-web')} */ parsers, /** @type {string} */ code, /** @type {import('@swc/wasm-web').ParseOptions} */ options = /** @type {import('@swc/wasm-web').ParseOptions} */ ({})) {
     try {
-      return parsers.parseSync(code, {...this.getDefaultOptions(), ...options});
+      return parsers.parseSync(code, /** @type {import('@swc/wasm-web').ParseOptions} */ ({...this.getDefaultOptions(), ...options}));
     } catch (message) {
       throw new SyntaxError(/** @type {string} */ (message));
     }
@@ -38,7 +38,7 @@ export default {
     }
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {{type?: string, [key: string]: unknown}} */ node) {
     return node.type;
   },
 

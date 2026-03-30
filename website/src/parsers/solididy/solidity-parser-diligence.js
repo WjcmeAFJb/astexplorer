@@ -11,15 +11,15 @@ export default {
   version: pkg.version,
   homepage: pkg.homepage || 'https://github.com/consensys/solidity-parser-antlr',
 
-  loadParser(/** @type {(realParser: {parse: (code: string, options: Record<string, unknown>) => object}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('solidity-parser-diligence')) => void} */ callback) {
     require(['solidity-parser-diligence'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => object}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('solidity-parser-diligence')} */ parser, /** @type {string} */ code, /** @type {import('solidity-parser-diligence').ParserOpts} */ options) {
     return parser.parse(code, options);
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {import('solidity-parser-diligence').BaseASTNode} */ node, /** @type {string} */ key) {
     return node.type === 'SourceUnit' ||
       node.type === 'ContractDefinition' ||
       key === 'children' ||

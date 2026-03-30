@@ -12,13 +12,13 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: unknown) => void} */ callback) {
-    require(['regexp-tree'], (regexpTree) => {
+  loadParser(/** @type {(realParser: typeof import('regexp-tree') & {parser: {setOptions: (options: import('regexp-tree').ParserOptions) => void}}) => void} */ callback) {
+    require(['regexp-tree'], (/** @type {typeof import('regexp-tree') & {parser: {setOptions: (options: import('regexp-tree').ParserOptions) => void}}} */ regexpTree) => {
       callback(regexpTree);
     });
   },
 
-  parse(/** @type {{parse: (code: string) => object, parser: {setOptions: (options: object) => void}}} */ regexpTree, /** @type {string} */ code, options={}) {
+  parse(/** @type {typeof import('regexp-tree') & {parser: {setOptions: (options: import('regexp-tree').ParserOptions) => void}}} */ regexpTree, /** @type {string} */ code, options={}) {
     regexpTree
       .parser
       .setOptions(options);
@@ -26,13 +26,13 @@ export default {
     return regexpTree.parse(code);
   },
 
-  nodeToRange(/** @type {{loc?: {start: number, end: number}, [key: string]: unknown}} */ node) {
+  nodeToRange(/** @type {import('regexp-tree/ast').AstNode} */ node) {
     if (node.loc != null) {
       return [node.loc.start, node.loc.end];
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {import('regexp-tree/ast').AstNode} */ node, /** @type {string} */ key) {
     return (
       node.type === 'RegExp' ||
       key === 'body' ||

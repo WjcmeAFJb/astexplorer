@@ -12,15 +12,15 @@ export default {
   homepage: pkg.homepage || 'https://github.com/nene/sql-parser-cst',
   locationProps: new Set(['range']),
 
-  loadParser(/** @type {(realParser: {parse: (code: string, options: Record<string, unknown>) => object}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('sql-parser-cst')) => void} */ callback) {
     require(['sql-parser-cst'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => object}} */ parser, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('sql-parser-cst')} */ parser, /** @type {string} */ code, /** @type {import('sql-parser-cst').ParserOptions} */ options) {
     return parser.parse(code, options);
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {import('sql-parser-cst/lib/cst/Node').Node} */ node) {
     return node.type;
   },
 

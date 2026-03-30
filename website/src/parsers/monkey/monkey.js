@@ -3,8 +3,7 @@ import pkg from '@gengjiawen/monkey-wasm/package.json';
 import defaultParserInterface from '../utils/defaultParserInterface'
 
 /**
- * @typedef {{ parse(code: string): string }} MonkeyParser
- * @typedef {{ type?: string, span?: { start: number, end: number }, [key: string]: unknown }} MonkeyNode
+ * @typedef {typeof import('@gengjiawen/monkey-wasm')} MonkeyModule
  */
 
 const ID = 'monkey'
@@ -18,20 +17,20 @@ export default {
   homepage: 'https://monkeylang.org/',
   locationProps: new Set(['span']),
 
-  async loadParser(/** @type {(realParser: {parse: (code: string) => string}) => void} */ callback) {
+  async loadParser(/** @type {(realParser: MonkeyModule) => void} */ callback) {
     require(['@gengjiawen/monkey-wasm/monkey_wasm.js'], callback);
   },
 
-  parse(/** @type {{parse: (code: string) => string}} */ parser, /** @type {string} */ code) {
+  parse(/** @type {MonkeyModule} */ parser, /** @type {string} */ code) {
     try {
-      return /** @type {Record<string, unknown>} */ (JSON.parse(parser.parse(code)));
+      return /** @type {{type?: string, span?: {start: number, end: number}}} */ (JSON.parse(parser.parse(code)));
     } catch (message) {
       // AST Explorer expects the thrown error to be an object, not a string.
       throw new SyntaxError(/** @type {string} */ (message));
     }
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {{type?: string}} */ node) {
     return node.type
   },
 

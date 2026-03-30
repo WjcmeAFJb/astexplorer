@@ -3,8 +3,8 @@ import pkg from 'mathjs/package.json';
 import defaultParserInterface from '../utils/defaultParserInterface'
 
 /**
- * @typedef {{ parse(code: string): MathJSNode }} MathJSParser
- * @typedef {{ type: string, [key: string]: unknown }} MathJSNode
+ * @typedef {import('mathjs').MathJsStatic} MathJSParser
+ * @typedef {import('mathjs').MathNode} MathJSNode
  */
 
 const ID = 'mathjs'
@@ -20,11 +20,11 @@ export default {
 
   defaultParserID: 'mathjs',
 
-  async loadParser(/** @type {(realParser: {parse: (code: string) => object}) => void} */ callback) {
+  async loadParser(/** @type {(realParser: MathJSParser) => void} */ callback) {
     require(['mathjs'], callback);
   },
 
-  parse(/** @type {{parse: (code: string) => object}} */ parser, /** @type {string} */ code) {
+  parse(/** @type {MathJSParser} */ parser, /** @type {string} */ code) {
     try {
       return parser.parse(code)
     } catch (message) {
@@ -33,7 +33,7 @@ export default {
     }
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {MathJSNode} */ node) {
     return node.type
   },
 
@@ -41,7 +41,7 @@ export default {
   // nodeToRange(node) {
   // },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node) {
+  opensByDefault(/** @type {MathJSNode} */ node) {
     return node.type === 'BlockNode'
   },
 }

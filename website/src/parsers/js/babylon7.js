@@ -117,11 +117,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('babylon7')) => void} */ callback) {
     require(['babylon7'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('babylon7')} */ babylon, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
     options = {...options};
     // Older versions didn't have the pipelineOptions setting, but
     // only a pipelineProposal string option.

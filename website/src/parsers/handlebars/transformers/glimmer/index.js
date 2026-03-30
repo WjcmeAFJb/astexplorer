@@ -11,14 +11,14 @@ export default {
 
   defaultParserID: 'glimmer',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, glimmer: {preprocess: (code: string, options?: object) => Record<string, unknown>, print: (ast: Record<string, unknown>) => string}}) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, glimmer: typeof import('@glimmer/syntax')}) => void} */ callback) {
     require(
       ['../../../transpilers/babel', '@glimmer/syntax'],
-      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{preprocess: (code: string, options?: object) => Record<string, unknown>, print: (ast: Record<string, unknown>) => string}} */ glimmer) => callback({ transpile: transpile.default, glimmer }),
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {typeof import('@glimmer/syntax')} */ glimmer) => callback({ transpile: transpile.default, glimmer }),
     );
   },
 
-  transform(/** @type {{transpile: (code: string) => string, glimmer: {preprocess: (code: string, options?: object) => Record<string, unknown>, print: (ast: Record<string, unknown>) => string}}} */ { transpile, glimmer }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, glimmer: typeof import('@glimmer/syntax')}} */ { transpile, glimmer }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     const transformModule = compileModule(transformCode);
 
@@ -29,7 +29,7 @@ export default {
 
     let ast = glimmer.preprocess(code, {
       plugins: {
-        ast: [transform],
+        ast: [/** @type {import('@glimmer/syntax').ASTPluginBuilder} */ (transform)],
       },
     });
 

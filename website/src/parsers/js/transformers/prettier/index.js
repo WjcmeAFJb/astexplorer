@@ -12,14 +12,14 @@ export default {
 
   defaultParserID: 'babylon7',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, prettier: {format: (code: string, options: object) => string}, babel: object}) => void} */ callback) {
+  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, prettier: typeof import('prettier'), babel: import('prettier').Plugin}) => void} */ callback) {
     require(
       ['../../../transpilers/babel', 'prettier/standalone', 'prettier/parser-babel'],
-      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{format: (code: string, options: object) => string}} */ prettier, /** @type {object} */ babel) => callback({ transpile: transpile.default, prettier, babel }),
+      (/** @type {{default: (code: string) => string}} */ transpile, /** @type {typeof import('prettier')} */ prettier, /** @type {import('prettier').Plugin} */ babel) => callback({ transpile: transpile.default, prettier, babel }),
     );
   },
 
-  transform(/** @type {{transpile: (code: string) => string, prettier: {format: (code: string, options: object) => string}, babel: object}} */ { transpile, prettier, babel }, /** @type {string} */ transformCode, /** @type {string} */ code) {
+  transform(/** @type {{transpile: (code: string) => string, prettier: typeof import('prettier'), babel: import('prettier').Plugin}} */ { transpile, prettier, babel }, /** @type {string} */ transformCode, /** @type {string} */ code) {
     transformCode = transpile(transformCode);
     const options = compileModule(transformCode);
     return prettier.format(

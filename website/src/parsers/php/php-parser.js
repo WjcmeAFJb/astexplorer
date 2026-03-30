@@ -2,8 +2,8 @@ import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'php-parser/package.json';
 
 /**
- * @typedef {new (options: object) => { parseCode(code: string, filename: string): object }} PhpParserEngine
- * @typedef {{ kind?: string, loc?: { start?: { offset: number }, end?: { offset: number } }, [key: string]: unknown }} PhpNode
+ * @typedef {typeof import('php-parser').Engine} PhpParserEngine
+ * @typedef {import('php-parser').Node} PhpNode
  */
 
 const ID = 'php-parser';
@@ -36,7 +36,7 @@ export default {
     return parser.parseCode(code, '');
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {PhpNode} */ node) {
     return node.kind;
   },
 
@@ -46,7 +46,7 @@ export default {
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {PhpNode} */ node, /** @type {string} */ key) {
     return key === 'body' || key === 'what' || key === 'items';
   },
 };

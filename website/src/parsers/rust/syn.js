@@ -15,21 +15,22 @@ export default {
   _ignoredProperties: new Set(['_type']),
   locationProps: new Set(['span']),
 
-  loadParser(/** @type {(realParser: {parseFile: (code: string) => object}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('astexplorer-syn')) => void} */ callback) {
     require(['astexplorer-syn'], callback);
   },
 
   /** @this {LineOffsetsMixin} */
-  parse(/** @type {{parseFile: (code: string) => object}} */ parser, /** @type {string} */ code) {
+  parse(/** @type {typeof import('astexplorer-syn')} */ parser, /** @type {string} */ code) {
     this.lineOffsets = [];
     let index = 0;
     do {
       this.lineOffsets.push(index);
     } while ((index = code.indexOf('\n', index) + 1)); // eslint-disable-line no-cond-assign
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- parseFile() is typed as returning any in its .d.ts
     return parser.parseFile(code);
   },
 
-  getNodeName(/** @type {Record<string, unknown>} */ node) {
+  getNodeName(/** @type {{_type?: string}} */ node) {
     return node._type;
   },
 

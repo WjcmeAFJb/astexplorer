@@ -18,24 +18,24 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['end', 'start']),
 
-  loadParser(/** @type {(realParser: {parseRegExpLiteral: (code: string, options: object) => object}) => void} */ callback) {
+  loadParser(/** @type {(realParser: typeof import('regexpp')) => void} */ callback) {
     require(['regexpp'], callback);
   },
 
-  parse(/** @type {{parseRegExpLiteral: (code: string, options: object) => object}} */ regexpp, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('regexpp')} */ regexpp, /** @type {string} */ code, /** @type {import('regexpp').RegExpParser.Options} */ options) {
     if (Object.keys(options).length === 0) {
-      options = /** @type {Record<string, unknown>} */ (this.getDefaultOptions());
+      options = this.getDefaultOptions();
     }
     return regexpp.parseRegExpLiteral(code, options);
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(/** @type {import('regexpp').AST.Node} */ node) {
     if (typeof node.start === 'number' && typeof node.end === 'number') {
       return [node.start, node.end];
     }
   },
 
-  opensByDefault(/** @type {Record<string, unknown>} */ node, /** @type {string} */ key) {
+  opensByDefault(/** @type {import('regexpp').AST.Node} */ node, /** @type {string} */ key) {
     return (
       key === 'pattern' ||
       key === 'elements' ||

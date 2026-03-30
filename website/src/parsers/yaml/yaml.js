@@ -36,7 +36,7 @@ export default {
     }
   },
 
-  parse(/** @type {{parseAllDocuments: (code: string, options?: Record<string, unknown>) => object}} */ { parseAllDocuments }, /** @type {string} */ code, /** @type {Record<string, unknown>} */ options) {
+  parse(/** @type {typeof import('yaml')} */ { parseAllDocuments }, /** @type {string} */ code, /** @type {import('yaml').Options} */ options) {
     return parseAllDocuments(code, options);
   },
 
