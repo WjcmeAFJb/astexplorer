@@ -16,7 +16,10 @@ export default {
   locationProps: new Set(['span']),
 
   loadParser(callback: (realParser: typeof import('astexplorer-syn')) => void) {
-    require(['astexplorer-syn'], callback);
+    require(['astexplorer-syn'], async (syn: typeof import('astexplorer-syn')) => {
+      await syn.default();
+      callback(syn);
+    });
   },
 
   parse(this: LineOffsetsMixin, parser: typeof import('astexplorer-syn'), code: string) {
