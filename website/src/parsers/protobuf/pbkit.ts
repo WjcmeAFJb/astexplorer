@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'pbkit/package.json';
 
-/**
- * @typedef {{ parse(code: string): { ast: object } }} PbkitParser
- * @typedef {{ start: number, end: number, type?: string, statements?: object[], [key: string]: unknown }} PbkitNode
- */
+type PbkitParser = { parse(code: string): { ast: object } };
+type PbkitNode = { start: number, end: number, type?: string, statements?: object[], [key: string]: unknown };
 
 const ID = 'pbkit';
 
@@ -25,7 +23,7 @@ export default {
     return parser.parse(code).ast;
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {start?: number, end?: number, [key: string]: unknown}) {
     const { start, end } = node;
     return [start, end];
   },

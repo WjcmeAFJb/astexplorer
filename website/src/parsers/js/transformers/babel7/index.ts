@@ -11,15 +11,15 @@ export default {
 
   defaultParserID: 'babylon7',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, babel: {transformAsync: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}}) => void} */ callback) {
+  loadTransformer(callback: (realTransformer: {transpile: (code: string) => string, babel: {transformAsync: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}}) => void) {
     require([
       '../../../transpilers/babel',
       'babel7',
       'recast',
-    ], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transformAsync: (...args: unknown[]) => unknown}} */ babel, /** @type {{parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}} */ recast) => callback({ transpile: transpile.default, babel, recast }));
+    ], (transpile: {default: (code: string) => string}, babel: {transformAsync: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}) => callback({ transpile: transpile.default, babel, recast }));
   },
 
-  transform(/** @type {{transpile: (code: string) => string, babel: {transformAsync: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}}} */ { transpile, babel, recast }, transformCode: string, code: string) {
+  transform({ transpile, babel, recast }: {transpile: (code: string) => string, babel: {transformAsync: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}}, transformCode: string, code: string) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

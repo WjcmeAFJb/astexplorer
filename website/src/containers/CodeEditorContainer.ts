@@ -1,14 +1,12 @@
-/** @typedef {import('../types').AppState} AppState */
+
 
 import {connect} from 'react-redux';
 import {setCode, setCursor} from '../store/actions';
 import Editor from '../components/Editor';
 import {getCode, getParser, getParseResult, getKeyMap} from '../store/selectors';
+import type { AppState } from '../types';
 
-/**
- * @param {AppState} state
- */
-function mapStateToProps(state) {
+function mapStateToProps(state: AppState) {
   return {
     keyMap: getKeyMap(state),
     value: getCode(state),
@@ -17,12 +15,9 @@ function mapStateToProps(state) {
   };
 }
 
-/**
- * @param {import('redux').Dispatch} dispatch
- */
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: import('redux').Dispatch) {
   return {
-    onContentChange: (/** @type {{value: string, cursor: number}} */ {value, cursor}) => {
+    onContentChange: ({value, cursor}: {value: string, cursor: number}) => {
       dispatch(setCode({code: value, cursor}));
     },
     onActivity: (cursor: number) => dispatch(setCursor(cursor)),

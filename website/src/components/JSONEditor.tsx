@@ -7,17 +7,17 @@ import PropTypes from 'prop-types';
 import {subscribe, clear} from '../utils/pubsub';
 import React from 'react';
 
-/**
- * @typedef {Object} JSONEditorProps
- * @property {string} [value]
- * @property {string} [className]
- */
+type JSONEditorProps = {
+  value?: string;
+  className?: string;
+};
 
-/** @extends {React.Component<JSONEditorProps>} */
-export default class Editor extends React.Component {
+export default class Editor extends React.Component<JSONEditorProps> {
+  codeMirror: CodeMirror.Editor | null = null;
+  container: HTMLElement | null = null;
+  _subscriptions: Array<() => void> = [];
 
-  /** @param {JSONEditorProps} nextProps */
-  UNSAFE_componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps: JSONEditorProps) {
     if (nextProps.value !== this.codeMirror.getValue()) {
       // preserve scroll position
       let info = this.codeMirror.getScrollInfo();
@@ -31,8 +31,7 @@ export default class Editor extends React.Component {
   }
 
   componentDidMount() {
-    /** @type {Array<() => void>} */
-    this._subscriptions = [];
+        this._subscriptions = [];
     this.codeMirror = CodeMirror( // eslint-disable-line new-cap
       this.container,
       {

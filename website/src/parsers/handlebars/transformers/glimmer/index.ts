@@ -11,14 +11,14 @@ export default {
 
   defaultParserID: 'glimmer',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, glimmer: typeof import('@glimmer/syntax')}) => void} */ callback) {
+  loadTransformer(callback: (realTransformer: {transpile: (code: string) => string, glimmer: typeof import('@glimmer/syntax')}) => void) {
     require(
       ['../../../transpilers/babel', '@glimmer/syntax'],
-      (/** @type {{default: (code: string) => string}} */ transpile, glimmer: typeof import('@glimmer/syntax')) => callback({ transpile: transpile.default, glimmer }),
+      (transpile: {default: (code: string) => string}, glimmer: typeof import('@glimmer/syntax')) => callback({ transpile: transpile.default, glimmer }),
     );
   },
 
-  transform(/** @type {{transpile: (code: string) => string, glimmer: typeof import('@glimmer/syntax')}} */ { transpile, glimmer }, transformCode: string, code: string) {
+  transform({ transpile, glimmer }: {transpile: (code: string) => string, glimmer: typeof import('@glimmer/syntax')}, transformCode: string, code: string) {
     transformCode = transpile(transformCode);
     const transformModule = compileModule(transformCode);
 
@@ -29,7 +29,7 @@ export default {
 
     let ast = glimmer.preprocess(code, {
       plugins: {
-        ast: [/** @type {import('@glimmer/syntax').ASTPluginBuilder} */ (transform)],
+        ast: [(transform as import('@glimmer/syntax').ASTPluginBuilder)],
       },
     });
 

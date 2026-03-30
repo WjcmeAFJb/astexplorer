@@ -8,7 +8,7 @@ const sessionMethods = new Set();
 // https://github.com/facebook/jscodeshift#parser
 const getJscodeshiftParser = (parser: string, parserSettings: Record<string, unknown>) => {
   if (parser === 'typescript') {
-    if (parserSettings.typescript && /** @type {{jsx?: boolean}} */ (parserSettings.typescript).jsx === false) {
+    if (parserSettings.typescript && (parserSettings.typescript as {jsx?: boolean}).jsx === false) {
       return 'ts'
     }
     return 'tsx'
@@ -31,16 +31,15 @@ export default {
     'flow',
   ]),
 
-  formatCodeExample(codeExample: string, /** @type {{parser: string, parserSettings: Record<string, unknown>}} */ { parser, parserSettings }) {
+  formatCodeExample(codeExample: string, { parser, parserSettings }: {parser: string, parserSettings: Record<string, unknown>}) {
     return codeExample.replace('{{parser}}', `${getJscodeshiftParser(parser, parserSettings)}`)
   },
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, jscodeshift: import('jscodeshift').JSCodeshift}) => void} */ callback) {
-    require(['../../../transpilers/babel', 'jscodeshift'], (/** @type {{default: (code: string) => string}} */ transpile, jscodeshift: import('jscodeshift').JSCodeshift) => {
+  loadTransformer(callback: (realTransformer: {transpile: (code: string) => string, jscodeshift: import('jscodeshift').JSCodeshift}) => void) {
+    require(['../../../transpilers/babel', 'jscodeshift'], (transpile: {default: (code: string) => string}, jscodeshift: import('jscodeshift').JSCodeshift) => {
         const { registerMethods } = jscodeshift;
 
-        /** @type {Set<string> | undefined} */
-        let origMethods;
+                let origMethods: Set<string> | undefined;
 
         jscodeshift.registerMethods({
           hasOwnProperty(name: string) {
@@ -66,7 +65,7 @@ export default {
   },
 
   transform(
-    /** @type {{transpile: (code: string) => string, jscodeshift: import('jscodeshift').JSCodeshift}} */ { transpile, jscodeshift },
+    { transpile, jscodeshift }: {transpile: (code: string) => string, jscodeshift: import('jscodeshift').JSCodeshift},
     transformCode: string,
     code: string,
   ) {
@@ -79,7 +78,7 @@ export default {
       transformModule.default :
       transformModule;
 
-    const counter = /** @type {Record<string, number>} */ (Object.create(null));
+    const counter = (Object.create(null) as Record<string, number>);
     let statsWasCalled = false;
 
     const result = transform(
@@ -89,7 +88,7 @@ export default {
       },
       {
         jscodeshift: transformModule.parser ?
-          jscodeshift.withParser(/** @type {string} */ (transformModule.parser)) :
+          jscodeshift.withParser((transformModule.parser as string)) :
           jscodeshift,
         stats: (value: string, quantity=1) => {
           statsWasCalled = true;

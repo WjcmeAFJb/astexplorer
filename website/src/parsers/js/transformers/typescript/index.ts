@@ -13,14 +13,14 @@ export default {
 
   defaultParserID: 'typescript',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, ts: typeof import('typescript')}) => void} */ callback) {
+  loadTransformer(callback: (realTransformer: {transpile: (code: string) => string, ts: typeof import('typescript')}) => void) {
     require(['../../../transpilers/typescript', 'typescript'], (
-      /** @type {{default: (code: string) => string}} */ transpile,
+      transpile: {default: (code: string) => string},
       typescript: typeof import('typescript'),
     ) => callback({ transpile: transpile.default, ts: typescript }));
   },
 
-  transform(/** @type {{transpile: (code: string) => string, ts: typeof import('typescript')}} */ { transpile, ts }, transformCode: string, code: string) {
+  transform({ transpile, ts }: {transpile: (code: string) => string, ts: typeof import('typescript')}, transformCode: string, code: string) {
     // basic scaffolding to get a compiled javascript module from the user provided code
     transformCode = transpile(transformCode);
     const mod = compileModule(
@@ -50,11 +50,9 @@ export default {
           true,
         );
       },
-      /** @returns {undefined} */
-      readFile: () => undefined,
+      readFile: (): undefined => undefined,
       useCaseSensitiveFileNames: () => true,
-      /** @returns {undefined} */
-      writeFile: () => undefined,
+      writeFile: (): undefined => undefined,
     };
 
     // create the program with the provided file as entry point
@@ -63,11 +61,11 @@ export default {
       target: ts.ScriptTarget.Latest,
       experimentalDecorators: true,
       experimentalAsyncFunctions: true,
-      jsx: /** @type {import('typescript').JsxEmit} */ (/** @type {unknown} */ (true)),
+      jsx: ((true as unknown) as import('typescript').JsxEmit),
     }, host);
 
     // create the user provided transformer by invoking the factory
-    const transformerFactory = /** @type {import('typescript').TransformerFactory<import('typescript').SourceFile>} */ (createTransformer(program));
+    const transformerFactory = (createTransformer(program) as import('typescript').TransformerFactory<import('typescript').SourceFile>);
 
     // create a source file node from the file contents
     const sourceFile = program.getSourceFile(FILENAME)

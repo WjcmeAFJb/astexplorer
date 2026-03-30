@@ -18,11 +18,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range']),
 
-  loadParser(/** @type {(realParser: {parse: (pattern: string, flags: string, options: object) => object}) => void} */ callback) {
+  loadParser(callback: (realParser: {parse: (pattern: string, flags: string, options: object) => object}) => void) {
     require(['regjsparser'], callback);
   },
 
-  parse(/** @type {{parse: (pattern: string, flags: string, options: object) => object}} */ regjsparser, code: string, options: Record<string, unknown>) {
+  parse(regjsparser: {parse: (pattern: string, flags: string, options: object) => object}, code: string, options: Record<string, unknown>) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
@@ -36,7 +36,7 @@ export default {
     return regjsparser.parse(pattern, flags, options);
   },
 
-  nodeToRange(/** @type {{range?: [number, number], [key: string]: unknown}} */ node) {
+  nodeToRange(node: {range?: [number, number], [key: string]: unknown}) {
     if (node.range != null) {
       return [node.range[0] + 1, node.range[1] + 1];
     }

@@ -1,10 +1,6 @@
 import halts, {loopProtect} from 'halting-problem';
 
-/**
- * @param {string} jsCode
- * @returns {string}
- */
-export default function protect(jsCode) {
+export default function protect(jsCode: string): string {
   // assert that there are no obvious infinite loops
   halts(jsCode);
   // guard against non-obvious loops with a timeout of 5 seconds

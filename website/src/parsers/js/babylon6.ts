@@ -69,15 +69,15 @@ export default {
   locationProps: new Set(['loc', 'start', 'end']),
   showInMenu: false,
 
-  loadParser(/** @type {(realParser: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}) => void} */ callback) {
+  loadParser(callback: (realParser: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}) => void) {
     require(['babylon6'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ babylon, code: string, options: Record<string, unknown>) {
+  parse(babylon: {parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}, code: string, options: Record<string, unknown>) {
     return babylon.parse(code, options);
   },
 
-  getNodeName(/** @type {{type?: string | {label: string}, [key: string]: unknown}} */ node) {
+  getNodeName(node: {type?: string | {label: string}, [key: string]: unknown}) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -86,7 +86,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {start?: number, end?: number, [key: string]: unknown}) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

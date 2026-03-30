@@ -5,11 +5,7 @@ import visualizations from './visualization';
 
 const {useState} = React;
 
-/**
- * @param {number | null} time
- * @returns {string | null}
- */
-function formatTime(time) {
+function formatTime(time: number | null): string | null {
   if (!time) {
     return null;
   }
@@ -19,13 +15,7 @@ function formatTime(time) {
   return `${(time / 1000).toFixed(2)}s`;
 }
 
-/**
- * @param {Object} props
- * @param {Partial<import('../types').ParseResult>} [props.parseResult]
- * @param {number | null} [props.position]
- * @returns {React.ReactElement}
- */
-export default function ASTOutput({parseResult={}, position=null}) {
+export default function ASTOutput({parseResult={}, position=null}: any): React.ReactElement {
   const [selectedOutput, setSelectedOutput] = useState(0);
   const {ast=null} = parseResult;
   let output;
@@ -58,7 +48,7 @@ export default function ASTOutput({parseResult={}, position=null}) {
         key={index}
         value={index}
         // @ts-expect-error — value is string from DOM, compared with == (loose); state is number
-        onClick={event => setSelectedOutput(/** @type {HTMLButtonElement} */ (event.target).value)}
+        onClick={event => setSelectedOutput((event.target as HTMLButtonElement).value)}
         className={cx({
           active: selectedOutput == index,
         })}>
@@ -84,10 +74,8 @@ ASTOutput.propTypes = {
   position: PropTypes.number,
 };
 
-/** @extends {React.Component<{children: React.ReactNode}, {hasError: boolean}>} */
-class ErrorBoundary extends React.Component {
-  /** @param {{children: React.ReactNode}} props */
-  constructor(props) {
+class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
+  constructor(props: {children: React.ReactNode}) {
     super(props);
     this.state = { hasError: false };
   }

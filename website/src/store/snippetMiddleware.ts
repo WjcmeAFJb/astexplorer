@@ -1,18 +1,18 @@
-/** @typedef {import('../types').Action} Action */
-/** @typedef {import('../types').AppState} AppState */
+
 
 import * as selectors from './selectors';
 import * as actions from './actions';
+import type { AppState } from '../types';
+import type { Action } from '../types';
 
 let clearURLOnClearError = false;
-/** @type {() => void} */
-let cancelLoad = () => {}
+let cancelLoad: () => void = () => {}
 
 /**
  * @param {import('../storage/index').default} storageAdapter
  * @returns {(store: import('redux').MiddlewareAPI<import('redux').Dispatch, AppState>) => (next: import('redux').Dispatch) => (action: Action) => unknown}
  */
-export default storageAdapter => store => next => action => {
+export default (storageAdapter: any) => (store: any) => (next: any) => (action: any) => {
   switch (action.type) {
     case actions.CLEAR_ERROR:
       // If CLEAR_ERROR action happens after a URL was loaded, clear the URL
@@ -34,13 +34,7 @@ export default storageAdapter => store => next => action => {
   }
 }
 
-/**
- * @param {AppState} state
- * @param {import('redux').Dispatch} next
- * @param {import('../storage/index').default} storageAdapter
- * @returns {Promise<void>}
- */
-async function loadSnippet(state, next, storageAdapter) {
+async function loadSnippet(state: AppState, next: import('redux').Dispatch, storageAdapter: import('../storage/index').default): Promise<void> {
   // Ignore changes to the URL while a snippet is being saved (that process will
   // update the URL.
   if (selectors.isSaving(state) || selectors.isForking(state)) {
@@ -68,7 +62,7 @@ async function loadSnippet(state, next, storageAdapter) {
       }
     }
   } catch(error) {
-    const errorMessage = 'Failed to fetch revision: ' + /** @type {Error} */ (error).message;
+    const errorMessage = 'Failed to fetch revision: ' + (error as Error).message;
 
     clearURLOnClearError = true;
     next(actions.setError(new Error(errorMessage)));
@@ -77,14 +71,7 @@ async function loadSnippet(state, next, storageAdapter) {
   }
 }
 
-/**
- * @param {Action} action
- * @param {AppState} state
- * @param {import('redux').Dispatch} next
- * @param {import('../storage/index').default} storageAdapter
- * @returns {Promise<void>}
- */
-async function saveSnippet({fork}, state, next, storageAdapter) {
+async function saveSnippet({fork}: Action, state: AppState, next: import('redux').Dispatch, storageAdapter: import('../storage/index').default): Promise<void> {
   const revision = selectors.getRevision(state);
   const parser = selectors.getParser(state);
   const parserSettings = selectors.getParserSettings(state);
@@ -93,8 +80,7 @@ async function saveSnippet({fork}, state, next, storageAdapter) {
   const transformer = selectors.getTransformer(state);
   const showTransformPanel = selectors.showTransformer(state);
 
-  /** @type {import('../types').SnippetData} */
-  const data = {
+    const data: import('../types').SnippetData = {
     parserID: parser.id,
     settings: {
       [parser.id]: parserSettings,
@@ -111,7 +97,6 @@ async function saveSnippet({fork}, state, next, storageAdapter) {
     data.transform = transformCode;
   }
 
-
   try {
     let newRevision;
     if (fork) {
@@ -125,6 +110,6 @@ async function saveSnippet({fork}, state, next, storageAdapter) {
       storageAdapter.updateHash(newRevision);
     }
   } catch (error) {
-    next(actions.setError(/** @type {Error} */ (error)));
+    next(actions.setError((error as Error)));
   }
 }

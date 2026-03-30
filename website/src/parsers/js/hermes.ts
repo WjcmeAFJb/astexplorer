@@ -1,4 +1,4 @@
-/** @typedef {{type: string, start?: number, end?: number, range?: [number, number], loc?: {start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}} ESTreeNode */
+type ESTreeNode = {type: string, start?: number, end?: number, range?: [number, number], loc?: {start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown};
 
 import defaultParserInterface from './utils/defaultESTreeParserInterface';
 // NOTE: We load the hermes-parser package in a worker and not directly, because

@@ -11,20 +11,7 @@ function resize() {
   publish('PANEL_RESIZE');
 }
 
-/**
- * @param {Object} props
- * @param {string} [props.defaultTransformCode]
- * @param {string} [props.transformCode]
- * @param {import('../types').Transformer} props.transformer
- * @param {string} [props.mode]
- * @param {string} [props.keyMap]
- * @param {(args: {value: string, cursor: number}) => void} [props.onContentChange]
- * @param {() => void} [props.toggleFormatting]
- * @param {boolean} [props.enableFormatting]
- * @param {import('../types').TransformResult} [props.transformResult]
- * @returns {React.ReactElement}
- */
-export default function Transformer(props) {
+export default function Transformer(props?: any): React.ReactElement {
   const plainEditor = React.createElement(
     props.transformer.id === 'jscodeshift' ? JSCodeshiftEditor : Editor,
     {

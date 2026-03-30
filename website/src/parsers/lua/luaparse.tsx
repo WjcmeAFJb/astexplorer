@@ -2,9 +2,7 @@ import React from 'react';
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'luaparse/package.json';
 
-/**
- * @typedef {typeof import('luaparse')} LuaparseParser
- */
+type LuaparseParser = typeof import('luaparse');
 
 const ID = 'luaparse';
 

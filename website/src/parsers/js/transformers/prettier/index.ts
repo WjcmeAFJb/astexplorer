@@ -12,14 +12,14 @@ export default {
 
   defaultParserID: 'babylon7',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, prettier: typeof import('prettier'), babel: import('prettier').Plugin}) => void} */ callback) {
+  loadTransformer(callback: (realTransformer: {transpile: (code: string) => string, prettier: typeof import('prettier'), babel: import('prettier').Plugin}) => void) {
     require(
       ['../../../transpilers/babel', 'prettier/standalone', 'prettier/parser-babel'],
-      (/** @type {{default: (code: string) => string}} */ transpile, prettier: typeof import('prettier'), babel: import('prettier').Plugin) => callback({ transpile: transpile.default, prettier, babel }),
+      (transpile: {default: (code: string) => string}, prettier: typeof import('prettier'), babel: import('prettier').Plugin) => callback({ transpile: transpile.default, prettier, babel }),
     );
   },
 
-  transform(/** @type {{transpile: (code: string) => string, prettier: typeof import('prettier'), babel: import('prettier').Plugin}} */ { transpile, prettier, babel }, transformCode: string, code: string) {
+  transform({ transpile, prettier, babel }: {transpile: (code: string) => string, prettier: typeof import('prettier'), babel: import('prettier').Plugin}, transformCode: string, code: string) {
     transformCode = transpile(transformCode);
     const options = compileModule(transformCode);
     return prettier.format(

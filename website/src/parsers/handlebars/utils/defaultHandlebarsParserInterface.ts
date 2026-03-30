@@ -1,10 +1,8 @@
 import defaultParserInterface from '../../utils/defaultParserInterface';
 
-/**
- * @typedef {Object} LineOffsetsMixin
- * @property {number[]} lineOffsets
- * @property {(pos: {line: number, column: number}) => number} getOffset
- */
+type LineOffsetsMixin = {
+  lineOffsets: number[];
+};
 
 export default {
   ...defaultParserInterface,
@@ -22,12 +20,12 @@ export default {
   },
 
   /** @this {LineOffsetsMixin} */
-  getOffset(/** @type {{line: number, column: number}} */ { line, column }) {
+  getOffset({ line, column }: {line: number, column: number}) {
     return this.lineOffsets[line - 1] + column;
   },
 
   /** @this {LineOffsetsMixin} */
-  nodeToRange(/** @type {{loc?: {toJSON?: () => {start: {line: number, column: number}, end: {line: number, column: number}}, start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}} */ { loc }) {
+  nodeToRange({ loc }: {loc?: {toJSON?: () => {start: {line: number, column: number}, end: {line: number, column: number}}, start: {line: number, column: number}, end: {line: number, column: number}}, [key: string]: unknown}) {
     if (!loc) return;
     const serializedLoc = 'toJSON' in loc ? loc.toJSON() : loc;
     return [serializedLoc.start, serializedLoc.end].map(pos => this.getOffset(pos));

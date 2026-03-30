@@ -3,10 +3,7 @@ import Transformer from '../components/Transformer';
 import {setTransformState, toggleFormatting} from '../store/actions';
 import * as selectors from '../store/selectors';
 
-/**
- * @param {import('../types').AppState} state
- */
-function mapStateToProps(state) {
+function mapStateToProps(state: import('../types').AppState) {
   return {
     transformer: selectors.getTransformer(state),
     // Either the transform example or the transform code from the current
@@ -23,12 +20,9 @@ function mapStateToProps(state) {
   };
 }
 
-/**
- * @param {import('redux').Dispatch} dispatch
- */
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: import('redux').Dispatch) {
   return {
-    onContentChange: (/** @type {{value: string, cursor: number}} */ {value, cursor}) => {
+    onContentChange: ({value, cursor}: {value: string, cursor: number}) => {
       dispatch(setTransformState({code: value, cursor}));
     },
     toggleFormatting: () => {

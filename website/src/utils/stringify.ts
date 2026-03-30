@@ -1,9 +1,8 @@
 /**
+
  * Converts a JS value to a sensible string representation.
- * @param {unknown} value
- * @returns {string}
  */
-export default function stringify(value) {
+export default function stringify(value: unknown): string {
   switch (typeof value) {
     case 'function':
       return value.toString().match(/function[^(]*\([^)]*\)/)[0];

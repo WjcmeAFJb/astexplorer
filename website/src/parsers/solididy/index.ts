@@ -2,5 +2,5 @@ import 'codemirror/mode/javascript/javascript';
 
 export const id = 'solididy';
 export const displayName = 'Solidity';
-export const /** @type {string[]} */ mimeTypes = [];
+export const mimeTypes: string[] = [];
 export const fileExtension = 'sol';

@@ -1,20 +1,16 @@
 import defaultParserInterface from '../../utils/defaultParserInterface';
 
-/**
- * @typedef {Object} LineOffsetsMixin
- * @property {number[]} lineOffsets
- * @property {(pos: {line: number, column: number}) => number} getOffset
- */
+type LineOffsetsMixin = {
+  lineOffsets: number[];
+};
 
-/**
- * @typedef {{line: number, column: number}} CSSPosition
- */
+type CSSPosition = {line: number, column: number};
 
 export default {
   ...defaultParserInterface,
 
   /** @this {LineOffsetsMixin} */
-  getOffset(/** @type {CSSPosition} */ { line, column }) {
+  getOffset({ line, column }: CSSPosition) {
     return this.lineOffsets[line - 1] + column - 1;
   },
 

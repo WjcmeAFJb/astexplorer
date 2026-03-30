@@ -51,7 +51,7 @@ export default {
           title: 'ecmaFeatures',
           fields: Object.keys(defaultOptions.ecmaFeatures),
           settings:
-          (settings: Record<string, unknown>) => settings.ecmaFeatures || {.../** @type {Record<string, unknown>} */ (defaultOptions.ecmaFeatures)},
+          (settings: Record<string, unknown>) => settings.ecmaFeatures || {...(defaultOptions.ecmaFeatures as Record<string, unknown>)},
         },
       ],
       required: new Set(['range']),

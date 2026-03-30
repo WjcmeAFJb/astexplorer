@@ -24,7 +24,7 @@ export default {
     return node.type;
   },
 
-  nodeToRange(/** @type {{range?: [number, number], [key: string]: unknown}} */ node) {
+  nodeToRange(node: {range?: [number, number], [key: string]: unknown}) {
     return node.range;
   },
 

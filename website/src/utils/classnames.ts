@@ -1,8 +1,4 @@
-/**
- * @param  {...(string | Record<string, boolean>)} configs
- * @returns {string}
- */
-export default function cx(...configs) {
+export default function cx(...configs: (string | Record<string, boolean>)[]): string {
   return configs.map(
     config => typeof config === 'string' ?
       config :

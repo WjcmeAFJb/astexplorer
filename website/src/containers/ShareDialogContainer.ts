@@ -3,20 +3,14 @@ import {closeShareDialog} from '../store/actions';
 import {showShareDialog, getRevision} from '../store/selectors';
 import ShareDialog from '../components/dialogs/ShareDialog';
 
-/**
- * @param {import('../types').AppState} state
- */
-function mapStateToProps(state) {
+function mapStateToProps(state: import('../types').AppState) {
   return {
     visible: showShareDialog(state),
     snippet: getRevision(state),
   };
 }
 
-/**
- * @param {import('redux').Dispatch} dispatch
- */
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: import('redux').Dispatch) {
   return {
     onWantToClose: () => dispatch(closeShareDialog()),
   };

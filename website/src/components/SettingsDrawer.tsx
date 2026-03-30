@@ -1,17 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-/**
- * @typedef {Object} SettingsDrawerProps
- * @property {() => void} [onWantToExpand]
- * @property {() => void} [onWantToCollapse]
- * @property {boolean} [isOpen]
- */
+type SettingsDrawerProps = {
+  onWantToExpand?: () => void;
+  onWantToCollapse?: () => void;
+  isOpen?: boolean;
+};
 
-/** @extends {React.Component<SettingsDrawerProps>} */
-export default class SettingsDrawer extends React.Component {
-  /** @param {SettingsDrawerProps} props */
-  constructor(props) {
+export default class SettingsDrawer extends React.Component<SettingsDrawerProps> {
+    constructor(props: SettingsDrawerProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._expand = this._expand.bind(this);

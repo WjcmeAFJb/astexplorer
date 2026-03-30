@@ -8,8 +8,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {getRevision} from '../store/selectors';
 
-/** @type {React.CSSProperties} */
-const buttonStyle = {
+const buttonStyle: React.CSSProperties = {
   backgroundColor: 'transparent',
   border: 'none',
   cursor: 'pointer',
@@ -20,15 +19,12 @@ const buttonStyle = {
   paddingRight: 10,
 };
 
-/**
- * @typedef {Object} GistBannerProps
- * @property {import('../types').Revision | null} [revision]
- */
+type GistBannerProps = {
+  revision?: import('../types').Revision | null;
+};
 
-/** @extends {React.Component<GistBannerProps, {visible: boolean}>} */
-class GistBanner extends React.Component {
-  /** @param {GistBannerProps} props */
-  constructor(props) {
+class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
+    constructor(props: GistBannerProps) {
     super(props);
     this.state = {
       visible: true,
@@ -37,8 +33,7 @@ class GistBanner extends React.Component {
     this._hide = this._hide.bind(this);
   }
 
-  /** @param {GistBannerProps} newProps */
-  UNSAFE_componentWillReceiveProps(newProps) {
+    UNSAFE_componentWillReceiveProps(newProps: GistBannerProps) {
     const newRevision = newProps.revision;
     const oldRevision = this.props.revision;
     if (newRevision &&
@@ -76,4 +71,4 @@ GistBanner.propTypes = {
   revision: PropTypes.object,
 }
 
-export default connect(/** @param {import('../types').AppState} state */ state => ({revision: getRevision(state)}))(GistBanner);
+export default connect((state: import('../types').AppState) => ({revision: getRevision(state)}))(GistBanner);

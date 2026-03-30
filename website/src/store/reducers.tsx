@@ -1,18 +1,18 @@
-/** @typedef {import('../types').AppState} AppState */
-/** @typedef {import('../types').WorkbenchState} WorkbenchState */
-/** @typedef {import('../types').TransformState} TransformState */
-/** @typedef {import('../types').Action} Action */
-/** @typedef {import('../types').Transformer} Transformer */
-/** @typedef {import('../types').Category} Category */
-/** @typedef {import('../types').Revision} Revision */
+
 
 import * as actions from './actions';
 import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from '../parsers';
+import type { Revision } from '../types';
+import type { Category } from '../types';
+import type { Transformer } from '../types';
+import type { Action } from '../types';
+import type { TransformState } from '../types';
+import type { WorkbenchState } from '../types';
+import type { AppState } from '../types';
 
 const defaultParser = getDefaultParser(getCategoryByID('javascript'));
 
-/** @type {AppState} */
-const initialState = {
+const initialState: AppState = {
 
   // UI related state
   showSettingsDialog: false,
@@ -56,11 +56,10 @@ const initialState = {
 };
 
 /**
+
  * Returns the subset of the data that makes sense to persist between visits.
- * @param {AppState} state
- * @returns {{showTransformPanel?: boolean, parserSettings?: Record<string, Record<string, unknown>>, parserPerCategory?: Record<string, string>, workbench: {parser?: string, code?: string, keyMap?: string, transform: {code?: string, transformer?: string | null}}}}
  */
-export function persist(state) {
+export function persist(state: AppState): {showTransformPanel?: boolean, parserSettings?: Record<string, Record<string, unknown>>, parserPerCategory?: Record<string, string>, workbench: {parser?: string, code?: string, keyMap?: string, transform: {code?: string, transformer?: string | null}}} {
   return {
     ...pick(state, 'showTransformPanel', 'parserSettings', 'parserPerCategory'),
     workbench: {
@@ -71,12 +70,11 @@ export function persist(state) {
 }
 
 /**
+
  * When read from persistent storage, set the last stored code as initial version.
  * This is necessary because we use CodeMirror as an uncontrolled component.
- * @param {AppState} state
- * @returns {AppState}
  */
-export function revive(state=initialState) {
+export function revive(state: AppState =initialState): AppState {
   return {
     ...state,
     workbench: {
@@ -91,12 +89,7 @@ export function revive(state=initialState) {
   };
 }
 
-/**
- * @param {AppState} state
- * @param {Action} action
- * @returns {AppState}
- */
-export function astexplorer(state=initialState, action) {
+export function astexplorer(state: AppState =initialState, action: Action): AppState {
   return {
     // UI related state
     showSettingsDialog: showSettingsDialog(state.showSettingsDialog, action),
@@ -121,22 +114,12 @@ export function astexplorer(state=initialState, action) {
   };
 }
 
-/**
- * @param {boolean} state
- * @param {Action} action
- * @returns {boolean}
- */
-function format(state=initialState.enableFormatting, action) {
+function format(state: boolean =initialState.enableFormatting, action: Action): boolean {
   if (action.type === actions.TOGGLE_FORMATTING) return !state;
   return state;
 }
 
-/**
- * @param {Transformer} transformer
- * @param {WorkbenchState} workbenchState
- * @returns {string}
- */
-function getDefaultTransform(transformer, workbenchState) {
+function getDefaultTransform(transformer: Transformer, workbenchState: WorkbenchState): string {
   if (typeof transformer.formatCodeExample === 'function') {
     return transformer.formatCodeExample(
       transformer.defaultTransform,
@@ -149,18 +132,8 @@ function getDefaultTransform(transformer, workbenchState) {
   return transformer.defaultTransform
 }
 
-/**
- * @param {WorkbenchState} state
- * @param {Action} action
- * @param {AppState} fullState
- * @returns {WorkbenchState}
- */
-function workbench(state=initialState.workbench, action, fullState) {
-  /**
-   * @param {Category} category
-   * @returns {Partial<WorkbenchState>}
-   */
-  function parserFromCategory(category) {
+function workbench(state: WorkbenchState =initialState.workbench, action: Action, fullState: AppState): WorkbenchState {
+    function parserFromCategory(category: Category): Partial<WorkbenchState> {
     const parser = fullState.parserPerCategory[category.id] ||
       getDefaultParser(category).id;
     return {
@@ -314,13 +287,7 @@ function workbench(state=initialState.workbench, action, fullState) {
   }
 }
 
-/**
- * @param {Record<string, Record<string, unknown>>} state
- * @param {Action} action
- * @param {AppState} fullState
- * @returns {Record<string, Record<string, unknown>>}
- */
-function parserSettings(state=initialState.parserSettings, action, fullState) {
+function parserSettings(state: Record<string, Record<string, unknown>> =initialState.parserSettings, action: Action, fullState: AppState): Record<string, Record<string, unknown>> {
   switch (action.type) {
     case actions.SET_PARSER_SETTINGS:
       if (fullState.activeRevision) {
@@ -337,12 +304,7 @@ function parserSettings(state=initialState.parserSettings, action, fullState) {
   }
 }
 
-/**
- * @param {Record<string, string>} state
- * @param {Action} action
- * @returns {Record<string, string>}
- */
-function parserPerCategory(state=initialState.parserPerCategory, action) {
+function parserPerCategory(state: Record<string, string> =initialState.parserPerCategory, action: Action): Record<string, string> {
   switch (action.type) {
     case actions.SET_PARSER:
       return {...state, [action.parser.category.id]: action.parser.id};
@@ -351,12 +313,7 @@ function parserPerCategory(state=initialState.parserPerCategory, action) {
   }
 }
 
-/**
- * @param {boolean} state
- * @param {Action} action
- * @returns {boolean}
- */
-function showSettingsDialog(state=initialState.showSettingsDialog, action) {
+function showSettingsDialog(state: boolean =initialState.showSettingsDialog, action: Action): boolean {
   switch(action.type) {
     case actions.OPEN_SETTINGS_DIALOG:
       return true;
@@ -367,12 +324,7 @@ function showSettingsDialog(state=initialState.showSettingsDialog, action) {
   }
 }
 
-/**
- * @param {boolean} state
- * @param {Action} action
- * @returns {boolean}
- */
-function showSettingsDrawer(state=initialState.showSettingsDrawer, action) {
+function showSettingsDrawer(state: boolean =initialState.showSettingsDrawer, action: Action): boolean {
   switch(action.type) {
     case actions.EXPAND_SETTINGS_DRAWER:
       return true;
@@ -383,12 +335,7 @@ function showSettingsDrawer(state=initialState.showSettingsDrawer, action) {
   }
 }
 
-/**
- * @param {boolean} state
- * @param {Action} action
- * @returns {boolean}
- */
-function showShareDialog(state=initialState.showShareDialog, action) {
+function showShareDialog(state: boolean =initialState.showShareDialog, action: Action): boolean {
   switch(action.type) {
     case actions.OPEN_SHARE_DIALOG:
       return true;
@@ -399,12 +346,7 @@ function showShareDialog(state=initialState.showShareDialog, action) {
   }
 }
 
-/**
- * @param {boolean} state
- * @param {Action} action
- * @returns {boolean}
- */
-function loadSnippet(state=initialState.loadingSnippet, action) {
+function loadSnippet(state: boolean =initialState.loadingSnippet, action: Action): boolean {
   switch(action.type) {
     case actions.START_LOADING_SNIPPET:
       return true;
@@ -415,12 +357,7 @@ function loadSnippet(state=initialState.loadingSnippet, action) {
   }
 }
 
-/**
- * @param {boolean} state
- * @param {Action} action
- * @returns {boolean}
- */
-function saving(state=initialState.saving, action) {
+function saving(state: boolean =initialState.saving, action: Action): boolean {
   switch(action.type) {
     case actions.START_SAVE:
       return !action.fork;
@@ -431,12 +368,7 @@ function saving(state=initialState.saving, action) {
   }
 }
 
-/**
- * @param {boolean} state
- * @param {Action} action
- * @returns {boolean}
- */
-function forking(state=initialState.forking, action) {
+function forking(state: boolean =initialState.forking, action: Action): boolean {
   switch(action.type) {
     case actions.START_SAVE:
       return action.fork;
@@ -447,12 +379,7 @@ function forking(state=initialState.forking, action) {
   }
 }
 
-/**
- * @param {number | null} state
- * @param {Action} action
- * @returns {number | null}
- */
-function cursor(state=initialState.cursor, action) {
+function cursor(state: number | null =initialState.cursor, action: Action): number | null {
   switch(action.type) {
     case actions.SET_CURSOR:
       return action.cursor;
@@ -472,12 +399,7 @@ function cursor(state=initialState.cursor, action) {
   }
 }
 
-/**
- * @param {Error | null} state
- * @param {Action} action
- * @returns {Error | null}
- */
-function error(state=initialState.error, action) {
+function error(state: Error | null =initialState.error, action: Action): Error | null {
   switch (action.type) {
     case actions.SET_ERROR:
       return action.error;
@@ -488,12 +410,7 @@ function error(state=initialState.error, action) {
   }
 }
 
-/**
- * @param {boolean} state
- * @param {Action} action
- * @returns {boolean}
- */
-function showTransformPanel(state=initialState.showTransformPanel, action) {
+function showTransformPanel(state: boolean =initialState.showTransformPanel, action: Action): boolean {
   switch (action.type) {
     case actions.SELECT_TRANSFORMER:
       return true;
@@ -508,12 +425,7 @@ function showTransformPanel(state=initialState.showTransformPanel, action) {
   }
 }
 
-/**
- * @param {Revision | null} state
- * @param {Action} action
- * @returns {Revision | null}
- */
-function activeRevision(state=initialState.selectedRevision, action) {
+function activeRevision(state: Revision | null =initialState.selectedRevision, action: Action): Revision | null {
   switch (action.type) {
     case actions.SET_SNIPPET:
       return action.revision;
@@ -526,15 +438,9 @@ function activeRevision(state=initialState.selectedRevision, action) {
   }
 }
 
-/**
- * @template {Record<string, unknown>} T
- * @param {T} obj
- * @param  {...string} properties
- * @returns {Partial<T>}
- */
-function pick(obj, ...properties) {
-  return /** @type {Partial<T>} */ (properties.reduce(
+function pick<T extends Record<string, unknown>>(obj: T, ...properties: string[]): Partial<T> {
+  return (properties.reduce(
     (result: Record<string, unknown>, prop: string) => (result[prop] = obj[prop], result),
-    /** @type {Record<string, unknown>} */ ({}),
-  ));
+    ({} as Record<string, unknown>),
+  ) as Partial<T>);
 }

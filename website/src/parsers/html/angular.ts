@@ -1,8 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from '@angular/compiler/package.json';
 
-/** @typedef {{startSourceSpan?: {start: {offset: number}, end: {offset: number}}, endSourceSpan?: {start: {offset: number}, end: {offset: number}}, sourceSpan?: {start: {offset: number}, end: {offset: number}}, span?: {start: number, end: number}, name?: string, constructor?: {name: string}, [key: string]: unknown}} AngularNode */
-/** @typedef {typeof import('@angular/compiler')} AngularCompiler */
+type AngularNode = {startSourceSpan?: {start: {offset: number}, end: {offset: number}}, endSourceSpan?: {start: {offset: number}, end: {offset: number}}, sourceSpan?: {start: {offset: number}, end: {offset: number}}, span?: {start: number, end: number}, name?: string, constructor?: {name: string}, [key: string]: unknown};
+type AngularCompiler = typeof import('@angular/compiler');
 
 const ID = 'angular';
 
@@ -88,9 +88,9 @@ function getNodeCtor(node: AngularNode) {
 function fixSpan(ast: import('@angular/compiler').ParsedTemplate, code: string) {
   const fixed = new Set();
   const KEEP_VISIT = 1;
-  function visitTarget(value: unknown, isTarget: (v: unknown) => boolean, fn: (node: Record<string, unknown>, parent: unknown) => number | void, parent: unknown) {
+  function visitTarget(value: unknown, isTarget: (v: unknown) => boolean, fn: (node: Record<string, unknown>, parent: unknown) => number | void, parent?: unknown) {
     if (value !== null && typeof value === 'object') {
-      const obj = /** @type {Record<string, unknown>} */ (value);
+      const obj = (value as Record<string, unknown>);
       if (isTarget(obj)) {
         if (fn(obj, parent) !== KEEP_VISIT) {
           return;
@@ -137,15 +137,15 @@ function fixSpan(ast: import('@angular/compiler').ParsedTemplate, code: string) 
 
   visitTarget(
     ast,
-    (value: unknown) => getNodeCtor(/** @type {AngularNode} */ (value)) === 'ASTWithSource',
+    (value: unknown) => getNodeCtor((value as AngularNode)) === 'ASTWithSource',
     (node: Record<string, unknown>, parent: unknown) => {
-      const baseStart = getBaseStart(/** @type {AngularNode} */ (parent));
+      const baseStart = getBaseStart((parent as AngularNode));
       visitTarget(
         node,
-        (value: unknown) => /** @type {Record<string, unknown>} */ (value).span != null,
+        (value: unknown) => (value as Record<string, unknown>).span != null,
         (node: Record<string, unknown>) => {
           if (!fixed.has(node)) {
-            const span = /** @type {{start: number, end: number}} */ (node.span);
+            const span = (node.span as {start: number, end: number});
             span.start += baseStart;
             span.end += baseStart;
             fixed.add(node);

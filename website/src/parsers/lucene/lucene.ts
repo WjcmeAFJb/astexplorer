@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'lucene/package.json';
 
-/**
- * @typedef {typeof import('lucene')} LuceneModule
- * @typedef {{ location?: {start: import('lucene').TermLocation, end: import('lucene').TermLocation}, fieldLocation?: {start: import('lucene').TermLocation, end: import('lucene').TermLocation} | null, termLocation?: {start: import('lucene').TermLocation, end: import('lucene').TermLocation} }} LuceneNodeWithLocations
- */
+type LuceneModule = typeof import('lucene');
+type LuceneNodeWithLocations = { location?: {start: import('lucene').TermLocation, end: import('lucene').TermLocation}, fieldLocation?: {start: import('lucene').TermLocation, end: import('lucene').TermLocation} | null, termLocation?: {start: import('lucene').TermLocation, end: import('lucene').TermLocation} };
 
 const ID = 'lucene';
 
@@ -21,7 +19,7 @@ export default {
     require(['lucene'], callback);
   },
 
-  parse(/** @type {LuceneModule} */ {parse}, code: string) {
+  parse({parse}: LuceneModule, code: string) {
     return parse(code);
   },
 

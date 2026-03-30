@@ -1,17 +1,14 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'glsl-parser/package.json';
 
-/**
- * @typedef {{ tokenize: (code: string) => unknown[], parse: (tokens: unknown[]) => GlslNode }} GlslParserModule
- *
- * @typedef {{
- *   type?: string,
- *   token?: { position?: number, preceding?: Array<{data?: string, [k: string]: unknown}>, [k: string]: unknown },
- *   children?: GlslNode[],
- *   loc?: { start: number, end: number },
- *   [key: string]: unknown,
- * }} GlslNode
- */
+type GlslNode = {
+  type?: string;
+  token?: { position?: number; preceding?: Array<{data?: string, [k: string]: unknown}>; [k: string]: unknown };
+  children?: GlslNode[];
+  loc?: { start: number; end: number };
+  [key: string]: unknown;
+};
+type GlslParserModule = { tokenize: (code: string) => unknown[]; parse: (tokens: unknown[]) => GlslNode };
 
 const ID = 'glsl-parser';
 
@@ -38,7 +35,7 @@ export default {
     });
   },
 
-  parse(/** @type {GlslParserModule} */ { tokenize, parse }, code: string) {
+  parse({ tokenize, parse }: GlslParserModule, code: string) {
     const tokens = tokenize(code);
     const ast = parse(tokens);
     // the parser does not yet provide the "end" so this is a workaround https://github.com/stackgl/glsl-parser/issues/17
@@ -54,7 +51,7 @@ export default {
           nextSibling && nextSibling.token && 'position' in nextSibling.token
             ? nextSibling.token.position -
                 (nextSibling.token.preceding || [])
-                  .reduce((s: number, /** @type {{data?: string}} */ n) => s + (n.data || '').length, 0)
+                  .reduce((s: number, n: {data?: string}) => s + (n.data || '').length, 0)
             : end,
         );
       });
@@ -63,7 +60,7 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {GlslNode} */ { loc }) {
+  nodeToRange({ loc }: GlslNode) {
     if (loc) {
       return [loc.start, loc.end];
     }

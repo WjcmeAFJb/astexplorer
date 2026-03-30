@@ -8,10 +8,8 @@ import babylon7Parser, * as babylon7Settings from './babylon7';
 
 const ID = 'recast';
 
-/**
- * @typedef {{parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>, [key: string]: unknown}} RecastSubParser
- * @typedef {{recast: Pick<typeof import('recast'), 'parse'>, parsers: Record<string, RecastSubParser>}} RecastBundle
- */
+type RecastSubParser = {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>, [key: string]: unknown};
+type RecastBundle = {recast: Pick<typeof import('recast'), 'parse'>, parsers: Record<string, RecastSubParser>};
 
 export default {
   ...defaultParserInterface,
@@ -25,7 +23,7 @@ export default {
   loadParser(callback: (realParser: RecastBundle) => void) {
     require(
       ['recast', 'babel5', 'babylon6', 'babylon7', 'flow-parser', 'recast/parsers/typescript'],
-      (/** @type {{parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}} */ recast, babelCore: RecastSubParser, babylon6: RecastSubParser, babylon7: RecastSubParser, flow: RecastSubParser, typescript: RecastSubParser) => {
+      (recast: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}, babelCore: RecastSubParser, babylon6: RecastSubParser, babylon7: RecastSubParser, flow: RecastSubParser, typescript: RecastSubParser) => {
         callback({
           recast,
           parsers: {
@@ -40,11 +38,11 @@ export default {
     );
   },
 
-  parse(/** @type {RecastBundle} */ { recast, parsers }, code: string, options: Record<string, unknown>) {
+  parse({ recast, parsers }: RecastBundle, code: string, options: Record<string, unknown>) {
     options = {...options}; // a copy is needed since we are mutating options
-    const flowOptions = /** @type {Record<string, unknown>} */ (options.flow);
-    const babylon6Options = /** @type {Record<string, unknown>} */ (options.babylon6);
-    const babylon7Options = /** @type {Record<string, unknown>} */ (options.babylon7);
+    const flowOptions = (options.flow as Record<string, unknown>);
+    const babylon6Options = (options.babylon6 as Record<string, unknown>);
+    const babylon7Options = (options.babylon7 as Record<string, unknown>);
     delete options.flow;
     delete options.babylon6;
     delete options.babylon7;
@@ -67,7 +65,7 @@ export default {
       case 'babylon7':
         options.parser = {
           parse(code: string) {
-            return babylon7Parser.parse(/** @type {typeof import('babylon7')} */ (/** @type {unknown} */ (parsers.babylon7)), code, babylon7Options);
+            return babylon7Parser.parse(((parsers.babylon7 as unknown) as typeof import('babylon7')), code, babylon7Options);
           },
         };
         break;
@@ -104,7 +102,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, range?: [number, number], [key: string]: unknown}} */ node) {
+  nodeToRange(node: {start?: number, end?: number, range?: [number, number], [key: string]: unknown}) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }

@@ -1,24 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-/**
- * @typedef {Object} ShareDialogProps
- * @property {() => void} onWantToClose
- * @property {boolean} visible
- * @property {import('../../types').Revision} [snippet]
- */
+type ShareDialogProps = {
+  onWantToClose: () => void;
+  visible: boolean;
+  snippet?: import('../../types').Revision;
+};
 
-/** @extends {React.Component<ShareDialogProps>} */
-export default class ShareDialog extends React.Component {
-  /** @param {ShareDialogProps} props */
-  constructor(props) {
+export default class ShareDialog extends React.Component<ShareDialogProps> {
+    constructor(props: ShareDialogProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._outerClick = this._outerClick.bind(this);
   }
 
-  /** @param {React.MouseEvent<HTMLDivElement>} event */
-  _outerClick(event) {
+    _outerClick(event: React.MouseEvent<HTMLDivElement>) {
     if (event.target === document.getElementById('ShareDialog')) {
       this.props.onWantToClose();
     }

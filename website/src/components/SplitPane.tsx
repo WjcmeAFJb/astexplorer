@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import * as React from 'react';
 import cx from '../utils/classnames';
 
-/** @type {Record<string, string>} */
-const baseStyle = {
+const baseStyle: Record<string, string> = {
   flex: '1',
   display: 'flex',
 };
@@ -15,22 +14,17 @@ const styleB = {
 };
 
 /**
+
  * Creates a left-right split pane inside its container.
- * @param {Object} props
- * @param {boolean} [props.vertical]
- * @param {string} [props.className]
- * @param {React.ReactNode} [props.children]
- * @param {() => void} [props.onResize]
- * @returns {React.ReactElement}
  */
-export default function SplitPane({vertical, className, children, onResize}) {
+export default function SplitPane({vertical, className, children, onResize}: any): React.ReactElement {
   // Position is really the size (width or height) of the first (left or top)
   // panel, as percentage of the parent containers size. The remaining elements
   // are sized and layed out through flexbox.
   const [position, setPosition] = React.useState(50)
-  const container = React.useRef(/** @type {HTMLDivElement | null} */ (null))
+  const container = React.useRef((null as HTMLDivElement | null))
 
-  const onMouseDown = React.useCallback(/** @param {React.MouseEvent<HTMLDivElement>} event */ function(event) {
+  const onMouseDown = React.useCallback( function(event: React.MouseEvent<HTMLDivElement>) {
     if (!container.current) {
       return;
     }
@@ -41,7 +35,7 @@ export default function SplitPane({vertical, className, children, onResize}) {
     const offset = vertical ? container.current.offsetTop : container.current.offsetLeft;
     const size = vertical ? container.current.offsetHeight : container.current.offsetWidth;
     global.document.body.style.cursor = vertical ? 'row-resize' : 'col-resize';
-    let moveHandler = /** @param {MouseEvent} event */ event => {
+    let moveHandler = (event: MouseEvent) => {
       event.preventDefault();
       const newPosition = ((vertical ? event.pageY : event.pageX) - offset) / size * 100;
       // Using 99% as the max value prevents the divider from disappearing
@@ -63,7 +57,6 @@ export default function SplitPane({vertical, className, children, onResize}) {
 
   children = React.Children.toArray(children)
 
-  // @ts-expect-error — children was reassigned to ReactChild[] above which has .length; TS doesn't track reassignment narrowing on params
   if (children.length < 2) {
     return (
       <div className={className} style={{display: 'flex'}}>
@@ -73,7 +66,6 @@ export default function SplitPane({vertical, className, children, onResize}) {
   }
 
   const styleA = {...baseStyle};
-
 
   if (vertical) {
     // top
@@ -89,7 +81,6 @@ export default function SplitPane({vertical, className, children, onResize}) {
       className={className}
       style={{display: 'flex', flexDirection: vertical ? 'column' : 'row'}}>
       <div style={styleA}>
-        {/* @ts-expect-error — children reassigned to ReactChild[] via toArray; TS doesn't track reassignment */}
         {children[0]}
       </div>
       <div
@@ -101,7 +92,6 @@ export default function SplitPane({vertical, className, children, onResize}) {
         onMouseDown={onMouseDown}
       />
       <div style={styleB}>
-        {/* @ts-expect-error — children reassigned to ReactChild[] via toArray; TS doesn't track reassignment */}
         {children[1]}
       </div>
     </div>

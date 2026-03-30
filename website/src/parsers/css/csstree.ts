@@ -1,11 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'css-tree/package.json';
+import type { CssNodePlain as CSSTreeNode } from 'css-tree';
 
-/**
- * @typedef {typeof import('css-tree')} CSSTreeModule
- *
- * @typedef {import('css-tree').CssNodePlain} CSSTreeNode
- */
+type CSSTreeModule = typeof import('css-tree');
 
 const ID = 'csstree';
 
@@ -29,7 +26,7 @@ export default {
     }));
   },
 
-  nodeToRange(/** @type {CSSTreeNode} */ { loc }) {
+  nodeToRange({ loc }: CSSTreeNode) {
     if (loc && loc.start && loc.end) {
       return [loc.start.offset, loc.end.offset];
     }

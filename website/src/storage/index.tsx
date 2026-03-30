@@ -1,12 +1,11 @@
-/** @typedef {import('../types').StorageBackend} StorageBackend */
-/** @typedef {import('../types').Revision} Revision */
-/** @typedef {import('../types').SnippetData} SnippetData */
+import type { SnippetData } from '../types';
+import type { Revision } from '../types';
+import type { StorageBackend } from '../types';
 
 export default class StorageHandler {
-  /**
-   * @param {StorageBackend[]} backends
-   */
-  constructor(backends) {
+  _backends: StorageBackend[];
+
+    constructor(backends: StorageBackend[]) {
     this._backends = backends;
   }
 
@@ -17,11 +16,7 @@ export default class StorageHandler {
     return this._backends[0];
   }
 
-  /**
-   * @param {Revision} revision
-   * @returns {StorageBackend | null}
-   */
-  _owns(revision) {
+    _owns(revision: Revision): StorageBackend | null {
     for (const backend of this._backends) {
       if (backend.owns(revision)) {
         return backend;
@@ -30,11 +25,7 @@ export default class StorageHandler {
     return null;
   }
 
-  /**
-   * @param {Revision} revision
-   * @returns {void}
-   */
-  updateHash(revision) {
+    updateHash(revision: Revision): void {
     global.location.hash = revision.getPath();
   }
 
@@ -54,31 +45,26 @@ export default class StorageHandler {
   }
 
   /**
+
    * Create a new snippet.
-   * @param {SnippetData} data
-   * @returns {Promise<Revision>}
-   */
-  create(data) {
+ */
+  create(data: SnippetData): Promise<Revision> {
     return this._first().create(data);
   }
 
   /**
+
    * Update an existing snippet.
-   * @param {Revision} revision
-   * @param {SnippetData} data
-   * @returns {Promise<Revision>}
-   */
-  update(revision, data) {
+ */
+  update(revision: Revision, data: SnippetData): Promise<Revision> {
     return this._first().update(revision, data);
   }
 
   /**
+
    * Fork existing snippet.
-   * @param {Revision} revision
-   * @param {SnippetData} data
-   * @returns {Promise<Revision>}
-   */
-  fork(revision, data) {
+ */
+  fork(revision: Revision, data: SnippetData): Promise<Revision> {
     return this._first().fork(revision, data);
   }
 }

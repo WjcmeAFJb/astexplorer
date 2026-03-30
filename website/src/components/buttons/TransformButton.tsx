@@ -3,18 +3,15 @@ import React from 'react';
 import cx from '../../utils/classnames';
 import {getTransformerByID} from '../../parsers';
 
-/**
- * @typedef {Object} TransformButtonProps
- * @property {import('../../types').Category} [category]
- * @property {import('../../types').Transformer} [transformer]
- * @property {boolean} [showTransformer]
- * @property {(transformer: import('../../types').Transformer | null) => void} [onTransformChange]
- */
+type TransformButtonProps = {
+  category?: import('../../types').Category;
+  transformer?: import('../../types').Transformer;
+  showTransformer?: boolean;
+  onTransformChange?: (transformer: import('../../types').Transformer | null) => void;
+};
 
-/** @extends {React.Component<TransformButtonProps>} */
-export default class TransformButton extends React.Component {
-  /** @param {TransformButtonProps} props */
-  constructor(props) {
+export default class TransformButton extends React.Component<TransformButtonProps> {
+    constructor(props: TransformButtonProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._onClick = this._onClick.bind(this);
@@ -25,10 +22,10 @@ export default class TransformButton extends React.Component {
   // @ts-expect-error — target is EventTarget but used as HTMLElement; onClick always fires on HTML elements
   _onClick({target}) {
     let transformID;
-    if (/** @type {HTMLElement} */ (target).nodeName.toLowerCase() === 'li') {
-      transformID = /** @type {HTMLButtonElement} */ (/** @type {HTMLElement} */ (target).children[0]).value;
+    if ((target as HTMLElement).nodeName.toLowerCase() === 'li') {
+      transformID = ((target as HTMLElement).children[0] as HTMLButtonElement).value;
     } else {
-      transformID = /** @type {HTMLButtonElement} */ (target).value;
+      transformID = (target as HTMLButtonElement).value;
     }
     this.props.onTransformChange(getTransformerByID(transformID));
   }

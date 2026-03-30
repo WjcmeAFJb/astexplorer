@@ -1,15 +1,10 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'hyntax/package.json';
-import {
-  NODE_DOCTYPE,
-  NODE_TAG,
-  NODE_TEXT,
-  NODE_COMMENT,
-  NODE_SCRIPT,
-  NODE_STYLE,
-} from 'hyntax/lib-es5/constants/ast-nodes';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore — no declaration file for hyntax
+import { NODE_DOCTYPE, NODE_TAG, NODE_TEXT, NODE_COMMENT, NODE_SCRIPT, NODE_STYLE } from 'hyntax/lib-es5/constants/ast-nodes';
 
-/** @typedef {{nodeType?: string, content: {name?: string, value?: {startPosition: number, endPosition: number}, start?: {startPosition: number, endPosition: number}, end?: {startPosition: number, endPosition: number}, openStart?: {startPosition: number, endPosition: number}, openEnd?: {startPosition: number, endPosition: number}, close?: {startPosition: number, endPosition: number}}, [key: string]: unknown}} HyntaxNode */
+type HyntaxNode = {nodeType?: string, content: {name?: string, value?: {startPosition: number, endPosition: number}, start?: {startPosition: number, endPosition: number}, end?: {startPosition: number, endPosition: number}, openStart?: {startPosition: number, endPosition: number}, openEnd?: {startPosition: number, endPosition: number}, close?: {startPosition: number, endPosition: number}}, [key: string]: unknown};
 
 const ID = 'hyntax';
 
@@ -64,7 +59,7 @@ export default {
   homepage: pkg.homepage || 'https://github.com/nik-garmash/hyntax',
   locationProps: new Set(['startPosition', 'endPosition']),
 
-  loadParser (/** @type {(realParser: {tokenize: typeof import('hyntax').tokenize, constructTree: typeof import('hyntax').constructTree}) => void} */ callback) {
+  loadParser (callback: (realParser: {tokenize: typeof import('hyntax').tokenize, constructTree: typeof import('hyntax').constructTree}) => void) {
     require([
       'hyntax/lib-es5/tokenize',
       'hyntax/lib-es5/construct-tree',
@@ -73,7 +68,7 @@ export default {
     });
   },
 
-  parse (/** @type {{tokenize: typeof import('hyntax').tokenize, constructTree: typeof import('hyntax').constructTree}} */ { tokenize, constructTree }, code: string) {
+  parse ({ tokenize, constructTree }: {tokenize: typeof import('hyntax').tokenize, constructTree: typeof import('hyntax').constructTree}, code: string) {
     const { tokens } = tokenize(code);
     const { ast } = constructTree(tokens);
 

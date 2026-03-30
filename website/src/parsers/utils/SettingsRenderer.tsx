@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import type { SettingsConfiguration } from '../../types';
 
-/** @typedef {import('../../types').SettingsConfiguration} SettingsConfiguration */
-
-/** @type {(v: string) => string | number} */
-const identity = v => v;
+const identity: (v: string) => string | number = v => v;
 
 function valuesFromArray(settings: string[]) {
   return settings.reduce(
@@ -12,7 +10,7 @@ function valuesFromArray(settings: string[]) {
       (obj[name] = settings.indexOf(name) > -1),
       obj
     ),
-    /** @type {Record<string, unknown>} */ ({}),
+    ({} as Record<string, unknown>),
   );
 }
 
@@ -23,22 +21,20 @@ function getValuesFromSettings(settings: string[] | Record<string, unknown>) {
   return settings;
 }
 
-/** @typedef {(settings: Record<string, unknown>, name: string, value: unknown) => Record<string, unknown>} SettingsUpdater */
+type SettingsUpdater = (settings: Record<string, unknown>, name: string, value: unknown) => Record<string, unknown>;
 
-/** @type {SettingsUpdater} */
-function defaultUpdater(settings, name, value) {
+function defaultUpdater(settings: Record<string, unknown>, name: string, value: unknown) {
   return {...settings, [name]: value};
 }
 
-/** @type {SettingsUpdater} */
-function arrayUpdater(settings, name, value) {
-  let settingsSet = /** @type {Set<string>} */ (new Set(/** @type {Iterable<string>} */ (/** @type {unknown} */ (settings))));
+function arrayUpdater(settings: Record<string, unknown>, name: string, value: unknown) {
+  let settingsSet = (new Set(((settings as unknown) as Iterable<string>)) as Set<string>);
   if (value) {
     settingsSet.add(name);
   } else {
     settingsSet.delete(name);
   }
-  return /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (Array.from(settingsSet)));
+  return ((Array.from(settingsSet) as unknown) as Record<string, unknown>);
 }
 
 /** @returns {SettingsUpdater} */
@@ -49,14 +45,7 @@ function getUpdateStrategy(settings: string[] | Record<string, unknown>) {
   return defaultUpdater;
 }
 
-/**
- * @param {Object} props
- * @param {SettingsConfiguration} props.settingsConfiguration
- * @param {Record<string, unknown>} props.parserSettings
- * @param {(settings: Record<string, unknown>) => void} props.onChange
- * @returns {React.ReactElement}
- */
-export default function SettingsRenderer(props) {
+export default function SettingsRenderer(props: any): React.ReactElement {
   const {settingsConfiguration, parserSettings, onChange} = props;
   const {
     title,
@@ -71,7 +60,7 @@ export default function SettingsRenderer(props) {
     <div>
       {title ? <h4>{title}</h4> : null}
       <ul className="settings">
-        {fields.map(setting => {
+        {fields.map((setting: any) => {
           if (typeof setting === 'string') {
             return (
               <li key={setting}>
@@ -80,7 +69,7 @@ export default function SettingsRenderer(props) {
                     type="checkbox"
                     readOnly={required.has(setting)}
                     disabled={required.has(setting)}
-                    checked={/** @type {boolean} */ (values[setting])}
+                    checked={(values[setting] as boolean)}
                     onChange={
                       ({target}) => onChange(
                         update(parserSettings, setting, target.checked),
@@ -105,7 +94,7 @@ export default function SettingsRenderer(props) {
                         converter(target.value),
                       ))
                     }
-                    value={/** @type {string | number | readonly string[]} */ (values[fieldName])}>
+                    value={(values[fieldName] as string | number | readonly string[])}>
                     {Array.isArray(options) ?
                       options.map(o => <option key={o} value={o}>{o}</option>) :
                       Object.keys(options).map(
@@ -123,7 +112,7 @@ export default function SettingsRenderer(props) {
                 settingsConfiguration={setting}
                 parserSettings={setting.settings(parserSettings)}
                 onChange={
-                  settings => onChange(
+                  (settings: any) => onChange(
                     {...parserSettings, [setting.key]: settings},
                   )
                 }

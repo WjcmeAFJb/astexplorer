@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'intl-messageformat-parser/package.json';
+import type { MessageFormatElement as IntlMFNode } from 'intl-messageformat-parser';
 
-/**
- * @typedef {typeof import('intl-messageformat-parser')} IntlMFParserModule
- * @typedef {import('intl-messageformat-parser').MessageFormatElement & { location?: { start: { offset: number }, end: { offset: number } } }} IntlMFNode
- */
+type IntlMFParserModule = typeof import('intl-messageformat-parser');
 
 const ID = 'intl-messageformat-parser';
 const TYPES = {};
@@ -62,7 +60,7 @@ export default {
     return node.type != null && TYPES[node.type];
   },
 
-  nodeToRange(/** @type {{location?: {start: {offset: number}, end: {offset: number}}}} */ { location }) {
+  nodeToRange({ location }: {location?: {start: {offset: number}, end: {offset: number}}}) {
     if (location && location.start && location.end) {
       return [location.start.offset, location.end.offset];
     }

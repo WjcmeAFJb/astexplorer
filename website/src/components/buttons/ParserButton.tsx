@@ -2,24 +2,21 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {getParserByID} from '../../parsers';
 
-/**
- * @typedef {Object} ParserButtonProps
- * @property {(parser: import('../../types').Parser) => void} [onParserChange]
- * @property {() => void} [onParserSettingsButtonClick]
- * @property {import('../../types').Parser} [parser]
- * @property {import('../../types').Category} [category]
- */
+type ParserButtonProps = {
+  onParserChange?: (parser: import('../../types').Parser) => void;
+  onParserSettingsButtonClick?: () => void;
+  parser?: import('../../types').Parser;
+  category?: import('../../types').Category;
+};
 
-/** @extends {React.Component<ParserButtonProps>} */
-export default class ParserButton extends React.Component {
-  /** @param {ParserButtonProps} props */
-  constructor(props) {
+export default class ParserButton extends React.Component<ParserButtonProps> {
+    constructor(props: ParserButtonProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._onClick = this._onClick.bind(this);
   }
 
-  _onClick(/** @type {{currentTarget: HTMLElement}} */ {currentTarget}) {
+  _onClick({currentTarget}: {currentTarget: HTMLElement}) {
     let parserID = currentTarget.getAttribute('data-id');
     this.props.onParserChange(getParserByID(parserID));
   }

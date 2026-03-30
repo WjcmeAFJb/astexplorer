@@ -11,12 +11,12 @@ export default {
 
   defaultParserID: 'posthtml-parser',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, posthtml: typeof import('posthtml')}) => void} */ callback) {
-    require(['../../../transpilers/babel', 'posthtml'], (/** @type {{default: (code: string) => string}} */ transpile, posthtml: typeof import('posthtml')) =>
+  loadTransformer(callback: (realTransformer: {transpile: (code: string) => string, posthtml: typeof import('posthtml')}) => void) {
+    require(['../../../transpilers/babel', 'posthtml'], (transpile: {default: (code: string) => string}, posthtml: typeof import('posthtml')) =>
       callback({ transpile: transpile.default, posthtml }));
   },
 
-  transform(/** @type {{transpile: (code: string) => string, posthtml: typeof import('posthtml')}} */ { transpile, posthtml }, transformCode: string, code: string) {
+  transform({ transpile, posthtml }: {transpile: (code: string) => string, posthtml: typeof import('posthtml')}, transformCode: string, code: string) {
     // transpile with babel for es6+ support
     transformCode = transpile(transformCode);
     // compile to turn from string into a module
@@ -24,8 +24,8 @@ export default {
       // eslint-disable-line no-shadow
       transformCode,
     );
-    return (/** @type {import('posthtml').Result<unknown>} */ (/** @type {unknown} */ (posthtml()
+    return (((posthtml()
       .use(transform.default || transform)
-      .process(code, { sync: true })))).html;
+      .process(code, { sync: true }) as unknown) as import('posthtml').Result<unknown>)).html;
   },
 };

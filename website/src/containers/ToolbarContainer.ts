@@ -13,10 +13,7 @@ import {
 import Toolbar from '../components/Toolbar';
 import * as selectors from '../store/selectors';
 
-/**
- * @param {import('../types').AppState} state
- */
-function mapStateToProps(state) {
+function mapStateToProps(state: import('../types').AppState) {
   const parser = selectors.getParser(state);
 
   return {
@@ -33,10 +30,7 @@ function mapStateToProps(state) {
   };
 }
 
-/**
- * @param {import('redux').Dispatch} dispatch
- */
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: import('redux').Dispatch) {
   return {
     onParserChange: (parser: import('../types').Parser) => {
       dispatch(setParser(parser));

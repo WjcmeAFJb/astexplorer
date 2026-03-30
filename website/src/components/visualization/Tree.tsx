@@ -18,7 +18,7 @@ const STORAGE_KEY = 'tree_settings';
 function initSettings() {
   const storedSettings = global.localStorage.getItem(STORAGE_KEY);
   return storedSettings ?
-    /** @type {Record<string, boolean>} */ (JSON.parse(storedSettings)) :
+    (JSON.parse(storedSettings) as Record<string, boolean>) :
     {
       autofocus: true,
       hideFunctions: true,
@@ -28,25 +28,14 @@ function initSettings() {
     };
 }
 
-/**
- * @param {Record<string, boolean>} state
- * @param {{name: string, checked: boolean}} element
- * @returns {Record<string, boolean>}
- */
-function reducer(state, element) {
+function reducer(state: Record<string, boolean>, element: any): Record<string, boolean> {
   const newState = {...state, [element.name]: element.checked};
 
   global.localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
   return newState;
 }
 
-/**
- * @param {string} name
- * @param {Record<string, boolean>} settings
- * @param {React.Dispatch<{name: string, checked: boolean}>} updateSettings
- * @returns {React.ReactElement}
- */
-function makeCheckbox(name, settings, updateSettings) {
+function makeCheckbox(name: string, settings: Record<string, boolean>, updateSettings: any): React.ReactElement {
   return (
     <input
       type="checkbox"
@@ -57,19 +46,13 @@ function makeCheckbox(name, settings, updateSettings) {
   );
 }
 
-/**
- * @param {Object} props
- * @param {import('../../types').ParseResult} props.parseResult
- * @param {number | null} [props.position]
- * @returns {React.ReactElement}
- */
-export default function Tree({parseResult, position}) {
+export default function Tree({parseResult, position}: any): React.ReactElement {
   const [settings, updateSettings] = useReducer(reducer, null, initSettings);
   const treeAdapter = useMemo(
     () => treeAdapterFromParseResult(parseResult, settings),
     [parseResult.treeAdapter, settings],
   );
-  const rootElement = useRef(/** @type {HTMLUListElement | null} */ (null));
+  const rootElement = useRef((null as HTMLUListElement | null));
 
   focusNodes('init');
   useLayoutEffect(() => {

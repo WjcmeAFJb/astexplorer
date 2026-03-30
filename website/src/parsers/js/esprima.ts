@@ -12,11 +12,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(/** @type {(realParser: typeof import('esprima') & {parse: typeof import('esprima').parseScript}) => void} */ callback) {
+  loadParser(callback: (realParser: typeof import('esprima') & {parse: typeof import('esprima').parseScript}) => void) {
     require(['esprima'], callback);
   },
 
-  parse(/** @type {typeof import('esprima') & {parse: typeof import('esprima').parseScript}} */ esprima, code: string, options: import('esprima').ParseOptions) {
+  parse(esprima: typeof import('esprima') & {parse: typeof import('esprima').parseScript}, code: string, options: import('esprima').ParseOptions) {
     return esprima.parse(code, options);
   },
 

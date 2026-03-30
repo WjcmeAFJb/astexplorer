@@ -1,12 +1,6 @@
-/** @type {Record<string, Array<(data: unknown) => void>>} */
-const subscribers = {};
+const subscribers: Record<string, Array<(data: unknown) => void>> = {};
 
-/**
- * @param {string} topic
- * @param {(data: unknown) => void} handler
- * @returns {() => void}
- */
-export function subscribe(topic, handler) {
+export function subscribe(topic: string, handler: (data: unknown) => void): () => void {
   let handlers = subscribers[topic];
   if (!handlers) {
     handlers = subscribers[topic] = [];
@@ -18,12 +12,7 @@ export function subscribe(topic, handler) {
   return () => handlers.splice(handlers.indexOf(handler), 1);
 }
 
-/**
- * @param {string} topic
- * @param {unknown} [data]
- * @returns {void}
- */
-export function publish(topic, data) {
+export function publish(topic: string, data?: unknown): void {
   if (subscribers[topic]) {
     setTimeout(function callSubscribers() {
       if (subscribers[topic]) {
@@ -36,18 +25,10 @@ export function publish(topic, data) {
   }
 }
 
-/**
- * @param {Array<() => void>} unsubscribers
- * @returns {void}
- */
-export function clear(unsubscribers) {
+export function clear(unsubscribers: Array<() => void>): void {
   unsubscribers.forEach(call);
 }
 
-/**
- * @param {() => void} f
- * @returns {void}
- */
-function call(f) {
+function call(f: () => void): void {
   return f();
 }

@@ -6,32 +6,10 @@ import SnippetButton from './buttons/SnippetButton';
 import TransformButton from './buttons/TransformButton';
 import KeyMapButton from './buttons/KeyMapButton';
 
-/**
- * @param {Object} props
- * @param {boolean} [props.saving]
- * @param {boolean} [props.forking]
- * @param {() => void} [props.onSave]
- * @param {() => void} [props.onFork]
- * @param {(parser: import('../types').Parser) => void} [props.onParserChange]
- * @param {() => void} [props.onParserSettingsButtonClick]
- * @param {() => void} [props.onShareButtonClick]
- * @param {(transformer: import('../types').Transformer | null) => void} [props.onTransformChange]
- * @param {(keyMap: string) => void} [props.onKeyMapChange]
- * @param {import('../types').Parser} props.parser
- * @param {import('../types').Category} [props.category]
- * @param {import('../types').Transformer} [props.transformer]
- * @param {(category: import('../types').Category) => void} [props.onCategoryChange]
- * @param {boolean} [props.showTransformer]
- * @param {boolean} [props.canSave]
- * @param {boolean} [props.canFork]
- * @returns {React.ReactElement}
- */
-export default function Toolbar(props) {
-  let {parser, transformer, showTransformer} = props;
-  /** @type {string | React.ReactElement} */
-  let parserInfo = parser.displayName;
-  /** @type {string | React.ReactElement} */
-  let transformerInfo = '';
+export default function Toolbar(props: Record<string, unknown>): React.ReactElement {
+  let {parser, transformer, showTransformer} = props as any;
+  let parserInfo: string | React.ReactElement = parser.displayName;
+  let transformerInfo: string | React.ReactElement = '';
   if (parser) {
     if (parser.version) {
       parserInfo += '-' + parser.version;

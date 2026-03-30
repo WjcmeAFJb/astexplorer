@@ -3,7 +3,7 @@ import pkg from '@angular-eslint/template-parser/package.json';
 
 const ID = '@angular-eslint/template-parser';
 
-function wrapParesr(callback: (realParser: Record<string, unknown>) => void, /** @type {{parseForESLint: (code: string, options: Record<string, unknown>) => {ast: Record<string, unknown>, visitorKeys: Record<string, string[]>, services: {convertNodeSourceSpanToLoc: (span: unknown) => {start: unknown, end: unknown}}}}} */ { parseForESLint }) {
+function wrapParesr(callback: (realParser: Record<string, unknown>) => void, { parseForESLint }: {parseForESLint: (code: string, options: Record<string, unknown>) => {ast: Record<string, unknown>, visitorKeys: Record<string, string[]>, services: {convertNodeSourceSpanToLoc: (span: unknown) => {start: unknown, end: unknown}}}}) {
   const parse = (code: string, options: Record<string, unknown>) => {
     const {
       ast,
@@ -12,7 +12,7 @@ function wrapParesr(callback: (realParser: Record<string, unknown>) => void, /**
     } = parseForESLint(code, options);
 
     // Traverse AST in order to add `loc` and `range` for each child
-    const addLocation = (/** @type {{startSourceSpan?: {start: {offset: number}, end: {offset: number}}, endSourceSpan?: {start: {offset: number}, end: {offset: number}}, sourceSpan?: {start: {offset: number}, end: {offset: number}}, range?: [number, number], loc?: object, [key: string]: unknown}} */ node) => {
+    const addLocation = (node: {startSourceSpan?: {start: {offset: number}, end: {offset: number}}, endSourceSpan?: {start: {offset: number}, end: {offset: number}}, sourceSpan?: {start: {offset: number}, end: {offset: number}}, range?: [number, number], loc?: object, [key: string]: unknown}) => {
       if (!node.startSourceSpan || !node.endSourceSpan) {
         if (!node.sourceSpan) return node;
         const range = node.range || [
@@ -42,22 +42,20 @@ function wrapParesr(callback: (realParser: Record<string, unknown>) => void, /**
       }
     };
 
-    /** @type {(node: Record<string, unknown>) => Record<string, unknown>} */
-    const visit = (node) => {
-      const keys = /** @type {string[]} */ (visitorKeys[/** @type {string} */ (node.type)] || []);
-      /** @type {Record<string, unknown>} */
-      const newNode = keys.reduce((acc: Record<string, unknown>, key: string) => {
+        const visit: (node: Record<string, unknown>) => Record<string, unknown> = (node) => {
+      const keys = (visitorKeys[(node.type as string)] || [] as string[]);
+            const newNode: Record<string, unknown> = keys.reduce((acc: Record<string, unknown>, key: string) => {
         const child = node[key];
         if (Array.isArray(child)) {
           const children = child;
-          return { ...acc, [key]: children.map(c => visit(/** @type {Record<string, unknown>} */ (c))) };
+          return { ...acc, [key]: children.map(c => visit((c as Record<string, unknown>))) };
         } else if (child != null) {
-          return { ...acc, [key]: visit(/** @type {Record<string, unknown>} */ (child)) };
+          return { ...acc, [key]: visit((child as Record<string, unknown>)) };
         } else {
           return acc;
         }
       }, node);
-      return addLocation(/** @type {Record<string, unknown>} */ (newNode));
+      return addLocation((newNode as Record<string, unknown>));
     };
     return visit(ast);
   };
@@ -79,7 +77,7 @@ export default {
     require(['@angular-eslint/template-parser'], wrapParesr.bind(null, callback));
   },
 
-  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ parser, code: string, options: Record<string, unknown>) {
+  parse(parser: {parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}, code: string, options: Record<string, unknown>) {
     return parser.parse(code, options);
   },
 };

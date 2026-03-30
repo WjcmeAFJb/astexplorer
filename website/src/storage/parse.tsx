@@ -16,12 +16,7 @@ function getIDAndRevisionFromHash() {
   return null;
 }
 
-/**
- * @param {string} snippetID
- * @param {string | number} [revisionID='latest']
- * @returns {Promise<Revision>}
- */
-function fetchSnippet(snippetID, revisionID='latest') {
+function fetchSnippet(snippetID: string, revisionID?: string | number): Promise<Revision> {
   return api(`/parse/${snippetID}/${revisionID}`)
     .then(response => {
       if (response.ok) {
@@ -34,14 +29,10 @@ function fetchSnippet(snippetID, revisionID='latest') {
           throw new Error('Unknown error.');
       }
     })
-    .then(/** @param {ParseSnippetData} response */ response => new Revision(response));
+    .then((response: ParseSnippetData) => new Revision(response));
 }
 
-/**
- * @param {unknown} snippet
- * @returns {boolean}
- */
-export function owns(snippet) {
+export function owns(snippet: unknown): boolean {
   return snippet instanceof Revision;
 }
 
@@ -52,11 +43,7 @@ export function matchesURL() {
   return getIDAndRevisionFromHash() !== null;
 }
 
-/**
- * @param {Revision} revision
- * @returns {void}
- */
-export function updateHash(revision) {
+export function updateHash(revision: Revision): void {
   const rev = revision.getRevisionID();
   const newHash = '/' + revision.getSnippetID() + (rev && rev !== 0 ? '/' + rev : '');
   global.location.hash = newHash;
@@ -103,22 +90,20 @@ export function fork() {
   );
 }
 
-/**
- * @typedef {Object} ParseSnippetData
- * @property {string} snippetID
- * @property {string | number} revisionID
- * @property {string} [toolID]
- * @property {string} [transform]
- * @property {string} [parserID]
- * @property {string} [code]
- * @property {Record<string, string>} [settings]
- */
+type ParseSnippetData = {
+  snippetID: string;
+  revisionID: string | number;
+  toolID?: string;
+  transform?: string;
+  parserID?: string;
+  code?: string;
+  settings?: Record<string, string>;
+};
 
 class Revision {
-  /**
-   * @param {ParseSnippetData} data
-   */
-	constructor(data) {
+  _data: ParseSnippetData;
+
+  	constructor(data: ParseSnippetData) {
     this._data = data;
 	}
 
@@ -190,7 +175,7 @@ class Revision {
       return null;
     }
     const parserSettings = settings[this.getParserID()];
-    return !!parserSettings && /** @type {Record<string, unknown>} */ (JSON.parse(parserSettings));
+    return !!parserSettings && (JSON.parse(parserSettings) as Record<string, unknown>);
   }
 
   /** @returns {React.ReactElement} */

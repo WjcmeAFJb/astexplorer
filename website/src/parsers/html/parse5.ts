@@ -1,8 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'parse5/package.json';
 
-/** @typedef {{ Parser: new (opts: object) => { parse(code: string): Parse5Node }, TreeAdapters: Record<string, object> }} Parse5Module */
-/** @typedef {{ type?: string, name?: string, nodeName?: string, tagName?: string, sourceCodeLocation?: { startOffset: number, endOffset: number }, children?: Parse5Node[], childNodes?: Parse5Node[], [k: string]: unknown }} Parse5Node */
+type Parse5Module = { Parser: new (opts: object) => { parse(code: string): Parse5Node }, TreeAdapters: Record<string, object> };
+type Parse5Node = { type?: string, name?: string, nodeName?: string, tagName?: string, sourceCodeLocation?: { startOffset: number, endOffset: number }, children?: Parse5Node[], childNodes?: Parse5Node[], [k: string]: unknown };
 
 const ID = 'parse5';
 
@@ -21,7 +21,7 @@ export default {
       'parse5/lib/parser',
       'parse5/lib/tree-adapters/default',
       'parse5-htmlparser2-tree-adapter',
-    ], (/** @type {new (opts: object) => {parse: (code: string) => Parse5Node}} */ Parser, defaultAdapter: object, htmlparser2Adapter: object) => {
+    ], (Parser: new (opts: object) => {parse: (code: string) => Parse5Node}, defaultAdapter: object, htmlparser2Adapter: object) => {
       callback({
         Parser,
         TreeAdapters: {
@@ -33,7 +33,7 @@ export default {
   },
 
   /** @this {{options: {treeAdapter?: string; [k: string]: unknown}}} */
-  parse(/** @type {Parse5Module} */ { Parser, TreeAdapters }, code: string, /** @type {{treeAdapter?: string, [k: string]: unknown}} */ options) {
+  parse({ Parser, TreeAdapters }: Parse5Module, code: string, options: {treeAdapter?: string, [k: string]: unknown}) {
     this.options = options;
     return new Parser({
       treeAdapter: TreeAdapters[this.options.treeAdapter],
@@ -52,7 +52,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {Parse5Node} */ { sourceCodeLocation: loc }) {
+  nodeToRange({ sourceCodeLocation: loc }: Parse5Node) {
     if (loc) {
       return [loc.startOffset, loc.endOffset];
     }

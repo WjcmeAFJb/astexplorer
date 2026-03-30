@@ -6,12 +6,7 @@ import * as React from 'react';
 
 import stringify from 'json-stringify-safe';
 
-/**
- * @param {number} index
- * @param {import('source-map/lib/source-map-consumer').SourceMapConsumer | null | undefined} map
- * @returns {{line: number, ch: number} | undefined}
- */
-function positionFromIndex(index, map) {
+function positionFromIndex(index: number, map: import('source-map/lib/source-map-consumer').SourceMapConsumer | null | undefined): {line: number, ch: number} {
   if (!map) {
     return;
   }
@@ -40,18 +35,12 @@ function positionFromIndex(index, map) {
   return { line: line - 1, ch: column };
 }
 
-/**
- * @param {Object} props
- * @param {import('../types').TransformResult} [props.transformResult]
- * @param {string} [props.mode]
- * @returns {React.ReactElement}
- */
-export default function TransformOutput({transformResult, mode}) {
+export default function TransformOutput({transformResult, mode}: any): React.ReactElement {
   // This ensures that we are rendering an empty editor as "placeholder" if no transform result is available yet.
   transformResult = transformResult == null ? {result: ''} : transformResult;
 
   const posFromIndex = React.useCallback(
-    /** @param {number} index */ index => positionFromIndex(index, transformResult.map),
+    (index: number) => positionFromIndex(index, transformResult.map),
     [transformResult],
   );
 

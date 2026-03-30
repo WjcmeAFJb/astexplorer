@@ -10,263 +10,234 @@
 // Category
 // ---------------------------------------------------------------------------
 
-/**
- * @typedef {Object} Category
- * @property {string} id
- * @property {string} displayName
- * @property {string[]} mimeTypes
- * @property {string} fileExtension
- * @property {string} [editorMode]
- * @property {string} codeExample
- * @property {Parser[]} parsers
- * @property {Transformer[]} transformers
- */
+export type Category = {
+  id: string;
+  displayName: string;
+  mimeTypes: string[];
+  fileExtension: string;
+  editorMode?: string;
+  codeExample: string;
+  parsers: Parser[];
+  transformers: Transformer[];
+};
 
 // ---------------------------------------------------------------------------
 // Parser
 // ---------------------------------------------------------------------------
 
-/**
- * @typedef {Object} SettingsField
- * A single field entry in a settings configuration.
- * Can be a boolean field name (string), a tuple, or a nested SettingsConfiguration.
- * @see SettingsConfiguration
- */
+export type SettingsConfiguration = {
+  title?: string;
+  fields: Array<string | [string, Array<string|number>|Record<string,string|number>, ((v: string) => string|number)?] | SettingsConfiguration>;
+  required?: Set<string>;
+  update?: (settings: Record<string, unknown>, name: string, value: unknown) => Record<string, unknown>;
+  key?: string;
+  settings?: (settings: Record<string, unknown>) => Record<string, unknown>;
+  values?: (settings: Record<string, unknown>) => Record<string, unknown>;
+};
 
-/**
- * @typedef {Object} SettingsConfiguration
- * @property {string} [title]
- * @property {Array<string | [string, Array<string|number>|Record<string,string|number>, ((v: string) => string|number)?] | SettingsConfiguration>} fields
- * @property {Set<string>} [required]
- * @property {(settings: Record<string, unknown>, name: string, value: unknown) => Record<string, unknown>} [update]
- * @property {string} [key]
- * @property {(settings: Record<string, unknown>) => Record<string, unknown>} [settings]
- * @property {(settings: Record<string, unknown>) => Record<string, unknown>} [values]
- */
-
-/**
- * @typedef {Object} Parser
- * @property {string} id
- * @property {string} displayName
- * @property {string} [version]
- * @property {string} [homepage]
- * @property {boolean} showInMenu
- * @property {Set<string>} _ignoredProperties
- * @property {Set<string>} locationProps
- * @property {Set<string>} typeProps
- * @property {Category} category
- * @property {(callback: (realParser: unknown) => void) => void} loadParser
- * @property {(realParser: unknown, code: string, options: Record<string, unknown>) => unknown} parse
- * @property {(node: unknown, key: string) => boolean} opensByDefault
- * @property {(node: unknown) => [number, number] | null | undefined} nodeToRange
- * @property {(node: unknown) => string | undefined} getNodeName
- * @property {(node: unknown) => Iterable<WalkResult>} forEachProperty
- * @property {(defaultOptions: Record<string, unknown>) => SettingsConfiguration | null} _getSettingsConfiguration
- * @property {() => boolean} hasSettings
- * @property {() => Record<string, unknown>} getDefaultOptions
- * @property {(currentOptions: Record<string, unknown>, defaultOptions: Record<string, unknown>) => Record<string, unknown>} _mergeDefaultOptions
- * @property {((settings: Record<string, unknown> | null, onChange: (settings: Record<string, unknown>) => void) => React.ReactElement | null) | undefined} renderSettings
- * @property {Promise<unknown>} [_promise]
- */
+export type Parser = {
+  id: string;
+  displayName: string;
+  version?: string;
+  homepage?: string;
+  showInMenu: boolean;
+  _ignoredProperties: Set<string>;
+  locationProps: Set<string>;
+  typeProps: Set<string>;
+  category: Category;
+  loadParser: (callback: (realParser: unknown) => void) => void;
+  parse: (realParser: unknown, code: string, options: Record<string, unknown>) => unknown;
+  opensByDefault: (node: unknown, key: string) => boolean;
+  nodeToRange: (node: unknown) => [number, number] | null | undefined;
+  getNodeName: (node: unknown) => string | undefined;
+  forEachProperty: (node: unknown) => Iterable<WalkResult>;
+  _getSettingsConfiguration: (defaultOptions: Record<string, unknown>) => SettingsConfiguration | null;
+  hasSettings: () => boolean;
+  getDefaultOptions: () => Record<string, unknown>;
+  _mergeDefaultOptions: (currentOptions: Record<string, unknown>, defaultOptions: Record<string, unknown>) => Record<string, unknown>;
+  renderSettings: ((settings: Record<string, unknown> | null, onChange: (settings: Record<string, unknown>) => void) => React.ReactElement | null) | undefined;
+  _promise?: Promise<unknown>;
+};
 
 // ---------------------------------------------------------------------------
 // Transformer
 // ---------------------------------------------------------------------------
 
-/**
- * @typedef {Object} Transformer
- * @property {string} id
- * @property {string} displayName
- * @property {string} [version]
- * @property {string} [homepage]
- * @property {string} defaultParserID
- * @property {Set<string>} [compatibleParserIDs]
- * @property {string} defaultTransform
- * @property {boolean} [showInMenu]
- * @property {((code: string, context: {parser: string, parserSettings: Record<string,unknown>}) => string) | undefined} [formatCodeExample]
- * @property {(callback: (realTransformer: unknown) => void) => void} loadTransformer
- * @property {(realTransformer: unknown, transformCode: string, code: string) => Promise<string | TransformResultWithMap>} transform
- * @property {Promise<unknown>} [_promise]
- */
+export type Transformer = {
+  id: string;
+  displayName: string;
+  version?: string;
+  homepage?: string;
+  defaultParserID: string;
+  compatibleParserIDs?: Set<string>;
+  defaultTransform: string;
+  showInMenu?: boolean;
+  loadTransformer: (callback: (realTransformer: unknown) => void) => void;
+  transform: (realTransformer: unknown, transformCode: string, code: string) => Promise<string | TransformResultWithMap>;
+  formatCodeExample?: (code: string, options: Record<string, unknown>) => string;
+  _promise?: Promise<unknown>;
+};
 
-/**
- * @typedef {Object} TransformResultWithMap
- * @property {string} code
- * @property {unknown} [map]
- */
+export type TransformResultWithMap = {
+  code: string;
+  map?: unknown;
+};
 
 // ---------------------------------------------------------------------------
 // Revision  (common interface for gist.Revision and parse.Revision)
 // ---------------------------------------------------------------------------
 
-/**
- * @typedef {Object} Revision
- * @property {() => boolean} canSave
- * @property {() => string} getPath
- * @property {() => string} getSnippetID
- * @property {() => string | number} getRevisionID
- * @property {() => string | undefined} getTransformerID
- * @property {() => string} getTransformCode
- * @property {() => string} getParserID
- * @property {() => string} getCode
- * @property {() => Record<string, unknown> | null} getParserSettings
- * @property {() => React.ReactElement} getShareInfo
- */
+export type Revision = {
+  canSave: () => boolean;
+  getPath: () => string;
+  getSnippetID: () => string;
+  getRevisionID: () => string | number;
+  getTransformerID: () => string | undefined;
+  getTransformCode: () => string;
+  getParserID: () => string;
+  getCode: () => string;
+  getParserSettings: () => Record<string, unknown> | null;
+  getShareInfo: () => React.ReactElement;
+};
 
 // ---------------------------------------------------------------------------
 // ParseResult
 // ---------------------------------------------------------------------------
 
-/**
- * @typedef {Object} TreeAdapterConfig
- * @property {string} type
- * @property {AdapterOptions} options
- */
+export type TreeAdapterConfig = {
+  type: string;
+  options: AdapterOptions;
+};
 
-/**
- * @typedef {Object} ParseResult
- * @property {unknown} ast
- * @property {Error | null} error
- * @property {number | null} time
- * @property {TreeAdapterConfig | null} treeAdapter
- */
+export type ParseResult = {
+  ast: unknown;
+  error: Error | null;
+  time: number | null;
+  treeAdapter: TreeAdapterConfig | null;
+};
 
 // ---------------------------------------------------------------------------
 // TreeAdapter
 // ---------------------------------------------------------------------------
 
-/**
- * @typedef {Object} WalkResult
- * @property {unknown} value
- * @property {string} key
- * @property {boolean} computed
- */
+export type WalkResult = {
+  value: unknown;
+  key: string;
+  computed: boolean;
+};
 
-/**
- * @typedef {Object} TreeFilter
- * @property {string} [key]
- * @property {string} [label]
- * @property {(value: unknown, key: string, fromArray?: boolean) => boolean} test
- */
+export type TreeFilter = {
+  key?: string;
+  label?: string;
+  test: (value: unknown, key: string, fromArray?: boolean) => boolean;
+};
 
-/**
- * @typedef {Object} AdapterOptions
- * @property {TreeFilter[]} [filters]
- * @property {(node: unknown, key: string) => boolean} openByDefault
- * @property {(node: unknown) => [number, number] | null} nodeToRange
- * @property {(node: unknown) => string} nodeToName
- * @property {(node: unknown) => Iterable<WalkResult>} walkNode
- * @property {Set<string>} [locationProps]
- */
+export type AdapterOptions = {
+  filters?: TreeFilter[];
+  openByDefault: (node: unknown, key: string) => boolean;
+  nodeToRange: (node: unknown) => [number, number] | null;
+  nodeToName: (node: unknown) => string;
+  walkNode: (node: unknown) => Iterable<WalkResult>;
+  locationProps?: Set<string>;
+};
 
 // ---------------------------------------------------------------------------
 // Redux state
 // ---------------------------------------------------------------------------
 
-/**
- * @typedef {Object} TransformState
- * @property {string} code
- * @property {string} initialCode
- * @property {string | null} transformer
- * @property {TransformResult | null} transformResult
- */
+export type TransformState = {
+  code: string;
+  initialCode: string;
+  transformer: string | null;
+  transformResult: TransformResult | null;
+};
 
-/**
- * @typedef {Object} TransformResult
- * @property {string} [result]
- * @property {Error} [error]
- * @property {import('source-map/lib/source-map-consumer').SourceMapConsumer | null} [map]
- * @property {string} [version]
- */
+export type TransformResult = {
+  result?: string;
+  error?: Error;
+  map?: import('source-map/lib/source-map-consumer').SourceMapConsumer | null;
+  version?: string;
+};
 
-/**
- * @typedef {Object} WorkbenchState
- * @property {string} parser
- * @property {Record<string, unknown> | null} parserSettings
- * @property {ParseResult} [parseResult]
- * @property {unknown} [parseError]
- * @property {string} code
- * @property {string} keyMap
- * @property {string} initialCode
- * @property {TransformState} transform
- */
+export type WorkbenchState = {
+  parser: string;
+  parserSettings: Record<string, unknown> | null;
+  parseResult?: ParseResult;
+  parseError?: unknown;
+  code: string;
+  keyMap: string;
+  initialCode: string;
+  transform: TransformState;
+};
 
-/**
- * @typedef {Object} AppState
- * @property {boolean} showSettingsDialog
- * @property {boolean} showSettingsDrawer
- * @property {boolean} showShareDialog
- * @property {boolean} loadingSnippet
- * @property {boolean} forking
- * @property {boolean} saving
- * @property {number | null} cursor
- * @property {Error | null} error
- * @property {boolean} showTransformPanel
- * @property {Revision | null} [selectedRevision]
- * @property {Revision | null} [activeRevision]
- * @property {Record<string, Record<string, unknown>>} parserSettings
- * @property {Record<string, string>} parserPerCategory
- * @property {WorkbenchState} workbench
- * @property {boolean} enableFormatting
- */
+export type AppState = {
+  showSettingsDialog: boolean;
+  showSettingsDrawer: boolean;
+  showShareDialog: boolean;
+  loadingSnippet: boolean;
+  forking: boolean;
+  saving: boolean;
+  cursor: number | null;
+  error: Error | null;
+  showTransformPanel: boolean;
+  selectedRevision?: Revision | null;
+  activeRevision?: Revision | null;
+  parserSettings: Record<string, Record<string, unknown>>;
+  parserPerCategory: Record<string, string>;
+  workbench: WorkbenchState;
+  enableFormatting: boolean;
+};
 
 // ---------------------------------------------------------------------------
 // Redux actions
 // ---------------------------------------------------------------------------
 
-/**
- * @typedef {'SET_ERROR' | 'CLEAR_ERROR' | 'LOAD_SNIPPET' | 'START_LOADING_SNIPPET' |
- *   'DONE_LOADING_SNIPPET' | 'CLEAR_SNIPPET' | 'CHANGE_CATEGORY' | 'SELECT_TRANSFORMER' |
- *   'HIDE_TRANSFORMER' | 'SET_TRANSFORM' | 'SET_TRANSFORM_RESULT' | 'SET_PARSER' |
- *   'SET_PARSER_SETTINGS' | 'SET_PARSE_RESULT' | 'SET_SNIPPET' | 'OPEN_SETTINGS_DIALOG' |
- *   'CLOSE_SETTINGS_DIALOG' | 'EXPAND_SETTINGS_DRAWER' | 'COLLAPSE_SETTINGS_DRAWER' |
- *   'OPEN_SHARE_DIALOG' | 'CLOSE_SHARE_DIALOG' | 'SET_CODE' | 'SET_CURSOR' |
- *   'DROP_TEXT' | 'SAVE' | 'START_SAVE' | 'END_SAVE' | 'RESET' | 'TOGGLE_FORMATTING' |
- *   'SET_KEY_MAP' | 'INIT'} ActionType
- */
+export type ActionType = 'SET_ERROR' | 'CLEAR_ERROR' | 'LOAD_SNIPPET' | 'START_LOADING_SNIPPET' |
+  'DONE_LOADING_SNIPPET' | 'CLEAR_SNIPPET' | 'CHANGE_CATEGORY' | 'SELECT_TRANSFORMER' |
+  'HIDE_TRANSFORMER' | 'SET_TRANSFORM' | 'SET_TRANSFORM_RESULT' | 'SET_PARSER' |
+  'SET_PARSER_SETTINGS' | 'SET_PARSE_RESULT' | 'SET_SNIPPET' | 'OPEN_SETTINGS_DIALOG' |
+  'CLOSE_SETTINGS_DIALOG' | 'EXPAND_SETTINGS_DRAWER' | 'COLLAPSE_SETTINGS_DRAWER' |
+  'OPEN_SHARE_DIALOG' | 'CLOSE_SHARE_DIALOG' | 'SET_CODE' | 'SET_CURSOR' |
+  'DROP_TEXT' | 'SAVE' | 'START_SAVE' | 'END_SAVE' | 'RESET' | 'TOGGLE_FORMATTING' |
+  'SET_KEY_MAP' | 'INIT';
 
-/**
- * @typedef {Object} Action
- * @property {ActionType} type
- * @property {Error | null} [error]
- * @property {Parser} [parser]
- * @property {Record<string, unknown>} [settings]
- * @property {boolean} [fork]
- * @property {Revision} [revision]
- * @property {Category} [category]
- * @property {Transformer} [transformer]
- * @property {string} [code]
- * @property {number} [cursor]
- * @property {string} [text]
- * @property {string} [categoryId]
- * @property {string} [keyMap]
- * @property {ParseResult} [result]
- */
+export type Action = {
+  type: ActionType;
+  error?: Error | null;
+  parser?: Parser;
+  settings?: Record<string, unknown>;
+  fork?: boolean;
+  revision?: Revision;
+  category?: Category;
+  transformer?: Transformer;
+  code?: string;
+  cursor?: number;
+  text?: string;
+  categoryId?: string;
+  keyMap?: string;
+  result?: ParseResult;
+};
 
 // ---------------------------------------------------------------------------
 // Storage backend
 // ---------------------------------------------------------------------------
 
-/**
- * @typedef {Object} StorageBackend
- * @property {(snippet: Revision) => boolean} owns
- * @property {() => boolean} matchesURL
- * @property {() => Promise<Revision | null>} fetchFromURL
- * @property {(data: SnippetData) => Promise<Revision>} create
- * @property {(revision: Revision, data: SnippetData) => Promise<Revision>} update
- * @property {(revision: Revision, data: SnippetData) => Promise<Revision>} fork
- * @property {((revision: Revision) => void)} [updateHash]
- */
+export type StorageBackend = {
+  owns: (snippet: Revision) => boolean;
+  matchesURL: () => boolean;
+  fetchFromURL: () => Promise<Revision | null>;
+  create: (data: SnippetData) => Promise<Revision>;
+  update: (revision: Revision, data: SnippetData) => Promise<Revision>;
+  fork: (revision: Revision, data: SnippetData) => Promise<Revision>;
+  updateHash?: ((revision: Revision) => void);
+};
 
-/**
- * @typedef {Object} SnippetData
- * @property {string} parserID
- * @property {Record<string, Record<string, unknown> | null>} settings
- * @property {Record<string, string>} versions
- * @property {string} filename
- * @property {string} code
- * @property {string} [toolID]
- * @property {string | null} [transform]
- */
-
-export {};
+export type SnippetData = {
+  parserID: string;
+  settings: Record<string, Record<string, unknown> | null>;
+  versions: Record<string, string>;
+  filename: string;
+  code: string;
+  toolID?: string;
+  transform?: string | null;
+};

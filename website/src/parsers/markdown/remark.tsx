@@ -1,18 +1,9 @@
 import React from 'react';
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'remark/package.json';
+import type { Node as RemarkNode } from 'unist';
 
-/**
- * @typedef {{
- *   remark: import('remark').remark,
- *   gfm: typeof import('remark-gfm').default,
- *   directive: typeof import('remark-directive').default,
- *   footnotes: typeof import('remark-footnotes').default,
- *   frontmatter: typeof import('remark-frontmatter').default,
- *   math: typeof import('remark-math').default,
- * }} RemarkParser
- * @typedef {import('unist').Node & { position?: { start: { offset: number }, end: { offset: number } }, children?: RemarkNode[], [key: string]: unknown }} RemarkNode
- */
+type RemarkParser = { remark: typeof import('remark').remark, gfm: typeof import('remark-gfm').default, directive: typeof import('remark-directive').default, footnotes: typeof import('remark-footnotes').default, frontmatter: typeof import('remark-frontmatter').default, math: typeof import('remark-math').default, };
 
 const ID = 'remark';
 
@@ -34,20 +25,20 @@ export default {
       'remark-frontmatter',
       'remark-math',
     ], (
-      /** @type {{remark: RemarkParser['remark']}} */ { remark },
-      /** @type {{default: RemarkParser['gfm']}} */ { default: gfm },
-      /** @type {{default: RemarkParser['directive']}} */ { default: directive },
-      /** @type {{default: RemarkParser['footnotes']}} */ { default: footnotes },
-      /** @type {{default: RemarkParser['frontmatter']}} */ { default: frontmatter },
-      /** @type {{default: RemarkParser['math']}} */ { default: math },
+      { remark }: {remark: RemarkParser['remark']},
+      { default: gfm }: {default: RemarkParser['gfm']},
+      { default: directive }: {default: RemarkParser['directive']},
+      { default: footnotes }: {default: RemarkParser['footnotes']},
+      { default: frontmatter }: {default: RemarkParser['frontmatter']},
+      { default: math }: {default: RemarkParser['math']},
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- import type may not resolve
     ) => callback({ remark, gfm, directive, footnotes, frontmatter, math }));
   },
 
   parse(
-    /** @type {RemarkParser} */ { remark, gfm, directive, footnotes, frontmatter, math },
+    { remark, gfm, directive, footnotes, frontmatter, math }: RemarkParser,
     code: string,
-    /** @type {{ 'remark-gfm'?: boolean, 'remark-directive'?: boolean, 'remark-footnotes'?: boolean, 'remark-frontmatter'?: boolean, 'remark-math'?: boolean }} */ options,
+    options: { 'remark-gfm'?: boolean, 'remark-directive'?: boolean, 'remark-footnotes'?: boolean, 'remark-frontmatter'?: boolean, 'remark-math'?: boolean },
   ) {
     const plugins = [
       options['remark-gfm'] ? gfm : false,
@@ -57,10 +48,10 @@ export default {
       options['remark-math'] ? math : false,
     ].filter((plugin) => plugin !== false);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-return), typescript-eslint(no-unsafe-member-access), typescript-eslint(no-unsafe-call) -- remark's FrozenProcessor type params mismatch between remark/unified .d.ts
-    return remark().use(/** @type {Parameters<ReturnType<import('remark').remark>['use']>[0]} */ (/** @type {unknown} */ (plugins))).parse(code);
+    return remark().use(((plugins as unknown) as Parameters<ReturnType<typeof import('remark').remark>['use']>[0])).parse(code);
   },
 
-  nodeToRange(/** @type {RemarkNode} */ { position }) {
+  nodeToRange({ position }: RemarkNode) {
     if (position) {
       return [position.start.offset, position.end.offset];
     }
@@ -80,7 +71,7 @@ export default {
     };
   },
 
-  renderSettings(/** @type {{ 'remark-gfm'?: boolean, 'remark-directive'?: boolean, 'remark-footnotes'?: boolean, 'remark-frontmatter'?: boolean, 'remark-math'?: boolean }} */ parserSettings, /** @type {(settings: { 'remark-gfm'?: boolean, 'remark-directive'?: boolean, 'remark-footnotes'?: boolean, 'remark-frontmatter'?: boolean, 'remark-math'?: boolean }) => void} */ onChange) {
+  renderSettings(parserSettings: { 'remark-gfm'?: boolean, 'remark-directive'?: boolean, 'remark-footnotes'?: boolean, 'remark-frontmatter'?: boolean, 'remark-math'?: boolean }, onChange: (settings: { 'remark-gfm'?: boolean, 'remark-directive'?: boolean, 'remark-footnotes'?: boolean, 'remark-frontmatter'?: boolean, 'remark-math'?: boolean }) => void) {
     return (
       <div>
         <p>

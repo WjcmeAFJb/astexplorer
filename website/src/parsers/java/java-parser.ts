@@ -1,16 +1,13 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'java-parser/package.json';
+import type { CstNode as JavaNode } from 'java-parser';
 
-/**
- * @typedef {typeof import('java-parser')} JavaParserModule
- * @typedef {import('java-parser').CstNode | import('java-parser').IToken} JavaNode
- */
+type JavaParserModule = typeof import('java-parser');
 
 const ID = 'java-parser';
 
 export const parserSettingsConfiguration = {
-  /** @type {string[]} */
-  fields: [],
+    fields: [] as string[],
 };
 
 export default {
@@ -40,11 +37,11 @@ export default {
     return {};
   },
 
-  getNodeName(/** @type {{name?: string}} */ { name }) {
+  getNodeName({ name }: {name?: string}) {
     return name;
   },
 
-  nodeToRange(/** @type {{location?: import('java-parser').CstNode['location']}} */ { location }) {
+  nodeToRange({ location }: {location?: import('java-parser').CstNode['location']}) {
     if (!location) {
       return;
     }

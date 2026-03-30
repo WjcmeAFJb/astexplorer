@@ -6,8 +6,7 @@ import PropTypes from 'prop-types';
 import {subscribe, clear} from '../utils/pubsub';
 import React from 'react';
 
-/** @type {Record<string, unknown>} */
-const defaultPrettierOptions = {
+const defaultPrettierOptions: Record<string, unknown> = {
   printWidth: 80,
   tabWidth: 2,
   singleQuote: false,
@@ -17,38 +16,38 @@ const defaultPrettierOptions = {
   parser: 'babel',
 };
 
-/**
- * @typedef {Object} EditorProps
- * @property {string} [value]
- * @property {boolean} [highlight]
- * @property {boolean} [lineNumbers]
- * @property {boolean} [readOnly]
- * @property {(args: {value: string, cursor: number}) => void} [onContentChange]
- * @property {(cursor: number) => void} [onActivity]
- * @property {(index: number) => {line: number, ch: number}} [posFromIndex]
- * @property {{message: string, loc?: {line: number}, lineNumber?: number, line?: number}} [error]
- * @property {string} [mode]
- * @property {boolean} [enableFormatting]
- * @property {string} [keyMap]
- */
+export type EditorProps = {
+  value?: string;
+  highlight?: boolean;
+  lineNumbers?: boolean;
+  readOnly?: boolean;
+  onContentChange?: (args: {value: string, cursor: number}) => void;
+  onActivity?: (cursor: number) => void;
+  posFromIndex?: (index: number) => {line: number, ch: number};
+  error?: {message: string, loc?: {line: number}, lineNumber?: number, line?: number};
+  mode?: string;
+  enableFormatting?: boolean;
+  keyMap?: string;
+};
 
-/** @extends {React.Component<EditorProps, {value: string}>} */
-export default class Editor extends React.Component {
+export default class Editor extends React.Component<EditorProps, {value: string}> {
+  static defaultProps: Partial<EditorProps>;
+  codeMirror: CodeMirror.Editor | null = null;
+  container: HTMLElement | null = null;
+  _CMHandlers: Array<string | ((...args: unknown[]) => void)> = [];
+  _subscriptions: Array<() => void> = [];
+  _updateTimer: ReturnType<typeof setTimeout> | undefined;
+  _markerRange: [number, number] | null = null;
+  _mark: CodeMirror.TextMarker | null = null;
 
-  /**
-   * @param {EditorProps} props
-   */
-  constructor(props) {
+    constructor(props: EditorProps) {
     super(props);
     this.state = {
       value: props.value,
     };
   }
 
-  /**
-   * @param {EditorProps} nextProps
-   */
-  UNSAFE_componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps: EditorProps) {
     if (nextProps.value !== this.state.value) {
       this.setState(
         {value: nextProps.value},
@@ -66,7 +65,6 @@ export default class Editor extends React.Component {
     this._setError(nextProps.error);
   }
 
-
   shouldComponentUpdate() {
     return false;
   }
@@ -76,18 +74,11 @@ export default class Editor extends React.Component {
     return this.codeMirror && this.codeMirror.getValue();
   }
 
-  /**
-   * @param {EditorProps['error']} error
-   * @returns {number | undefined}
-   */
-  _getErrorLine(error) {
+    _getErrorLine(error: EditorProps['error']): number | undefined {
     return error.loc ? error.loc.line : (error.lineNumber || error.line);
   }
 
-  /**
-   * @param {EditorProps['error']} [error]
-   */
-  _setError(error) {
+    _setError(error?: EditorProps['error']) {
     if (this.codeMirror) {
       let oldError = this.props.error;
       if (oldError) {
@@ -106,20 +97,13 @@ export default class Editor extends React.Component {
     }
   }
 
-  /**
-   * @param {CodeMirror.Doc} doc
-   * @param {number} index
-   * @returns {{line: number, ch: number}}
-   */
-  _posFromIndex(doc, index) {
-    return /** @type {{line: number, ch: number}} */ ((this.props.posFromIndex ? this.props : doc).posFromIndex(index));
+    _posFromIndex(doc: CodeMirror.Doc, index: number): {line: number, ch: number} {
+    return ((this.props.posFromIndex ? this.props : doc).posFromIndex(index) as {line: number, ch: number});
   }
 
   componentDidMount() {
-    /** @type {Array<string | ((...args: unknown[]) => void)>} */
-    this._CMHandlers = [];
-    /** @type {Array<() => void>} */
-    this._subscriptions = [];
+        this._CMHandlers = [];
+        this._subscriptions = [];
     this.codeMirror = CodeMirror( // eslint-disable-line new-cap
       this.container,
       {
@@ -131,10 +115,10 @@ export default class Editor extends React.Component {
       },
     );
 
-    this._bindCMHandler('blur', /** @param {CodeMirror.Editor & {doc: CodeMirror.Doc, display: {maxLineLength: number}}} instance */ instance => {
+    this._bindCMHandler('blur', (instance: any) => {
       if (!this.props.enableFormatting) return;
 
-      require(['prettier/standalone', 'prettier/parser-babel'], (/** @type {{format: (code: string, options: Record<string, unknown>) => string}} */ prettier, babel: unknown) => {
+      require(['prettier/standalone', 'prettier/parser-babel'], (prettier: {format: (code: string, options: Record<string, unknown>) => string}, babel: unknown) => {
         const currValue = instance.doc.getValue();
         const options = Object.assign({},
           defaultPrettierOptions,
@@ -166,10 +150,8 @@ export default class Editor extends React.Component {
     );
 
     if (this.props.highlight) {
-      /** @type {[number, number] | null} */
-      this._markerRange = null;
-      /** @type {CodeMirror.TextMarker | null} */
-      this._mark = null;
+            this._markerRange = null;
+            this._mark = null;
       this._subscriptions.push(
         subscribe('HIGHLIGHT', /** @param {{range?: [number, number]}} data */ ({range}) => {
           if (!range) {
@@ -181,7 +163,7 @@ export default class Editor extends React.Component {
           if (this._mark) {
             this._mark.clear();
           }
-          let [start, end] = range.map(/** @param {number} index */ index => this._posFromIndex(doc, index));
+          let [start, end] = range.map((index: number) => this._posFromIndex(doc, index));
           if (!start || !end) {
             this._markerRange = this._mark = null;
             return;
@@ -224,11 +206,7 @@ export default class Editor extends React.Component {
     this.codeMirror = null;
   }
 
-  /**
-   * @param {string} event
-   * @param {(...args: unknown[]) => void} handler
-   */
-  _bindCMHandler(event, handler) {
+    _bindCMHandler(event: string, handler: (...args: unknown[]) => void) {
     this._CMHandlers.push(event, handler);
     // @ts-expect-error — CodeMirror.on overloads don't accept generic string event names
     this.codeMirror.on(event, handler);

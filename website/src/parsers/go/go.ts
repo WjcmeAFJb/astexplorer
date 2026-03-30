@@ -1,8 +1,6 @@
 import defaultParserInterface from '../utils/defaultParserInterface'
 
-/**
- * @typedef {{init: () => Promise<void>, parseFile: (code: string) => Record<string, unknown>}} GoParser
- */
+type GoParser = {init: () => Promise<void>, parseFile: (code: string) => Record<string, unknown>};
 
 const ID = 'go'
 
@@ -31,9 +29,9 @@ export default {
     return node._type
   },
 
-  nodeToRange(/** @type {{Loc?: {Start: {Offset: number}, End: {Offset: number}}, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {Loc?: {Start: {Offset: number}, End: {Offset: number}}, [key: string]: unknown}) {
     if (node.Loc) {
-      return [node.Loc.Start, node.Loc.End].map((/** @type {{Offset: number}} */ { Offset }) => Offset)
+      return [node.Loc.Start, node.Loc.End].map(({ Offset }: {Offset: number}) => Offset)
     }
   },
 }

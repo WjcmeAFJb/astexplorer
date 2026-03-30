@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'json-to-ast/package.json';
+import type { ValueNode as JsonToAstNode } from 'json-to-ast';
 
-/**
- * @typedef {typeof import('json-to-ast')} JsonToAstParser
- * @typedef {import('json-to-ast').ValueNode} JsonToAstNode
- */
+type JsonToAstParser = typeof import('json-to-ast');
 
 const ID = 'jsonToAst';
 
@@ -25,7 +23,7 @@ export default {
     return jsonToAst(code);
   },
 
-  nodeToRange(/** @type {import('json-to-ast').ASTNode} */ {loc}) {
+  nodeToRange({loc}: import('json-to-ast').ASTNode) {
     if (loc) {
       return [
         loc.start.offset,

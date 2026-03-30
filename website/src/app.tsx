@@ -33,13 +33,7 @@ function resize() {
   publish('PANEL_RESIZE');
 }
 
-/**
- * @param {Object} props
- * @param {boolean} [props.showTransformer]
- * @param {boolean} [props.hasError]
- * @returns {React.ReactElement}
- */
-function App({showTransformer, hasError}) {
+function App({showTransformer, hasError}: any): React.ReactElement {
   return (
     <>
       <ErrorMessageContainer />
@@ -78,9 +72,8 @@ const AppContainer = connect(
   }),
 )(App);
 
-/** @type {typeof compose} */
-const composeEnhancers = /** @type {typeof compose} */ (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
-const storageAdapter = new StorageHandler(/** @type {import('./types').StorageBackend[]} */ ([gist, parse]));
+const composeEnhancers: typeof compose = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose) || compose;
+const storageAdapter = new StorageHandler(([gist, parse] as import('./types').StorageBackend[]));
 const store = createStore(
   astexplorer,
   revive(LocalStorage.readState()),
@@ -95,7 +88,7 @@ store.subscribe(debounce(() => {
     LocalStorage.writeState(persist(state));
   }
 }));
-store.dispatch({type: 'INIT'});
+store.dispatch({type: 'INIT'} as any);
 
 render(
   <Provider store={store}>
@@ -105,11 +98,11 @@ render(
 );
 
 global.onhashchange = () => {
-  store.dispatch(loadSnippet());
+  store.dispatch(loadSnippet() as any);
 };
 
 if (location.hash.length > 1) {
-  store.dispatch(loadSnippet());
+  store.dispatch(loadSnippet() as any);
 }
 
 global.onbeforeunload = () => {

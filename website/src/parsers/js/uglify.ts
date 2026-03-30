@@ -25,7 +25,7 @@ export default {
     });
   },
 
-  parse(/** @type {{parse: (code: string, options?: object) => object}} */ UglifyJS, code: string) {
+  parse(UglifyJS: {parse: (code: string, options?: object) => object}, code: string) {
     return UglifyJS.parse(code);
   },
 
@@ -37,7 +37,7 @@ export default {
     return type;
   },
 
-  nodeToRange(/** @type {{TYPE?: string, start?: {pos: number, endpos: number}, end?: {pos: number, endpos: number}, pos?: number, endpos?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {TYPE?: string, start?: {pos: number, endpos: number}, end?: {pos: number, endpos: number}, pos?: number, endpos?: number, [key: string]: unknown}) {
     let start, end;
     switch (node.TYPE) {
       case 'Token':

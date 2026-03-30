@@ -1,19 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-/**
- * @typedef {Object} SettingsDialogProps
- * @property {(parser: import('../../types').Parser, settings: Record<string, unknown>) => void} [onSave]
- * @property {() => void} [onWantToClose]
- * @property {boolean} [visible]
- * @property {import('../../types').Parser} parser
- * @property {Record<string, unknown> | null} [parserSettings]
- */
+type SettingsDialogProps = {
+  onSave?: (parser: import('../../types').Parser, settings: Record<string, unknown>) => void;
+  onWantToClose?: () => void;
+  visible?: boolean;
+  parser: import('../../types').Parser;
+  parserSettings?: Record<string, unknown> | null;
+};
 
-/** @extends {React.Component<SettingsDialogProps, {parserSettings: Record<string, unknown> | null}>} */
-export default class SettingsDialog extends React.Component {
-  /** @param {SettingsDialogProps} props */
-  constructor(props) {
+export default class SettingsDialog extends React.Component<SettingsDialogProps, {parserSettings: Record<string, unknown> | null}> {
+    constructor(props: SettingsDialogProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._outerClick = this._outerClick.bind(this);
@@ -28,20 +25,17 @@ export default class SettingsDialog extends React.Component {
     };
   }
 
-  /** @param {SettingsDialogProps} nextProps */
-  UNSAFE_componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps: SettingsDialogProps) {
     this.setState({parserSettings: nextProps.parserSettings});
   }
 
-  /** @param {React.MouseEvent<HTMLDivElement>} event */
-  _outerClick(event) {
+    _outerClick(event: React.MouseEvent<HTMLDivElement>) {
     if (event.target === document.getElementById('SettingsDialog')) {
       this._saveAndClose();
     }
   }
 
-  /** @param {Record<string, unknown>} newSettings */
-  _onChange(newSettings) {
+    _onChange(newSettings: Record<string, unknown>) {
     this.setState({parserSettings: newSettings});
   }
 

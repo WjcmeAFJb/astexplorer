@@ -1,28 +1,20 @@
-/** @typedef {import('../types').Category} Category */
-/** @typedef {import('../types').Parser} Parser */
-/** @typedef {import('../types').Transformer} Transformer */
+import type { Transformer } from '../types';
+import type { Parser } from '../types';
+import type { Category } from '../types';
 
 const localRequire = require.context('./', true, /^\.\/(?!utils|transpilers)[^/]+\/(transformers\/([^/]+)\/)?(codeExample\.txt|[^/]+?\.js)$/);
 
-/**
- * @template {Record<string, unknown>} T
- * @param {T & {__esModule?: boolean, default?: T}} module
- * @returns {T}
- */
-function interopRequire(module) {
-  return /** @type {T} */ (module.__esModule ? module.default : module);
+function interopRequire<T extends Record<string, unknown>>(module: {__esModule?: boolean, default?: T, [key: string]: unknown}): T {
+  return (module.__esModule ? module.default : module as T);
 }
 
 const files =
   localRequire.keys()
   .map(name => name.split('/').slice(1));
 
-/** @type {Record<string, Category>} */
-const categoryByID = {};
-/** @type {Record<string, Parser>} */
-const parserByID = {};
-/** @type {Record<string, Transformer>} */
-const transformerByID = {};
+const categoryByID: Record<string, Category> = {};
+const parserByID: Record<string, Parser> = {};
+const transformerByID: Record<string, Transformer> = {};
 
 const restrictedParserNames = new Set([
   'index.js',
@@ -31,17 +23,15 @@ const restrictedParserNames = new Set([
   'utils',
 ]);
 
-/** @type {Category[]} */
-export const categories =
+export const categories: Category[] =
   files
   .filter(name => name[1] === 'index.js')
   .map(([catName]) => {
-    /** @type {Category} */
-    let category = localRequire(`./${catName}/index.js`);
+        let category: Category = localRequire(`./${catName}/index.js`);
 
     categoryByID[category.id] = category;
 
-    category.codeExample = /** @type {string} */ (/** @type {unknown} */ (interopRequire(localRequire(`./${catName}/codeExample.txt`))))
+    category.codeExample = ((interopRequire(localRequire(`./${catName}/codeExample.txt`)) as unknown) as string)
 
     let catFiles =
       files
@@ -52,8 +42,7 @@ export const categories =
       catFiles
       .filter(([parserName]) => !restrictedParserNames.has(parserName))
       .map(([parserName]) => {
-        /** @type {Parser} */
-        let parser = interopRequire(localRequire(`./${catName}/${parserName}`));
+                let parser: Parser = interopRequire(localRequire(`./${catName}/${parserName}`));
         parserByID[parser.id] = parser;
         parser.category = category;
         return parser;
@@ -64,10 +53,9 @@ export const categories =
       .filter(([dirName, , fileName]) => dirName === 'transformers' && fileName === 'index.js')
       .map(([, transformerName]) => {
         const transformerDir = `./${catName}/transformers/${transformerName}`;
-        /** @type {Transformer} */
-        const transformer = interopRequire(localRequire(`${transformerDir}/index.js`));
+                const transformer: Transformer = interopRequire(localRequire(`${transformerDir}/index.js`));
         transformerByID[transformer.id] = transformer;
-        transformer.defaultTransform = /** @type {string} */ (/** @type {unknown} */ (interopRequire(localRequire(`${transformerDir}/codeExample.txt`))));
+        transformer.defaultTransform = ((interopRequire(localRequire(`${transformerDir}/codeExample.txt`)) as unknown) as string);
         return transformer;
       });
 
@@ -79,34 +67,18 @@ export function getDefaultCategory() {
   return categoryByID.javascript;
 }
 
-/**
- * @param {Category} [category]
- * @returns {Parser}
- */
-export function getDefaultParser(category = getDefaultCategory()) {
+export function getDefaultParser(category?: Category): Parser {
   return category.parsers.filter(p => p.showInMenu)[0];
 }
 
-/**
- * @param {string} id
- * @returns {Category}
- */
-export function getCategoryByID(id) {
+export function getCategoryByID(id: string): Category {
   return categoryByID[id];
 }
 
-/**
- * @param {string} id
- * @returns {Parser}
- */
-export function getParserByID(id) {
+export function getParserByID(id: string): Parser {
   return parserByID[id];
 }
 
-/**
- * @param {string} id
- * @returns {Transformer}
- */
-export function getTransformerByID(id) {
+export function getTransformerByID(id: string): Transformer {
   return transformerByID[id];
 }

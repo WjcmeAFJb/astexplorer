@@ -3,19 +3,13 @@ import ErrorMessage from '../components/ErrorMessage';
 import {clearError} from '../store/actions';
 import {getError} from '../store/selectors';
 
-/**
- * @param {import('../types').AppState} state
- */
-function mapStateToProps(state) {
+function mapStateToProps(state: import('../types').AppState) {
   return {
     error: getError(state),
   };
 }
 
-/**
- * @param {import('redux').Dispatch} dispatch
- */
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: import('redux').Dispatch) {
   return {
     onWantToClose: () => dispatch(clearError()),
   };

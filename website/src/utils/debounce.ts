@@ -1,15 +1,7 @@
-/**
- * @param {(...args: unknown[]) => void} f
- * @param {number} [timeout=100]
- * @returns {(...args: unknown[]) => void}
- */
-export default function debounce(f, timeout=100) {
-  /** @type {ReturnType<typeof setTimeout> | null} */
-  let timer;
-  /** @type {unknown[]} */
-  let lastArgs;
-  /** @type {unknown} */
-  let lastThis;
+export default function debounce(f: (...args: unknown[]) => void, timeout?: number): (...args: unknown[]) => void {
+    let timer: ReturnType<typeof setTimeout> | null;
+    let lastArgs: unknown[];
+    let lastThis: unknown;
 
   return function(...args) {
     lastThis = this;

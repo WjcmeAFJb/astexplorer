@@ -24,21 +24,21 @@ export default {
     });
   },
 
-  parse(parsers: typeof import('@swc/wasm-web'), code: string, options: import('@swc/wasm-web').ParseOptions = /** @type {import('@swc/wasm-web').ParseOptions} */ ({})) {
+  parse(parsers: typeof import('@swc/wasm-web'), code: string, options: import('@swc/wasm-web').ParseOptions = ({} as import('@swc/wasm-web').ParseOptions)) {
     try {
-      return parsers.parseSync(code, /** @type {import('@swc/wasm-web').ParseOptions} */ ({...this.getDefaultOptions(), ...options}));
+      return parsers.parseSync(code, ({...this.getDefaultOptions(), ...options} as import('@swc/wasm-web').ParseOptions));
     } catch (message) {
-      throw new SyntaxError(/** @type {string} */ (message));
+      throw new SyntaxError((message as string));
     }
   },
 
-  nodeToRange(/** @type {{span?: {start: number, end: number}, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {span?: {start: number, end: number}, [key: string]: unknown}) {
     if (node && node.span && typeof node.span.start === 'number') {
       return [node.span.start, node.span.end];
     }
   },
 
-  getNodeName(/** @type {{type?: string, [key: string]: unknown}} */ node) {
+  getNodeName(node: {type?: string, [key: string]: unknown}) {
     return node.type;
   },
 

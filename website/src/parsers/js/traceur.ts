@@ -5,7 +5,9 @@ const ID = 'traceur';
 const FILENAME = 'astExplorer.js';
 
 class Comment {
-  constructor(/** @type {{toString(): string, start: {offset: number, line: number, column: number}, end: {offset: number}}} */ sourceRange) {
+  type: string;
+  value: string;
+  constructor(sourceRange: {toString(): string, start: {offset: number, line: number, column: number}, end: {offset: number}}) {
     this.type = 'COMMENT';
     Object.defineProperty(this, 'location', { value: sourceRange });
     this.value = sourceRange.toString();
@@ -21,14 +23,14 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['location']),
 
-  loadParser(/** @type {(realParser: {syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: (...args: unknown[]) => void}, Options: new (opts: Record<string, unknown>) => unknown}}) => void} */ callback) {
+  loadParser(callback: (realParser: {syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: (...args: unknown[]) => void}, Options: new (opts: Record<string, unknown>) => unknown}}) => void) {
     require(['exports-loader?traceur!traceur/bin/traceur'], callback);
   },
 
-  parse(/** @type {{syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: (...args: unknown[]) => void}, Options: new (opts: Record<string, unknown>) => unknown}}} */ traceur, code: string, options: Record<string, unknown>) {
+  parse(traceur: {syntax: {SourceFile: new (name: string, code: string) => unknown, Parser: new (sf: unknown, er: unknown, opts: unknown) => Record<string, unknown>}, util: {ErrorReporter: new () => {reportMessageInternal: (...args: unknown[]) => void}, Options: new (opts: Record<string, unknown>) => unknown}}, code: string, options: Record<string, unknown>) {
     let sourceFile = new traceur.syntax.SourceFile(FILENAME, code);
     let errorReporter = new traceur.util.ErrorReporter();
-    errorReporter.reportMessageInternal = (/** @type {{start: {offset: number, line: number, column: number}, end: {offset: number}, toString(): string}} */ sourceRange, message: string) => {
+    errorReporter.reportMessageInternal = (sourceRange: {start: {offset: number, line: number, column: number}, end: {offset: number}, toString(): string}, message: string) => {
       if (options.TolerateErrors) {
         return;
       }
@@ -43,14 +45,13 @@ export default {
       err.columnNumber = start.column;
       throw err;
     };
-    let parser = /** @type {{handleComment: (...args: unknown[]) => void, parseScript: () => Record<string, unknown>, parseModule: () => Record<string, unknown>}} */ (new traceur.syntax.Parser(
+    let parser = (new traceur.syntax.Parser(
       sourceFile,
       errorReporter,
       new traceur.util.Options(options),
-    ));
-    /** @type {Comment[]} */
-    let comments = [];
-    parser.handleComment = (/** @type {{toString(): string, start: {offset: number, line: number, column: number}, end: {offset: number}}} */ sourceRange) => {
+    ) as {handleComment: (...args: unknown[]) => void, parseScript: () => Record<string, unknown>, parseModule: () => Record<string, unknown>});
+        let comments: Comment[] = [];
+    parser.handleComment = (sourceRange: {toString(): string, start: {offset: number, line: number, column: number}, end: {offset: number}}) => {
       comments.push(new Comment(sourceRange));
     };
     let ast = options.SourceType === 'Script' ?
@@ -60,7 +61,7 @@ export default {
     return ast;
   },
 
-  getNodeName(/** @type {{constructor: {name: string}, [key: string]: unknown}} */ node) {
+  getNodeName(node: {constructor: {name: string}, [key: string]: unknown}) {
     return node.constructor.name;
   },
 
@@ -87,7 +88,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {{location?: {start: {offset: number}, end: {offset: number}}, [key: string]: unknown}} */ { location: loc }) {
+  nodeToRange({ location: loc }: {location?: {start: {offset: number}, end: {offset: number}}, [key: string]: unknown}) {
     if (loc) {
       return [loc.start.offset, loc.end.offset];
     }

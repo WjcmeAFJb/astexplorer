@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'cssom/package.json';
 
-/**
- * @typedef {{parse: (code: string) => CSSOMNode}} CSSOMParser
- * @typedef {{__starts?: number, __ends?: number, parentRule?: CSSOMNode, cssRules?: CSSOMNode[], style?: Record<string, string>, constructor: Function, [key: string]: unknown}} CSSOMNode
- */
+type CSSOMParser = {parse: (code: string) => CSSOMNode};
+type CSSOMNode = {__starts?: number, __ends?: number, parentRule?: CSSOMNode, cssRules?: CSSOMNode[], style?: Record<string, string>, constructor: Function, [key: string]: unknown};
 
 const ID = 'cssom';
 

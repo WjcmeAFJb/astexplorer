@@ -1,17 +1,12 @@
-/** @typedef {import('../types').Parser} Parser */
-/** @typedef {import('../types').ParseResult} ParseResult */
-/** @typedef {import('../types').TreeFilter} TreeFilter */
+
 
 import {getParser, getParserSettings, getCode} from './selectors';
 import {ignoreKeysFilter, locationInformationFilter, functionFilter, emptyKeysFilter, typeKeysFilter} from '../core/TreeAdapter';
+import type { TreeFilter } from '../types';
+import type { ParseResult } from '../types';
+import type { Parser } from '../types';
 
-/**
- * @param {Parser} parser
- * @param {string} code
- * @param {Record<string, unknown> | null} parserSettings
- * @returns {Promise<unknown>}
- */
-function parse(parser, code, parserSettings) {
+function parse(parser: Parser, code: string, parserSettings: Record<string, unknown> | null): Promise<unknown> {
   if (!parser._promise) {
     parser._promise = new Promise(parser.loadParser);
   }
@@ -24,8 +19,7 @@ function parse(parser, code, parserSettings) {
   );
 }
 
-/** @type {(store: import('redux').MiddlewareAPI<import('redux').Dispatch, import('../types').AppState>) => (next: import('redux').Dispatch) => (action: import('../types').Action) => unknown} */
-export default store => next => action => {
+export default (store: any) => (next: any) => (action: any) => {
   const oldState = store.getState();
   next(action);
   const newState = store.getState();
@@ -86,7 +80,7 @@ export default store => next => action => {
           },
         });
       },
-      /** @param {Error} error */ error => {
+      (error: Error) => {
         console.error(error); // eslint-disable-line no-console
         next({
           type: 'SET_PARSE_RESULT',

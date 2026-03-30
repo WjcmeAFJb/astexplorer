@@ -4,7 +4,7 @@ import pkg from 'shift-parser/package.json';
 const ID = 'shift';
 
 /** @type {Map<unknown, {start: {offset: number}, end: {offset: number}}> | undefined} */
-let lastParsedLocations;
+let lastParsedLocations: any;
 
 export default {
   ...defaultParserInterface,
@@ -15,11 +15,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: {parseModuleWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, parseScriptWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, [key: string]: unknown}) => void} */ callback) {
+  loadParser(callback: (realParser: {parseModuleWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, parseScriptWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, [key: string]: unknown}) => void) {
     require(['shift-parser'], callback);
   },
 
-  parse(/** @type {{parseModuleWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, parseScriptWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, [key: string]: unknown}} */ shift, code: string, options: Record<string, unknown>) {
+  parse(shift: {parseModuleWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, parseScriptWithLocation: (code: string, options: Record<string, unknown>) => {tree: unknown, locations: Map<unknown, {start: {offset: number}, end: {offset: number}}>}, [key: string]: unknown}, code: string, options: Record<string, unknown>) {
     const parseMethod = options.sourceType === 'module' ?
       'parseModuleWithLocation' :
       'parseScriptWithLocation';

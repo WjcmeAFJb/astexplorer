@@ -1,4 +1,4 @@
-/** @typedef {MessageEvent<{type: string, action: string, value: unknown, requestId: number}>} WorkerMessageEvent */
+type WorkerMessageEvent = MessageEvent<{type: string, action: string, value: unknown, requestId: number}>;
 
 // Some ESLint rules don't understand the Webpack loader syntax.
 // eslint-disable-next-line require-in-package/require-in-package, import/default
@@ -6,9 +6,12 @@ import HermesWorker from 'worker-loader!./hermes-worker.js';
 
 // A Promise-based client for making requests to hermes-worker.js.
 export default class HermesWorkerClient {
+  _nextRequestId: number = 0;
+  _requests: Map<number, {resolve: (value: unknown) => void, reject: (reason: unknown) => void}> = new Map();
+  _worker: Worker;
+
   constructor() {
     this._nextRequestId = 0;
-    /** @type {Map<number, {resolve: (value: unknown) => void, reject: (reason: unknown) => void}>} */
     this._requests = new Map();
     this._worker = new HermesWorker();
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
@@ -44,8 +47,7 @@ export default class HermesWorkerClient {
     });
   }
 
-  /** @param {...unknown} args */
-  parse(...args) {
+    parse(...args: unknown[]) {
     return this._request('parse', args);
   }
 }

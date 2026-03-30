@@ -18,7 +18,7 @@ export default {
   },
 
   parse(parser: typeof import('san'), code: string, options: Parameters<typeof import('san').parseTemplate>[1]) {
-    return /** @type {import('san').AElement} */ ((/** @type {import('san').AElement} */ (parser.parseTemplate(code, options))).children[0]);
+    return (((parser.parseTemplate(code, options) as import('san').AElement)).children[0] as import('san').AElement);
   },
 
   opensByDefault(node: import('san').AElement, key: string) {

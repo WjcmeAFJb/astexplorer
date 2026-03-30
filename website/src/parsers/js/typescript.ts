@@ -4,8 +4,7 @@ import pkg from 'typescript/package.json';
 const ID = 'typescript';
 const FILENAME = 'astExplorer.ts';
 
-/** @type {((node: Record<string, unknown>, isTrailing?: boolean) => unknown[] | undefined) | undefined} */
-let getComments;
+let getComments: ((node: Record<string, unknown>, isTrailing?: boolean) => unknown[] | undefined) | undefined;
 const syntaxKind = {};
 
 // Typescript uses `process` somehow
@@ -28,7 +27,7 @@ export default {
     require(['typescript'], (_ts: typeof import('typescript')) => {
         // workarounds issue described at https://github.com/Microsoft/TypeScript/issues/18062
         for (const name of Object.keys(_ts.SyntaxKind).filter(x => isNaN(parseInt(x)))) {
-            const value = /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (_ts.SyntaxKind))[name];
+            const value = ((_ts.SyntaxKind as unknown) as Record<string, unknown>)[name];
             // @ts-expect-error — indexing dynamic object
             if (!syntaxKind[value]) {
                 // @ts-expect-error — indexing dynamic object
@@ -40,7 +39,7 @@ export default {
     });
   },
 
-  parse(ts: typeof import('typescript'), code: string, /** @type {{jsx?: boolean, experimentalDecorators?: boolean, experimentalAsyncFunctions?: boolean}} */ options) {
+  parse(ts: typeof import('typescript'), code: string, options: {jsx?: boolean, experimentalDecorators?: boolean, experimentalAsyncFunctions?: boolean}) {
     const compilerHost/*: ts.CompilerHost*/ = {
       fileExists: () => true,
       getCanonicalFileName: (filename: string) => filename,
@@ -50,11 +49,9 @@ export default {
       getSourceFile: (filename: string) => {
         return ts.createSourceFile(filename, code, ts.ScriptTarget.Latest, true);
       },
-      /** @returns {undefined} */
-      readFile: () => undefined,
+      readFile: (): undefined => undefined,
       useCaseSensitiveFileNames: () => true,
-      /** @returns {undefined} */
-      writeFile: () => undefined,
+      writeFile: (): undefined => undefined,
     };
 
     const filename = FILENAME + (options.jsx ? 'x' : '');
@@ -64,15 +61,15 @@ export default {
       target: ts.ScriptTarget.Latest,
       experimentalDecorators: options.experimentalDecorators,
       experimentalAsyncFunctions: options.experimentalAsyncFunctions,
-      jsx: options.jsx ? /** @type {import('typescript').JsxEmit} */ (/** @type {unknown} */ ('preserve')) : undefined,
+      jsx: options.jsx ? (('preserve' as unknown) as import('typescript').JsxEmit) : undefined,
     }, compilerHost);
 
     const sourceFile = program.getSourceFile(filename);
 
     getComments = (node: Record<string, unknown>, isTrailing: boolean | undefined) => {
       if (node.parent) {
-        const parent = /** @type {{end: number, pos: number, kind: number}} */ (node.parent);
-        const nodePos = /** @type {number} */ (isTrailing ? node.end : node.pos);
+        const parent = (node.parent as {end: number, pos: number, kind: number});
+        const nodePos = (isTrailing ? node.end : node.pos) as number;
         const parentPos = isTrailing ? parent.end : parent.pos;
 
         // oxlint-disable-next-line typescript-eslint(no-unsafe-enum-comparison) -- parent.kind is a number matching SyntaxKind enum
@@ -86,7 +83,7 @@ export default {
               // @ts-expect-error — indexing dynamic object
               // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
               comment.type = syntaxKind[comment.kind];
-              /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (comment)).text = sourceFile.text.substring(comment.pos, comment.end);
+              ((comment as unknown) as Record<string, unknown>).text = sourceFile.text.substring(comment.pos, comment.end);
             });
 
             return comments;
@@ -98,7 +95,7 @@ export default {
     return sourceFile;
   },
 
-  getNodeName(/** @type {{kind?: number, [key: string]: unknown}} */ node) {
+  getNodeName(node: {kind?: number, [key: string]: unknown}) {
     if (node.kind) {
       // @ts-expect-error — indexing dynamic object
       // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- @ts-expect-error makes type error
@@ -137,7 +134,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {{getStart?: () => number, getEnd?: () => number, pos?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {getStart?: () => number, getEnd?: () => number, pos?: number, end?: number, [key: string]: unknown}) {
     if (typeof node.getStart === 'function' &&
         typeof node.getEnd === 'function') {
       return [node.getStart(), node.getEnd()];

@@ -3,8 +3,7 @@ import pkg from 'regexpp/package.json';
 
 const ID = 'regexpp';
 
-/** @type {import("regexpp").RegExpParser.Options} */
-export const defaultOptions = {
+export const defaultOptions: import("regexpp").RegExpParser.Options = {
   strict: false,
   ecmaVersion: 2020,
 };

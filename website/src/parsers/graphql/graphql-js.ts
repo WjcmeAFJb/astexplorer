@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'graphql/package.json';
+import type { ASTNode as GraphQLASTNode } from 'graphql/language';
 
-/**
- * @typedef {{ parse: import('graphql/language').parse }} GraphQLParser
- * @typedef {import('graphql/language').ASTNode} GraphQLASTNode
- */
+type GraphQLParser = { parse: typeof import('graphql/language').parse };
 
 const ID = 'graphql-js';
 
@@ -19,18 +17,18 @@ export default {
   typeProps: new Set(['kind']),
 
   loadParser(callback: (realParser: GraphQLParser) => void) {
-    require(['graphql/language'], (/** @type {GraphQLParser} */ { parse }) => {
+    require(['graphql/language'], ({ parse }: GraphQLParser) => {
       // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- import type may not resolve
       callback({ parse });
     });
   },
 
-  parse(/** @type {GraphQLParser} */ { parse }, code: string, options: Record<string, unknown>) {
+  parse({ parse }: GraphQLParser, code: string, options: Record<string, unknown>) {
     // oxlint-disable-next-line typescript-eslint(no-unsafe-return), typescript-eslint(no-unsafe-call) -- import type may not resolve
     return parse(code, options);
   },
 
-  nodeToRange(/** @type {{loc?: {start: number, end: number}, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {loc?: {start: number, end: number}, [key: string]: unknown}) {
     if (node.loc) {
       return [node.loc.start, node.loc.end];
     }

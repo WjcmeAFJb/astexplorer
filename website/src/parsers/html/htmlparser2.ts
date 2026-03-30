@@ -1,8 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'htmlparser2/package.json';
+import type { Node as HtmlParser2Node } from 'domhandler';
 
-/** @typedef {import('domhandler').Node & { startIndex: number, endIndex: number, name?: string }} HtmlParser2Node */
-/** @typedef {{ Parser: { Parser: new (handler: unknown, options?: object) => { end(code: string): void } }, Handler: new () => { root: HtmlParser2Node, parser: { endIndex: number, tokenizer: { _index: number } } } }} HtmlParser2Module */
+type HtmlParser2Module = { Parser: { Parser: new (handler: unknown, options?: object) => { end(code: string): void } }, Handler: new () => { root: HtmlParser2Node, parser: { endIndex: number, tokenizer: { _index: number } } } };
 
 const ID = 'htmlparser2';
 
@@ -17,7 +17,7 @@ export default {
   typeProps: new Set(['type', 'name']),
 
   loadParser(callback: (realParser: HtmlParser2Module) => void) {
-    require(['htmlparser2/lib/Parser', 'domhandler'], (/** @type {{Parser: new (handler: unknown, options?: object) => {end(code: string): void}}} */ Parser, /** @type {{DomHandler: new (options: object) => {root: HtmlParser2Node, parser: {endIndex: number, tokenizer: {_index: number}}, onprocessinginstruction(name: string, data: string): void}}} */ {DomHandler}) => {
+    require(['htmlparser2/lib/Parser', 'domhandler'], (Parser: {Parser: new (handler: unknown, options?: object) => {end(code: string): void}}, {DomHandler}: {DomHandler: new (options: object) => {root: HtmlParser2Node, parser: {endIndex: number, tokenizer: {_index: number}}, onprocessinginstruction(name: string, data: string): void}}) => {
       class Handler extends DomHandler {
         constructor() {
           super({ withStartIndices: true, withEndIndices: true });
@@ -32,11 +32,11 @@ export default {
 
       }
 
-      callback(/** @type {HtmlParser2Module} */ ({ Parser, Handler }));
+      callback(({ Parser, Handler } as HtmlParser2Module));
     });
   },
 
-  parse(/** @type {HtmlParser2Module} */ { Parser: {Parser}, Handler }, code: string, options: import('htmlparser2').ParserOptions) {
+  parse({ Parser: {Parser}, Handler }: HtmlParser2Module, code: string, options: import('htmlparser2').ParserOptions) {
     let handler = new Handler();
     new Parser(handler, options).end(code);
     return handler.root;
@@ -53,10 +53,9 @@ export default {
   },
 
   getNodeName(node: HtmlParser2Node) {
-    /** @type {string | undefined} */
-    let nodeName = node.type;
-    if (nodeName && node.name) {
-      nodeName += `(${node.name})`;
+        let nodeName: string | undefined = node.type;
+    if (nodeName && (node as any).name) {
+      nodeName += `(${(node as any).name})`;
     }
     return nodeName;
   },

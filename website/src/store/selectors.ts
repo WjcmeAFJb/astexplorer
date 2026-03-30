@@ -1,24 +1,21 @@
-/** @typedef {import('../types').AppState} AppState */
-/** @typedef {import('../types').Parser} Parser */
-/** @typedef {import('../types').Transformer} Transformer */
-/** @typedef {import('../types').Revision} Revision */
-/** @typedef {import('../types').ParseResult} ParseResult */
-/** @typedef {import('../types').TransformResult} TransformResult */
 
+
+// @ts-expect-error — no declaration file
 import isEqual from 'lodash.isequal';
 import {getParserByID, getTransformerByID} from '../parsers';
+import type { TransformResult } from '../types';
+import type { ParseResult } from '../types';
+import type { Revision } from '../types';
+import type { Transformer } from '../types';
+import type { Parser } from '../types';
+import type { AppState } from '../types';
 
 // Our selectors are not computationally expensive so we can just use this
 // implementation.
 // createSelector uses Function.apply which loses type information.
 // Callback parameters are untyped (any) because they come from heterogeneous
 // dependency return types. Each call site uses @type to declare the actual signature.
-/**
- * @param {Array<(state: AppState) => unknown>} deps
- * @param {(...args: unknown[]) => unknown} f
- * @returns {(state: AppState) => *}
- */
-function createSelector(deps, f) {
+function createSelector<R = any>(deps: Array<(state: AppState) => unknown>, f: (...args: any[]) => R): (state: AppState) => R {
   return function(state) {
     // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- Function.apply returns any; TS limitation
     return f.apply(this, deps.map(d => d(state)));
@@ -27,200 +24,111 @@ function createSelector(deps, f) {
 
 // UI related
 
-/**
- * @param {AppState} state
- * @returns {boolean}
- */
-export function getFormattingState(state) {
+export function getFormattingState(state: AppState): boolean {
   return state.enableFormatting;
 }
 
-/**
- * @param {AppState} state
- * @returns {number | null}
- */
-export function getCursor(state) {
+export function getCursor(state: AppState): number | null {
   return state.cursor;
 }
 
-/**
- * @param {AppState} state
- * @returns {Error | null}
- */
-export function getError(state) {
+export function getError(state: AppState): Error | null {
   return state.error;
 }
 
-/**
- * @param {AppState} state
- * @returns {boolean}
- */
-export function isLoadingSnippet(state) {
+export function isLoadingSnippet(state: AppState): boolean {
   return state.loadingSnippet;
 }
 
-/**
- * @param {AppState} state
- * @returns {boolean}
- */
-export function showSettingsDialog(state) {
+export function showSettingsDialog(state: AppState): boolean {
   return state.showSettingsDialog;
 }
 
-/**
- * @param {AppState} state
- * @returns {boolean}
- */
-export function showSettingsDrawer(state) {
+export function showSettingsDrawer(state: AppState): boolean {
   return state.showSettingsDrawer;
 }
 
-/**
- * @param {AppState} state
- * @returns {boolean}
- */
-export function showShareDialog(state) {
+export function showShareDialog(state: AppState): boolean {
   return state.showShareDialog;
 }
 
-/**
- * @param {AppState} state
- * @returns {boolean}
- */
-export function isForking(state) {
+export function isForking(state: AppState): boolean {
   return state.forking;
 }
 
-/**
- * @param {AppState} state
- * @returns {boolean}
- */
-export function isSaving(state) {
+export function isSaving(state: AppState): boolean {
   return state.saving;
 }
 
 // Parser related
 
-/**
- * @param {AppState} state
- * @returns {Parser}
- */
-export function getParser(state) {
+export function getParser(state: AppState): Parser {
   return getParserByID(state.workbench.parser);
 }
 
-/**
- * @param {AppState} state
- * @returns {Record<string, unknown> | null}
- */
-export function getParserSettings(state) {
+export function getParserSettings(state: AppState): Record<string, unknown> | null {
   return state.workbench.parserSettings;
 }
 
-/**
- * @param {AppState} state
- * @returns {ParseResult | undefined}
- */
-export function getParseResult(state) {
+export function getParseResult(state: AppState): ParseResult | undefined {
   return state.workbench.parseResult;
 }
 
 // Code related
-/**
- * @param {AppState} state
- * @returns {Revision | null | undefined}
- */
-export function getRevision(state) {
+export function getRevision(state: AppState): Revision | null | undefined {
   return state.activeRevision;
 }
 
-/**
- * @param {AppState} state
- * @returns {string}
- */
-export function getCode(state) {
+export function getCode(state: AppState): string {
   return state.workbench.code;
 }
 
-/**
- * @param {AppState} state
- * @returns {string}
- */
-export function getInitialCode(state) {
+export function getInitialCode(state: AppState): string {
   return state.workbench.initialCode;
 }
 
-/**
- * @param {AppState} state
- * @returns {string}
- */
-export function getKeyMap (state) {
+export function getKeyMap (state: AppState): string {
   return state.workbench.keyMap;
 }
 
-
-/** @type {(state: AppState) => boolean} */
-const isCodeDirty = createSelector(
+const isCodeDirty: (state: AppState) => boolean = createSelector(
   [getCode, getInitialCode],
   (code: string, initialCode: string) => code !== initialCode,
 );
 
 // Transform related
 
-/**
- * @param {AppState} state
- * @returns {string}
- */
-export function getTransformCode(state) {
+export function getTransformCode(state: AppState): string {
   return state.workbench.transform.code;
 }
 
-/**
- * @param {AppState} state
- * @returns {string}
- */
-export function getInitialTransformCode(state) {
+export function getInitialTransformCode(state: AppState): string {
   return state.workbench.transform.initialCode;
 }
 
-/**
- * @param {AppState} state
- * @returns {Transformer | undefined}
- */
-export function getTransformer(state) {
+export function getTransformer(state: AppState): Transformer | undefined {
   return getTransformerByID(state.workbench.transform.transformer);
 }
 
-/**
- * @param {AppState} state
- * @returns {TransformResult | null}
- */
-export function getTransformResult(state) {
+export function getTransformResult(state: AppState): TransformResult | null {
   return state.workbench.transform.transformResult;
 }
 
-/**
- * @param {AppState} state
- * @returns {boolean}
- */
-export function showTransformer(state) {
+export function showTransformer(state: AppState): boolean {
   return state.showTransformPanel;
 }
 
-/** @type {(state: AppState) => boolean} */
-const isTransformDirty = createSelector(
+const isTransformDirty: (state: AppState) => boolean = createSelector(
   [getTransformCode, getInitialTransformCode],
   (code: string, initialCode: string) => code !== initialCode,
 );
 
-/** @type {(state: AppState) => boolean} */
-export const canFork = createSelector(
+export const canFork: (state: AppState) => boolean = createSelector(
   [getRevision],
   (revision: Revision | null | undefined) => !!revision,
 );
 
-/** @type {(state: AppState) => boolean} */
-const canSaveCode = createSelector(
+const canSaveCode: (state: AppState) => boolean = createSelector(
   [getRevision, isCodeDirty],
   (revision: Revision | null | undefined, dirty: boolean) => (
     !revision || // can always save if there is no revision
@@ -228,14 +136,12 @@ const canSaveCode = createSelector(
   ),
 );
 
-/** @type {(state: AppState) => boolean} */
-export const canSaveTransform = createSelector(
+export const canSaveTransform: (state: AppState) => boolean = createSelector(
   [showTransformer, isTransformDirty],
   (showTransformer: boolean, dirty: boolean) => showTransformer && dirty,
 );
 
-/** @type {(state: AppState) => boolean} */
-const didParserSettingsChange = createSelector(
+const didParserSettingsChange: (state: AppState) => boolean = createSelector(
   [getParserSettings, getRevision, getParser],
   (parserSettings: Record<string, unknown> | null, revision: Revision | null | undefined, parser: Parser) => {
     const savedParserSettings = revision && revision.getParserSettings();
@@ -250,8 +156,7 @@ const didParserSettingsChange = createSelector(
   },
 );
 
-/** @type {(state: AppState) => boolean} */
-export const canSave = createSelector(
+export const canSave: (state: AppState) => boolean = createSelector(
   [getRevision, canSaveCode, canSaveTransform, didParserSettingsChange],
   (revision: Revision | null | undefined, canSaveCode: boolean, canSaveTransform: boolean, didParserSettingsChange: boolean) => (
     (canSaveCode || canSaveTransform || didParserSettingsChange) &&

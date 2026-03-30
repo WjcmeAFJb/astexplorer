@@ -1,11 +1,10 @@
-/** @typedef {import('../types').AppState} AppState */
+import type { AppState } from '../types';
 
 const storage = global.localStorage;
 const key = 'explorerSettingsV1';
 const noop = () => {};
 
-/** @type {(state: Record<string, unknown>) => void} */
-export const writeState = storage ?
+export const writeState: (state: Record<string, unknown>) => void = storage ?
   state => {
     try {
       storage.setItem(key, JSON.stringify(state));
@@ -16,17 +15,16 @@ export const writeState = storage ?
   } :
   noop;
 
-/** @type {() => AppState | undefined} */
-export const readState = storage ?
+export const readState: () => AppState | undefined = storage ?
   () => {
     try {
       const state = storage.getItem(key);
       if (state) {
-        return /** @type {AppState} */ (JSON.parse(state));
+        return (JSON.parse(state) as AppState);
       }
     } catch(e) {
       // eslint-disable-next-line no-console
       console.warn('Unable to read from local storage.');
     }
   } :
-  /** @type {() => AppState | undefined} */ (noop);
+  (noop as () => AppState | undefined);

@@ -5,13 +5,10 @@ import Editor from './Editor';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/tern/tern.css';
 
-/** @type {CodeMirror.TernServer | null} */
-let server;
+let server: any;
 
-// @ts-expect-error — propTypes static is a subset of Editor.propTypes (missing enableFormatting); intentional as this subclass doesn't use it
 export default class JSCodeshiftEditor extends Editor {
-  /** @param {import('./Editor').EditorProps} props */
-  constructor(props) {
+    constructor(props: import('./Editor').EditorProps) {
     super(props);
     loadTern();
   }
@@ -25,7 +22,7 @@ export default class JSCodeshiftEditor extends Editor {
       'Ctrl-O': cm => server && server.showDocs(cm),
     });
 
-    this._bindCMHandler('cursorActivity', /** @param {CodeMirror.Editor} cm */ cm => {
+    this._bindCMHandler('cursorActivity', (cm: CodeMirror.Editor) => {
       server && server.updateArgHints(cm);
     });
   }
@@ -49,10 +46,10 @@ function loadTern() {
           '../defs/jscodeshift.json',
           'tern/defs/ecmascript.json',
         ],
-        (/** @type {{registerPlugin: (name: string, init: (...args: unknown[]) => void) => void, [k: string]: unknown}} */ tern, _: unknown, /** @type {{cx: () => {topScope: unknown, definitions: Record<string, Record<string, unknown>>}, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}} */ infer, jscs_def: unknown, ecmascript: unknown) => {
+        (tern: {registerPlugin: (name: string, init: (...args: unknown[]) => void) => void, [k: string]: unknown}, _: unknown, infer: {cx: () => {topScope: unknown, definitions: Record<string, Record<string, unknown>>}, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}, jscs_def: unknown, ecmascript: unknown) => {
           global.tern = tern;
-          tern.registerPlugin('transformer', /** @param {{on: (event: string, handler: (...args: unknown[]) => void) => void} & Record<string, unknown>} server */ server => {
-            server.on('afterLoad', /** @param {{scope: {props: Record<string, {getFunctionType: () => {propagate: (arg: unknown) => void}}>}} & Record<string, unknown>} file */ file => {
+          tern.registerPlugin('transformer', /** @param {{on: (event: string, handler: (...args: unknown[]) => void) => void} & Record<string, unknown>} server */ (server: any) => {
+            server.on('afterLoad', (file: any) => {
               const fnVal = file.scope.props.transformer;
               if (fnVal) {
                 const fnType = fnVal.getFunctionType();
@@ -70,7 +67,7 @@ function loadTern() {
             });
           });
 
-          server = new CodeMirror.TernServer({
+          server = new (CodeMirror as any).TernServer({
             defs: [jscs_def, ecmascript],
             plugins: {
               transformer: {strong: true},

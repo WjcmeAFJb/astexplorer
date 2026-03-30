@@ -17,14 +17,14 @@ export default {
     require(['vue-eslint-parser'], callback);
   },
 
-  parse(parser: typeof import('vue-eslint-parser'), code: string, /** @type {{ecmaVersion?: number, sourceType?: string, vueFeatures?: {filter?: boolean, interpolationAsNonHTML?: boolean}}} */ options) {
+  parse(parser: typeof import('vue-eslint-parser'), code: string, options: {ecmaVersion?: number, sourceType?: string, vueFeatures?: {filter?: boolean, interpolationAsNonHTML?: boolean}}) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
     return parser.parse(code, options);
   },
 
-  nodeToRange(/** @type {{type?: string, name?: string, range?: [number, number], [key: string]: unknown}} */ node) {
+  nodeToRange(node: {type?: string, name?: string, range?: [number, number], [key: string]: unknown}) {
     if (node.type || node.name) {
       return node.range;
     }
@@ -34,7 +34,7 @@ export default {
     return key === 'children';
   },
 
-  getNodeName(/** @type {{tag?: string}} */ node) {
+  getNodeName(node: {tag?: string}) {
     return node.tag;
   },
 
@@ -61,7 +61,7 @@ export default {
           title: 'vueFeatures',
           fields: Object.keys(defaultOptions.vueFeatures),
           settings:
-          (/** @type {{vueFeatures?: {filter?: boolean, interpolationAsNonHTML?: boolean}}} */ settings) => settings.vueFeatures || {...defaultOptions.vueFeatures},
+          (settings: {vueFeatures?: {filter?: boolean, interpolationAsNonHTML?: boolean}}) => settings.vueFeatures || {...defaultOptions.vueFeatures},
         },
       ],
     };

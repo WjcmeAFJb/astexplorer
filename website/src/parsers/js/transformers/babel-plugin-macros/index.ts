@@ -10,16 +10,16 @@ export default {
 
   defaultParserID: 'babylon7',
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, babel: {transform: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}, macro: {(babel: object, options: object): unknown, createMacro: (...args: unknown[]) => unknown, MacroError: (...args: unknown[]) => unknown}}) => void} */ callback) {
+  loadTransformer(callback: (realTransformer: {transpile: (code: string) => string, babel: {transform: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}, macro: {(babel: object, options: object): unknown, createMacro: (...args: unknown[]) => unknown, MacroError: (...args: unknown[]) => unknown}}) => void) {
     require([
       '../../../transpilers/babel',
       'babel7',
       'recast',
       'babel-plugin-macros',
-    ], (/** @type {{default: (code: string) => string}} */ transpile, /** @type {{transform: (...args: unknown[]) => unknown}} */ babel, /** @type {{parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}} */ recast, /** @type {{(babel: object, options: object): unknown, createMacro: (...args: unknown[]) => unknown, MacroError: (...args: unknown[]) => unknown}} */ macro) => callback({ transpile: transpile.default, babel, recast, macro}));
+    ], (transpile: {default: (code: string) => string}, babel: {transform: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}, macro: {(babel: object, options: object): unknown, createMacro: (...args: unknown[]) => unknown, MacroError: (...args: unknown[]) => unknown}) => callback({ transpile: transpile.default, babel, recast, macro}));
   },
 
-  transform(/** @type {{transpile: (code: string) => string, babel: {transform: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}, macro: {(babel: object, options: object): unknown, createMacro: (...args: unknown[]) => unknown, MacroError: (...args: unknown[]) => unknown}}} */ { transpile, babel, recast, macro}, transformCode: string, code: string) {
+  transform({ transpile, babel, recast, macro}: {transpile: (code: string) => string, babel: {transform: (...args: unknown[]) => unknown}, recast: {parse: (...args: unknown[]) => unknown, print: (...args: unknown[]) => unknown}, macro: {(babel: object, options: object): unknown, createMacro: (...args: unknown[]) => unknown, MacroError: (...args: unknown[]) => unknown}}, transformCode: string, code: string) {
     transformCode = transpile(transformCode);
     let transform = compileModule( // eslint-disable-line no-shadow
       transformCode,

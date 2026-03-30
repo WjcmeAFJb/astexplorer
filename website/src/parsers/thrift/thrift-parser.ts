@@ -1,9 +1,7 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from '@creditkarma/thrift-parser/package.json';
 
-/**
- * @typedef {typeof import('@creditkarma/thrift-parser')} ThriftParserModule
- */
+type ThriftParserModule = typeof import('@creditkarma/thrift-parser');
 
 const ID = 'ck-thrift-parser';
 
@@ -20,21 +18,21 @@ export default {
     require(['@creditkarma/thrift-parser'], callback);
   },
 
-  parse(/** @type {ThriftParserModule} */ {parse}, code: string) {
+  parse({parse}: ThriftParserModule, code: string) {
     return parse(code);
   },
 
-  getNodeName(/** @type {{type?: string}} */ node) {
+  getNodeName(node: {type?: string}) {
     return node.type;
   },
 
-  nodeToRange(/** @type {{loc?: {start: {index: number}, end: {index: number}} | null}} */ { loc }) {
+  nodeToRange({ loc }: {loc?: {start: {index: number}, end: {index: number}} | null}) {
     if (loc !== null && loc !== undefined) {
       return [loc.start.index, loc.end.index];
     }
   },
 
-  opensByDefault(/** @type {{type?: string} | string} */ node, key: string) {
+  opensByDefault(node: {type?: string} | string, key: string) {
     return node === 'ThriftDocument' || key === 'body';
   },
 };

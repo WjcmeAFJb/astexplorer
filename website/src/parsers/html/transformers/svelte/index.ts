@@ -18,9 +18,9 @@ export default {
     );
   },
 
-  transform(/** @type {{preprocess: (source: string, preprocessor: object) => unknown}} */ { preprocess }, transformCode: string, code: string) {
+  transform({ preprocess }: {preprocess: (source: string, preprocessor: object) => unknown}, transformCode: string, code: string) {
     /** @type {() => {markup?: (...args: unknown[]) => string, script?: (...args: unknown[]) => string, style?: (...args: unknown[]) => string}} */
-    const transform = /** @type {() => {markup?: (...args: unknown[]) => string, script?: (...args: unknown[]) => string, style?: (...args: unknown[]) => string}} */ (compileModule(transformCode));
+    const transform = (compileModule(transformCode) as () => {markup?: (...args: unknown[]) => string, script?: (...args: unknown[]) => string, style?: (...args: unknown[]) => string});
 
     // Identity functions in case of missing transforms
     const _markupIdentity = (content: string, _filename: string) => content;
@@ -34,17 +34,17 @@ export default {
     const styleTransform = transform().style || _styleIdentity;
 
     const result = preprocess(code, {
-      markup:(/** @type {{content: string, _filename: string}} */ { content, _filename}) => {
+      markup:({ content, _filename}: {content: string, _filename: string}) => {
         return {
           code: markupTransform(content),
         };
       },
-      script: (/** @type {{content: string, attributes: Record<string, string | boolean>, _filename: string}} */ {content, attributes, _filename}) => {
+      script: ({content, attributes, _filename}: {content: string, attributes: Record<string, string | boolean>, _filename: string}) => {
         return {
           code: scriptTransform(content, attributes),
         };
       },
-      style: (/** @type {{content: string, attributes: Record<string, string | boolean>, _filename: string}} */ {content, attributes, _filename}) => {
+      style: ({content, attributes, _filename}: {content: string, attributes: Record<string, string | boolean>, _filename: string}) => {
         return {
           code: styleTransform(content, attributes),
         };

@@ -2,7 +2,7 @@ import compileModule from '../../utils/compileModule';
 import transpile from '../../transpilers/babel';
 import { parseNoPatch } from 'babel-eslint';
 
-/** @typedef {{message: string, line: number, column: number, source?: string}} EslintResult */
+type EslintResult = {message: string, line: number, column: number, source?: string};
 
 export function formatResults(results: EslintResult[], code: string) {
   return results.length === 0
@@ -28,7 +28,7 @@ function getSourceFromResult(result: EslintResult, code: string) {
   let linesOfCode = code.split('\n');
   return linesOfCode[result.line - 1];
 }
-export function defineRule(/** @type {{defineRule: (name: string, rule: unknown) => void, defineParser: (name: string, parser: object) => void, verifyAndFix: (code: string, config: object) => {messages: EslintResult[], output: string}}} */ eslint, code: string) {
+export function defineRule(eslint: {defineRule: (name: string, rule: unknown) => void, defineParser: (name: string, parser: object) => void, verifyAndFix: (code: string, config: object) => {messages: EslintResult[], output: string}}, code: string) {
   // Compile the transform code and install it as an ESLint rule. The rule
   // name doesn't really matter here, so we'll just use a hard-coded name.
   code = transpile(code);
@@ -36,7 +36,7 @@ export function defineRule(/** @type {{defineRule: (name: string, rule: unknown)
   eslint.defineRule('astExplorerRule', rule.default || rule);
 }
 
-export function runRule(code: string, /** @type {{defineRule: (name: string, rule: unknown) => void, defineParser: (name: string, parser: object) => void, verifyAndFix: (code: string, config: object) => {messages: EslintResult[], output: string}}} */ eslint) {
+export function runRule(code: string, eslint: {defineRule: (name: string, rule: unknown) => void, defineParser: (name: string, parser: object) => void, verifyAndFix: (code: string, config: object) => {messages: EslintResult[], output: string}}) {
   // Run the ESLint rule on the AST of the provided code.
   // Reference: http://eslint.org/docs/developer-guide/nodejs-api
   eslint.defineParser('babel-eslint', {

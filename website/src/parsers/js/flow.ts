@@ -36,11 +36,11 @@ export default {
   homepage: pkg.homepage || 'https://flow.org/',
   locationProps: new Set(['range', 'loc']),
 
-  loadParser(/** @type {(realParser: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}) => void} */ callback) {
+  loadParser(callback: (realParser: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}) => void) {
     require(['flow-parser'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}} */ flowParser, code: string, options: Record<string, unknown>) {
+  parse(flowParser: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}, code: string, options: Record<string, unknown>) {
     return flowParser.parse(code, options);
   },
 

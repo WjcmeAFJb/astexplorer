@@ -68,7 +68,7 @@ export default {
    * is an array of form `[start, end]`. This is used for highlighting source
    * text and focusing nodes in the tree.
    */
-  nodeToRange(/** @type {{range?: [number, number], [key: string]: unknown}} */ node) {
+  nodeToRange(node: {range?: [number, number], [key: string]: unknown}) {
     return node.range;
   },
 

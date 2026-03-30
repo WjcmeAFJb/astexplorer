@@ -16,14 +16,9 @@
  *   - After render, the tree root triggers the focus logic. The element that is
  *     closest to the center is scrolled into the view.
  */
-/** @type {Set<React.RefObject<HTMLElement>>} */
-let nodes;
+let nodes: Set<React.RefObject<HTMLElement>>;
 
-/**
- * @param {'init' | 'add' | 'focus'} message
- * @param {React.RefObject<HTMLElement>} [arg]
- */
-export default function(message, arg) {
+export default function(message: 'init' | 'add' | 'focus', arg?: React.RefObject<HTMLElement>) {
   switch (message) {
     case 'init':
       nodes = new Set();
@@ -36,7 +31,7 @@ export default function(message, arg) {
       const size = nodes.size;
       try {
         if (size === 1) {
-          /** @type {React.RefObject<HTMLElement>} */ (nodes.values().next().value).current.scrollIntoView();
+          (nodes.values().next().value as React.RefObject<HTMLElement>).current.scrollIntoView();
         } else if (size > 1) {
           const rootRect = root.getBoundingClientRect();
           const center = (rootRect.y + rootRect.height) / 2 + rootRect.y;
@@ -51,18 +46,18 @@ export default function(message, arg) {
               Math.abs(distance + elementRect.height),
             );
 
-            if (!closest || closest[1] > minDistance) {
+            if (!closest || (closest as any)[1] > minDistance) {
               return [element.current, minDistance];
             }
             return closest;
           }, null);
           if (closest) {
-            closest[0].scrollIntoView();
+            (closest as any)[0].scrollIntoView();
           }
         }
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error('Unable to scroll node into view:', /** @type {Error} */ (e).message);
+        console.error('Unable to scroll node into view:', (e as Error).message);
       }
 
     }

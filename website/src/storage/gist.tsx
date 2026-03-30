@@ -1,8 +1,9 @@
-/** @typedef {import('../types').SnippetData} SnippetData */
+
 
 import React from 'react';
 import api from './api';
 import {getParserByID} from '../parsers';
+import type { SnippetData } from '../types';
 
 /**
  * @returns {{id: string, rev: string | undefined} | null}
@@ -18,12 +19,7 @@ function getIDAndRevisionFromHash() {
   return null;
 }
 
-/**
- * @param {string} snippetID
- * @param {string} [revisionID='latest']
- * @returns {Promise<Revision>}
- */
-function fetchSnippet(snippetID, revisionID='latest') {
+function fetchSnippet(snippetID: string, revisionID?: string): Promise<Revision> {
   return api(
     `/gist/${snippetID}` + (revisionID ? `/${revisionID}` : ''),
     {
@@ -41,14 +37,10 @@ function fetchSnippet(snippetID, revisionID='latest') {
         throw new Error('Unknown error.');
     }
   })
-  .then(/** @param {GistData} response */ response => new Revision(response));
+  .then((response: GistData) => new Revision(response));
 }
 
-/**
- * @param {unknown} snippet
- * @returns {boolean}
- */
-export function owns(snippet) {
+export function owns(snippet: unknown): boolean {
   return snippet instanceof Revision;
 }
 
@@ -71,11 +63,10 @@ export function fetchFromURL() {
 }
 
 /**
+
  * Create a new snippet.
- * @param {SnippetData} data
- * @returns {Promise<Revision>}
  */
-export function create(data) {
+export function create(data: SnippetData): Promise<Revision> {
   return api(
     '/gist',
     {
@@ -92,16 +83,14 @@ export function create(data) {
     }
     throw new Error('Unable to create snippet.');
   })
-  .then(/** @param {GistData} data */ data => new Revision(data));
+  .then((data: GistData) => new Revision(data));
 }
 
 /**
+
  * Update an existing snippet.
- * @param {Revision} revision
- * @param {SnippetData} data
- * @returns {Promise<Revision>}
  */
-export function update(revision, data) {
+export function update(revision: Revision, data: SnippetData): Promise<Revision> {
   // Fetch latest version of snippet
   return fetchSnippet(revision.getSnippetID())
     .then(latestRevision => {
@@ -126,17 +115,15 @@ export function update(revision, data) {
         }
         throw new Error('Unable to update snippet.');
       })
-      .then(/** @param {GistData} data */ data => new Revision(data));
+      .then((data: GistData) => new Revision(data));
     });
 }
 
 /**
+
  * Fork existing snippet.
- * @param {Revision} revision
- * @param {SnippetData} data
- * @returns {Promise<Revision>}
  */
-export function fork(revision, data) {
+export function fork(revision: Revision, data: SnippetData): Promise<Revision> {
   return api(
     `/gist/${revision.getSnippetID()}/${revision.getRevisionID()}`,
     {
@@ -153,41 +140,38 @@ export function fork(revision, data) {
     }
     throw new Error('Unable to fork snippet.');
   })
-  .then(/** @param {GistData} data */ data => new Revision(data));
+  .then((data: GistData) => new Revision(data));
 }
 
-/**
- * @typedef {Object} GistFile
- * @property {string} content
- */
+type GistFile = {
+  content: string;
+};
 
-/**
- * @typedef {Object} GistHistoryEntry
- * @property {string} version
- */
+type GistHistoryEntry = {
+  version: string;
+};
 
-/**
- * @typedef {Object} GistData
- * @property {string} id
- * @property {Record<string, GistFile>} files
- * @property {GistHistoryEntry[]} history
- */
+type GistData = {
+  id: string;
+  files: Record<string, GistFile>;
+  history: GistHistoryEntry[];
+};
 
-/**
- * @typedef {Object} GistConfig
- * @property {number} [v]
- * @property {string} parserID
- * @property {string} [toolID]
- * @property {Record<string, Record<string, unknown>>} settings
- */
+type GistConfig = {
+  v?: number;
+  parserID: string;
+  toolID?: string;
+  settings: Record<string, Record<string, unknown>>;
+};
 
 class Revision {
-  /**
-   * @param {GistData} gist
-   */
-  constructor(gist) {
+  _gist: GistData;
+  _config: GistConfig;
+  _code: string | null = null;
+
+    constructor(gist: GistData) {
     this._gist = gist;
-    this._config = /** @type {GistConfig} */ (JSON.parse(gist.files['astexplorer.json'].content));
+    this._config = (JSON.parse(gist.files['astexplorer.json'].content) as GistConfig);
   }
 
   /** @returns {boolean} */
@@ -276,12 +260,7 @@ class Revision {
   }
 }
 
-/**
- * @param {GistConfig} config
- * @param {GistData} gist
- * @returns {string | undefined}
- */
-function getSource(config, gist) {
+function getSource(config: GistConfig, gist: GistData): string | undefined {
   switch (config.v) {
     case 1:
       return gist.files['code.js'].content;

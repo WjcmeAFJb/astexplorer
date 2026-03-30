@@ -125,8 +125,8 @@ export default {
     options = {...options};
     // Older versions didn't have the pipelineOptions setting, but
     // only a pipelineProposal string option.
-    const { pipelineOptions = {proposal: /** @type {string | undefined} */ (options.pipelineProposal)}, decoratorOptions, typescriptOptions } = /** @type {{pipelineOptions?: {proposal: string, hackTopicToken?: string}, decoratorOptions?: Record<string, unknown>, typescriptOptions?: Record<string, unknown>}} */ (options);
-    options.plugins = /** @type {unknown[]} */ (/** @type {unknown[]} */ (options.plugins) || []).map((plugin: string) => {
+    const { pipelineOptions = {proposal: (options.pipelineProposal as string | undefined)}, decoratorOptions, typescriptOptions } = (options as {pipelineOptions?: {proposal: string, hackTopicToken?: string}, decoratorOptions?: Record<string, unknown>, typescriptOptions?: Record<string, unknown>});
+    options.plugins = ((options.plugins as unknown[]) || [] as unknown[]).map((plugin: string) => {
       switch (plugin) {
         case 'decorators':
           return ['decorators', decoratorOptions];
@@ -144,15 +144,15 @@ export default {
     return babylon.parse(code, options);
   },
 
-  getNodeName(/** @type {{type?: string | {label: string}, [key: string]: unknown}} */ node) {
+  getNodeName(node: {type?: string | {label: string}, [key: string]: unknown}) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
-      case 'object': return `Token (${/** @type {{label: string}} */ (node.type).label})`;
+      case 'object': return `Token (${(node.type as {label: string}).label})`;
     }
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {start?: number, end?: number, [key: string]: unknown}) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

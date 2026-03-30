@@ -2,15 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
 
-/**
- * @param {Object} props
- * @param {boolean} [props.canSave]
- * @param {boolean} [props.saving]
- * @param {boolean} [props.forking]
- * @param {() => void} [props.onSave]
- * @returns {React.ReactElement}
- */
-export default function SaveButton({canSave, saving, forking, onSave}) {
+export default function SaveButton({canSave, saving, forking, onSave}: any): React.ReactElement {
   return (
     <button
       type="button"

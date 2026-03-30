@@ -3,8 +3,7 @@ import React from 'react';
 import cx from '../../utils/classnames';
 import {getCategoryByID, categories} from '../../parsers';
 
-/** @type {Record<string, string>} */
-const categoryIcon = {
+const categoryIcon: Record<string, string> = {
   'text/x-scala': 'icon-scala',
   css: 'fa-css3',
   graphql: 'icon-GraphQL_Logo',
@@ -21,22 +20,19 @@ const categoryIcon = {
   yaml: 'fa-yc',
 };
 
-/**
- * @typedef {Object} CategoryButtonProps
- * @property {(category: import('../../types').Category) => void} [onCategoryChange]
- * @property {import('../../types').Category} [category]
- */
+type CategoryButtonProps = {
+  onCategoryChange?: (category: import('../../types').Category) => void;
+  category?: import('../../types').Category;
+};
 
-/** @extends {React.Component<CategoryButtonProps>} */
-export default class CategoryButton extends React.Component {
-  /** @param {CategoryButtonProps} props */
-  constructor(props) {
+export default class CategoryButton extends React.Component<CategoryButtonProps> {
+    constructor(props: CategoryButtonProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
     this._onClick = this._onClick.bind(this);
   }
 
-  _onClick(/** @type {{currentTarget: HTMLElement}} */ {currentTarget}) {
+  _onClick({currentTarget}: {currentTarget: HTMLElement}) {
     let categoryID = currentTarget.getAttribute('data-id');
     this.props.onCategoryChange(getCategoryByID(categoryID));
   }

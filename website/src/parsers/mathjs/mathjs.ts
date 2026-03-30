@@ -1,11 +1,8 @@
 import pkg from 'mathjs/package.json';
+import type { MathJsStatic as MathJSParser } from 'mathjs';
+import type { MathNode as MathJSNode } from 'mathjs';
 
 import defaultParserInterface from '../utils/defaultParserInterface'
-
-/**
- * @typedef {import('mathjs').MathJsStatic} MathJSParser
- * @typedef {import('mathjs').MathNode} MathJSNode
- */
 
 const ID = 'mathjs'
 
@@ -29,7 +26,7 @@ export default {
       return parser.parse(code)
     } catch (message) {
       // AST Explorer expects the thrown error to be an object, not a string.
-      throw new SyntaxError(/** @type {string} */ (message));
+      throw new SyntaxError((message as string));
     }
   },
 

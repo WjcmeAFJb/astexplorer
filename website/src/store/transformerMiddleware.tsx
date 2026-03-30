@@ -1,16 +1,11 @@
-/** @typedef {import('../types').Transformer} Transformer */
-/** @typedef {import('../types').TransformResult} TransformResult */
+
 
 import {getTransformer, getTransformCode, getCode, showTransformer} from './selectors';
 import {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
+import type { TransformResult } from '../types';
+import type { Transformer } from '../types';
 
-/**
- * @param {Transformer} transformer
- * @param {string} transformCode
- * @param {string} code
- * @returns {Promise<TransformResult>}
- */
-async function transform(transformer, transformCode, code) {
+async function transform(transformer: Transformer, transformCode: string, code: string): Promise<TransformResult> {
   // Transforms may make use of Node's __filename global. See GitHub issue #420.
   // So we define a dummy one.
   if (!global.__filename) {
@@ -22,8 +17,7 @@ async function transform(transformer, transformCode, code) {
   /** @type {{version?: string, [key: string]: unknown} | undefined} */
   let realTransformer;
   try {
-    // @ts-expect-error — _promise resolves to unknown; narrowed by typedef above
-    realTransformer = await transformer._promise;
+    realTransformer = await transformer._promise as any;
     let result = await transformer.transform(realTransformer, transformCode, code);
     let map = null;
     if (typeof result !== 'string') {
@@ -35,14 +29,13 @@ async function transform(transformer, transformCode, code) {
     return { result, map, version: realTransformer.version, error: null };
   } catch(error) {
     return {
-      error: /** @type {Error} */ (error),
+      error: (error as Error),
       version: realTransformer ? realTransformer.version : '',
     };
   }
 }
 
-/** @type {(store: import('redux').MiddlewareAPI<import('redux').Dispatch, import('../types').AppState>) => (next: import('redux').Dispatch) => (action: import('../types').Action) => Promise<void> | void} */
-export default store => next => async (action) => {
+export default (store: any) => (next: any) => async (action: any) => {
   const oldState = store.getState();
   next(action);
   const newState = store.getState();
@@ -72,12 +65,11 @@ export default store => next => async (action) => {
       console.clear();
     }
 
-    /** @type {TransformResult} */
-    let result;
+        let result: TransformResult;
     try  {
       result = await transform(newTransformer, newTransformCode, newCode);
     } catch (error) {
-      result = {error: /** @type {Error} */ (error)}
+      result = {error: (error as Error)}
     }
 
     // Did anything change in the meantime?

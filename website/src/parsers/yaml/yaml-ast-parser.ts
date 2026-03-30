@@ -1,14 +1,11 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'yaml-ast-parser/package.json';
+import type { YAMLNode as YamlAstNode } from 'yaml-ast-parser';
 
-/**
- * @typedef {import('yaml-ast-parser')} YamlAstParserModule
- * @typedef {import('yaml-ast-parser').YAMLNode} YamlAstNode
- */
+type YamlAstParserModule = typeof import('yaml-ast-parser');
 
 const ID = 'yaml-ast-parser';
-/** @type {typeof import('yaml-ast-parser').Kind | null} */
-let Kind = /** @type {typeof import('yaml-ast-parser').Kind | null} */ (null);
+let Kind: typeof import('yaml-ast-parser').Kind | null = (null as typeof import('yaml-ast-parser').Kind | null);
 
 export default {
   ...defaultParserInterface,
@@ -22,14 +19,14 @@ export default {
   locationProps: new Set(['startPosition', 'endPosition']),
   typeProps: new Set(['kind']),
 
-  nodeToRange(/** @type {{startPosition?: number, endPosition?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {startPosition?: number, endPosition?: number, [key: string]: unknown}) {
     if (typeof node.startPosition === 'number') {
       return [node.startPosition, node.endPosition];
     }
   },
 
-  getNodeName(/** @type {{kind?: number, [key: string]: unknown}} */ node) {
-    return Kind ? Kind[/** @type {number} */ (node.kind)] : undefined;
+  getNodeName(node: {kind?: number, [key: string]: unknown}) {
+    return Kind ? Kind[(node.kind as number)] : undefined;
   },
 
   loadParser(callback: (realParser: typeof import('yaml-ast-parser')) => void) {
@@ -39,7 +36,7 @@ export default {
     });
   },
 
-  parse(/** @type {typeof import('yaml-ast-parser')} */ { load }, code: string) {
+  parse({ load }: typeof import('yaml-ast-parser'), code: string) {
     return load(code);
   },
 };

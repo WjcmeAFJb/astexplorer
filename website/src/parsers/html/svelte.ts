@@ -21,7 +21,7 @@ export default {
     return parser.compile(code, options).ast;
   },
 
-  nodeToRange(/** @type {{type?: string, name?: string, start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {type?: string, name?: string, start?: number, end?: number, [key: string]: unknown}) {
     if (node.type || node.name) {
       return [node.start, node.end];
     }
@@ -31,7 +31,7 @@ export default {
     return key === 'children';
   },
 
-  getNodeName(/** @type {{tag?: string}} */ node) {
+  getNodeName(node: {tag?: string}) {
     return node.tag;
   },
 

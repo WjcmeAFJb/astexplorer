@@ -11,13 +11,7 @@ import stringify from '../../../utils/stringify';
 
 const {useState, useRef, useMemo, useCallback, useEffect} = React;
 
-/**
- * @template T
- * @param {T} value
- * @param {T} initialValue
- * @returns {T}
- */
-function usePrevious(value, initialValue) {
+function usePrevious<T>(value: T, initialValue: T): T {
   const ref = useRef(initialValue);
   useEffect(() => {
     ref.current = value;
@@ -52,12 +46,7 @@ const EVENTS = {
   DEEP_OPEN: 4,
 };
 
-/**
- * @param {number} currentState
- * @param {number} event
- * @returns {number | undefined}
- */
-function transition(currentState, event) {
+function transition(currentState: number, event: number): number | undefined {
   switch (currentState) {
     case OPEN_STATES.DEFAULT:
     case OPEN_STATES.CLOSED:
@@ -97,12 +86,7 @@ function transition(currentState, event) {
   }
 }
 
-/**
- * @param {boolean} openFromParent
- * @param {boolean} isInRange
- * @returns {[number, React.Dispatch<React.SetStateAction<number>>]}
- */
-function useOpenState(openFromParent, isInRange) {
+function useOpenState(openFromParent: boolean, isInRange: boolean): [number, React.Dispatch<React.SetStateAction<number>>] {
   const previousOpenFromParent = usePrevious(openFromParent, false);
   const wasInRange = usePrevious(isInRange, false);
   const [ownOpenState, setOwnOpenState] = useState(OPEN_STATES.DEFAULT);
@@ -134,24 +118,23 @@ function useOpenState(openFromParent, isInRange) {
   return [ computedOpenState, setOwnOpenState ];
 }
 
-/**
- * @typedef {Object} ElementProps
- * @property {string} [name]
- * @property {unknown} [value]
- * @property {boolean} [computed]
- * @property {boolean} [open]
- * @property {number} [level]
- * @property {{isArray: (node: unknown) => boolean, isObject: (node: unknown) => boolean, getNodeName: (node: unknown) => string, getRange: (node: unknown) => [number, number] | null | undefined, opensByDefault: (node: unknown, key: string) => boolean, walkNode: (node: unknown) => Iterable<import('../../../types').WalkResult>, isInRange: (node: unknown, key: string, position: number) => boolean, hasChildrenInRange: (node: unknown, key: string, position: number) => boolean, isLocationProp: (key: string) => boolean}} treeAdapter
- * @property {boolean} [autofocus]
- * @property {unknown} [parent]
- * @property {boolean} [isInRange]
- * @property {boolean} [hasChildrenInRange]
- * @property {boolean} [selected]
- * @property {(state: number, own?: boolean) => void} [onClick]
- * @property {number} [position]
- */
+type ElementProps = {
+  name?: string;
+  value?: unknown;
+  computed?: boolean;
+  open?: boolean;
+  level?: number;
+  treeAdapter?: any;
+  autofocus?: boolean;
+  parent?: unknown;
+  isInRange?: boolean;
+  hasChildrenInRange?: boolean;
+  selected?: boolean;
+  onClick?: (state: number, own?: boolean) => void;
+  position?: number;
+};
 
-const Element = React.memo(/** @param {ElementProps} props */ function Element({
+const Element = React.memo( function Element({
   name,
   value,
   computed,
@@ -164,7 +147,7 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
   selected,
   onClick,
   position,
-}) {
+}: ElementProps) {
   const opensByDefault = useMemo(
     () => treeAdapter.opensByDefault(value, name),
     [treeAdapter, value, name],
@@ -173,7 +156,7 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
     open,
     autofocus && (isInRange || hasChildrenInRange),
   );
-  const element = useRef(/** @type {HTMLLIElement | null} */ (null));
+  const element = useRef((null as HTMLLIElement | null));
   if (autofocus && isInRange && !hasChildrenInRange) {
     focusNodes('add', element);
   }
@@ -183,7 +166,7 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
     openState !== OPEN_STATES.CLOSED;
 
   const onToggleClick = useCallback(
-    /** @param {React.MouseEvent} event */ event => {
+    (event: React.MouseEvent) => {
       const shiftKey = event.shiftKey;
       const newOpenState = shiftKey ? OPEN_STATES.DEEP_OPEN : (isOpen ? OPEN_STATES.CLOSED : OPEN_STATES.OPEN);
       if (onClick) {
@@ -200,12 +183,12 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
 
   // enable highlight on hover if node has a range
   if (range && level !== 0) {
-    onMouseOver = /** @param {React.MouseEvent} event */ event => {
+    onMouseOver = (event: React.MouseEvent) => {
       event.stopPropagation();
       publish('HIGHLIGHT', {node: value, range});
     };
 
-    onMouseLeave = /** @param {React.MouseEvent} event */ event => {
+    onMouseLeave = (event: React.MouseEvent) => {
       event.stopPropagation();
       publish('CLEAR_HIGHLIGHT', {node: value, range});
     };
@@ -221,14 +204,7 @@ const Element = React.memo(/** @param {ElementProps} props */ function Element({
     [onClick],
   );
 
-  /**
-   * @param {string} key
-   * @param {unknown} value
-   * @param {unknown} parent
-   * @param {string | undefined} name
-   * @param {boolean} computed
-   */
-  function renderChild(key, value, parent, name, computed) {
+    function renderChild(key: string, value: unknown, parent: unknown, name: string | undefined, computed: boolean) {
     if (treeAdapter.isArray(value) || treeAdapter.isObject(value) || typeof value === 'function') {
       const ElementType = typeof value === 'function' ? FunctionElement : ElementContainer;
       return (
@@ -397,9 +373,9 @@ Element.propTypes = {
 
 const NOT_COMPUTED = {};
 
-const FunctionElement = React.memo(/** @param {ElementProps} props */ function FunctionElement(props) {
+const FunctionElement = React.memo( function FunctionElement(props: ElementProps) {
   const [computedValue, setComputedValue] = useState(NOT_COMPUTED);
-  const [error, setError] = useState(/** @type {Error | null} */ (null));
+  const [error, setError] = useState((null as Error | null));
   const {name, value, parent, computed, treeAdapter} = props;
 
   if (computedValue !== NOT_COMPUTED) {
@@ -431,13 +407,13 @@ const FunctionElement = React.memo(/** @param {ElementProps} props */ function F
           onClick={() => {
             try {
               // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .call() returns any; dynamic invocation
-              const computedValue = /** @type {(...args: unknown[]) => unknown} */ (value).call(parent);
+              const computedValue = (value as (...args: unknown[]) => unknown).call(parent);
               console.log(computedValue); // eslint-disable-line no-console
               // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- computedValue is dynamic
               setComputedValue(computedValue);
             } catch(err) {
-              console.error(`Unable to run "${name}": `, /** @type {Error} */ (err).message); // eslint-disable-line no-console
-              setError(/** @type {Error} */ (err));
+              console.error(`Unable to run "${name}": `, (err as Error).message); // eslint-disable-line no-console
+              setError((err as Error));
             }
           }}>
           (...)
@@ -461,18 +437,17 @@ const FunctionElement = React.memo(/** @param {ElementProps} props */ function F
 // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
 FunctionElement.propTypes = Element.propTypes;
 
-/**
- * @typedef {Object} PrimitiveElementProps
- * @property {string} [name]
- * @property {unknown} [value]
- * @property {boolean} [computed]
- */
+type PrimitiveElementProps = {
+  name?: string;
+  value?: unknown;
+  computed?: boolean;
+};
 
-const PrimitiveElement = React.memo(/** @param {PrimitiveElementProps} props */ function PrimitiveElement({
+const PrimitiveElement = React.memo( function PrimitiveElement({
   name,
   value,
   computed,
-}) {
+}: PrimitiveElementProps) {
   return (
     <li className="entry">
       {name ? <PropertyName name={name} computed={computed} /> : null}
@@ -490,14 +465,13 @@ PrimitiveElement.propTypes = {
   computed: PropTypes.bool,
 };
 
-/**
- * @typedef {Object} PropertyNameProps
- * @property {string} [name]
- * @property {boolean} [computed]
- * @property {(event: React.MouseEvent) => void} [onClick]
- */
+type PropertyNameProps = {
+  name?: string;
+  computed?: boolean;
+  onClick?: (event: React.MouseEvent) => void;
+};
 
-const PropertyName = React.memo(/** @param {PropertyNameProps} props */ function PropertyName({name, computed, onClick}) {
+const PropertyName = React.memo( function PropertyName({name, computed, onClick}: PropertyNameProps) {
   return (
     <span className="key">
       <span className="name nb" onClick={onClick}>
@@ -515,11 +489,7 @@ PropertyName.propTypes = {
   onClick: PropTypes.func,
 };
 
-/**
- * @param {ElementProps} props
- * @returns {React.ReactElement}
- */
-export default function ElementContainer(props) {
+export default function ElementContainer(props: ElementProps): React.ReactElement {
   const [selected, setSelected] = useState(false);
   const setSelectedNode = useSelectedNode();
   const isInRange = props.treeAdapter.isInRange(props.value, props.name, props.position);

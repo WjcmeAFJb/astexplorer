@@ -45,11 +45,11 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc']),
 
-  loadParser(/** @type {(realParser: {Tenko: (code: string, options: Record<string, unknown>) => Record<string, unknown>}) => void} */ callback) {
+  loadParser(callback: (realParser: {Tenko: (code: string, options: Record<string, unknown>) => Record<string, unknown>}) => void) {
     require(['tenko'], callback);
   },
 
-  parse(/** @type {{Tenko: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ tenko, code: string, options: Record<string, unknown>) {
+  parse(tenko: {Tenko: (code: string, options: Record<string, unknown>) => Record<string, unknown>}, code: string, options: Record<string, unknown>) {
     return tenko.Tenko(code, {...options});
   },
 
@@ -57,7 +57,7 @@ export default {
     return node.type;
   },
 
-  nodeToRange(/** @type {{loc?: {range?: {start: number, end: number}}, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {loc?: {range?: {start: number, end: number}}, [key: string]: unknown}) {
     if (node.loc && node.loc.range) {
       return [node.loc.range.start, node.loc.range.end];
     }

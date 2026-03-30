@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'pug-parser/package.json';
 
-/**
- * @typedef {{ lex(code: string, options: object): object, parse(tokens: object, options: object): object }} PugParser
- * @typedef {{ type?: string, name?: string, val?: string, buffer?: boolean, mode?: string, expr?: string, call?: boolean, optional?: boolean, block?: PugNode, nodes?: PugNode[], [key: string]: unknown }} PugNode
- */
+type PugParser = { lex(code: string, options: object): object, parse(tokens: object, options: object): object };
+type PugNode = { type?: string, name?: string, val?: string, buffer?: boolean, mode?: string, expr?: string, call?: boolean, optional?: boolean, block?: PugNode, nodes?: PugNode[], [key: string]: unknown };
 
 const ID = 'pug';
 
@@ -24,7 +22,7 @@ export default {
     });
   },
 
-  parse(/** @type {{lex: (code: string, options: object) => object, parse: (tokens: object, options: object) => object}} */ { lex, parse }, code: string) {
+  parse({ lex, parse }: {lex: (code: string, options: object) => object, parse: (tokens: object, options: object) => object}, code: string) {
     return parse(lex(code, {}), { src: code });
   },
 

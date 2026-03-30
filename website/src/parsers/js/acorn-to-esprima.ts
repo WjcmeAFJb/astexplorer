@@ -14,7 +14,7 @@ export default {
   showInMenu: false,
 
   loadParser(callback: (realParser: unknown) => void) {
-    require(['acorn-to-esprima', 'babel5'], (acornToEsprima: Record<string, unknown>, /** @type {{acorn: {tokTypes: unknown}, traverse: unknown, parse: (...args: unknown[]) => unknown}} */ {acorn: {tokTypes}, traverse, parse}) => {
+    require(['acorn-to-esprima', 'babel5'], (acornToEsprima: Record<string, unknown>, {acorn: {tokTypes}, traverse, parse}: {acorn: {tokTypes: unknown}, traverse: unknown, parse: (...args: unknown[]) => unknown}) => {
       callback({
         ...acornToEsprima,
         tokTypes,
@@ -24,16 +24,16 @@ export default {
     });
   },
 
-  parse(/** @type {{parse: (...args: unknown[]) => Record<string, unknown>, toTokens: (...args: unknown[]) => unknown[], convertComments: (...args: unknown[]) => void, attachComments: (...args: unknown[]) => void, toAST: (...args: unknown[]) => void, tokTypes: unknown, traverse: unknown}} */ parser, code: string) {
+  parse(parser: {parse: (...args: unknown[]) => Record<string, unknown>, toTokens: (...args: unknown[]) => unknown[], convertComments: (...args: unknown[]) => void, attachComments: (...args: unknown[]) => void, toAST: (...args: unknown[]) => void, tokTypes: unknown, traverse: unknown}, code: string) {
     const opts = {
       locations: true,
       ranges: true,
     };
 
     // @ts-expect-error — dynamic third-party API
-    const /** @type {unknown[]} */ comments = opts.onComment = [];
+    const comments: unknown[] = opts.onComment = [];
     // @ts-expect-error — dynamic third-party API
-    const /** @type {unknown[]} */ tokens = opts.onToken = [];
+    const tokens: unknown[] = opts.onToken = [];
 
     let ast = parser.parse(code, opts);
 
@@ -46,7 +46,7 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {start?: number, end?: number, [key: string]: unknown}) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

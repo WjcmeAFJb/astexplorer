@@ -1,7 +1,7 @@
-/** @typedef {import('../types').Parser} Parser */
-/** @typedef {import('../types').Transformer} Transformer */
-/** @typedef {import('../types').Category} Category */
-/** @typedef {import('../types').Revision} Revision */
+import type { Revision } from '../types';
+import type { Category } from '../types';
+import type { Transformer } from '../types';
+import type { Parser } from '../types';
 
 export const SET_ERROR = 'SET_ERROR';
 export const CLEAR_ERROR = 'CLEAR_ERROR';
@@ -34,59 +34,31 @@ export const RESET = 'RESET';
 export const TOGGLE_FORMATTING = 'TOGGLE_FORMATTING';
 export const SET_KEY_MAP = 'SET_KEY_MAP';
 
-/**
- * @param {Parser} parser
- * @returns {{type: typeof SET_PARSER, parser: Parser}}
- */
-export function setParser(parser) {
+export function setParser(parser: Parser): {type: typeof SET_PARSER, parser: Parser} {
   return {type: SET_PARSER, parser};
 }
 
-/**
- * @param {Record<string, unknown>} settings
- * @returns {{type: typeof SET_PARSER_SETTINGS, settings: Record<string, unknown>}}
- */
-export function setParserSettings(settings) {
+export function setParserSettings(settings: Record<string, unknown>): {type: typeof SET_PARSER_SETTINGS, settings: Record<string, unknown>} {
   return {type: SET_PARSER_SETTINGS, settings};
 }
 
-/**
- * @param {boolean} [fork=false]
- * @returns {{type: typeof SAVE, fork: boolean}}
- */
-export function save(fork=false) {
+export function save(fork?: boolean): {type: typeof SAVE, fork: boolean} {
   return {type: SAVE, fork};
 }
 
-/**
- * @param {boolean} fork
- * @returns {{type: typeof START_SAVE, fork: boolean}}
- */
-export function startSave(fork) {
+export function startSave(fork: boolean): {type: typeof START_SAVE, fork: boolean} {
   return {type: START_SAVE, fork};
 }
 
-/**
- * @param {boolean} fork
- * @returns {{type: typeof END_SAVE, fork: boolean}}
- */
-export function endSave(fork) {
+export function endSave(fork: boolean): {type: typeof END_SAVE, fork: boolean} {
   return {type: END_SAVE, fork};
 }
 
-/**
- * @param {Revision} revision
- * @returns {{type: typeof SET_SNIPPET, revision: Revision}}
- */
-export function setSnippet(revision) {
+export function setSnippet(revision: Revision): {type: typeof SET_SNIPPET, revision: Revision} {
   return {type: SET_SNIPPET, revision};
 }
 
-/**
- * @param {Category} category
- * @returns {{type: typeof SELECT_CATEGORY, category: Category}}
- */
-export function selectCategory(category) {
+export function selectCategory(category: Category): {type: typeof SELECT_CATEGORY, category: Category} {
   return {type: SELECT_CATEGORY, category};
 }
 
@@ -140,11 +112,7 @@ export function closeShareDialog() {
   return {type: CLOSE_SHARE_DIALOG};
 }
 
-/**
- * @param {Error | null} error
- * @returns {{type: typeof SET_ERROR, error: Error | null}}
- */
-export function setError(error) {
+export function setError(error: Error | null): {type: typeof SET_ERROR, error: Error | null} {
   return {type: SET_ERROR, error};
 }
 
@@ -153,11 +121,7 @@ export function clearError() {
   return {type: CLEAR_ERROR};
 }
 
-/**
- * @param {Transformer} transformer
- * @returns {{type: typeof SELECT_TRANSFORMER, transformer: Transformer}}
- */
-export function selectTransformer(transformer) {
+export function selectTransformer(transformer: Transformer): {type: typeof SELECT_TRANSFORMER, transformer: Transformer} {
   return {type: SELECT_TRANSFORMER, transformer};
 }
 
@@ -166,36 +130,19 @@ export function hideTransformer() {
   return {type: HIDE_TRANSFORMER};
 }
 
-/**
- * @param {{code: string, cursor?: number}} state
- * @returns {{type: typeof SET_TRANSFORM, code: string, cursor?: number}}
- */
-export function setTransformState(state) {
+export function setTransformState(state: any): {type: typeof SET_TRANSFORM, code: string, cursor?: number} {
   return {type: SET_TRANSFORM, ...state};
 }
 
-/**
- * @param {{code: string, cursor?: number}} state
- * @returns {{type: typeof SET_CODE, code: string, cursor?: number}}
- */
-export function setCode(state) {
+export function setCode(state: any): {type: typeof SET_CODE, code: string, cursor?: number} {
   return {type: SET_CODE, ...state};
 }
 
-/**
- * @param {number} cursor
- * @returns {{type: typeof SET_CURSOR, cursor: number}}
- */
-export function setCursor(cursor) {
+export function setCursor(cursor: number): {type: typeof SET_CURSOR, cursor: number} {
   return {type: SET_CURSOR, cursor};
 }
 
-/**
- * @param {string} text
- * @param {string} categoryId
- * @returns {{type: typeof DROP_TEXT, text: string, categoryId: string}}
- */
-export function dropText(text, categoryId) {
+export function dropText(text: string, categoryId: string): {type: typeof DROP_TEXT, text: string, categoryId: string} {
   return {type: DROP_TEXT, text, categoryId};
 }
 
@@ -209,10 +156,6 @@ export function toggleFormatting() {
   return {type: TOGGLE_FORMATTING};
 }
 
-/**
- * @param {string} keyMap
- * @returns {{type: typeof SET_KEY_MAP, keyMap: string}}
- */
-export function setKeyMap(keyMap) {
+export function setKeyMap(keyMap: string): {type: typeof SET_KEY_MAP, keyMap: string} {
   return {type: SET_KEY_MAP, keyMap}
 }

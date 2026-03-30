@@ -13,8 +13,8 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
-  loadParser(/** @type {(realParser: {acorn: typeof import('acorn'), acornLoose: {parse: typeof import('acorn').parse}, acornJsx: () => (BaseParser: typeof import('acorn').Parser) => typeof import('acorn').Parser}) => void} */ callback) {
-    require(['acorn', 'acorn-loose', 'acorn-jsx'], (acorn: typeof import('acorn'), /** @type {{parse: typeof import('acorn').parse}} */ acornLoose, acornJsx: () => (BaseParser: typeof import('acorn').Parser) => typeof import('acorn').Parser) => {
+  loadParser(callback: (realParser: {acorn: typeof import('acorn'), acornLoose: {parse: typeof import('acorn').parse}, acornJsx: () => (BaseParser: typeof import('acorn').Parser) => typeof import('acorn').Parser}) => void) {
+    require(['acorn', 'acorn-loose', 'acorn-jsx'], (acorn: typeof import('acorn'), acornLoose: {parse: typeof import('acorn').parse}, acornJsx: () => (BaseParser: typeof import('acorn').Parser) => typeof import('acorn').Parser) => {
       callback({
         acorn,
         acornLoose,
@@ -23,7 +23,7 @@ export default {
     });
   },
 
-  parse(/** @type {{acorn: typeof import('acorn'), acornLoose: {parse: typeof import('acorn').parse}, acornJsx: () => (BaseParser: typeof import('acorn').Parser) => typeof import('acorn').Parser}} */ parsers, code: string, options={}) {
+  parse(parsers: {acorn: typeof import('acorn'), acornLoose: {parse: typeof import('acorn').parse}, acornJsx: () => (BaseParser: typeof import('acorn').Parser) => typeof import('acorn').Parser}, code: string, options={}) {
     if (Object.keys(options).length === 0) {
       options = this.getDefaultOptions();
     }
@@ -50,7 +50,7 @@ export default {
     });
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {start?: number, end?: number, [key: string]: unknown}) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }

@@ -23,11 +23,11 @@ export default {
   homepage: pkg.homepage || 'https://github.com/scalameta/scalameta',
   locationProps: new Set(['pos']),
 
-  loadParser(/** @type {(realParser: {parseSource: (code: string, options: Record<string, unknown>) => {error?: string, lineNumber?: number, columnNumber?: number}}) => void} */ callback) {
+  loadParser(callback: (realParser: {parseSource: (code: string, options: Record<string, unknown>) => {error?: string, lineNumber?: number, columnNumber?: number}}) => void) {
     require(['scalameta-parsers'], callback);
   },
 
-  parse(/** @type {{parseSource: (code: string, options: Record<string, unknown>) => {error?: string, lineNumber?: number, columnNumber?: number}}} */ scalametaParser, code: string, options: Record<string, unknown>) {
+  parse(scalametaParser: {parseSource: (code: string, options: Record<string, unknown>) => {error?: string, lineNumber?: number, columnNumber?: number}}, code: string, options: Record<string, unknown>) {
     const parsed = scalametaParser.parseSource(code, options);
     const { error, lineNumber, columnNumber } = parsed;
     if (error) {
@@ -41,7 +41,7 @@ export default {
     return parsed;
   },
 
-  nodeToRange(/** @type {{pos?: {start: number, end: number}, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {pos?: {start: number, end: number}, [key: string]: unknown}) {
     if (node.pos) {
       return [node.pos.start, node.pos.end];
     }

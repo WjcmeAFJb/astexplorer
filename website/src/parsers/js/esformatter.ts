@@ -13,13 +13,13 @@ export default {
   homepage: pkg.homepage,
   locationProps: new Set(['loc', 'start', 'end', 'range']),
 
-  loadParser(/** @type {(realParser: {parse: (code: string) => Record<string, unknown>}) => void} */ callback) {
-    require(['esformatter-parser'], (/** @type {{parse: (code: string) => Record<string, unknown>}} */ parser) => {
+  loadParser(callback: (realParser: {parse: (code: string) => Record<string, unknown>}) => void) {
+    require(['esformatter-parser'], (parser: {parse: (code: string) => Record<string, unknown>}) => {
       callback(parser);
     });
   },
 
-  parse(/** @type {{parse: (code: string) => Record<string, unknown>}} */ parser, code: string) {
+  parse(parser: {parse: (code: string) => Record<string, unknown>}, code: string) {
     return parser.parse(code);
   },
 

@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from '@humanwhocodes/momoa/package.json';
 
-/**
- * @typedef {{ parse(code: string, options?: Record<string, unknown>): MomoaNode }} MomoaParser
- * @typedef {{ loc?: { start: { offset: number }, end: { offset: number } }, [key: string]: unknown }} MomoaNode
- */
+type MomoaParser = { parse(code: string, options?: Record<string, unknown>): MomoaNode };
+type MomoaNode = { loc?: { start: { offset: number }, end: { offset: number } }, [key: string]: unknown };
 
 const ID = 'momoa';
 
@@ -25,7 +23,7 @@ export default {
     return momoa.parse(code, options);
   },
 
-  nodeToRange(/** @type {MomoaNode} */ {loc}) {
+  nodeToRange({loc}: MomoaNode) {
     if (loc) {
       return [
         loc.start.offset,

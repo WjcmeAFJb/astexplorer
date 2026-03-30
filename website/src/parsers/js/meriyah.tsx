@@ -20,7 +20,7 @@ export default {
     return parser.parse(code, options);
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {start?: number, end?: number, [key: string]: unknown}) {
     if (typeof node.start === 'number') {
       return [node.start, node.end];
     }

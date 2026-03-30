@@ -13,15 +13,15 @@ export default {
   locationProps: new Set(['loc', 'start', 'end']),
   showInMenu: false,
 
-  loadParser(/** @type {(realParser: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}) => void} */ callback) {
+  loadParser(callback: (realParser: {parse: (code: string, options?: Record<string, unknown>) => Record<string, unknown>}) => void) {
     require(['babylon5'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}} */ babylon, code: string, parserSettings: Record<string, unknown>) {
+  parse(babylon: {parse: (code: string, options: Record<string, unknown>) => Record<string, unknown>}, code: string, parserSettings: Record<string, unknown>) {
     return babylon.parse(code, parserSettings);
   },
 
-  getNodeName(/** @type {{type?: string | {label: string}, [key: string]: unknown}} */ node) {
+  getNodeName(node: {type?: string | {label: string}, [key: string]: unknown}) {
     switch (typeof node.type) {
       case 'string':
         return node.type;
@@ -30,7 +30,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {start?: number, end?: number, [key: string]: unknown}) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }
@@ -59,7 +59,7 @@ export default {
     };
   },
 
-  _getSettingsConfiguration(/** @type {{features: Record<string, boolean>, plugins: Record<string, boolean>, [key: string]: unknown}} */ defaultOptions) {
+  _getSettingsConfiguration(defaultOptions: {features: Record<string, boolean>, plugins: Record<string, boolean>, [key: string]: unknown}) {
     return {
       fields: [
         ['sourceType', ['module', 'script']],

@@ -4,12 +4,10 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
-/**
- * @typedef {{ next: () => string | null, eat: (ch: string) => string | null, eatWhile: (re: RegExp) => boolean, eatSpace: () => boolean, skipToEnd: () => void, skipTo: (ch: string) => boolean, peek: () => string, current: () => string, sol: () => boolean, eol: () => boolean, indentation: () => number, column: () => number, [k: string]: unknown }} CMStream
- * @typedef {{ tokenize: ((stream: CMStream, state: CMState) => string | false | null) | null, context: CMContext, indented: number, startOfLine: boolean, longString?: boolean, [k: string]: unknown }} CMState
- * @typedef {{ indented: number, column: number, type: string, align: boolean | null, prev: CMContext | null }} CMContext
- * @typedef {{ keywords?: Record<string, boolean>, builtin?: Record<string, boolean>, blockKeywords?: Record<string, boolean>, atoms?: Record<string, boolean>, hooks?: Record<string, (stream: CMStream, state: CMState) => string | false>, helperType?: string, [k: string]: unknown }} CMMode
- */
+type CMStream = { next: () => string | null, eat: (ch: string) => string | null, eatWhile: (re: RegExp) => boolean, eatSpace: () => boolean, skipToEnd: () => void, skipTo: (ch: string) => boolean, peek: () => string, current: () => string, sol: () => boolean, eol: () => boolean, indentation: () => number, column: () => number, [k: string]: unknown };
+type CMState = { tokenize: ((stream: CMStream, state: CMState) => string | false | null) | null, context: CMContext, indented: number, startOfLine: boolean, longString?: boolean, [k: string]: unknown };
+type CMContext = { indented: number, column: number, type: string, align: boolean | null, prev: CMContext | null };
+type CMMode = { keywords?: Record<string, boolean>, builtin?: Record<string, boolean>, blockKeywords?: Record<string, boolean>, atoms?: Record<string, boolean>, hooks?: Record<string, (stream: CMStream, state: CMState) => string | false>, helperType?: string, [k: string]: unknown };
 
 import CodeMirror from 'codemirror';
 // @ts-expect-error — dynamic third-party API
@@ -112,6 +110,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
     var indent = state.indented;
     if (state.context && state.context.type == 'statement')
       indent = state.context.indented;
+    // @ts-expect-error — Context is defined as a function, not a class
     return (state.context = new Context(
       indent,
       col,
@@ -132,8 +131,8 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
   return {
     startState: function(basecolumn: number) {
       return {
-        /** @type {((stream: CMStream, state: CMState) => string | null) | null} */
-        tokenize: null,
+                tokenize: null as any,
+        // @ts-expect-error — Context is defined as a function, not a class
         context: new Context((basecolumn || 0) - indentUnit, 0, 'top', false, null),
         indented: 0,
         startOfLine: true,
@@ -203,8 +202,7 @@ CodeMirror.defineMode('clike', function(config, parserConfig) {
 
 /** @returns {Record<string, boolean>} */
 function words(str: string) {
-  /** @type {Record<string, boolean>} */
-  var obj = {}, words = str.split(' ');
+    var obj: Record<string, boolean> = {}, words = str.split(' ');
   for (var i = 0; i < words.length; ++i)
     obj[words[i]] = true;
   return obj;
@@ -230,8 +228,7 @@ function cppHook(stream: CMStream, state: CMState) {
 
 function def(mimes: string | string[], mode: CMMode) {
   if (typeof mimes == 'string') mimes = [mimes];
-  /** @type {string[]} */
-  var words = [];
+    var words: string[] = [];
   function add(obj: Record<string, boolean> | undefined) {
     if (obj)
       for (var prop in obj)
@@ -246,7 +243,7 @@ function def(mimes: string | string[], mode: CMMode) {
   }
 
   for (var i = 0; i < mimes.length; ++i)
-    CodeMirror.defineMIME(mimes[i], /** @type {string} */ (mode.name));
+    CodeMirror.defineMIME(mimes[i], (mode.name as string));
 }
 
 def(['x-shader/x-vertex', 'x-shader/x-fragment'], {

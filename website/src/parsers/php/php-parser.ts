@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'php-parser/package.json';
+import type { Node as PhpNode } from 'php-parser';
 
-/**
- * @typedef {typeof import('php-parser').Engine} PhpParserEngine
- * @typedef {import('php-parser').Node} PhpNode
- */
+type PhpParserEngine = typeof import('php-parser').Engine;
 
 const ID = 'php-parser';
 

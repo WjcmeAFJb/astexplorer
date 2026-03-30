@@ -1,11 +1,8 @@
 import React from 'react';
 
-/**
- * @typedef {(node: unknown, cb?: () => void) => void} SetSelectedNodeFn
- */
+type SetSelectedNodeFn = (node: unknown, cb?: () => void) => void;
 
-/** @type {React.Context<SetSelectedNodeFn | undefined>} */
-const SelectedNodeContext = React.createContext(/** @type {SetSelectedNodeFn | undefined} */ (undefined));
+const SelectedNodeContext: React.Context<SetSelectedNodeFn | undefined> = React.createContext((undefined as SetSelectedNodeFn | undefined));
 
 /**
  * @returns {SetSelectedNodeFn}
@@ -18,14 +15,9 @@ function useSelectedNode() {
   return context;
 }
 
-/** @type {(() => void) | null} */
-let unselectCallback;
+let unselectCallback: (() => void) | null;
 
-/**
- * @param {unknown} node
- * @param {() => void} [cb]
- */
-function setSelectedNode(node, cb) {
+function setSelectedNode(node: unknown, cb?: () => void) {
   if (unselectCallback) {
     unselectCallback();
   }
@@ -38,12 +30,7 @@ function setSelectedNode(node, cb) {
   }
 }
 
-/**
- * @param {Object} props
- * @param {React.ReactNode} [props.children]
- * @returns {React.ReactElement}
- */
-function SelectedNodeProvider(props) {
+function SelectedNodeProvider(props: {children?: React.ReactNode}): React.ReactElement {
   return <SelectedNodeContext.Provider value={setSelectedNode} {...props} />;
 }
 

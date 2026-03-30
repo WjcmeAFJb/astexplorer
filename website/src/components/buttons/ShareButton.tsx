@@ -1,13 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-/**
- * @param {Object} props
- * @param {() => void} [props.onShareButtonClick]
- * @param {import('../../types').Revision} [props.snippet]
- * @returns {React.ReactElement}
- */
-export default function ShareButton({onShareButtonClick, snippet}) {
+export default function ShareButton({onShareButtonClick, snippet}: any): React.ReactElement {
   return (
     <button
       type="button"

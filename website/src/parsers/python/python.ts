@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'filbert/package.json';
 
-/**
- * @typedef {{ parser: { parse(code: string, options: object): object } }} FilbertParser
- * @typedef {{ range?: [number, number] | number[], block?: object, nodes?: object[], [key: string]: unknown }} FilbertNode
- */
+type FilbertParser = { parser: { parse(code: string, options: object): object } };
+type FilbertNode = { range?: [number, number] | number[], block?: object, nodes?: object[], [key: string]: unknown };
 
 const ID = 'python';
 
@@ -18,12 +16,12 @@ export default {
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
   loadParser(callback: (realParser: unknown) => void) {
-    require(['filbert'], (/** @type {{parse: (code: string, options: object) => object}} */ parser) => {
+    require(['filbert'], (parser: {parse: (code: string, options: object) => object}) => {
       callback({ parser });
     });
   },
 
-  parse(/** @type {FilbertParser} */ { parser }, code: string) {
+  parse({ parser }: FilbertParser, code: string) {
     return parser.parse(code, {
         locations: true,
         ranges: true,
@@ -38,7 +36,7 @@ export default {
     }
   },
 
-  nodeToRange(/** @type {{range?: [number, number] | Record<string, unknown>, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {range?: [number, number] | Record<string, unknown>, [key: string]: unknown}) {
     const { range } = node;
     if (typeof range === 'object') {
       return range;

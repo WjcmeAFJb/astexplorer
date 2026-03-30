@@ -16,7 +16,7 @@ export default {
     require(['@babel/eslint-parser'], callback);
   },
 
-  parse(/** @type {{parse: (code: string, opts: Record<string, unknown>) => Record<string, unknown>}} */ parser, code: string) {
+  parse(parser: {parse: (code: string, opts: Record<string, unknown>) => Record<string, unknown>}, code: string) {
     const opts = {
       sourceType: 'module',
       requireConfigFile: false,
@@ -32,7 +32,7 @@ export default {
     return ast;
   },
 
-  nodeToRange(/** @type {{start?: number, end?: number, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {start?: number, end?: number, [key: string]: unknown}) {
     if (typeof node.start !== 'undefined') {
       return [node.start, node.end];
     }

@@ -1,12 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-/**
- * @param {Object} props
- * @param {boolean} [props.visible]
- * @returns {React.ReactElement | null}
- */
-export default function LoadingIndicator(props) {
+export default function LoadingIndicator(props?: any): React.ReactElement | null {
   return props.visible ?
     <div
       className="loadingIndicator cover">

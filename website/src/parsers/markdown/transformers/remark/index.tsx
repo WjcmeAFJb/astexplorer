@@ -11,13 +11,13 @@ export default {
 
   defaultParserID: ID,
 
-  loadTransformer(/** @type {(realTransformer: {remark: import('remark').remark, 'unist-util-is': (...args: unknown[]) => unknown, 'unist-util-visit': (...args: unknown[]) => unknown, 'unist-util-visit-parents': (...args: unknown[]) => unknown}) => void} */ callback) {
+  loadTransformer(callback: (realTransformer: {remark: typeof import('remark').remark, 'unist-util-is': (...args: unknown[]) => unknown, 'unist-util-visit': (...args: unknown[]) => unknown, 'unist-util-visit-parents': (...args: unknown[]) => unknown}) => void) {
     require([
       'remark',
       'unist-util-is',
       'unist-util-visit',
       'unist-util-visit-parents',
-    ], (/** @type {{remark: import('remark').remark}} */ { remark }, /** @type {{is: (...args: unknown[]) => unknown}} */ { is }, /** @type {{visit: (...args: unknown[]) => unknown}} */ { visit }, /** @type {{visitParents: (...args: unknown[]) => unknown}} */ { visitParents }) => {
+    ], ({ remark }: {remark: typeof import('remark').remark}, { is }: {is: (...args: unknown[]) => unknown}, { visit }: {visit: (...args: unknown[]) => unknown}, { visitParents }: {visitParents: (...args: unknown[]) => unknown}) => {
       callback({
         // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- import type may not resolve
         remark,
@@ -28,7 +28,7 @@ export default {
     });
   },
 
-  transform(/** @type {{remark: import('remark').remark, [key: string]: (...args: unknown[]) => unknown}} */ { remark, ...availableModules }, transformCode: string, code: string) {
+  transform({ remark, ...availableModules }: {remark: typeof import('remark').remark, [key: string]: (...args: unknown[]) => unknown}, transformCode: string, code: string) {
     function sandboxRequire(name: string) {
       if (!Object.getOwnPropertyNames(availableModules).includes(name))
         throw new Error(`Cannot find module '${name}'`);
@@ -37,6 +37,6 @@ export default {
 
     const transform = compileModule(transformCode, { require: sandboxRequire });
     // oxlint-disable-next-line typescript-eslint(no-unsafe-return), typescript-eslint(no-unsafe-member-access), typescript-eslint(no-unsafe-call) -- remark's FrozenProcessor type params mismatch between remark/unified .d.ts
-    return remark().use(/** @type {Parameters<ReturnType<import('remark').remark>['use']>[0]} */ (/** @type {unknown} */ (transform))).processSync(code).value;
+    return remark().use(((transform as unknown) as Parameters<ReturnType<typeof import('remark').remark>['use']>[0])).processSync(code).value;
   },
 };

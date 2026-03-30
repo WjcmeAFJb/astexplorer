@@ -11,19 +11,19 @@ export default {
 
   defaultParserID: ID,
 
-  loadTransformer(/** @type {(realTransformer: {transpile: (code: string) => string, regexpTree: typeof import('regexp-tree')}) => void} */ callback) {
+  loadTransformer(callback: (realTransformer: {transpile: (code: string) => string, regexpTree: typeof import('regexp-tree')}) => void) {
     require([
       '../../../transpilers/babel',
       'regexp-tree',
-    ], (/** @type {{default: (code: string) => string}} */ transpile, regexpTree: typeof import('regexp-tree')) => callback({ transpile: transpile.default, regexpTree }));
+    ], (transpile: {default: (code: string) => string}, regexpTree: typeof import('regexp-tree')) => callback({ transpile: transpile.default, regexpTree }));
   },
 
-  transform(/** @type {{transpile: (code: string) => string, regexpTree: typeof import('regexp-tree')}} */ { transpile, regexpTree }, transformCode: string, code: string) {
+  transform({ transpile, regexpTree }: {transpile: (code: string) => string, regexpTree: typeof import('regexp-tree')}, transformCode: string, code: string) {
     transformCode = transpile(transformCode);
     let handler = compileModule( // eslint-disable-line no-shadow
       transformCode,
     );
 
-    return regexpTree.transform(code, /** @type {import('regexp-tree').TransformHandlers} */ (handler)).toString();
+    return regexpTree.transform(code, (handler as import('regexp-tree').TransformHandlers)).toString();
   },
 };

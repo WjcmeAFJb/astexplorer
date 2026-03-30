@@ -13,38 +13,31 @@ const acceptedFileTypes = new Map([
 ]);
 
 categories.forEach(({ id, mimeTypes }) => {
-  mimeTypes.forEach(/** @param {string} mimeType */ mimeType => {
+  mimeTypes.forEach((mimeType: string) => {
     acceptedFileTypes.set(mimeType, id);
   });
 });
 
-/**
- * @typedef {Object} PasteDropTargetOwnProps
- * @property {(type: string, event: Event, code: string, categoryId?: string) => void} [onText]
- * @property {(...args: unknown[]) => void} [onError]
- * @property {React.ReactNode} [children]
- */
+type PasteDropTargetOwnProps = {
+  onText?: (type: string, event: Event, code: string, categoryId?: string) => void;
+  onError?: (...args: unknown[]) => void;
+  children?: React.ReactNode;
+};
 
-/**
- * @typedef {PasteDropTargetOwnProps & Record<string, unknown>} PasteDropTargetProps
- */
+type PasteDropTargetProps = PasteDropTargetOwnProps & Record<string, unknown>;
 
-/** @extends {React.Component<PasteDropTargetProps, {dragging: boolean}>} */
-export default class PasteDropTarget extends React.Component {
-  /** @param {PasteDropTargetProps} props */
-  constructor(props) {
+export default class PasteDropTarget extends React.Component<PasteDropTargetProps, {dragging: boolean}> {
+  _listeners: Array<() => void> | null = [];
+  container: HTMLElement | null = null;
+
+    constructor(props: PasteDropTargetProps) {
     super(props);
     this.state = {
       dragging: false,
     };
   }
 
-  /**
-   * @param {string} type
-   * @param {Event} event
-   * @param {Error} ex
-   */
-  _onASTError(type, event, ex) {
+    _onASTError(type: string, event: Event, ex: Error) {
     this.props.onError(
       type,
       event,
@@ -54,12 +47,11 @@ export default class PasteDropTarget extends React.Component {
   }
 
   componentDidMount() {
-    /** @type {Array<() => void>} */
-    this._listeners = [];
+        this._listeners = [];
     let target = this.container;
 
     // Handle pastes
-    this._bindListener(document, 'paste', /** @param {ClipboardEvent} event */ event => {
+    this._bindListener(document, 'paste', (event: ClipboardEvent) => {
       if (!event.clipboardData) {
         // No browser support? :(
         return;
@@ -74,31 +66,30 @@ export default class PasteDropTarget extends React.Component {
       event.preventDefault();
       this._jsonToCode(cbdata.getData('text/plain')).then(
         code => this.props.onText('paste', event, code),
-        /** @param {Error} ex */ ex => {
-          if (/** @type {Element} */ (event.target).nodeName !== 'TEXTAREA') {
+        (ex: Error) => {
+          if ((event.target as Element).nodeName !== 'TEXTAREA') {
             this._onASTError('paste', event, ex);
           }
         },
       );
     }, true);
 
-    /** @type {ReturnType<typeof setTimeout> | undefined} */
-    let timer;
+        let timer: ReturnType<typeof setTimeout> | undefined;
 
     // Handle file drops
-    this._bindListener(target, 'dragenter', /** @param {DragEvent} event */ event => {
+    this._bindListener(target, 'dragenter', (event: DragEvent) => {
       clearTimeout(timer);
       event.preventDefault();
       this.setState({dragging: true});
     }, true);
 
-    this._bindListener(target, 'dragover', /** @param {DragEvent} event */ event => {
+    this._bindListener(target, 'dragover', (event: DragEvent) => {
       clearTimeout(timer);
       event.preventDefault();
       event.dataTransfer.dropEffect = 'copy';
     }, true);
 
-    this._bindListener(target, 'drop', /** @param {DragEvent} event */ event => {
+    this._bindListener(target, 'drop', (event: DragEvent) => {
       this.setState({dragging: false});
       let file = event.dataTransfer.files[0];
       let categoryId = acceptedFileTypes.get(file.type);
@@ -117,7 +108,7 @@ export default class PasteDropTarget extends React.Component {
               categoryId = 'javascript';
               return text;
             },
-            /** @param {Error} ex */ ex => {
+            (ex: Error) => {
               if (categoryId === 'JSON') {
                 this._onASTError('drop', readerEvent, ex);
               } else {
@@ -127,7 +118,7 @@ export default class PasteDropTarget extends React.Component {
             },
           );
         }
-        Promise.resolve(text).then(/** @param {string} text */ text => {
+        Promise.resolve(text).then((text: string) => {
           this.props.onText('drop', readerEvent, text, categoryId);
         });
       };
@@ -147,30 +138,20 @@ export default class PasteDropTarget extends React.Component {
     this._listeners = null;
   }
 
-  /**
-   * @param {string} json
-   * @returns {Promise<string>}
-   */
-  _jsonToCode(json) {
+    _jsonToCode(json: string): Promise<string> {
     let ast;
     try {
-      ast = /** @type {unknown} */ (JSON.parse(json));
+      ast = (JSON.parse(json) as unknown);
     }
     catch(err) {
       return Promise.resolve(json);
     }
-    return importEscodegen().then(escodegen => {
+    return importEscodegen().then((escodegen: any) => {
       return escodegen.generate(ast, {format: {indent: {style: '  '}}});
     });
   }
 
-  /**
-   * @param {EventTarget} elem
-   * @param {string} event
-   * @param {(event: Event) => void} listener
-   * @param {boolean} [capture]
-   */
-  _bindListener(elem, event, listener, capture) {
+    _bindListener(elem: EventTarget, event: string, listener: (event: Event) => void, capture?: boolean) {
     for (const e of event.split(/\s+/)) {
       elem.addEventListener(e, listener, capture);
       this._listeners.push(

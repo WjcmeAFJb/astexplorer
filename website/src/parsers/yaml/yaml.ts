@@ -1,10 +1,8 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'yaml/package.json';
 
-/**
- * @typedef {typeof import('yaml')} YamlModule
- * @typedef {{ range?: [number, number], type?: string, key?: YamlNode | null, value?: YamlNode | null, [key: string]: unknown }} YamlNode
- */
+type YamlModule = typeof import('yaml');
+type YamlNode = { range?: [number, number], type?: string, key?: YamlNode | null, value?: YamlNode | null, [key: string]: unknown };
 
 const ID = 'yaml';
 
@@ -21,7 +19,7 @@ export default {
     require(['yaml'], callback);
   },
 
-  nodeToRange(/** @type {{range?: [number, number], type?: string, key?: {range?: [number, number]}, value?: {range?: [number, number]}, [key: string]: unknown}} */ node) {
+  nodeToRange(node: {range?: [number, number], type?: string, key?: {range?: [number, number]}, value?: {range?: [number, number]}, [key: string]: unknown}) {
     if (node.range) {
       return node.range;
     }
@@ -36,7 +34,7 @@ export default {
     }
   },
 
-  parse(/** @type {typeof import('yaml')} */ { parseAllDocuments }, code: string, options: import('yaml').Options) {
+  parse({ parseAllDocuments }: typeof import('yaml'), code: string, options: import('yaml').Options) {
     return parseAllDocuments(code, options);
   },
 
