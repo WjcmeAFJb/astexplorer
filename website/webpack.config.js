@@ -271,7 +271,6 @@ module.exports = Object.assign({
     ],
 
     noParse: [
-      /java-parser\/src/,
       /traceur\/bin/,
       /typescript\/lib/,
       /esprima\/dist\/esprima\.js/,
