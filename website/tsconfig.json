@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "jsx": "react",
+    "target": "es2020",
+    "module": "es2020",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "resolveJsonModule": false,
+    "noImplicitAny": true,
+    "noEmit": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.d.ts"],
+  "exclude": ["node_modules"]
+}

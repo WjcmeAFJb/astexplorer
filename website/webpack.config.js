@@ -47,7 +47,7 @@ const plugins = [
   ),
   new webpack.NormalModuleReplacementPlugin(
     /load-rules/,
-    __dirname + '/src/parsers/js/transformers/eslint1/loadRulesShim.js',
+    __dirname + '/src/parsers/js/transformers/eslint1/loadRulesShim.ts',
   ),
 
   // More shims
@@ -114,9 +114,7 @@ module.exports = Object.assign({
   module: {
     rules: [
       {
-        test: [
-          /\.d\.ts$/,
-        ],
+        test: /\.d\.ts$/,
         use: 'null-loader',
       },
       // Without this rule weback is loading the ESM version of esquery, which
@@ -172,7 +170,7 @@ module.exports = Object.assign({
         type: 'javascript/auto',
       },
       {
-        test: /\.(jsx?|mjs)$/,
+        test: /\.(jsx?|tsx?|mjs)$/,
         type: 'javascript/auto',
         include: [
           // To transpile our version of acorn as well as the one that
@@ -232,6 +230,7 @@ module.exports = Object.assign({
               },
             ],
             require.resolve('@babel/preset-react'),
+            require.resolve('@babel/preset-typescript'),
           ],
           plugins: [
             require.resolve('@babel/plugin-transform-runtime'),
@@ -282,8 +281,12 @@ module.exports = Object.assign({
 
   plugins: plugins,
 
+  resolve: {
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
+  },
+
   entry: {
-    app: './src/app.js',
+    app: './src/app.tsx',
   },
 
   output: {
