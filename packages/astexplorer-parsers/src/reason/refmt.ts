@@ -1,9 +1,13 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import esyPkg from 'astexplorer-refmt/esy.json';
-import CodeMirror from 'codemirror';
 import addCodeMirrorMode from './codeMirrorMode';
 
-addCodeMirrorMode(CodeMirror);
+try {
+  const CodeMirror = require('codemirror');
+  addCodeMirrorMode(CodeMirror);
+} catch (e) {
+  // codemirror not available in this environment
+}
 
 const ID = 'refmt';
 const locKeys = [

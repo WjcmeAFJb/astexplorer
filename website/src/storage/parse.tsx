@@ -1,6 +1,6 @@
 import React from 'react';
 import api from './api';
-import {getTransformerByID, getParserByID} from '../parsers';
+import {getTransformerByID, getParserByID} from 'astexplorer-parsers';
 
 /**
  * @returns {{id: string, rev: string | number} | null}

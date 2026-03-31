@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
-import {getCategoryByID, categories} from '../../parsers';
+import {getCategoryByID, categories} from 'astexplorer-parsers';
 
 const categoryIcon: Record<string, string> = {
   'text/x-scala': 'icon-scala',

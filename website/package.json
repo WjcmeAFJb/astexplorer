@@ -65,6 +65,7 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
+    "astexplorer-parsers": "file:../packages/astexplorer-parsers",
     "@angular-eslint/template-parser": "^14.0.2",
     "@angular/compiler": "^13.0.1",
     "@babel/eslint-parser": "~7.13.0",

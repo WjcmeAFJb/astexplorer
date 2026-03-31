@@ -1,6 +1,12 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-type SettingsConfiguration = import('../../types').SettingsConfiguration;
+type SettingsConfiguration = import('../types').SettingsConfiguration;
+
+// prop-types is optional — only needed when React is available (browser UI).
+// The stub must satisfy PropTypes.X.isRequired and PropTypes.oneOfType([...]).isRequired.
+const _noop: any = function() { return _noop; };
+_noop.isRequired = _noop;
+let PropTypes: any = new Proxy({} as Record<string, unknown>, { get: () => _noop });
+try { PropTypes = require('prop-types'); } catch (e) { /* stub used */ }
 
 const identity: (v: string) => string | number = v => v;
 

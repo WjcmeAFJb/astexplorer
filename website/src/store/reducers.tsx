@@ -1,7 +1,7 @@
 
 
 import * as actions from './actions';
-import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from '../parsers';
+import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from 'astexplorer-parsers';
 type Revision = import('../types').Revision;
 type Category = import('../types').Category;
 type Transformer = import('../types').Transformer;

@@ -39,13 +39,6 @@ const plugins = [
     require.resolve('astexplorer-go/go'),
   ),
 
-  // java-parser uses "exports" field which blocks webpack 4 resolution
-  new webpack.NormalModuleReplacementPlugin(
-    /^java-parser$/,
-    path.join(__dirname, 'node_modules', 'java-parser', 'src', 'index.js'),
-  ),
-
-
   // eslint //
 
   // Shim ESLint stuff that's only relevant for Node.js
@@ -55,7 +48,7 @@ const plugins = [
   ),
   new webpack.NormalModuleReplacementPlugin(
     /load-rules/,
-    __dirname + '/src/parsers/js/transformers/eslint1/loadRulesShim.ts',
+    path.join(__dirname, 'src', 'shims', 'loadRulesShim.js'),
   ),
 
   // More shims
@@ -103,7 +96,7 @@ module.exports = Object.assign({
       cacheGroups: {
         parsers: {
           priority: 10,
-          test: /\/src\/parsers\/|\/package\.json$/,
+          test: /\/astexplorer-parsers\/|\/package\.json$/,
         },
         vendors: {
           test: /\/node_modules\//,
@@ -152,7 +145,9 @@ module.exports = Object.assign({
       },
       {
         test: /\.txt$/,
-        exclude: /node_modules/,
+        include: [
+          path.join(__dirname, 'src'),
+        ],
         loader: 'raw-loader',
       },
       // @swc/wasm-web uses a build target assumes to run _without_ bundler, in result
@@ -198,7 +193,7 @@ module.exports = Object.assign({
           path.join(__dirname, 'node_modules', '@glimmer', 'util', 'dist'),
           path.join(__dirname, 'node_modules', '@glimmer', 'wire-format', 'dist'),
           path.join(__dirname, 'node_modules', 'ast-types'),
-          path.join(__dirname, 'node_modules', '@babel/eslint-parser'),
+          path.join(__dirname, 'node_modules', '@babel', 'eslint-parser'),
           path.join(__dirname, 'node_modules', 'babel-eslint'),
           path.join(__dirname, 'node_modules', 'babel-eslint8'),
           path.join(__dirname, 'node_modules', 'jsesc'),
@@ -229,7 +224,6 @@ module.exports = Object.assign({
           path.join(__dirname, 'node_modules', 'tslint'),
           path.join(__dirname, 'node_modules', 'tslib'),
           path.join(__dirname, 'node_modules', 'svelte'),
-          path.join(__dirname, 'node_modules', 'meriyah'),
           path.join(__dirname, 'node_modules', 'css-tree'),
           path.join(__dirname, 'node_modules', 'astexplorer-syn'),
           path.join(__dirname, 'node_modules', 'java-parser'),
@@ -304,16 +298,20 @@ module.exports = Object.assign({
 
   plugins: plugins,
 
+  resolveLoader: {
+    modules: [
+      path.resolve(__dirname, 'node_modules'),
+      'node_modules',
+    ],
+  },
+
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
+    modules: [
+      path.resolve(__dirname, 'node_modules'),
+      'node_modules',
+    ],
     alias: {
-      // These packages use "exports" in package.json which blocks subpath
-      // access to package.json under webpack 4. Alias the subpath directly.
-      'java-parser/package.json': path.join(__dirname, 'node_modules', 'java-parser', 'package.json'),
-      'chevrotain$': path.join(__dirname, 'node_modules', 'chevrotain', 'lib', 'chevrotain.mjs'),
-      'chevrotain-allstar$': path.join(__dirname, 'node_modules', 'chevrotain-allstar', 'lib', 'index.js'),
-      'meriyah$': path.join(__dirname, 'node_modules', 'meriyah', 'dist', 'meriyah.esm.js'),
-      'meriyah/package.json': path.join(__dirname, 'node_modules', 'meriyah', 'package.json'),
       // Go wasm runtime import
       'gojs': path.join(__dirname, 'node_modules', 'astexplorer-go', 'go.js'),
     },

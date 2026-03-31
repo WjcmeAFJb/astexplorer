@@ -9,9 +9,17 @@ type CMState = { tokenize: ((stream: CMStream, state: CMState) => string | false
 type CMContext = { indented: number, column: number, type: string, align: boolean | null, prev: CMContext | null };
 type CMMode = { keywords?: Record<string, boolean>, builtin?: Record<string, boolean>, blockKeywords?: Record<string, boolean>, atoms?: Record<string, boolean>, hooks?: Record<string, (stream: CMStream, state: CMState) => string | false>, helperType?: string, [k: string]: unknown };
 
-import CodeMirror from 'codemirror';
-// @ts-expect-error — dynamic third-party API
-CodeMirror.defineMode('clike', function(config, parserConfig) {
+// Use dynamic require so codemirror is optional (not available in Node.js)
+let CodeMirror: any;
+try {
+  CodeMirror = require('codemirror');
+} catch (e) {
+  // codemirror not available in this environment
+}
+
+if (CodeMirror && typeof CodeMirror.defineMode === 'function') {
+
+CodeMirror.defineMode('clike', function(config: any, parserConfig: any) {
   var indentUnit = config.indentUnit,
     statementIndentUnit = parserConfig.statementIndentUnit || indentUnit,
     dontAlignCalls = parserConfig.dontAlignCalls,
@@ -285,3 +293,5 @@ def(['x-shader/x-vertex', 'x-shader/x-fragment'], {
   hooks: { '#': cppHook },
   modeProps: { fold: ['brace', 'include'] },
 });
+
+} // end if (CodeMirror)

@@ -2,7 +2,7 @@
 
 // @ts-expect-error — no declaration file
 import isEqual from 'lodash.isequal';
-import {getParserByID, getTransformerByID} from '../parsers';
+import {getParserByID, getTransformerByID} from 'astexplorer-parsers';
 type TransformResult = import('../types').TransformResult;
 type ParseResult = import('../types').ParseResult;
 type Revision = import('../types').Revision;

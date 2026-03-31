@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {getParserByID} from '../../parsers';
+import {getParserByID} from 'astexplorer-parsers';
 
 type ParserButtonProps = {
   onParserChange?: (parser: import('../../types').Parser) => void;

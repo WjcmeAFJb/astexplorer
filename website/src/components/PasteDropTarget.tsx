@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { categories } from '../parsers';
+import { categories } from 'astexplorer-parsers';
 
 function importEscodegen(): Promise<{generate: (ast: unknown, options: unknown) => string}> {
   return new Promise(resolve => require(['escodegen'], resolve));

@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "jsx": "react",
+    "target": "es2020",
+    "module": "es2020",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": true,
+    "noEmit": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "typeRoots": [
+      "../../website/node_modules/@types"
+    ],
+    "paths": {
+      "astexplorer-parsers": ["./src/index.ts"],
+      "*": ["../../website/node_modules/*", "../../website/node_modules/@types/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

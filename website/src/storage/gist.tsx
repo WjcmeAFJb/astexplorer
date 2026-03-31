@@ -2,7 +2,7 @@
 
 import React from 'react';
 import api from './api';
-import {getParserByID} from '../parsers';
+import {getParserByID} from 'astexplorer-parsers';
 type SnippetData = import('../types').SnippetData;
 
 function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | null {

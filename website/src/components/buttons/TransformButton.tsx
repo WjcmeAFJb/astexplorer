@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
-import {getTransformerByID} from '../../parsers';
+import {getTransformerByID} from 'astexplorer-parsers';
 
 type TransformButtonProps = {
   category?: import('../../types').Category;
