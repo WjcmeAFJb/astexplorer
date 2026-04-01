@@ -8,6 +8,12 @@
     <script defer data-domain="astexplorer.net" src="https://plausible.astexplorer.net/js/script.js"></script>
   </head>
   <body>
+    <script>
+    var global=globalThis;
+    if(!window.process)window.process={env:{},nextTick:function(f){Promise.resolve().then(f)},version:'',platform:'browser',argv:[],cwd:function(){return'/'}};
+    if(!window.process.nextTick)window.process.nextTick=function(f){Promise.resolve().then(f)};
+    if(!window.process.env)window.process.env={};
+    </script>
     <div id="page">
       <div id="container"></div>
       <div id="contribution">

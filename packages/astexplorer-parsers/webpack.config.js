@@ -23,15 +23,11 @@ function resolveFromWebsite(mod) {
 function isExternal(request) {
   // worker-loader is a webpack loader, not a runtime dep
   if (/^worker-loader/.test(request)) return true;
-  // codemirror needs DOM (navigator, document)
-  if (/^codemirror/.test(request)) return true;
-  // react/react-is need DOM
-  if (/^react(-is)?$/.test(request)) return true;
   return false;
 }
 
 module.exports = {
-  target: 'node',
+  target: 'web',
 
   // IMPORTANT: Never use eval-based devtool (the default in development mode).
   // eval() wraps module code in strings, hiding require() calls from consumer
@@ -62,9 +58,8 @@ module.exports = {
         return callback(null, 'var {}');
       }
 
-      // Browser-only deps: wrap in try/catch for Node.js compat.
-      const escaped = request.replace(/"/g, '\\"');
-      return callback(null, `var (function(){try{return require("${escaped}")}catch(e){return {createElement:function(){return null}}}})() `);
+      // worker-loader: stub out
+      return callback(null, 'var {}');
     },
   ],
 
@@ -237,8 +232,6 @@ module.exports = {
   },
 
   node: {
-    __dirname: false,
-    __filename: false,
     child_process: 'empty',
     fs: 'empty',
     module: 'empty',
