@@ -16,6 +16,9 @@
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.28.5",
     "@open-wc/webpack-import-meta-loader": "^0.4.7",
+    "@stryker-mutator/core": "7.3.0",
+    "@stryker-mutator/typescript-checker": "^9.6.0",
+    "@stryker-mutator/vitest-runner": "8.7.1",
     "@types/babel-plugin-macros": "^3.1.3",
     "@types/codemirror": "^5.60.17",
     "@types/css-tree": "^2.3.11",
@@ -65,7 +68,6 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
-    "astexplorer-parsers": "file:../packages/astexplorer-parsers",
     "@angular-eslint/template-parser": "^14.0.2",
     "@angular/compiler": "^13.0.1",
     "@babel/eslint-parser": "~7.13.0",
@@ -85,6 +87,7 @@
     "acorn-loose": "^8.1.0",
     "acorn-to-esprima": "^2.0.8",
     "astexplorer-go": "^1.0.0",
+    "astexplorer-parsers": "file:../packages/astexplorer-parsers",
     "astexplorer-refmt": "^1.0.1",
     "astexplorer-syn": "^1.0.48",
     "babel-core": "npm:babel-core@^6",

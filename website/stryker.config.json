@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker/master/packages/core/schema/stryker-core.schema.json",
+  "testRunner": "vitest",
+  "vitest": {
+    "configFile": "vitest.config.ts"
+  },
+  "mutate": [
+    "src/utils/stringify.ts",
+    "src/utils/classnames.ts",
+    "src/utils/debounce.ts",
+    "src/utils/pubsub.ts",
+    "src/core/TreeAdapter.tsx"
+  ],
+  "reporters": ["clear-text", "html"],
+  "htmlReporter": {
+    "fileName": "reports/mutation/index.html"
+  },
+  "timeoutMS": 10000,
+  "concurrency": 2
+}
