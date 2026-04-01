@@ -8,52 +8,6 @@
     <script defer data-domain="astexplorer.net" src="https://plausible.astexplorer.net/js/script.js"></script>
   </head>
   <body>
-    <script>
-    // Polyfills for the parsers bundle which is built with target:'node'.
-    // Its externalized node built-ins produce bare require() calls that need a shim.
-    var global = window;
-    if (!window.process) window.process = {};
-    if (!window.process.env) window.process.env = {};
-    if (!window.process.argv) window.process.argv = [];
-    if (!window.process.platform) window.process.platform = 'linux';
-    if (!window.process.cwd) window.process.cwd = function() { return '/'; };
-    if (typeof __filename === 'undefined') window.__filename = '/index.js';
-    if (typeof __dirname === 'undefined') window.__dirname = '/';
-    if (!window.process.nextTick) window.process.nextTick = function(f) { Promise.resolve().then(f) };
-    if (typeof require === 'undefined') {
-      var noop = function() {};
-      var assertFn = function(){}; assertFn.ok=assertFn; assertFn.equal=assertFn; assertFn.strictEqual=assertFn; assertFn.deepEqual=assertFn; assertFn.throws=assertFn; assertFn.doesNotThrow=assertFn; assertFn.ifError=assertFn;
-      // Buffer polyfill that returns real Uint8Arrays so WebAssembly.compile() works.
-      var BufferShim = {
-        from: function(data, enc) {
-          if (enc === 'base64' && typeof data === 'string') {
-            var bin = atob(data), arr = new Uint8Array(bin.length);
-            for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-            return arr;
-          }
-          if (typeof data === 'string') return new TextEncoder().encode(data);
-          if (data instanceof Uint8Array) return data;
-          if (data instanceof ArrayBuffer) return new Uint8Array(data);
-          return new Uint8Array(0);
-        },
-        alloc: function(n) { return new Uint8Array(n); },
-        isBuffer: function() { return false; },
-        prototype: Object.create(Uint8Array.prototype)
-      };
-      window.Buffer = BufferShim;
-      var realpathSync = function(p) { return p; }; realpathSync.native = realpathSync;
-      var fakeStat = {mtime:new Date(0),isFile:function(){return false},isDirectory:function(){return false}};
-      var enoent = function(p) { var e = new Error('ENOENT: no such file or directory, open \'' + p + '\''); e.code = 'ENOENT'; e.errno = -2; e.syscall = 'open'; e.path = p; throw e; };
-      var noStat = function(p) { var e = new Error('ENOENT: ' + p); e.code = 'ENOENT'; throw e; };
-      var fsMock = {readFileSync:enoent,writeFileSync:noop,existsSync:function(){return false},readdirSync:function(){return[]},statSync:noStat,mkdirSync:noop,lstatSync:noStat,realpathSync:realpathSync,watch:noop,watchFile:noop};
-      var pathMock = {join:function(){return Array.prototype.slice.call(arguments).join('/')},resolve:function(){return Array.prototype.slice.call(arguments).join('/')},dirname:function(p){return p?p.replace(/\/[^/]*$/,''):''},basename:function(p){return p?p.replace(/.*\//,''):''},extname:function(p){var m=p?p.match(/(\.[^./]+)$/):'';return m?m[1]:''},sep:'/',normalize:function(p){return p},relative:function(){return ''},isAbsolute:function(){return false}};
-      var mocks = {assert:assertFn,buffer:{Buffer:BufferShim},constants:{},crypto:{},events:noop,fs:fsMock,module:{},net:{},os:{platform:function(){return'linux'},tmpdir:function(){return'/tmp'},EOL:'\n',homedir:function(){return'/'}},path:pathMock,process:window.process,stream:noop,tty:{isatty:function(){return false}},url:{},util:{inherits:function(c,s){if(s)c.prototype=Object.create(s.prototype)},deprecate:function(f){return f},inspect:noop}};
-      window.require = function(m) {
-        if (mocks[m]) return mocks[m];
-        return {};
-      };
-    }
-    </script>
     <div id="page">
       <div id="container"></div>
       <div id="contribution">

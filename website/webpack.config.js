@@ -9,35 +9,17 @@ const webpack = require('webpack');
 const DEV = process.env.NODE_ENV !== 'production';
 const CACHE_BREAKER = Number(fs.readFileSync(path.join(__dirname, 'CACHE_BREAKER')));
 
-// The parsers package emits WASM files into its dist/ directory. The website
-// output needs these files so the browser can fetch them at runtime.
-const parsersDistDir = path.resolve(__dirname, '..', 'packages', 'astexplorer-parsers', 'dist');
-
-class CopyParsersAssetsPlugin {
-  apply(compiler) {
-    compiler.hooks.afterEmit.tapAsync('CopyParsersAssetsPlugin', (compilation, callback) => {
-      const outputPath = compilation.outputOptions.path;
-      try {
-        const files = fs.readdirSync(parsersDistDir);
-        for (const file of files) {
-          if (file.endsWith('.wasm')) {
-            fs.copyFileSync(path.join(parsersDistDir, file), path.join(outputPath, file));
-          }
-        }
-      } catch (e) {
-        // parsers dist may not exist yet
-      }
-      callback();
-    });
-  }
-}
+// Import shared parser config (rules, plugins, aliases) so the website builds
+// parsers from source instead of using the pre-built dist. This enables proper
+// code splitting — each parser's `require(['...'], cb)` becomes an async chunk.
+const { getSharedConfig } = require('../packages/astexplorer-parsers/webpack.shared');
+const parsersShared = getSharedConfig(webpack, path.resolve(__dirname, 'node_modules'));
 
 const plugins = [
   new webpack.DefinePlugin({
     'process.env.API_HOST': JSON.stringify(process.env.API_HOST || ''),
     'process.version': JSON.stringify(process.version),
   }),
-  new webpack.IgnorePlugin(/\.md$/),
 
   new MiniCssExtractPlugin({
     filename: DEV ? '[name].css' : `[name]-[contenthash]-${CACHE_BREAKER}.css`,
@@ -54,12 +36,14 @@ const plugins = [
 
   // Inline runtime and manifest into the HTML. It's small and changes after every build.
   new InlineManifestWebpackPlugin(),
-  new CopyParsersAssetsPlugin(),
   new webpack.ProgressPlugin({
     modules: false,
     activeModules: false,
     profile: false,
   }),
+
+  // Include all parser-specific plugins (module replacement, ignores, shims)
+  ...parsersShared.plugins,
 ];
 
 module.exports = Object.assign({
@@ -67,15 +51,17 @@ module.exports = Object.assign({
     moduleIds: DEV ? 'named' : 'hashed',
     runtimeChunk: 'single',
     splitChunks: {
-      chunks: 'initial',
-      maxAsyncRequests: 5,
+      chunks: 'all',
+      maxAsyncRequests: Infinity,
       cacheGroups: {
         parsers: {
           priority: 10,
           test: /\/astexplorer-parsers\//,
+          chunks: 'initial',
         },
         vendors: {
           test: /\/node_modules\//,
+          chunks: 'initial',
         },
       },
     },
@@ -109,6 +95,8 @@ module.exports = Object.assign({
           path.join(__dirname, 'node_modules', 'symbol-observable', 'es'),
           path.join(__dirname, 'node_modules', 'lodash-es'),
           path.join(__dirname, 'src'),
+          // Parser source + ESM/modern-syntax dependencies
+          ...parsersShared.babelIncludes,
         ],
         loader: 'babel-loader',
         options: {
@@ -152,10 +140,13 @@ module.exports = Object.assign({
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'file-loader',
       },
+      // Parser-specific rules (WASM handling, eslint compat, etc.)
+      ...parsersShared.rules,
     ],
 
     noParse: [
-      /\/astexplorer-parsers\/dist\//,
+      // Parser-specific noParse (large libs that don't need analysis)
+      ...parsersShared.noParse,
     ],
   },
 
@@ -182,6 +173,12 @@ module.exports = Object.assign({
       path.resolve(__dirname, 'node_modules'),
       'node_modules',
     ],
+    alias: {
+      // Resolve astexplorer-parsers from source for code splitting
+      'astexplorer-parsers': path.resolve(__dirname, '..', 'packages', 'astexplorer-parsers', 'src'),
+      // Parser-specific aliases
+      ...parsersShared.aliases,
+    },
   },
 
   entry: {

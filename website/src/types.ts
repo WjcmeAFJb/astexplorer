@@ -17,7 +17,7 @@ import type {
   Transformer,
   TransformResultWithMap,
   WalkResult,
-} from 'astexplorer-parsers/src/types';
+} from 'astexplorer-parsers/types';
 
 export type {
   Category,
