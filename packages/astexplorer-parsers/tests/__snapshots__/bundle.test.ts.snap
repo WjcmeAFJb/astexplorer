@@ -1,0 +1,6558 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`parsers dist bundle > JavaScript parsers > @babel/eslint-parser: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+    {
+      "async": false,
+      "body": {
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "expression": false,
+      "generator": false,
+      "params": [
+        {
+          "name": "...",
+          "type": "...",
+        },
+        {
+          "name": "...",
+          "type": "...",
+        },
+      ],
+      "type": "FunctionDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+  ],
+  "comments": [],
+  "sourceType": "module",
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > @typescript-eslint/parser: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+    {
+      "async": false,
+      "body": {
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "expression": false,
+      "generator": false,
+      "params": [
+        {
+          "name": "...",
+          "type": "...",
+        },
+        {
+          "name": "...",
+          "type": "...",
+        },
+      ],
+      "type": "FunctionDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+  ],
+  "sourceType": "module",
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > acorn: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+    {
+      "async": false,
+      "body": {
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "expression": false,
+      "generator": false,
+      "params": [
+        {
+          "name": "...",
+          "type": "...",
+        },
+        {
+          "name": "...",
+          "type": "...",
+        },
+      ],
+      "type": "FunctionDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+  ],
+  "sourceType": "module",
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > babel-eslint9: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "_babelType": "VariableDeclaration",
+      "declarations": [
+        {
+          "_babelType": "...",
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+    {
+      "_babelType": "FunctionDeclaration",
+      "async": false,
+      "body": {
+        "_babelType": "BlockStatement",
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "expression": false,
+      "generator": false,
+      "params": [
+        {
+          "_babelType": "...",
+          "name": "...",
+          "type": "...",
+        },
+        {
+          "_babelType": "...",
+          "name": "...",
+          "type": "...",
+        },
+      ],
+      "type": "FunctionDeclaration",
+    },
+    {
+      "_babelType": "VariableDeclaration",
+      "declarations": [
+        {
+          "_babelType": "...",
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+  ],
+  "comments": [],
+  "directives": undefined,
+  "errors": [],
+  "sourceType": "module",
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > babylon7: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "comments": [],
+  "errors": [],
+  "program": {
+    "body": [
+      {
+        "declarations": [
+          "...",
+        ],
+        "kind": "const",
+        "type": "VariableDeclaration",
+      },
+      {
+        "async": false,
+        "body": {
+          "body": "...",
+          "directives": "...",
+          "type": "...",
+        },
+        "generator": false,
+        "params": [
+          "...",
+          "...",
+        ],
+        "type": "FunctionDeclaration",
+      },
+      {
+        "declarations": [
+          "...",
+        ],
+        "kind": "const",
+        "type": "VariableDeclaration",
+      },
+    ],
+    "directives": [],
+    "interpreter": null,
+    "sourceType": "module",
+    "type": "Program",
+  },
+  "type": "File",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > esformatter-parser: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "_babelType": "VariableDeclaration",
+      "declarations": [
+        {
+          "_babelType": "...",
+          "depth": "...",
+          "endToken": "...",
+          "init": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+      ],
+      "depth": 1,
+      "endToken": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Punctuator",
+        "value": ";",
+      },
+      "kind": "const",
+      "next": {
+        "_babelType": "FunctionDeclaration",
+        "async": false,
+        "body": {
+          "_babelType": "...",
+          "body": "...",
+          "depth": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        "defaults": [],
+        "depth": 1,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "expression": false,
+        "generator": false,
+        "next": {
+          "_babelType": "...",
+          "declarations": "...",
+          "depth": "...",
+          "endToken": "...",
+          "kind": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        "params": [
+          "...",
+          "...",
+        ],
+        "parent": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "prev": {
+          "_babelType": "...",
+          "declarations": "...",
+          "depth": "...",
+          "endToken": "...",
+          "kind": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "type": "FunctionDeclaration",
+      },
+      "parent": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "prev": undefined,
+      "startToken": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": undefined,
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Keyword",
+        "value": "const",
+      },
+      "type": "VariableDeclaration",
+    },
+    {
+      "_babelType": "FunctionDeclaration",
+      "async": false,
+      "body": {
+        "_babelType": "BlockStatement",
+        "body": [
+          "...",
+        ],
+        "depth": 2,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": {
+          "_babelType": "...",
+          "async": "...",
+          "body": "...",
+          "defaults": "...",
+          "depth": "...",
+          "endToken": "...",
+          "expression": "...",
+          "generator": "...",
+          "next": "...",
+          "params": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        "prev": undefined,
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "type": "BlockStatement",
+      },
+      "defaults": [],
+      "depth": 1,
+      "endToken": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Punctuator",
+        "value": "}",
+      },
+      "expression": false,
+      "generator": false,
+      "next": {
+        "_babelType": "VariableDeclaration",
+        "declarations": [
+          "...",
+        ],
+        "depth": 1,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "kind": "const",
+        "next": undefined,
+        "parent": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "prev": {
+          "_babelType": "...",
+          "async": "...",
+          "body": "...",
+          "defaults": "...",
+          "depth": "...",
+          "endToken": "...",
+          "expression": "...",
+          "generator": "...",
+          "next": "...",
+          "params": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "type": "VariableDeclaration",
+      },
+      "params": [
+        {
+          "_babelType": "...",
+          "depth": "...",
+          "endToken": "...",
+          "name": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        {
+          "_babelType": "...",
+          "depth": "...",
+          "endToken": "...",
+          "name": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+      ],
+      "parent": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "prev": {
+        "_babelType": "VariableDeclaration",
+        "declarations": [
+          "...",
+        ],
+        "depth": 1,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "kind": "const",
+        "next": {
+          "_babelType": "...",
+          "async": "...",
+          "body": "...",
+          "defaults": "...",
+          "depth": "...",
+          "endToken": "...",
+          "expression": "...",
+          "generator": "...",
+          "next": "...",
+          "params": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        "parent": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "prev": undefined,
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "type": "VariableDeclaration",
+      },
+      "startToken": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Keyword",
+        "value": "function",
+      },
+      "type": "FunctionDeclaration",
+    },
+    {
+      "_babelType": "VariableDeclaration",
+      "declarations": [
+        {
+          "_babelType": "...",
+          "depth": "...",
+          "endToken": "...",
+          "init": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+      ],
+      "depth": 1,
+      "endToken": {
+        "next": undefined,
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Punctuator",
+        "value": ";",
+      },
+      "kind": "const",
+      "next": undefined,
+      "parent": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "prev": {
+        "_babelType": "FunctionDeclaration",
+        "async": false,
+        "body": {
+          "_babelType": "...",
+          "body": "...",
+          "depth": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        "defaults": [],
+        "depth": 1,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "expression": false,
+        "generator": false,
+        "next": {
+          "_babelType": "...",
+          "declarations": "...",
+          "depth": "...",
+          "endToken": "...",
+          "kind": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        "params": [
+          "...",
+          "...",
+        ],
+        "parent": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "prev": {
+          "_babelType": "...",
+          "declarations": "...",
+          "depth": "...",
+          "endToken": "...",
+          "kind": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "type": "FunctionDeclaration",
+      },
+      "startToken": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Keyword",
+        "value": "const",
+      },
+      "type": "VariableDeclaration",
+    },
+  ],
+  "comments": [],
+  "depth": 0,
+  "directives": undefined,
+  "endToken": {
+    "next": undefined,
+    "prev": {
+      "next": {
+        "next": undefined,
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Punctuator",
+        "value": ";",
+      },
+      "prev": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "WhiteSpace",
+        "value": " ",
+      },
+      "root": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "type": "Numeric",
+      "value": "2",
+    },
+    "root": {
+      "body": [
+        {
+          "_babelType": "...",
+          "declarations": "...",
+          "depth": "...",
+          "endToken": "...",
+          "kind": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        {
+          "_babelType": "...",
+          "async": "...",
+          "body": "...",
+          "defaults": "...",
+          "depth": "...",
+          "endToken": "...",
+          "expression": "...",
+          "generator": "...",
+          "next": "...",
+          "params": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        {
+          "_babelType": "...",
+          "declarations": "...",
+          "depth": "...",
+          "endToken": "...",
+          "kind": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+      ],
+      "comments": [],
+      "depth": 0,
+      "directives": undefined,
+      "endToken": {
+        "next": undefined,
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Punctuator",
+        "value": ";",
+      },
+      "next": undefined,
+      "parent": undefined,
+      "prev": undefined,
+      "sourceType": "module",
+      "startToken": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": undefined,
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Keyword",
+        "value": "const",
+      },
+      "tokens": [
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "... 45 more",
+      ],
+      "type": "Program",
+    },
+    "type": "Punctuator",
+    "value": ";",
+  },
+  "next": undefined,
+  "parent": undefined,
+  "prev": undefined,
+  "sourceType": "module",
+  "startToken": {
+    "next": {
+      "next": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Identifier",
+        "value": "greeting",
+      },
+      "prev": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": undefined,
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Keyword",
+        "value": "const",
+      },
+      "root": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "type": "WhiteSpace",
+      "value": " ",
+    },
+    "prev": undefined,
+    "root": {
+      "body": [
+        {
+          "_babelType": "...",
+          "declarations": "...",
+          "depth": "...",
+          "endToken": "...",
+          "kind": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        {
+          "_babelType": "...",
+          "async": "...",
+          "body": "...",
+          "defaults": "...",
+          "depth": "...",
+          "endToken": "...",
+          "expression": "...",
+          "generator": "...",
+          "next": "...",
+          "params": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+        {
+          "_babelType": "...",
+          "declarations": "...",
+          "depth": "...",
+          "endToken": "...",
+          "kind": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "startToken": "...",
+          "type": "...",
+        },
+      ],
+      "comments": [],
+      "depth": 0,
+      "directives": undefined,
+      "endToken": {
+        "next": undefined,
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Punctuator",
+        "value": ";",
+      },
+      "next": undefined,
+      "parent": undefined,
+      "prev": undefined,
+      "sourceType": "module",
+      "startToken": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": undefined,
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Keyword",
+        "value": "const",
+      },
+      "tokens": [
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "... 45 more",
+      ],
+      "type": "Program",
+    },
+    "type": "Keyword",
+    "value": "const",
+  },
+  "tokens": [
+    {
+      "next": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "WhiteSpace",
+        "value": " ",
+      },
+      "prev": undefined,
+      "root": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "type": "Keyword",
+      "value": "const",
+    },
+    {
+      "next": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Identifier",
+        "value": "greeting",
+      },
+      "prev": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": undefined,
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Keyword",
+        "value": "const",
+      },
+      "root": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "type": "WhiteSpace",
+      "value": " ",
+    },
+    {
+      "next": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "WhiteSpace",
+        "value": " ",
+      },
+      "prev": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "WhiteSpace",
+        "value": " ",
+      },
+      "root": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "type": "Identifier",
+      "value": "greeting",
+    },
+    {
+      "next": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Punctuator",
+        "value": "=",
+      },
+      "prev": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "Identifier",
+        "value": "greeting",
+      },
+      "root": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "type": "WhiteSpace",
+      "value": " ",
+    },
+    {
+      "next": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "WhiteSpace",
+        "value": " ",
+      },
+      "prev": {
+        "next": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "prev": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "root": {
+          "body": "...",
+          "comments": "...",
+          "depth": "...",
+          "directives": "...",
+          "endToken": "...",
+          "next": "...",
+          "parent": "...",
+          "prev": "...",
+          "sourceType": "...",
+          "startToken": "...",
+          "tokens": "...",
+          "type": "...",
+        },
+        "type": "WhiteSpace",
+        "value": " ",
+      },
+      "root": {
+        "body": [
+          "...",
+          "...",
+          "...",
+        ],
+        "comments": [],
+        "depth": 0,
+        "directives": undefined,
+        "endToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "next": undefined,
+        "parent": undefined,
+        "prev": undefined,
+        "sourceType": "module",
+        "startToken": {
+          "next": "...",
+          "prev": "...",
+          "root": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "tokens": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 45 more",
+        ],
+        "type": "Program",
+      },
+      "type": "Punctuator",
+      "value": "=",
+    },
+    "... 45 more",
+  ],
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > espree: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+    {
+      "async": false,
+      "body": {
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "expression": false,
+      "generator": false,
+      "params": [
+        {
+          "name": "...",
+          "type": "...",
+        },
+        {
+          "name": "...",
+          "type": "...",
+        },
+      ],
+      "type": "FunctionDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+  ],
+  "sourceType": "module",
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > esprima: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+    {
+      "async": false,
+      "body": {
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "expression": false,
+      "generator": false,
+      "params": [
+        {
+          "name": "...",
+          "type": "...",
+        },
+        {
+          "name": "...",
+          "type": "...",
+        },
+      ],
+      "type": "FunctionDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+  ],
+  "sourceType": "module",
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > flow: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+    {
+      "async": false,
+      "body": {
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "expression": false,
+      "generator": false,
+      "params": [
+        {
+          "name": "...",
+          "optional": "...",
+          "type": "...",
+          "typeAnnotation": "...",
+        },
+        {
+          "name": "...",
+          "optional": "...",
+          "type": "...",
+          "typeAnnotation": "...",
+        },
+      ],
+      "predicate": null,
+      "returnType": null,
+      "type": "FunctionDeclaration",
+      "typeParameters": null,
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+  ],
+  "comments": [],
+  "errors": [],
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > hermes: parses JavaScript and produces AST snapshot 1`] = `{}`;
+
+exports[`parsers dist bundle > JavaScript parsers > meriyah: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+    {
+      "async": false,
+      "body": {
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "generator": false,
+      "params": [
+        {
+          "name": "...",
+          "type": "...",
+        },
+        {
+          "name": "...",
+          "type": "...",
+        },
+      ],
+      "type": "FunctionDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+  ],
+  "sourceType": "script",
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > recast: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "comments": null,
+  "name": null,
+  "program": {
+    "body": [
+      {
+        "declarations": [
+          "...",
+        ],
+        "kind": "const",
+        "type": "VariableDeclaration",
+      },
+      {
+        "async": false,
+        "body": {
+          "body": "...",
+          "type": "...",
+        },
+        "expression": false,
+        "generator": false,
+        "params": [
+          "...",
+          "...",
+        ],
+        "type": "FunctionDeclaration",
+      },
+      {
+        "declarations": [
+          "...",
+        ],
+        "kind": "const",
+        "type": "VariableDeclaration",
+      },
+    ],
+    "sourceType": "script",
+    "type": "Program",
+  },
+  "tokens": [
+    {
+      "type": "Keyword",
+      "value": "const",
+    },
+    {
+      "type": "Identifier",
+      "value": "greeting",
+    },
+    {
+      "type": "Punctuator",
+      "value": "=",
+    },
+    {
+      "type": "String",
+      "value": "'hello'",
+    },
+    {
+      "type": "Punctuator",
+      "value": ";",
+    },
+    "... 25 more",
+  ],
+  "type": "File",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > seafox: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+    {
+      "async": false,
+      "body": {
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "generator": false,
+      "params": [
+        {
+          "name": "...",
+          "type": "...",
+        },
+        {
+          "name": "...",
+          "type": "...",
+        },
+      ],
+      "type": "FunctionDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "const",
+      "type": "VariableDeclaration",
+    },
+  ],
+  "sourceType": "script",
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > shift: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "directives": [],
+  "items": [
+    {
+      "declaration": {
+        "declarators": [
+          "...",
+        ],
+        "kind": "const",
+        "type": "VariableDeclaration",
+      },
+      "type": "VariableDeclarationStatement",
+    },
+    {
+      "body": {
+        "directives": [],
+        "statements": [
+          "...",
+        ],
+        "type": "FunctionBody",
+      },
+      "isAsync": false,
+      "isGenerator": false,
+      "name": {
+        "name": "add",
+        "type": "BindingIdentifier",
+      },
+      "params": {
+        "items": [
+          "...",
+          "...",
+        ],
+        "rest": null,
+        "type": "FormalParameters",
+      },
+      "type": "FunctionDeclaration",
+    },
+    {
+      "declaration": {
+        "declarators": [
+          "...",
+        ],
+        "kind": "const",
+        "type": "VariableDeclaration",
+      },
+      "type": "VariableDeclarationStatement",
+    },
+  ],
+  "type": "Module",
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > tenko: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "ast": {
+    "body": [
+      {
+        "declarations": [
+          "...",
+        ],
+        "kind": "const",
+        "type": "VariableDeclaration",
+      },
+      {
+        "async": false,
+        "body": {
+          "body": "...",
+          "type": "...",
+        },
+        "generator": false,
+        "params": [
+          "...",
+          "...",
+        ],
+        "type": "FunctionDeclaration",
+      },
+      {
+        "declarations": [
+          "...",
+        ],
+        "kind": "const",
+        "type": "VariableDeclaration",
+      },
+    ],
+    "type": "Program",
+  },
+  "tokenCountAny": 51,
+  "tokenCountSolid": 31,
+  "tokens": undefined,
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > traceur: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "comments": [],
+  "location": {},
+  "moduleName": null,
+  "scriptItemList": [
+    {
+      "declarations": {
+        "declarationType": "const",
+        "declarations": [
+          "...",
+        ],
+        "location": {},
+      },
+      "location": {},
+    },
+    {
+      "annotations": [],
+      "body": {
+        "location": {},
+        "statements": [
+          "...",
+        ],
+      },
+      "functionKind": null,
+      "location": {},
+      "name": {
+        "identifierToken": {
+          "location": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "location": {},
+      },
+      "parameterList": {
+        "location": {},
+        "parameters": [
+          "...",
+          "...",
+        ],
+      },
+      "typeAnnotation": null,
+    },
+    {
+      "declarations": {
+        "declarationType": "const",
+        "declarations": [
+          "...",
+        ],
+        "location": {},
+      },
+      "location": {},
+    },
+  ],
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > typescript: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "ambientModuleNames": [],
+  "amdDependencies": [],
+  "bindDiagnostics": [],
+  "bindSuggestionDiagnostics": undefined,
+  "checkJsDirective": undefined,
+  "classifiableNames": undefined,
+  "commentDirectives": undefined,
+  "endFlowNode": undefined,
+  "endOfFileToken": {
+    "flags": 0,
+    "kind": 1,
+    "modifierFlagsCache": 0,
+    "parent": {
+      "ambientModuleNames": [],
+      "amdDependencies": [],
+      "bindDiagnostics": [],
+      "bindSuggestionDiagnostics": undefined,
+      "checkJsDirective": undefined,
+      "classifiableNames": undefined,
+      "commentDirectives": undefined,
+      "endFlowNode": undefined,
+      "endOfFileToken": {
+        "flags": 0,
+        "kind": 1,
+        "modifierFlagsCache": 0,
+        "parent": {
+          "ambientModuleNames": "...",
+          "amdDependencies": "...",
+          "bindDiagnostics": "...",
+          "bindSuggestionDiagnostics": "...",
+          "checkJsDirective": "...",
+          "classifiableNames": "...",
+          "commentDirectives": "...",
+          "endFlowNode": "...",
+          "endOfFileToken": "...",
+          "externalModuleIndicator": "...",
+          "fileName": "...",
+          "flags": "...",
+          "hasNoDefaultLib": "...",
+          "identifierCount": "...",
+          "identifiers": "...",
+          "impliedNodeFormat": "...",
+          "imports": "...",
+          "isDeclarationFile": "...",
+          "kind": "...",
+          "languageVariant": "...",
+          "languageVersion": "...",
+          "libReferenceDirectives": "...",
+          "lineMap": "...",
+          "locals": "...",
+          "modifierFlagsCache": "...",
+          "moduleAugmentations": "...",
+          "nextContainer": "...",
+          "nodeCount": "...",
+          "originalFileName": "...",
+          "packageJsonLocations": "...",
+          "packageJsonScope": "...",
+          "parent": "...",
+          "parseDiagnostics": "...",
+          "path": "...",
+          "pragmas": "...",
+          "referencedFiles": "...",
+          "resolvedModules": "...",
+          "resolvedPath": "...",
+          "scriptKind": "...",
+          "statements": "...",
+          "symbolCount": "...",
+          "text": "...",
+          "transformFlags": "...",
+          "typeReferenceDirectives": "...",
+        },
+        "transformFlags": 0,
+      },
+      "externalModuleIndicator": undefined,
+      "fileName": "astExplorer.tsx",
+      "flags": 0,
+      "hasNoDefaultLib": false,
+      "identifierCount": 9,
+      "identifiers": {},
+      "impliedNodeFormat": undefined,
+      "imports": [],
+      "isDeclarationFile": false,
+      "kind": 308,
+      "languageVariant": 1,
+      "languageVersion": 99,
+      "libReferenceDirectives": [],
+      "lineMap": undefined,
+      "locals": undefined,
+      "modifierFlagsCache": 0,
+      "moduleAugmentations": [],
+      "nextContainer": undefined,
+      "nodeCount": 31,
+      "originalFileName": "astExplorer.tsx",
+      "packageJsonLocations": undefined,
+      "packageJsonScope": undefined,
+      "parent": undefined,
+      "parseDiagnostics": [],
+      "path": "astExplorer.tsx",
+      "pragmas": {},
+      "referencedFiles": [],
+      "resolvedModules": undefined,
+      "resolvedPath": "astExplorer.tsx",
+      "scriptKind": 4,
+      "statements": [
+        {
+          "declarationList": "...",
+          "flags": "...",
+          "flowNode": "...",
+          "jsDoc": "...",
+          "kind": "...",
+          "modifierFlagsCache": "...",
+          "modifiers": "...",
+          "parent": "...",
+          "transformFlags": "...",
+        },
+        {
+          "asteriskToken": "...",
+          "body": "...",
+          "endFlowNode": "...",
+          "flags": "...",
+          "jsDoc": "...",
+          "kind": "...",
+          "localSymbol": "...",
+          "locals": "...",
+          "modifierFlagsCache": "...",
+          "modifiers": "...",
+          "name": "...",
+          "nextContainer": "...",
+          "parameters": "...",
+          "parent": "...",
+          "returnFlowNode": "...",
+          "symbol": "...",
+          "transformFlags": "...",
+          "type": "...",
+          "typeArguments": "...",
+          "typeParameters": "...",
+        },
+        {
+          "declarationList": "...",
+          "flags": "...",
+          "flowNode": "...",
+          "jsDoc": "...",
+          "kind": "...",
+          "modifierFlagsCache": "...",
+          "modifiers": "...",
+          "parent": "...",
+          "transformFlags": "...",
+        },
+      ],
+      "symbolCount": 0,
+      "text": "const greeting = 'hello';
+function add(a, b) { return a + b; }
+const arrow = (x) => x * 2;",
+      "transformFlags": 4457600,
+      "typeReferenceDirectives": [],
+    },
+    "transformFlags": 0,
+  },
+  "externalModuleIndicator": undefined,
+  "fileName": "astExplorer.tsx",
+  "flags": 0,
+  "hasNoDefaultLib": false,
+  "identifierCount": 9,
+  "identifiers": {},
+  "impliedNodeFormat": undefined,
+  "imports": [],
+  "isDeclarationFile": false,
+  "kind": 308,
+  "languageVariant": 1,
+  "languageVersion": 99,
+  "libReferenceDirectives": [],
+  "lineMap": undefined,
+  "locals": undefined,
+  "modifierFlagsCache": 0,
+  "moduleAugmentations": [],
+  "nextContainer": undefined,
+  "nodeCount": 31,
+  "originalFileName": "astExplorer.tsx",
+  "packageJsonLocations": undefined,
+  "packageJsonScope": undefined,
+  "parent": undefined,
+  "parseDiagnostics": [],
+  "path": "astExplorer.tsx",
+  "pragmas": {},
+  "referencedFiles": [],
+  "resolvedModules": undefined,
+  "resolvedPath": "astExplorer.tsx",
+  "scriptKind": 4,
+  "statements": [
+    {
+      "declarationList": {
+        "declarations": [
+          "...",
+        ],
+        "flags": 2,
+        "kind": 258,
+        "modifierFlagsCache": 0,
+        "parent": {
+          "declarationList": "...",
+          "flags": "...",
+          "flowNode": "...",
+          "jsDoc": "...",
+          "kind": "...",
+          "modifierFlagsCache": "...",
+          "modifiers": "...",
+          "parent": "...",
+          "transformFlags": "...",
+        },
+        "transformFlags": 4457472,
+      },
+      "flags": 0,
+      "flowNode": undefined,
+      "jsDoc": undefined,
+      "kind": 240,
+      "modifierFlagsCache": 0,
+      "modifiers": undefined,
+      "parent": {
+        "ambientModuleNames": [],
+        "amdDependencies": [],
+        "bindDiagnostics": [],
+        "bindSuggestionDiagnostics": undefined,
+        "checkJsDirective": undefined,
+        "classifiableNames": undefined,
+        "commentDirectives": undefined,
+        "endFlowNode": undefined,
+        "endOfFileToken": {
+          "flags": "...",
+          "kind": "...",
+          "modifierFlagsCache": "...",
+          "parent": "...",
+          "transformFlags": "...",
+        },
+        "externalModuleIndicator": undefined,
+        "fileName": "astExplorer.tsx",
+        "flags": 0,
+        "hasNoDefaultLib": false,
+        "identifierCount": 9,
+        "identifiers": {},
+        "impliedNodeFormat": undefined,
+        "imports": [],
+        "isDeclarationFile": false,
+        "kind": 308,
+        "languageVariant": 1,
+        "languageVersion": 99,
+        "libReferenceDirectives": [],
+        "lineMap": undefined,
+        "locals": undefined,
+        "modifierFlagsCache": 0,
+        "moduleAugmentations": [],
+        "nextContainer": undefined,
+        "nodeCount": 31,
+        "originalFileName": "astExplorer.tsx",
+        "packageJsonLocations": undefined,
+        "packageJsonScope": undefined,
+        "parent": undefined,
+        "parseDiagnostics": [],
+        "path": "astExplorer.tsx",
+        "pragmas": {},
+        "referencedFiles": [],
+        "resolvedModules": undefined,
+        "resolvedPath": "astExplorer.tsx",
+        "scriptKind": 4,
+        "statements": [
+          "...",
+          "...",
+          "...",
+        ],
+        "symbolCount": 0,
+        "text": "const greeting = 'hello';
+function add(a, b) { return a + b; }
+const arrow = (x) => x * 2;",
+        "transformFlags": 4457600,
+        "typeReferenceDirectives": [],
+      },
+      "transformFlags": 4457472,
+    },
+    {
+      "asteriskToken": undefined,
+      "body": {
+        "flags": 0,
+        "jsDoc": undefined,
+        "kind": 238,
+        "locals": undefined,
+        "modifierFlagsCache": 0,
+        "multiLine": false,
+        "nextContainer": undefined,
+        "parent": {
+          "asteriskToken": "...",
+          "body": "...",
+          "endFlowNode": "...",
+          "flags": "...",
+          "jsDoc": "...",
+          "kind": "...",
+          "localSymbol": "...",
+          "locals": "...",
+          "modifierFlagsCache": "...",
+          "modifiers": "...",
+          "name": "...",
+          "nextContainer": "...",
+          "parameters": "...",
+          "parent": "...",
+          "returnFlowNode": "...",
+          "symbol": "...",
+          "transformFlags": "...",
+          "type": "...",
+          "typeArguments": "...",
+          "typeParameters": "...",
+        },
+        "statements": [
+          "...",
+        ],
+        "transformFlags": 4194432,
+      },
+      "endFlowNode": undefined,
+      "flags": 0,
+      "jsDoc": undefined,
+      "kind": 259,
+      "localSymbol": undefined,
+      "locals": undefined,
+      "modifierFlagsCache": 0,
+      "modifiers": undefined,
+      "name": {
+        "escapedText": "add",
+        "flags": 0,
+        "flowNode": undefined,
+        "jsDoc": undefined,
+        "kind": 79,
+        "modifierFlagsCache": 0,
+        "parent": {
+          "asteriskToken": "...",
+          "body": "...",
+          "endFlowNode": "...",
+          "flags": "...",
+          "jsDoc": "...",
+          "kind": "...",
+          "localSymbol": "...",
+          "locals": "...",
+          "modifierFlagsCache": "...",
+          "modifiers": "...",
+          "name": "...",
+          "nextContainer": "...",
+          "parameters": "...",
+          "parent": "...",
+          "returnFlowNode": "...",
+          "symbol": "...",
+          "transformFlags": "...",
+          "type": "...",
+          "typeArguments": "...",
+          "typeParameters": "...",
+        },
+        "symbol": undefined,
+        "transformFlags": 0,
+      },
+      "nextContainer": undefined,
+      "parameters": [
+        {
+          "dotDotDotToken": "...",
+          "flags": "...",
+          "initializer": "...",
+          "jsDoc": "...",
+          "kind": "...",
+          "localSymbol": "...",
+          "modifierFlagsCache": "...",
+          "modifiers": "...",
+          "name": "...",
+          "parent": "...",
+          "questionToken": "...",
+          "symbol": "...",
+          "transformFlags": "...",
+          "type": "...",
+        },
+        {
+          "dotDotDotToken": "...",
+          "flags": "...",
+          "initializer": "...",
+          "jsDoc": "...",
+          "kind": "...",
+          "localSymbol": "...",
+          "modifierFlagsCache": "...",
+          "modifiers": "...",
+          "name": "...",
+          "parent": "...",
+          "questionToken": "...",
+          "symbol": "...",
+          "transformFlags": "...",
+          "type": "...",
+        },
+      ],
+      "parent": {
+        "ambientModuleNames": [],
+        "amdDependencies": [],
+        "bindDiagnostics": [],
+        "bindSuggestionDiagnostics": undefined,
+        "checkJsDirective": undefined,
+        "classifiableNames": undefined,
+        "commentDirectives": undefined,
+        "endFlowNode": undefined,
+        "endOfFileToken": {
+          "flags": "...",
+          "kind": "...",
+          "modifierFlagsCache": "...",
+          "parent": "...",
+          "transformFlags": "...",
+        },
+        "externalModuleIndicator": undefined,
+        "fileName": "astExplorer.tsx",
+        "flags": 0,
+        "hasNoDefaultLib": false,
+        "identifierCount": 9,
+        "identifiers": {},
+        "impliedNodeFormat": undefined,
+        "imports": [],
+        "isDeclarationFile": false,
+        "kind": 308,
+        "languageVariant": 1,
+        "languageVersion": 99,
+        "libReferenceDirectives": [],
+        "lineMap": undefined,
+        "locals": undefined,
+        "modifierFlagsCache": 0,
+        "moduleAugmentations": [],
+        "nextContainer": undefined,
+        "nodeCount": 31,
+        "originalFileName": "astExplorer.tsx",
+        "packageJsonLocations": undefined,
+        "packageJsonScope": undefined,
+        "parent": undefined,
+        "parseDiagnostics": [],
+        "path": "astExplorer.tsx",
+        "pragmas": {},
+        "referencedFiles": [],
+        "resolvedModules": undefined,
+        "resolvedPath": "astExplorer.tsx",
+        "scriptKind": 4,
+        "statements": [
+          "...",
+          "...",
+          "...",
+        ],
+        "symbolCount": 0,
+        "text": "const greeting = 'hello';
+function add(a, b) { return a + b; }
+const arrow = (x) => x * 2;",
+        "transformFlags": 4457600,
+        "typeReferenceDirectives": [],
+      },
+      "returnFlowNode": undefined,
+      "symbol": undefined,
+      "transformFlags": 4194432,
+      "type": undefined,
+      "typeArguments": undefined,
+      "typeParameters": undefined,
+    },
+    {
+      "declarationList": {
+        "declarations": [
+          "...",
+        ],
+        "flags": 2,
+        "kind": 258,
+        "modifierFlagsCache": 0,
+        "parent": {
+          "declarationList": "...",
+          "flags": "...",
+          "flowNode": "...",
+          "jsDoc": "...",
+          "kind": "...",
+          "modifierFlagsCache": "...",
+          "modifiers": "...",
+          "parent": "...",
+          "transformFlags": "...",
+        },
+        "transformFlags": 4457472,
+      },
+      "flags": 0,
+      "flowNode": undefined,
+      "jsDoc": undefined,
+      "kind": 240,
+      "modifierFlagsCache": 0,
+      "modifiers": undefined,
+      "parent": {
+        "ambientModuleNames": [],
+        "amdDependencies": [],
+        "bindDiagnostics": [],
+        "bindSuggestionDiagnostics": undefined,
+        "checkJsDirective": undefined,
+        "classifiableNames": undefined,
+        "commentDirectives": undefined,
+        "endFlowNode": undefined,
+        "endOfFileToken": {
+          "flags": "...",
+          "kind": "...",
+          "modifierFlagsCache": "...",
+          "parent": "...",
+          "transformFlags": "...",
+        },
+        "externalModuleIndicator": undefined,
+        "fileName": "astExplorer.tsx",
+        "flags": 0,
+        "hasNoDefaultLib": false,
+        "identifierCount": 9,
+        "identifiers": {},
+        "impliedNodeFormat": undefined,
+        "imports": [],
+        "isDeclarationFile": false,
+        "kind": 308,
+        "languageVariant": 1,
+        "languageVersion": 99,
+        "libReferenceDirectives": [],
+        "lineMap": undefined,
+        "locals": undefined,
+        "modifierFlagsCache": 0,
+        "moduleAugmentations": [],
+        "nextContainer": undefined,
+        "nodeCount": 31,
+        "originalFileName": "astExplorer.tsx",
+        "packageJsonLocations": undefined,
+        "packageJsonScope": undefined,
+        "parent": undefined,
+        "parseDiagnostics": [],
+        "path": "astExplorer.tsx",
+        "pragmas": {},
+        "referencedFiles": [],
+        "resolvedModules": undefined,
+        "resolvedPath": "astExplorer.tsx",
+        "scriptKind": 4,
+        "statements": [
+          "...",
+          "...",
+          "...",
+        ],
+        "symbolCount": 0,
+        "text": "const greeting = 'hello';
+function add(a, b) { return a + b; }
+const arrow = (x) => x * 2;",
+        "transformFlags": 4457600,
+        "typeReferenceDirectives": [],
+      },
+      "transformFlags": 4457472,
+    },
+  ],
+  "symbolCount": 0,
+  "text": "const greeting = 'hello';
+function add(a, b) { return a + b; }
+const arrow = (x) => x * 2;",
+  "transformFlags": 4457600,
+  "typeReferenceDirectives": [],
+}
+`;
+
+exports[`parsers dist bundle > JavaScript parsers > uglify-js: parses JavaScript and produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "definitions": [
+        {
+          "name": "...",
+          "value": "...",
+        },
+      ],
+    },
+    {
+      "argnames": [
+        {
+          "init": "...",
+          "name": "...",
+          "scope": "...",
+          "thedef": "...",
+        },
+        {
+          "init": "...",
+          "name": "...",
+          "scope": "...",
+          "thedef": "...",
+        },
+      ],
+      "async": false,
+      "body": [
+        {
+          "value": "...",
+        },
+      ],
+      "cname": undefined,
+      "enclosed": undefined,
+      "functions": undefined,
+      "inlined": undefined,
+      "is_generator": false,
+      "name": {
+        "init": undefined,
+        "name": "add",
+        "scope": undefined,
+        "thedef": undefined,
+      },
+      "parent_scope": undefined,
+      "uses_arguments": undefined,
+      "uses_eval": undefined,
+      "uses_with": undefined,
+      "variables": undefined,
+    },
+    {
+      "definitions": [
+        {
+          "name": "...",
+          "value": "...",
+        },
+      ],
+    },
+  ],
+  "cname": undefined,
+  "enclosed": undefined,
+  "functions": undefined,
+  "globals": undefined,
+  "parent_scope": undefined,
+  "uses_eval": undefined,
+  "uses_with": undefined,
+  "variables": undefined,
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > css: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "cssRules": [
+    {
+      "__ends": 202,
+      "__starts": 107,
+      "cssRules": [
+        {
+          "__ends": "...",
+          "__starts": "...",
+          "parentRule": "...",
+          "parentStyleSheet": "...",
+          "selectorText": "...",
+          "style": "...",
+        },
+      ],
+      "media": {
+        "0": "screen and (min-width: 480px)",
+        "length": 1,
+      },
+      "parentRule": null,
+      "parentStyleSheet": {
+        "cssRules": [
+          "...",
+          "...",
+          "...",
+        ],
+        "parentStyleSheet": null,
+      },
+    },
+    {
+      "__ends": 242,
+      "__starts": 204,
+      "parentRule": null,
+      "parentStyleSheet": {
+        "cssRules": [
+          "...",
+          "...",
+          "...",
+        ],
+        "parentStyleSheet": null,
+      },
+      "selectorText": "#main",
+      "style": {
+        "0": "border",
+        "__starts": 210,
+        "_importants": {
+          "border": "...",
+        },
+        "border": "1px solid black",
+        "length": 1,
+        "parentRule": {
+          "__ends": "...",
+          "__starts": "...",
+          "parentRule": "...",
+          "parentStyleSheet": "...",
+          "selectorText": "...",
+          "style": "...",
+        },
+      },
+    },
+    {
+      "__ends": 268,
+      "__starts": 244,
+      "parentRule": null,
+      "parentStyleSheet": {
+        "cssRules": [
+          "...",
+          "...",
+          "...",
+        ],
+        "parentStyleSheet": null,
+      },
+      "selectorText": "ul li",
+      "style": {
+        "0": "padding",
+        "__starts": 250,
+        "_importants": {
+          "padding": "...",
+        },
+        "length": 1,
+        "padding": "5px",
+        "parentRule": {
+          "__ends": "...",
+          "__starts": "...",
+          "parentRule": "...",
+          "parentStyleSheet": "...",
+          "selectorText": "...",
+          "style": "...",
+        },
+      },
+    },
+  ],
+  "parentStyleSheet": null,
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > glsl: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+      ],
+      "mode": 1,
+      "parent": {
+        "children": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+        ],
+        "expecting": "(eof)",
+        "mode": 2,
+        "parent": undefined,
+        "scope": {
+          "main": "...",
+          "size": "...",
+          "t": "...",
+          "uv": "...",
+        },
+        "stage": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "stmtlist",
+      },
+      "token": {
+        "data": "precision",
+        "preceding": [
+          "...",
+          "...",
+        ],
+        "type": "keyword",
+      },
+      "type": "stmt",
+    },
+    {
+      "children": [
+        {
+          "children": "...",
+          "flags": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+      ],
+      "mode": 1,
+      "parent": {
+        "children": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+        ],
+        "expecting": "(eof)",
+        "mode": 2,
+        "parent": undefined,
+        "scope": {
+          "main": "...",
+          "size": "...",
+          "t": "...",
+          "uv": "...",
+        },
+        "stage": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "stmtlist",
+      },
+      "token": {
+        "data": "varying",
+        "preceding": [
+          "...",
+        ],
+        "type": "keyword",
+      },
+      "type": "stmt",
+    },
+    {
+      "children": [
+        {
+          "children": "...",
+          "flags": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+      ],
+      "mode": 1,
+      "parent": {
+        "children": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+        ],
+        "expecting": "(eof)",
+        "mode": 2,
+        "parent": undefined,
+        "scope": {
+          "main": "...",
+          "size": "...",
+          "t": "...",
+          "uv": "...",
+        },
+        "stage": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "stmtlist",
+      },
+      "token": {
+        "data": "uniform",
+        "preceding": [
+          "...",
+        ],
+        "type": "keyword",
+      },
+      "type": "stmt",
+    },
+    {
+      "children": [
+        {
+          "children": "...",
+          "flags": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+      ],
+      "mode": 1,
+      "parent": {
+        "children": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+        ],
+        "expecting": "(eof)",
+        "mode": 2,
+        "parent": undefined,
+        "scope": {
+          "main": "...",
+          "size": "...",
+          "t": "...",
+          "uv": "...",
+        },
+        "stage": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "stmtlist",
+      },
+      "token": {
+        "data": "uniform",
+        "preceding": [
+          "...",
+        ],
+        "type": "keyword",
+      },
+      "type": "stmt",
+    },
+    {
+      "children": [
+        {
+          "children": "...",
+          "flags": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+      ],
+      "mode": 1,
+      "parent": {
+        "children": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+        ],
+        "expecting": "(eof)",
+        "mode": 2,
+        "parent": undefined,
+        "scope": {
+          "main": "...",
+          "size": "...",
+          "t": "...",
+          "uv": "...",
+        },
+        "stage": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "stmtlist",
+      },
+      "token": {
+        "data": "void",
+        "preceding": [
+          "...",
+          "...",
+          "...",
+        ],
+        "type": "keyword",
+      },
+      "type": "stmt",
+    },
+  ],
+  "expecting": "(eof)",
+  "mode": 2,
+  "parent": undefined,
+  "scope": {
+    "main": {
+      "children": [],
+      "data": "main",
+      "mode": 0,
+      "parent": {
+        "children": [
+          "...",
+          "...",
+          "...",
+        ],
+        "mode": 4,
+        "parent": {
+          "children": "...",
+          "flags": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "stage": {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "function",
+      },
+      "scope": {},
+      "token": {
+        "data": "main",
+        "preceding": [
+          "...",
+        ],
+        "type": "ident",
+      },
+      "type": "ident",
+    },
+    "size": {
+      "children": [],
+      "data": "size",
+      "mode": 0,
+      "parent": {
+        "children": [
+          "...",
+        ],
+        "mode": 7,
+        "parent": {
+          "children": "...",
+          "flags": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "decllist",
+      },
+      "token": {
+        "data": "size",
+        "preceding": [
+          "...",
+        ],
+        "type": "ident",
+      },
+      "type": "ident",
+    },
+    "t": {
+      "children": [],
+      "data": "t",
+      "mode": 0,
+      "parent": {
+        "children": [
+          "...",
+        ],
+        "mode": 7,
+        "parent": {
+          "children": "...",
+          "flags": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "decllist",
+      },
+      "token": {
+        "data": "t",
+        "preceding": [
+          "...",
+        ],
+        "type": "ident",
+      },
+      "type": "ident",
+    },
+    "uv": {
+      "children": [],
+      "data": "uv",
+      "mode": 0,
+      "parent": {
+        "children": [
+          "...",
+        ],
+        "mode": 7,
+        "parent": {
+          "children": "...",
+          "flags": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "decllist",
+      },
+      "token": {
+        "data": "uv",
+        "preceding": [
+          "...",
+        ],
+        "type": "ident",
+      },
+      "type": "ident",
+    },
+  },
+  "stage": {
+    "children": [
+      {
+        "children": [
+          "...",
+        ],
+        "mode": 1,
+        "parent": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "preceding": "...",
+          "type": "...",
+        },
+        "type": "stmt",
+      },
+      {
+        "children": [
+          "...",
+        ],
+        "mode": 1,
+        "parent": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "preceding": "...",
+          "type": "...",
+        },
+        "type": "stmt",
+      },
+      {
+        "children": [
+          "...",
+        ],
+        "mode": 1,
+        "parent": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "preceding": "...",
+          "type": "...",
+        },
+        "type": "stmt",
+      },
+      {
+        "children": [
+          "...",
+        ],
+        "mode": 1,
+        "parent": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "preceding": "...",
+          "type": "...",
+        },
+        "type": "stmt",
+      },
+      {
+        "children": [
+          "...",
+        ],
+        "mode": 1,
+        "parent": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "preceding": "...",
+          "type": "...",
+        },
+        "type": "stmt",
+      },
+    ],
+    "expecting": "(eof)",
+    "mode": 2,
+    "parent": undefined,
+    "scope": {
+      "main": {
+        "children": [],
+        "data": "main",
+        "mode": 0,
+        "parent": {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "scope": {},
+        "token": {
+          "data": "...",
+          "preceding": "...",
+          "type": "...",
+        },
+        "type": "ident",
+      },
+      "size": {
+        "children": [],
+        "data": "size",
+        "mode": 0,
+        "parent": {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "preceding": "...",
+          "type": "...",
+        },
+        "type": "ident",
+      },
+      "t": {
+        "children": [],
+        "data": "t",
+        "mode": 0,
+        "parent": {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "preceding": "...",
+          "type": "...",
+        },
+        "type": "ident",
+      },
+      "uv": {
+        "children": [],
+        "data": "uv",
+        "mode": 0,
+        "parent": {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "preceding": "...",
+          "type": "...",
+        },
+        "type": "ident",
+      },
+    },
+    "stage": {
+      "children": [
+        {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        {
+          "children": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+      ],
+      "expecting": "(eof)",
+      "mode": 2,
+      "parent": undefined,
+      "scope": {
+        "main": {
+          "children": "...",
+          "data": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "size": {
+          "children": "...",
+          "data": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "t": {
+          "children": "...",
+          "data": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "uv": {
+          "children": "...",
+          "data": "...",
+          "mode": "...",
+          "parent": "...",
+          "token": "...",
+          "type": "...",
+        },
+      },
+      "stage": {
+        "children": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+        ],
+        "expecting": "(eof)",
+        "mode": 2,
+        "parent": undefined,
+        "scope": {
+          "main": "...",
+          "size": "...",
+          "t": "...",
+          "uv": "...",
+        },
+        "stage": {
+          "children": "...",
+          "expecting": "...",
+          "mode": "...",
+          "parent": "...",
+          "scope": "...",
+          "stage": "...",
+          "token": "...",
+          "type": "...",
+        },
+        "token": {
+          "data": "...",
+          "type": "...",
+        },
+        "type": "stmtlist",
+      },
+      "token": {
+        "data": "(program)",
+        "type": "(program)",
+      },
+      "type": "stmtlist",
+    },
+    "token": {
+      "data": "(program)",
+      "type": "(program)",
+    },
+    "type": "stmtlist",
+  },
+  "token": {
+    "data": "(program)",
+    "type": "(program)",
+  },
+  "type": "stmtlist",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > graphql: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "definitions": [
+    {
+      "directives": [],
+      "kind": "OperationDefinition",
+      "name": {
+        "kind": "Name",
+        "value": "GetUser",
+      },
+      "operation": "query",
+      "selectionSet": {
+        "kind": "SelectionSet",
+        "selections": [
+          "...",
+        ],
+      },
+      "variableDefinitions": [
+        {
+          "defaultValue": "...",
+          "directives": "...",
+          "kind": "...",
+          "type": "...",
+          "variable": "...",
+        },
+      ],
+    },
+    {
+      "directives": [],
+      "kind": "FragmentDefinition",
+      "name": {
+        "kind": "Name",
+        "value": "PictureFragment",
+      },
+      "selectionSet": {
+        "kind": "SelectionSet",
+        "selections": [
+          "...",
+          "...",
+          "...",
+        ],
+      },
+      "typeCondition": {
+        "kind": "NamedType",
+        "name": {
+          "kind": "...",
+          "value": "...",
+        },
+      },
+    },
+  ],
+  "kind": "Document",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > graphviz: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "children": [
+    {
+      "data": {},
+      "type": "commentBlock",
+      "value": "*
+ * Copy paste in a GraphViz dot file to explore the syntax tree
+ ",
+    },
+    {
+      "children": [
+        {
+          "data": "...",
+          "name": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "children": "...",
+          "data": "...",
+          "type": "...",
+        },
+        {
+          "children": "...",
+          "data": "...",
+          "type": "...",
+        },
+        {
+          "children": "...",
+          "data": "...",
+          "type": "...",
+        },
+        {
+          "children": "...",
+          "data": "...",
+          "type": "...",
+        },
+      ],
+      "data": {},
+      "strict": undefined,
+      "type": "digraph",
+    },
+  ],
+  "data": {},
+  "type": "root",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > handlebars: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "blockParams": [],
+  "body": [
+    {
+      "attributes": [
+        {
+          "isValueless": "...",
+          "name": "...",
+          "quoteType": "...",
+          "type": "...",
+          "value": "...",
+        },
+      ],
+      "blockParams": [],
+      "children": [
+        {
+          "chars": "...",
+          "type": "...",
+        },
+        {
+          "attributes": "...",
+          "blockParams": "...",
+          "children": "...",
+          "comments": "...",
+          "modifiers": "...",
+          "selfClosing": "...",
+          "tag": "...",
+          "type": "...",
+        },
+        {
+          "chars": "...",
+          "type": "...",
+        },
+        {
+          "attributes": "...",
+          "blockParams": "...",
+          "children": "...",
+          "comments": "...",
+          "modifiers": "...",
+          "selfClosing": "...",
+          "tag": "...",
+          "type": "...",
+        },
+        {
+          "chars": "...",
+          "type": "...",
+        },
+      ],
+      "comments": [],
+      "modifiers": [],
+      "selfClosing": false,
+      "tag": "div",
+      "type": "ElementNode",
+    },
+    {
+      "chars": "
+",
+      "type": "TextNode",
+    },
+  ],
+  "type": "Template",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > htmlmixed: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "comments": [],
+  "templateNodes": [
+    {
+      "sourceSpan": {
+        "details": null,
+        "fullStart": {
+          "col": "...",
+          "file": "...",
+        },
+      },
+      "type": "Text$3",
+      "value": "
+",
+    },
+    {
+      "attributes": [],
+      "children": [
+        {
+          "sourceSpan": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "attributes": "...",
+          "children": "...",
+          "endSourceSpan": "...",
+          "i18n": "...",
+          "inputs": "...",
+          "name": "...",
+          "outputs": "...",
+          "references": "...",
+          "sourceSpan": "...",
+          "startSourceSpan": "...",
+          "type": "...",
+        },
+        {
+          "sourceSpan": "...",
+          "type": "...",
+          "value": "...",
+        },
+      ],
+      "endSourceSpan": {
+        "details": null,
+        "fullStart": {
+          "col": "...",
+          "file": "...",
+        },
+      },
+      "i18n": undefined,
+      "inputs": [],
+      "name": "html",
+      "outputs": [],
+      "references": [],
+      "sourceSpan": {
+        "details": null,
+        "fullStart": {
+          "col": "...",
+          "file": "...",
+        },
+      },
+      "startSourceSpan": {
+        "details": null,
+        "fullStart": {
+          "col": "...",
+          "file": "...",
+        },
+      },
+      "type": "Element$1",
+    },
+    {
+      "sourceSpan": {
+        "details": null,
+        "fullStart": {
+          "col": "...",
+          "file": "...",
+        },
+      },
+      "type": "Text$3",
+      "value": "
+",
+    },
+  ],
+  "tokens": [],
+  "type": "Program",
+  "value": "<!DOCTYPE html>
+<html>
+
+<body>
+    <h1>My First Heading</h1>
+    <p>My first paragraph.</p>
+</body>
+
+</html>
+",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > icu: loads parser, parses code example, produces AST snapshot 1`] = `
+[
+  {
+    "location": {},
+    "type": 0,
+    "value": "On ",
+  },
+  {
+    "location": {},
+    "style": "short",
+    "type": 3,
+    "value": "takenDate",
+  },
+  {
+    "location": {},
+    "type": 0,
+    "value": " ",
+  },
+  {
+    "location": {},
+    "type": 1,
+    "value": "name",
+  },
+  {
+    "location": {},
+    "type": 0,
+    "value": " took ",
+  },
+  {
+    "location": {},
+    "options": {
+      "=0": {
+        "location": {},
+        "value": [
+          "...",
+        ],
+      },
+      "=1": {
+        "location": {},
+        "value": [
+          "...",
+        ],
+      },
+      "other": {
+        "location": {},
+        "value": [
+          "...",
+          "...",
+        ],
+      },
+    },
+    "pluralType": "cardinal",
+    "type": 6,
+    "value": "numPhotos",
+  },
+]
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > java: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "children": {
+    "EOF": [
+      {
+        "endColumn": NaN,
+        "endLine": NaN,
+        "endOffset": NaN,
+        "image": "",
+        "startColumn": NaN,
+        "startLine": NaN,
+        "startOffset": NaN,
+        "tokenType": {
+          "CATEGORIES": "...",
+          "PATTERN": "...",
+          "categoryMatches": "...",
+          "categoryMatchesMap": "...",
+          "isParent": "...",
+          "name": "...",
+          "tokenTypeIdx": "...",
+        },
+        "tokenTypeIdx": 1,
+      },
+    ],
+    "ordinaryCompilationUnit": [
+      {
+        "children": {
+          "importDeclaration": "...",
+          "packageDeclaration": "...",
+          "typeDeclaration": "...",
+        },
+        "location": {
+          "endColumn": "...",
+          "endLine": "...",
+          "endOffset": "...",
+          "startColumn": "...",
+          "startLine": "...",
+          "startOffset": "...",
+        },
+        "name": "ordinaryCompilationUnit",
+      },
+    ],
+  },
+  "location": {
+    "endColumn": NaN,
+    "endLine": NaN,
+    "endOffset": NaN,
+    "startColumn": NaN,
+    "startLine": NaN,
+    "startOffset": NaN,
+  },
+  "name": "compilationUnit",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > javascript: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "let",
+      "type": "VariableDeclaration",
+    },
+    {
+      "async": false,
+      "body": {
+        "body": [
+          "...",
+        ],
+        "type": "BlockStatement",
+      },
+      "expression": false,
+      "generator": false,
+      "params": [],
+      "type": "FunctionDeclaration",
+    },
+  ],
+  "sourceType": "module",
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > json: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "children": [
+    {
+      "key": {
+        "raw": ""key1"",
+        "type": "Identifier",
+        "value": "key1",
+      },
+      "type": "Property",
+      "value": {
+        "children": [
+          "...",
+          "...",
+          "...",
+        ],
+        "type": "Array",
+      },
+    },
+    {
+      "key": {
+        "raw": ""key2"",
+        "type": "Identifier",
+        "value": "key2",
+      },
+      "type": "Property",
+      "value": {
+        "children": [
+          "...",
+        ],
+        "type": "Object",
+      },
+    },
+  ],
+  "type": "Object",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > lua: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "body": [
+        {
+          "init": "...",
+          "type": "...",
+          "variables": "...",
+        },
+        {
+          "init": "...",
+          "type": "...",
+          "variables": "...",
+        },
+        {
+          "arguments": "...",
+          "type": "...",
+        },
+      ],
+      "identifier": {
+        "name": "allwords",
+        "type": "Identifier",
+      },
+      "isLocal": false,
+      "parameters": [],
+      "type": "FunctionDeclaration",
+    },
+  ],
+  "comments": [
+    {
+      "raw": "--[[
+    Paste or drop some Lua here and explore
+    the syntax tree created by chosen parser.
+    Enjoy!
+--]]",
+      "type": "Comment",
+      "value": "    Paste or drop some Lua here and explore
+    the syntax tree created by chosen parser.
+    Enjoy!
+--",
+    },
+    {
+      "raw": "-- current line",
+      "type": "Comment",
+      "value": " current line",
+    },
+    {
+      "raw": "-- current position in the line",
+      "type": "Comment",
+      "value": " current position in the line",
+    },
+    {
+      "raw": "-- iterator function",
+      "type": "Comment",
+      "value": " iterator function",
+    },
+    {
+      "raw": "-- repeat while there are lines",
+      "type": "Comment",
+      "value": " repeat while there are lines",
+    },
+    "... 6 more",
+  ],
+  "type": "Chunk",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > lucene: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "left": {
+    "boost": null,
+    "field": "name",
+    "fieldLocation": {},
+    "prefix": null,
+    "quoted": false,
+    "regex": false,
+    "similarity": null,
+    "term": "frank",
+    "termLocation": {},
+  },
+  "operator": "OR",
+  "right": {
+    "left": {
+      "boost": null,
+      "field": "job",
+      "fieldLocation": {},
+      "prefix": null,
+      "quoted": false,
+      "regex": false,
+      "similarity": null,
+      "term": "engineer",
+      "termLocation": {},
+    },
+    "operator": "AND",
+    "right": {
+      "field": "food",
+      "fieldLocation": {},
+      "quoted": false,
+      "regex": true,
+      "term": "marshmal+ows",
+      "termLocation": {},
+    },
+  },
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > markdown: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "children": [
+    {
+      "children": [
+        {
+          "type": "...",
+          "value": "...",
+        },
+      ],
+      "depth": 1,
+      "type": "heading",
+    },
+    {
+      "children": [
+        {
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "children": "...",
+          "type": "...",
+        },
+        {
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "children": "...",
+          "type": "...",
+        },
+        {
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "type": "...",
+          "value": "...",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "type": "thematicBreak",
+    },
+    {
+      "lang": "javascript",
+      "meta": null,
+      "type": "code",
+      "value": "console.log('!');",
+    },
+    {
+      "children": [
+        {
+          "checked": "...",
+          "children": "...",
+          "spread": "...",
+          "type": "...",
+        },
+        {
+          "checked": "...",
+          "children": "...",
+          "spread": "...",
+          "type": "...",
+        },
+        {
+          "checked": "...",
+          "children": "...",
+          "spread": "...",
+          "type": "...",
+        },
+      ],
+      "ordered": false,
+      "spread": false,
+      "type": "list",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > mathjs: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "blocks": [
+    {
+      "node": {
+        "args": [
+          "...",
+          "...",
+        ],
+        "comment": "",
+        "fn": "divide",
+        "implicit": false,
+        "isPercentage": false,
+        "op": "/",
+      },
+      "visible": true,
+    },
+  ],
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > mdx: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "children": [
+    {
+      "type": "import",
+      "value": "import MyComp from './components/MyComp'",
+    },
+    {
+      "type": "export",
+      "value": "export const meta = {
+  title: 'Page Title',
+  description: 'This is a page description',
+}",
+    },
+    {
+      "children": [
+        {
+          "type": "...",
+          "value": "...",
+        },
+      ],
+      "properties": {},
+      "tagName": "h1",
+      "type": "element",
+    },
+    {
+      "type": "jsx",
+      "value": "<MyComp prop="value">
+  Component children
+</MyComp>",
+    },
+    {
+      "children": [
+        {
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "children": "...",
+          "properties": "...",
+          "tagName": "...",
+          "type": "...",
+        },
+        {
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "children": "...",
+          "properties": "...",
+          "tagName": "...",
+          "type": "...",
+        },
+        {
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "children": "...",
+          "properties": "...",
+          "tagName": "...",
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "type": "...",
+          "value": "...",
+        },
+      ],
+      "properties": {},
+      "tagName": "p",
+      "type": "element",
+    },
+    {
+      "children": [],
+      "properties": {},
+      "tagName": "hr",
+      "type": "element",
+    },
+    {
+      "children": [
+        {
+          "children": "...",
+          "properties": "...",
+          "tagName": "...",
+          "type": "...",
+        },
+      ],
+      "properties": {},
+      "tagName": "pre",
+      "type": "element",
+    },
+    {
+      "children": [
+        {
+          "children": "...",
+          "properties": "...",
+          "tagName": "...",
+          "type": "...",
+        },
+        {
+          "children": "...",
+          "properties": "...",
+          "tagName": "...",
+          "type": "...",
+        },
+        {
+          "children": "...",
+          "properties": "...",
+          "tagName": "...",
+          "type": "...",
+        },
+      ],
+      "properties": {},
+      "tagName": "ul",
+      "type": "element",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > ocaml: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "structure": [
+    {
+      "pstr_desc": {
+        "rec_flag": {
+          "type": "...",
+        },
+        "type": "Pstr_value",
+        "value_bindings": [
+          "...",
+        ],
+      },
+      "pstr_loc": {
+        "loc_end": {
+          "pos_bol": "...",
+          "pos_cnum": "...",
+          "pos_fname": "...",
+          "pos_lnum": "...",
+          "type": "...",
+        },
+        "loc_ghost": false,
+        "loc_start": {
+          "pos_bol": "...",
+          "pos_cnum": "...",
+          "pos_fname": "...",
+          "pos_lnum": "...",
+          "type": "...",
+        },
+        "type": "Location.t",
+      },
+      "type": "structure_item",
+    },
+    {
+      "pstr_desc": {
+        "rec_flag": {
+          "type": "...",
+        },
+        "type": "Pstr_value",
+        "value_bindings": [
+          "...",
+        ],
+      },
+      "pstr_loc": {
+        "loc_end": {
+          "pos_bol": "...",
+          "pos_cnum": "...",
+          "pos_fname": "...",
+          "pos_lnum": "...",
+          "type": "...",
+        },
+        "loc_ghost": false,
+        "loc_start": {
+          "pos_bol": "...",
+          "pos_cnum": "...",
+          "pos_fname": "...",
+          "pos_lnum": "...",
+          "type": "...",
+        },
+        "type": "Location.t",
+      },
+      "type": "structure_item",
+    },
+  ],
+  "type": "structure",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > php: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "children": [
+    {
+      "expression": {
+        "kind": "assign",
+        "left": {
+          "curly": "...",
+          "kind": "...",
+          "name": "...",
+        },
+        "operator": "=",
+        "right": {
+          "items": "...",
+          "kind": "...",
+          "shortForm": "...",
+        },
+      },
+      "kind": "expressionstatement",
+    },
+    {
+      "arguments": [],
+      "body": {
+        "children": [
+          "...",
+          "...",
+        ],
+        "kind": "block",
+      },
+      "byref": false,
+      "kind": "function",
+      "name": {
+        "kind": "identifier",
+        "name": "printTips",
+      },
+      "nullable": false,
+      "type": null,
+    },
+  ],
+  "comments": [],
+  "errors": [],
+  "kind": "program",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > protobuf: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "statements": [
+    {
+      "eq": {
+        "text": "=",
+      },
+      "keyword": {
+        "text": "syntax",
+        "type": "keyword",
+      },
+      "leadingComments": [],
+      "leadingDetachedComments": [],
+      "quoteClose": {
+        "text": """,
+      },
+      "quoteOpen": {
+        "text": """,
+      },
+      "semi": {
+        "text": ";",
+        "type": "semi",
+      },
+      "syntax": {
+        "text": "proto3",
+      },
+      "trailingComments": [],
+      "type": "syntax",
+    },
+    {
+      "fullIdent": {
+        "identOrDots": [
+          "...",
+        ],
+        "type": "full-ident",
+      },
+      "keyword": {
+        "text": "package",
+        "type": "keyword",
+      },
+      "leadingComments": [],
+      "leadingDetachedComments": [],
+      "semi": {
+        "text": ";",
+        "type": "semi",
+      },
+      "trailingComments": [],
+      "type": "package",
+    },
+    {
+      "keyword": {
+        "text": "import",
+        "type": "keyword",
+      },
+      "leadingComments": [],
+      "leadingDetachedComments": [],
+      "semi": {
+        "text": ";",
+        "type": "semi",
+      },
+      "strLit": {
+        "tokens": [
+          "...",
+        ],
+        "type": "str-lit",
+      },
+      "trailingComments": [],
+      "type": "import",
+      "weakOrPublic": undefined,
+    },
+    {
+      "constant": {
+        "tokens": [
+          "...",
+        ],
+        "type": "str-lit",
+      },
+      "eq": {
+        "text": "=",
+      },
+      "keyword": {
+        "text": "option",
+        "type": "keyword",
+      },
+      "leadingComments": [],
+      "leadingDetachedComments": [],
+      "optionName": {
+        "optionNameSegmentOrDots": [
+          "...",
+        ],
+        "type": "option-name",
+      },
+      "semi": {
+        "text": ";",
+        "type": "semi",
+      },
+      "trailingComments": [],
+      "type": "option",
+    },
+    {
+      "keyword": {
+        "text": "message",
+        "type": "keyword",
+      },
+      "leadingComments": [],
+      "leadingDetachedComments": [],
+      "messageBody": {
+        "bracketClose": {
+          "text": "...",
+        },
+        "bracketOpen": {
+          "text": "...",
+        },
+        "statements": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+        ],
+        "type": "message-body",
+      },
+      "messageName": {
+        "text": "Person",
+      },
+      "trailingComments": [],
+      "type": "message",
+    },
+    {
+      "keyword": {
+        "text": "message",
+        "type": "keyword",
+      },
+      "leadingComments": [
+        {
+          "comments": "...",
+          "type": "...",
+        },
+      ],
+      "leadingDetachedComments": [],
+      "messageBody": {
+        "bracketClose": {
+          "text": "...",
+        },
+        "bracketOpen": {
+          "text": "...",
+        },
+        "statements": [
+          "...",
+        ],
+        "type": "message-body",
+      },
+      "messageName": {
+        "text": "AddressBook",
+      },
+      "trailingComments": [],
+      "type": "message",
+    },
+  ],
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > pug: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "nodes": [
+    {
+      "type": "Doctype",
+      "val": "html",
+    },
+    {
+      "attributeBlocks": [],
+      "attrs": [
+        {
+          "mustEscape": "...",
+          "name": "...",
+          "val": "...",
+        },
+      ],
+      "block": {
+        "nodes": [
+          "...",
+          "...",
+        ],
+        "type": "Block",
+      },
+      "isInline": false,
+      "name": "html",
+      "selfClosing": false,
+      "type": "Tag",
+    },
+  ],
+  "type": "Block",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > python: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "expression": {
+        "arguments": [
+          "...",
+        ],
+        "callee": {
+          "computed": "...",
+          "object": "...",
+          "property": "...",
+          "type": "...",
+        },
+        "type": "CallExpression",
+      },
+      "type": "ExpressionStatement",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "var",
+      "type": "VariableDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "var",
+      "type": "VariableDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "var",
+      "type": "VariableDeclaration",
+    },
+    {
+      "expression": {
+        "arguments": [
+          "...",
+        ],
+        "callee": {
+          "computed": "...",
+          "object": "...",
+          "property": "...",
+          "type": "...",
+        },
+        "type": "CallExpression",
+      },
+      "type": "ExpressionStatement",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "var",
+      "type": "VariableDeclaration",
+    },
+    {
+      "declarations": [
+        {
+          "init": "...",
+          "type": "...",
+        },
+      ],
+      "kind": "var",
+      "type": "VariableDeclaration",
+    },
+    {
+      "expression": {
+        "arguments": [
+          "...",
+        ],
+        "callee": {
+          "computed": "...",
+          "object": "...",
+          "property": "...",
+          "type": "...",
+        },
+        "type": "CallExpression",
+      },
+      "type": "ExpressionStatement",
+    },
+  ],
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > reason: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "structure": [
+    {
+      "pstr_desc": {
+        "rec_flag": {
+          "type": "...",
+        },
+        "type": "Pstr_value",
+        "value_bindings": [
+          "...",
+        ],
+      },
+      "pstr_loc": {
+        "loc_end": {
+          "pos_bol": "...",
+          "pos_cnum": "...",
+          "pos_fname": "...",
+          "pos_lnum": "...",
+          "type": "...",
+        },
+        "loc_ghost": true,
+        "loc_start": {
+          "pos_bol": "...",
+          "pos_cnum": "...",
+          "pos_fname": "...",
+          "pos_lnum": "...",
+          "type": "...",
+        },
+        "type": "Location.t",
+      },
+      "type": "structure_item",
+    },
+    {
+      "pstr_desc": {
+        "rec_flag": {
+          "type": "...",
+        },
+        "type": "Pstr_value",
+        "value_bindings": [
+          "...",
+        ],
+      },
+      "pstr_loc": {
+        "loc_end": {
+          "pos_bol": "...",
+          "pos_cnum": "...",
+          "pos_fname": "...",
+          "pos_lnum": "...",
+          "type": "...",
+        },
+        "loc_ghost": true,
+        "loc_start": {
+          "pos_bol": "...",
+          "pos_cnum": "...",
+          "pos_fname": "...",
+          "pos_lnum": "...",
+          "type": "...",
+        },
+        "type": "Location.t",
+      },
+      "type": "structure_item",
+    },
+  ],
+  "type": "structure",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > regexp: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "body": {
+    "expressions": [
+      {
+        "from": {
+          "codePoint": "...",
+          "kind": "...",
+          "symbol": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "to": {
+          "codePoint": "...",
+          "kind": "...",
+          "symbol": "...",
+          "type": "...",
+          "value": "...",
+        },
+        "type": "ClassRange",
+      },
+    ],
+    "type": "CharacterClass",
+  },
+  "flags": "i",
+  "type": "RegExp",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > san: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "children": [
+    {
+      "textExpr": {
+        "type": 1,
+        "value": "
+  ",
+      },
+    },
+    {
+      "children": [
+        {
+          "textExpr": "...",
+        },
+      ],
+      "directives": {
+        "if": {
+          "value": "...",
+        },
+      },
+      "events": [],
+      "props": [],
+      "tagName": "h2",
+    },
+    {
+      "textExpr": {
+        "type": 1,
+        "value": "
+  ",
+      },
+    },
+    {
+      "children": [
+        {
+          "textExpr": "...",
+        },
+        {
+          "children": "...",
+          "directives": "...",
+          "events": "...",
+          "props": "...",
+          "tagName": "...",
+        },
+        {
+          "textExpr": "...",
+        },
+        {
+          "children": "...",
+          "directives": "...",
+          "events": "...",
+          "props": "...",
+          "tagName": "...",
+        },
+        {
+          "textExpr": "...",
+        },
+      ],
+      "directives": {},
+      "events": [],
+      "props": [],
+      "tagName": "form",
+    },
+    {
+      "textExpr": {
+        "type": 1,
+        "value": "
+",
+      },
+    },
+  ],
+  "directives": {},
+  "events": [],
+  "props": [],
+  "tagName": "div",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > solididy: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "children": [
+    {
+      "name": "solidity",
+      "type": "PragmaDirective",
+      "value": "^0.4.18",
+    },
+    {
+      "baseContracts": [],
+      "kind": "contract",
+      "name": "SimpleStore",
+      "subNodes": [
+        {
+          "body": "...",
+          "isConstructor": "...",
+          "modifiers": "...",
+          "name": "...",
+          "parameters": "...",
+          "returnParameters": "...",
+          "stateMutability": "...",
+          "type": "...",
+          "visibility": "...",
+        },
+        {
+          "body": "...",
+          "isConstructor": "...",
+          "modifiers": "...",
+          "name": "...",
+          "parameters": "...",
+          "returnParameters": "...",
+          "stateMutability": "...",
+          "type": "...",
+          "visibility": "...",
+        },
+        {
+          "initialValue": "...",
+          "type": "...",
+          "variables": "...",
+        },
+      ],
+      "type": "ContractDefinition",
+    },
+  ],
+  "type": "SourceUnit",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > sql: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "leading": [
+    {
+      "text": "--",
+      "type": "line_comment",
+    },
+    {
+      "text": "-- This is an example query",
+      "type": "line_comment",
+    },
+    {
+      "text": "--",
+      "type": "line_comment",
+    },
+  ],
+  "statements": [
+    {
+      "clauses": [
+        {
+          "columns": "...",
+          "options": "...",
+          "selectKw": "...",
+          "type": "...",
+        },
+        {
+          "expr": "...",
+          "fromKw": "...",
+          "type": "...",
+        },
+        {
+          "expr": "...",
+          "type": "...",
+          "whereKw": "...",
+        },
+        {
+          "orderByKw": "...",
+          "specifications": "...",
+          "type": "...",
+          "withRollupKw": "...",
+        },
+      ],
+      "type": "select_stmt",
+    },
+  ],
+  "type": "program",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > svelte: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "css": undefined,
+  "html": {
+    "children": [
+      {
+        "data": "
+
+",
+        "raw": "
+
+",
+        "type": "Text",
+      },
+      {
+        "attributes": [],
+        "children": [
+          "...",
+          "...",
+          "...",
+        ],
+        "name": "h1",
+        "type": "Element",
+      },
+    ],
+    "type": "Fragment",
+  },
+  "instance": {
+    "content": {
+      "body": [
+        {
+          "declarations": "...",
+          "kind": "...",
+          "type": "...",
+        },
+      ],
+      "sourceType": "module",
+      "type": "Program",
+    },
+    "context": "default",
+    "type": "Script",
+  },
+  "module": undefined,
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > text/x-scala: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "stats": [
+    {
+      "mods": [],
+      "name": {
+        "type": "Term.Name",
+        "value": "Main",
+      },
+      "templ": {
+        "derives": [],
+        "early": [],
+        "inits": [],
+        "self": {
+          "decltpe": "...",
+          "name": "...",
+          "type": "...",
+        },
+        "stats": [
+          "...",
+        ],
+        "type": "Template",
+      },
+      "type": "Defn.Object",
+    },
+  ],
+  "type": "Source",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > thrift-idl: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "comments": [],
+      "name": {
+        "annotations": undefined,
+        "type": "Identifier",
+        "value": "test",
+      },
+      "scope": {
+        "annotations": undefined,
+        "type": "Identifier",
+        "value": "js",
+      },
+      "type": "NamespaceDefinition",
+    },
+    {
+      "annotations": undefined,
+      "comments": [],
+      "fieldType": {
+        "annotations": undefined,
+        "type": "StringKeyword",
+      },
+      "initializer": {
+        "type": "StringLiteral",
+        "value": "test",
+      },
+      "name": {
+        "annotations": undefined,
+        "type": "Identifier",
+        "value": "test",
+      },
+      "type": "ConstDefinition",
+    },
+    {
+      "annotations": undefined,
+      "comments": [],
+      "fields": [
+        {
+          "annotations": "...",
+          "comments": "...",
+          "defaultValue": "...",
+          "fieldID": "...",
+          "fieldType": "...",
+          "name": "...",
+          "requiredness": "...",
+          "type": "...",
+        },
+      ],
+      "name": {
+        "annotations": undefined,
+        "type": "Identifier",
+        "value": "MyStruct",
+      },
+      "type": "StructDefinition",
+    },
+    {
+      "annotations": undefined,
+      "comments": [],
+      "extends": null,
+      "functions": [
+        {
+          "annotations": "...",
+          "comments": "...",
+          "fields": "...",
+          "modifiers": "...",
+          "name": "...",
+          "oneway": "...",
+          "returnType": "...",
+          "throws": "...",
+          "type": "...",
+        },
+      ],
+      "name": {
+        "annotations": undefined,
+        "type": "Identifier",
+        "value": "MyService",
+      },
+      "type": "ServiceDefinition",
+    },
+  ],
+  "tokens": undefined,
+  "type": "ThriftDocument",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > vue: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "cached": 0,
+  "children": [
+    {
+      "children": [
+        {
+          "children": "...",
+          "codegenNode": "...",
+          "isSelfClosing": "...",
+          "ns": "...",
+          "props": "...",
+          "tag": "...",
+          "tagType": "...",
+          "type": "...",
+        },
+      ],
+      "codegenNode": undefined,
+      "isSelfClosing": false,
+      "ns": 0,
+      "props": [],
+      "tag": "template",
+      "tagType": 0,
+      "type": 1,
+    },
+    {
+      "children": [
+        {
+          "content": "...",
+          "type": "...",
+        },
+      ],
+      "codegenNode": undefined,
+      "isSelfClosing": false,
+      "ns": 0,
+      "props": [],
+      "tag": "script",
+      "tagType": 0,
+      "type": 1,
+    },
+    {
+      "children": [
+        {
+          "content": "...",
+          "type": "...",
+        },
+      ],
+      "codegenNode": undefined,
+      "isSelfClosing": false,
+      "ns": 0,
+      "props": [
+        {
+          "name": "...",
+          "type": "...",
+          "value": "...",
+        },
+      ],
+      "tag": "style",
+      "tagType": 0,
+      "type": 1,
+    },
+  ],
+  "codegenNode": undefined,
+  "components": [],
+  "directives": [],
+  "helpers": [],
+  "hoists": [],
+  "imports": [],
+  "temps": 0,
+  "type": 0,
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > wat: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "body": [
+    {
+      "type": "LeadingComment",
+      "value": " This is WebAssembly Text Format (WAT).",
+    },
+    {
+      "type": "LeadingComment",
+      "value": " Paste or drop some WAT here and explore",
+    },
+    {
+      "fields": [
+        {
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "body": "...",
+          "name": "...",
+          "signature": "...",
+          "type": "...",
+        },
+        {
+          "type": "...",
+          "value": "...",
+        },
+        {
+          "descr": "...",
+          "name": "...",
+          "type": "...",
+        },
+      ],
+      "type": "Module",
+    },
+  ],
+  "type": "Program",
+}
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > webidl: loads parser, parses code example, produces AST snapshot 1`] = `
+[
+  {
+    "extAttrs": ExtendedAttributes [
+      {},
+    ],
+    "members": [
+      {
+        "arguments": [
+          "...",
+        ],
+        "extAttrs": ExtendedAttributes [],
+        "idlType": {
+          "extAttrs": "...",
+          "type": "...",
+        },
+      },
+      {
+        "arguments": [
+          "...",
+        ],
+        "extAttrs": ExtendedAttributes [],
+        "idlType": {
+          "extAttrs": "...",
+          "type": "...",
+        },
+      },
+      {
+        "arguments": [
+          "...",
+          "...",
+        ],
+        "extAttrs": ExtendedAttributes [],
+        "idlType": {
+          "extAttrs": "...",
+          "type": "...",
+        },
+      },
+      {
+        "arguments": [
+          "...",
+          "...",
+        ],
+        "extAttrs": ExtendedAttributes [],
+        "idlType": {
+          "extAttrs": "...",
+          "type": "...",
+        },
+      },
+      {
+        "arguments": [
+          "...",
+          "...",
+        ],
+        "extAttrs": ExtendedAttributes [],
+        "idlType": {
+          "extAttrs": "...",
+          "type": "...",
+        },
+      },
+      "... 11 more",
+    ],
+  },
+]
+`;
+
+exports[`parsers dist bundle > parsing with default parsers > yaml: loads parser, parses code example, produces AST snapshot 1`] = `
+{
+  "endPosition": 5386,
+  "errors": [
+    {
+      "isWarning": false,
+      "mark": {
+        "buffer": "---
+# Collection Types #############################################################
+################################################################################
+
+# http://yaml.org/type/map.html -----------------------------------------------#
+
+map:
+  # Unordered set of key: value pairs.
+  Block style: !!map
+    Clark : Evans
+    Ingy  : döt Net
+    Oren  : Ben-Kiki
+  Flow style: !!map { Clark: Evans, Ingy: döt Net, Oren: Ben-Kiki }
+
+# http://yaml.org/type/omap.html ----------------------------------------------#
+
+omap:
+  # Explicitly typed ordered map (dictionary).
+  Bestiary: !!omap
+    - aardvark: African pig-like ant eater. Ugly.
+    - anteater: South-American ant eater. Two species.
+    - anaconda: South-American constrictor snake. Scaly.
+    # Etc.
+  # Flow style
+  Numbers: !!omap [ one: 1, two: 2, three : 3 ]
+
+# http://yaml.org/type/pairs.html ---------------------------------------------#
+
+pairs:
+  # Explicitly typed pairs.
+  Block tasks: !!pairs
+    - meeting: with team.
+    - meeting: with boss.
+    - break: lunch.
+    - meeting: with client.
+  Flow tasks: !!pairs [ meeting: with team, meeting: with boss ]
+
+# http://yaml.org/type/set.html -----------------------------------------------#
+
+set:
+  # Explicitly typed set.
+  baseball players: !!set
+    ? Mark McGwire
+    ? Sammy Sosa
+    ? Ken Griffey
+  # Flow style
+  baseball teams: !!set { Boston Red Sox, Detroit Tigers, New York Yankees }
+
+# http://yaml.org/type/seq.html -----------------------------------------------#
+
+seq:
+  # Ordered sequence of nodes
+  Block style: !!seq
+  - Mercury   # Rotates - no light/dark sides.
+  - Venus     # Deadliest. Aptly named.
+  - Earth     # Mostly dirt.
+  - Mars      # Seems empty.
+  - Jupiter   # The king.
+  - Saturn    # Pretty.
+  - Uranus    # Where the sun hardly shines.
+  - Neptune   # Boring. No rings.
+  - Pluto     # You call this a planet?
+  Flow style: !!seq [ Mercury, Venus, Earth, Mars,      # Rocks
+                      Jupiter, Saturn, Uranus, Neptune, # Gas
+                      Pluto ]                           # Overrated
+
+
+# Scalar Types #################################################################
+################################################################################
+
+# http://yaml.org/type/bool.html ----------------------------------------------#
+
+bool:
+  - true
+  - True
+  - TRUE
+  - false
+  - False
+  - FALSE
+
+# http://yaml.org/type/float.html ---------------------------------------------#
+
+float:
+  canonical: 6.8523015e+5
+  exponentioal: 685.230_15e+03
+  fixed: 685_230.15
+  sexagesimal: 190:20:30.15
+  negative infinity: -.inf
+  not a number: .NaN
+
+# http://yaml.org/type/int.html -----------------------------------------------#
+
+int:
+  canonical: 685230
+  decimal: +685_230
+  octal: 02472256
+  hexadecimal: 0x_0A_74_AE
+  binary: 0b1010_0111_0100_1010_1110
+  sexagesimal: 190:20:30
+
+# http://yaml.org/type/merge.html ---------------------------------------------#
+
+merge:
+  - &CENTER { x: 1, y: 2 }
+  - &LEFT { x: 0, y: 2 }
+  - &BIG { r: 10 }
+  - &SMALL { r: 1 }
+
+  # All the following maps are equal:
+
+  - # Explicit keys
+    x: 1
+    y: 2
+    r: 10
+    label: nothing
+
+  - # Merge one map
+    << : *CENTER
+    r: 10
+    label: center
+
+  - # Merge multiple maps
+    << : [ *CENTER, *BIG ]
+    label: center/big
+
+  - # Override
+    << : [ *BIG, *LEFT, *SMALL ]
+    x: 1
+    label: big/left/small
+
+# http://yaml.org/type/null.html ----------------------------------------------#
+
+null:
+  # This mapping has four keys,
+  # one has a value.
+  empty:
+  canonical: ~
+  english: null
+  ~: null key
+  # This sequence has five
+  # entries, two have values.
+  sparse:
+    - ~
+    - 2nd entry
+    -
+    - 4th entry
+    - Null
+
+# http://yaml.org/type/str.html -----------------------------------------------#
+
+string: abcd
+
+# http://yaml.org/type/timestamp.html -----------------------------------------#
+
+timestamp:
+  canonical:        2001-12-15T02:59:43.1Z
+  valid iso8601:    2001-12-14t21:59:43.10-05:00
+  space separated:  2001-12-14 21:59:43.10 -5
+  no time zone (Z): 2001-12-15 2:59:43.10
+  date (00:00:00Z): 2002-12-14
+
+
+# JavaScript Specific Types ####################################################
+################################################################################
+
+# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp
+
+regexp:
+  simple: !!js/regexp      foobar
+  modifiers: !!js/regexp   /foobar/mi
+
+# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/undefined
+
+undefined: !!js/undefined ~
+
+# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function
+
+function: !!js/function >
+  function foobar() {
+    return 'Wow! JS-YAML Rocks!';
+  }
+
+
+# Custom types #################################################################
+################################################################################
+
+
+# JS-YAML allows you to specify a custom YAML types for your structures.
+# This is a simple example of custom constructor defined in \`js/demo.js\` for
+# custom \`!sexy\` type:
+#
+# var SexyYamlType = new jsyaml.Type('!sexy', {
+#   kind: 'sequence',
+#   construct: function (data) {
+#     return data.map(function (string) { return 'sexy ' + string; });
+#   }
+# });
+#
+# var SEXY_SCHEMA = jsyaml.Schema.create([ SexyYamlType ]);
+#
+# result = jsyaml.load(yourData, { schema: SEXY_SCHEMA });
+
+foobar: !sexy
+  - bunny
+  - chocolate
+ ",
+        "name": null,
+        "toLineEnd": true,
+      },
+      "message": "JS-YAML: unknown tag <tag:yaml.org,2002:js/function> at line 178, column 11",
+      "name": "YAMLException",
+      "reason": "unknown tag <tag:yaml.org,2002:js/function>",
+    },
+    {
+      "isWarning": false,
+      "mark": {
+        "buffer": "---
+# Collection Types #############################################################
+################################################################################
+
+# http://yaml.org/type/map.html -----------------------------------------------#
+
+map:
+  # Unordered set of key: value pairs.
+  Block style: !!map
+    Clark : Evans
+    Ingy  : döt Net
+    Oren  : Ben-Kiki
+  Flow style: !!map { Clark: Evans, Ingy: döt Net, Oren: Ben-Kiki }
+
+# http://yaml.org/type/omap.html ----------------------------------------------#
+
+omap:
+  # Explicitly typed ordered map (dictionary).
+  Bestiary: !!omap
+    - aardvark: African pig-like ant eater. Ugly.
+    - anteater: South-American ant eater. Two species.
+    - anaconda: South-American constrictor snake. Scaly.
+    # Etc.
+  # Flow style
+  Numbers: !!omap [ one: 1, two: 2, three : 3 ]
+
+# http://yaml.org/type/pairs.html ---------------------------------------------#
+
+pairs:
+  # Explicitly typed pairs.
+  Block tasks: !!pairs
+    - meeting: with team.
+    - meeting: with boss.
+    - break: lunch.
+    - meeting: with client.
+  Flow tasks: !!pairs [ meeting: with team, meeting: with boss ]
+
+# http://yaml.org/type/set.html -----------------------------------------------#
+
+set:
+  # Explicitly typed set.
+  baseball players: !!set
+    ? Mark McGwire
+    ? Sammy Sosa
+    ? Ken Griffey
+  # Flow style
+  baseball teams: !!set { Boston Red Sox, Detroit Tigers, New York Yankees }
+
+# http://yaml.org/type/seq.html -----------------------------------------------#
+
+seq:
+  # Ordered sequence of nodes
+  Block style: !!seq
+  - Mercury   # Rotates - no light/dark sides.
+  - Venus     # Deadliest. Aptly named.
+  - Earth     # Mostly dirt.
+  - Mars      # Seems empty.
+  - Jupiter   # The king.
+  - Saturn    # Pretty.
+  - Uranus    # Where the sun hardly shines.
+  - Neptune   # Boring. No rings.
+  - Pluto     # You call this a planet?
+  Flow style: !!seq [ Mercury, Venus, Earth, Mars,      # Rocks
+                      Jupiter, Saturn, Uranus, Neptune, # Gas
+                      Pluto ]                           # Overrated
+
+
+# Scalar Types #################################################################
+################################################################################
+
+# http://yaml.org/type/bool.html ----------------------------------------------#
+
+bool:
+  - true
+  - True
+  - TRUE
+  - false
+  - False
+  - FALSE
+
+# http://yaml.org/type/float.html ---------------------------------------------#
+
+float:
+  canonical: 6.8523015e+5
+  exponentioal: 685.230_15e+03
+  fixed: 685_230.15
+  sexagesimal: 190:20:30.15
+  negative infinity: -.inf
+  not a number: .NaN
+
+# http://yaml.org/type/int.html -----------------------------------------------#
+
+int:
+  canonical: 685230
+  decimal: +685_230
+  octal: 02472256
+  hexadecimal: 0x_0A_74_AE
+  binary: 0b1010_0111_0100_1010_1110
+  sexagesimal: 190:20:30
+
+# http://yaml.org/type/merge.html ---------------------------------------------#
+
+merge:
+  - &CENTER { x: 1, y: 2 }
+  - &LEFT { x: 0, y: 2 }
+  - &BIG { r: 10 }
+  - &SMALL { r: 1 }
+
+  # All the following maps are equal:
+
+  - # Explicit keys
+    x: 1
+    y: 2
+    r: 10
+    label: nothing
+
+  - # Merge one map
+    << : *CENTER
+    r: 10
+    label: center
+
+  - # Merge multiple maps
+    << : [ *CENTER, *BIG ]
+    label: center/big
+
+  - # Override
+    << : [ *BIG, *LEFT, *SMALL ]
+    x: 1
+    label: big/left/small
+
+# http://yaml.org/type/null.html ----------------------------------------------#
+
+null:
+  # This mapping has four keys,
+  # one has a value.
+  empty:
+  canonical: ~
+  english: null
+  ~: null key
+  # This sequence has five
+  # entries, two have values.
+  sparse:
+    - ~
+    - 2nd entry
+    -
+    - 4th entry
+    - Null
+
+# http://yaml.org/type/str.html -----------------------------------------------#
+
+string: abcd
+
+# http://yaml.org/type/timestamp.html -----------------------------------------#
+
+timestamp:
+  canonical:        2001-12-15T02:59:43.1Z
+  valid iso8601:    2001-12-14t21:59:43.10-05:00
+  space separated:  2001-12-14 21:59:43.10 -5
+  no time zone (Z): 2001-12-15 2:59:43.10
+  date (00:00:00Z): 2002-12-14
+
+
+# JavaScript Specific Types ####################################################
+################################################################################
+
+# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp
+
+regexp:
+  simple: !!js/regexp      foobar
+  modifiers: !!js/regexp   /foobar/mi
+
+# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/undefined
+
+undefined: !!js/undefined ~
+
+# https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function
+
+function: !!js/function >
+  function foobar() {
+    return 'Wow! JS-YAML Rocks!';
+  }
+
+
+# Custom types #################################################################
+################################################################################
+
+
+# JS-YAML allows you to specify a custom YAML types for your structures.
+# This is a simple example of custom constructor defined in \`js/demo.js\` for
+# custom \`!sexy\` type:
+#
+# var SexyYamlType = new jsyaml.Type('!sexy', {
+#   kind: 'sequence',
+#   construct: function (data) {
+#     return data.map(function (string) { return 'sexy ' + string; });
+#   }
+# });
+#
+# var SEXY_SCHEMA = jsyaml.Schema.create([ SexyYamlType ]);
+#
+# result = jsyaml.load(yourData, { schema: SEXY_SCHEMA });
+
+foobar: !sexy
+  - bunny
+  - chocolate
+ ",
+        "name": null,
+        "toLineEnd": true,
+      },
+      "message": "JS-YAML: unknown tag <!sexy> at line 203, column 9",
+      "name": "YAMLException",
+      "reason": "unknown tag <!sexy>",
+    },
+  ],
+  "kind": 2,
+  "mappings": [
+    {
+      "endPosition": 440,
+      "errors": [],
+      "key": {
+        "doubleQuoted": false,
+        "endPosition": 252,
+        "errors": [],
+        "kind": 0,
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "plainScalar": true,
+        "rawValue": "map",
+        "startPosition": 249,
+        "value": "map",
+      },
+      "kind": 1,
+      "parent": {
+        "endPosition": 5386,
+        "errors": [
+          "...",
+          "...",
+        ],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 11 more",
+        ],
+        "parent": null,
+        "startPosition": 249,
+      },
+      "startPosition": 249,
+      "value": {
+        "endPosition": 440,
+        "errors": [],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+        ],
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "startPosition": 295,
+      },
+    },
+    {
+      "endPosition": 831,
+      "errors": [],
+      "key": {
+        "doubleQuoted": false,
+        "endPosition": 528,
+        "errors": [],
+        "kind": 0,
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "plainScalar": true,
+        "rawValue": "omap",
+        "startPosition": 524,
+        "value": "omap",
+      },
+      "kind": 1,
+      "parent": {
+        "endPosition": 5386,
+        "errors": [
+          "...",
+          "...",
+        ],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 11 more",
+        ],
+        "parent": null,
+        "startPosition": 249,
+      },
+      "startPosition": 524,
+      "value": {
+        "endPosition": 831,
+        "errors": [],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+        ],
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "startPosition": 579,
+      },
+    },
+    {
+      "endPosition": 1137,
+      "errors": [],
+      "key": {
+        "doubleQuoted": false,
+        "endPosition": 920,
+        "errors": [],
+        "kind": 0,
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "plainScalar": true,
+        "rawValue": "pairs",
+        "startPosition": 915,
+        "value": "pairs",
+      },
+      "kind": 1,
+      "parent": {
+        "endPosition": 5386,
+        "errors": [
+          "...",
+          "...",
+        ],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 11 more",
+        ],
+        "parent": null,
+        "startPosition": 249,
+      },
+      "startPosition": 915,
+      "value": {
+        "endPosition": 1137,
+        "errors": [],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+        ],
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "startPosition": 952,
+      },
+    },
+    {
+      "endPosition": 1423,
+      "errors": [],
+      "key": {
+        "doubleQuoted": false,
+        "endPosition": 1224,
+        "errors": [],
+        "kind": 0,
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "plainScalar": true,
+        "rawValue": "set",
+        "startPosition": 1221,
+        "value": "set",
+      },
+      "kind": 1,
+      "parent": {
+        "endPosition": 5386,
+        "errors": [
+          "...",
+          "...",
+        ],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 11 more",
+        ],
+        "parent": null,
+        "startPosition": 249,
+      },
+      "startPosition": 1221,
+      "value": {
+        "endPosition": 1423,
+        "errors": [],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+        ],
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "startPosition": 1254,
+      },
+    },
+    {
+      "endPosition": 2032,
+      "errors": [],
+      "key": {
+        "doubleQuoted": false,
+        "endPosition": 1510,
+        "errors": [],
+        "kind": 0,
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "plainScalar": true,
+        "rawValue": "seq",
+        "startPosition": 1507,
+        "value": "seq",
+      },
+      "kind": 1,
+      "parent": {
+        "endPosition": 5386,
+        "errors": [
+          "...",
+          "...",
+        ],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+          "...",
+          "...",
+          "...",
+          "... 11 more",
+        ],
+        "parent": null,
+        "startPosition": 249,
+      },
+      "startPosition": 1507,
+      "value": {
+        "endPosition": 2032,
+        "errors": [],
+        "kind": 2,
+        "mappings": [
+          "...",
+          "...",
+        ],
+        "parent": {
+          "endPosition": "...",
+          "errors": "...",
+          "key": "...",
+          "kind": "...",
+          "parent": "...",
+          "startPosition": "...",
+          "value": "...",
+        },
+        "startPosition": 1544,
+      },
+    },
+    "... 11 more",
+  ],
+  "parent": null,
+  "startPosition": 249,
+}
+`;
+
+exports[`parsers dist bundle > registry > all expected categories are present 1`] = `
+[
+  "css",
+  "glsl",
+  "go",
+  "graphql",
+  "graphviz",
+  "handlebars",
+  "htmlmixed",
+  "icu",
+  "java",
+  "javascript",
+  "json",
+  "lua",
+  "lucene",
+  "markdown",
+  "mathjs",
+  "mdx",
+  "monkey",
+  "ocaml",
+  "php",
+  "protobuf",
+  "pug",
+  "python",
+  "reason",
+  "regexp",
+  "rust",
+  "san",
+  "solididy",
+  "sql",
+  "svelte",
+  "text/x-scala",
+  "thrift-idl",
+  "vue",
+  "wat",
+  "webidl",
+  "yaml",
+]
+`;
+
+exports[`parsers dist bundle > registry > parser versions snapshot 1`] = `
+{
+  "@angular-eslint/template-parser": "14.0.2",
+  "@babel/eslint-parser": "7.13.14",
+  "@typescript-eslint/parser": "5.59.7",
+  "@vue/compiler-dom": "3.0.0-rc.10",
+  "acorn": "8.7.0",
+  "acorn-to-esprima": "2.0.8",
+  "angular": "13.1.3",
+  "babel-eslint": "7.2.3",
+  "babel-eslint8": "8.2.6",
+  "babel-eslint9": "9.0.0",
+  "babylon": "5.8.38",
+  "babylon6": "6.18.0",
+  "babylon7": "7.19.0",
+  "ck-thrift-parser": "1.2.0",
+  "cssom": "0.4.4",
+  "csstree": "2.0.1",
+  "ember-template-recast": "6.1.3",
+  "esformatter-parser": "1.0.0",
+  "espree": "9.6.1",
+  "esprima": "4.0.1",
+  "flow": "0.144.0",
+  "glimmer": "0.83.1",
+  "glsl-parser": "2.0.1",
+  "go": "1.13.4",
+  "graphql-js": "15.0.0",
+  "handlebars": "4.7.6",
+  "hermes": "0.18.0",
+  "htmlparser2": "5.0.1",
+  "hyntax": "1.1.5",
+  "intl-messageformat-parser": "6.1.0",
+  "java-parser": "2.0.1",
+  "jsonToAst": "2.1.0",
+  "luaparse": "0.3.0",
+  "lucene": "2.1.1",
+  "mathjs": "10.6.4",
+  "mdxhast": "1.5.8",
+  "meriyah": "4.2.0",
+  "momoa": "2.0.4",
+  "monkey": "0.7.0",
+  "parse5": "6.0.0",
+  "pbkit": "0.0.38",
+  "php-parser": "3.0.0",
+  "postcss": "8.4.7",
+  "posthtml-parser": "0.5.3",
+  "pug": "5.0.1",
+  "python": "0.1.20",
+  "recast": "0.21.1",
+  "redot": "0.6.0",
+  "refmt": "3.4.0",
+  "refmt-ml": "3.4.0",
+  "regexp-tree": "0.1.13",
+  "regexpp": "3.2.0",
+  "regjsparser": "0.6.4",
+  "remark": "14.0.1",
+  "rework": "2.2.4",
+  "san": "3.9.4",
+  "scalameta": "4.8.7",
+  "seafox": "1.7.1",
+  "shift": "7.0.0",
+  "solidity-parser-antlr": "0.4.11",
+  "solidity-parser-diligence": "0.4.18",
+  "sql-parser-cst": "0.5.1",
+  "sqlite-parser": "1.0.1",
+  "svelte": "3.52.0",
+  "swc": "1.2.146",
+  "syn": "1.0.48",
+  "tenko": "1.1.0",
+  "traceur": "0.0.111",
+  "typescript": "5.0.4",
+  "uglify-js": "3.3.9",
+  "vue-eslint-parser": "7.6.0",
+  "vue-template-compiler": "2.6.11",
+  "wat-parser": "1.9.0",
+  "webidl2": "23.11.0",
+  "yaml": "1.10.2",
+  "yaml-ast-parser": "0.0.43",
+}
+`;
