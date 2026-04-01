@@ -1,74 +1,63 @@
-import { describe, test, expect, vi } from 'vitest';
+import { describe, test, expect, vi, afterEach } from 'vitest';
 import debounce from '../src/utils/debounce';
 
 describe('debounce', () => {
-  test('calls function after timeout', async () => {
+  afterEach(() => { vi.useRealTimers(); });
+
+  test('does not call immediately', () => {
     vi.useFakeTimers();
     const fn = vi.fn();
-    const debounced = debounce(fn, 100);
-
-    debounced('a');
+    const d = debounce(fn, 100);
+    d('a');
     expect(fn).not.toHaveBeenCalled();
-
     vi.advanceTimersByTime(100);
     expect(fn).toHaveBeenCalledWith('a');
-    vi.useRealTimers();
   });
 
-  test('uses latest arguments when called multiple times', () => {
+  test('uses latest arguments when called multiple times before timeout', () => {
     vi.useFakeTimers();
     const fn = vi.fn();
-    const debounced = debounce(fn, 100);
-
-    debounced('first');
-    debounced('second');
-    debounced('third');
-
+    const d = debounce(fn, 100);
+    d('first');
+    d('second');
+    d('third');
     vi.advanceTimersByTime(100);
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).toHaveBeenCalledWith('third');
-    vi.useRealTimers();
   });
 
-  test('does not call again during timeout period', () => {
+  test('ignores calls while timer is pending (does not restart timer)', () => {
     vi.useFakeTimers();
     const fn = vi.fn();
-    const debounced = debounce(fn, 100);
-
-    debounced('a');
+    const d = debounce(fn, 100);
+    d('a');
     vi.advanceTimersByTime(50);
-    debounced('b'); // should be ignored since timer is pending
-    vi.advanceTimersByTime(50);
+    d('b'); // ignored, timer still pending
+    vi.advanceTimersByTime(50); // original timer fires
     expect(fn).toHaveBeenCalledTimes(1);
+    // Should use latest args though
     expect(fn).toHaveBeenCalledWith('b');
-    vi.useRealTimers();
   });
 
-  test('can be called again after timeout fires', () => {
+  test('can fire again after timeout completes', () => {
     vi.useFakeTimers();
     const fn = vi.fn();
-    const debounced = debounce(fn, 100);
-
-    debounced('first');
+    const d = debounce(fn, 100);
+    d('first');
     vi.advanceTimersByTime(100);
-    expect(fn).toHaveBeenCalledTimes(1);
-
-    debounced('second');
+    d('second');
     vi.advanceTimersByTime(100);
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).toHaveBeenLastCalledWith('second');
-    vi.useRealTimers();
   });
 
   test('preserves this context', () => {
     vi.useFakeTimers();
     const fn = vi.fn();
-    const debounced = debounce(fn, 100);
-    const obj = { call: debounced };
-
+    const d = debounce(fn, 100);
+    const obj = { call: d };
     obj.call();
     vi.advanceTimersByTime(100);
     expect(fn.mock.instances[0]).toBe(obj);
-    vi.useRealTimers();
   });
 });

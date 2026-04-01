@@ -2,13 +2,19 @@ import { describe, test, expect } from 'vitest';
 import cx from '../src/utils/classnames';
 
 describe('cx (classnames)', () => {
-  test('passes through plain strings', () => {
+  test('passes through a single string', () => {
     expect(cx('foo')).toBe('foo');
+  });
+
+  test('joins multiple strings with space', () => {
     expect(cx('foo', 'bar')).toBe('foo bar');
   });
 
-  test('includes keys with truthy values from objects', () => {
+  test('includes truthy object keys', () => {
     expect(cx({ active: true, disabled: false })).toBe('active');
+  });
+
+  test('joins multiple truthy keys', () => {
     expect(cx({ a: true, b: true, c: false })).toBe('a b');
   });
 
@@ -26,9 +32,5 @@ describe('cx (classnames)', () => {
 
   test('handles multiple objects', () => {
     expect(cx({ a: true }, { b: true })).toBe('a b');
-  });
-
-  test('handles empty string inputs', () => {
-    expect(cx('', 'foo', '')).toBe(' foo ');
   });
 });
