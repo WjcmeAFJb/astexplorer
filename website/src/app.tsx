@@ -19,7 +19,9 @@ import {astexplorer, persist, revive} from './store/reducers';
 import {createStore, applyMiddleware, compose} from 'redux';
 import {canSaveTransform, getRevision} from './store/selectors';
 import {loadSnippet} from './store/actions';
-import {render} from 'react-dom';
+import ReactDOM from 'react-dom';
+// @ts-expect-error — React 18 createRoot exists on react-dom but TypeScript types want react-dom/client
+const createRoot: (container: Element) => { render: (element: React.ReactElement) => void } = ReactDOM.createRoot;
 import * as gist from './storage/gist';
 import * as parse from './storage/parse';
 import StorageHandler from './storage';
@@ -90,11 +92,10 @@ store.subscribe(debounce(() => {
 }));
 store.dispatch({type: 'INIT'} as any);
 
-render(
+createRoot(document.getElementById('container')!).render(
   <Provider store={store}>
     <AppContainer />
   </Provider>,
-  document.getElementById('container'),
 );
 
 global.onhashchange = () => {

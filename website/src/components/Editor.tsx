@@ -47,26 +47,31 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     };
   }
 
-    UNSAFE_componentWillReceiveProps(nextProps: EditorProps) {
-    if (nextProps.value !== this.state.value) {
-      this.setState(
-        {value: nextProps.value},
-        () => this.codeMirror.setValue(nextProps.value),
-      );
+  static getDerivedStateFromProps(props: EditorProps, state: {value: string}) {
+    if (props.value !== state.value) {
+      return { value: props.value };
     }
-    if (nextProps.mode !== this.props.mode) {
-      this.codeMirror.setOption('mode', nextProps.mode);
-    }
-
-    if (nextProps.keyMap !== this.props.keyMap) {
-      this.codeMirror.setOption('keyMap', nextProps.keyMap);
-    }
-
-    this._setError(nextProps.error);
+    return null;
   }
 
-  shouldComponentUpdate() {
-    return false;
+  componentDidUpdate(prevProps: EditorProps, prevState: {value: string}) {
+    if (this.props.value !== prevState.value) {
+      this.codeMirror.setValue(this.props.value);
+    }
+    if (this.props.mode !== prevProps.mode) {
+      this.codeMirror.setOption('mode', this.props.mode);
+    }
+    if (this.props.keyMap !== prevProps.keyMap) {
+      this.codeMirror.setOption('keyMap', this.props.keyMap);
+    }
+    this._setError(this.props.error);
+  }
+
+  shouldComponentUpdate(nextProps: EditorProps) {
+    return nextProps.value !== this.state.value ||
+      nextProps.mode !== this.props.mode ||
+      nextProps.keyMap !== this.props.keyMap ||
+      nextProps.error !== this.props.error;
   }
 
   getValue(): string | undefined {

@@ -17,17 +17,16 @@ export default class Editor extends React.Component<JSONEditorProps> {
   container: HTMLElement | null = null;
   _subscriptions: Array<() => void> = [];
 
-    UNSAFE_componentWillReceiveProps(nextProps: JSONEditorProps) {
-    if (nextProps.value !== this.codeMirror.getValue()) {
-      // preserve scroll position
+  componentDidUpdate(prevProps: JSONEditorProps) {
+    if (this.props.value !== prevProps.value && this.props.value !== this.codeMirror.getValue()) {
       let info = this.codeMirror.getScrollInfo();
-      this.codeMirror.setValue(nextProps.value);
+      this.codeMirror.setValue(this.props.value);
       this.codeMirror.scrollTo(info.left, info.top);
     }
   }
 
-  shouldComponentUpdate() {
-    return false;
+  shouldComponentUpdate(nextProps: JSONEditorProps) {
+    return nextProps.value !== this.props.value;
   }
 
   componentDidMount() {

@@ -25,8 +25,10 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
     };
   }
 
-    UNSAFE_componentWillReceiveProps(nextProps: SettingsDialogProps) {
-    this.setState({parserSettings: nextProps.parserSettings});
+  componentDidUpdate(prevProps: SettingsDialogProps) {
+    if (this.props.parserSettings !== prevProps.parserSettings) {
+      this.setState({parserSettings: this.props.parserSettings});
+    }
   }
 
     _outerClick(event: React.MouseEvent<HTMLDivElement>) {

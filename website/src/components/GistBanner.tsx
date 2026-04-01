@@ -33,9 +33,9 @@ class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
     this._hide = this._hide.bind(this);
   }
 
-    UNSAFE_componentWillReceiveProps(newProps: GistBannerProps) {
-    const newRevision = newProps.revision;
-    const oldRevision = this.props.revision;
+  componentDidUpdate(prevProps: GistBannerProps) {
+    const newRevision = this.props.revision;
+    const oldRevision = prevProps.revision;
     if (newRevision &&
       (!oldRevision || newRevision.getSnippetID() !== oldRevision.getSnippetID())) {
       this.setState({visible: true});
