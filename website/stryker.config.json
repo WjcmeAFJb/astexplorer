@@ -5,11 +5,11 @@
     "configFile": "vitest.config.ts"
   },
   "mutate": [
-    "src/utils/stringify.ts",
-    "src/utils/classnames.ts",
-    "src/utils/debounce.ts",
-    "src/utils/pubsub.ts",
-    "src/core/TreeAdapter.tsx"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "!src/**/*.d.ts",
+    "!src/app.tsx",
+    "!src/shims/**"
   ],
   "reporters": ["clear-text", "html"],
   "htmlReporter": {

@@ -4,7 +4,10 @@ import path from 'path';
 export default defineConfig({
   test: {
     testTimeout: 10_000,
-    include: ['tests/**/*.test.ts'],
+    include: ['tests/**/*.test.{ts,tsx}'],
+    environmentMatchGlobs: [
+      ['tests/**/*.test.tsx', 'happy-dom'],
+    ],
   },
   resolve: {
     alias: {

@@ -5,6 +5,8 @@
     "@stryker-mutator/core": "^7.3.0",
     "@stryker-mutator/vitest-runner": "^7.3.0",
     "chevrotain": "^12.0.0",
+    "happy-dom": "^20.8.9",
+    "jsdom": "^29.0.1",
     "oxlint": "^1.57.0",
     "vitest": "^2.1.9"
   }
