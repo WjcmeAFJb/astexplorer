@@ -39,6 +39,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
+    chunkFilename: 'chunk-[id].js',
     library: 'astexplorer-parsers',
     libraryTarget: 'commonjs2',
     // Use globalThis so the bundle works in both browsers and Node.js.
@@ -393,9 +394,9 @@ module.exports = {
     // Prevent webpack from bundling the entire ESLint rules directory
     new webpack.ContextReplacementPlugin(/eslint/, /NEVER_MATCH^/),
 
-    // Force a single output chunk
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1,
+    // Merge very small chunks to reduce HTTP requests
+    new webpack.optimize.MinChunkSizePlugin({
+      minChunkSize: 10000, // ~10KB minimum
     }),
     new webpack.ProgressPlugin({
       modules: false,

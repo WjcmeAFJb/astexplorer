@@ -5,6 +5,7 @@ import 'codemirror/keymap/sublime';
 import PropTypes from 'prop-types';
 import {subscribe, clear} from '../utils/pubsub';
 import React from 'react';
+import {ensureCMMode} from '../codemirrorModes';
 
 const defaultPrettierOptions: Record<string, unknown> = {
   printWidth: 80,
@@ -59,7 +60,9 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       this.codeMirror.setValue(this.props.value);
     }
     if (this.props.mode !== prevProps.mode) {
-      this.codeMirror.setOption('mode', this.props.mode);
+      ensureCMMode(this.props.mode).then(() => {
+        this.codeMirror?.setOption('mode', this.props.mode);
+      });
     }
     if (this.props.keyMap !== prevProps.keyMap) {
       this.codeMirror.setOption('keyMap', this.props.keyMap);
@@ -113,11 +116,14 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       {
         keyMap: this.props.keyMap,
         value: this.state.value,
-        mode: this.props.mode,
         lineNumbers: this.props.lineNumbers,
         readOnly: this.props.readOnly,
       },
     );
+    // Load the CodeMirror mode asynchronously, then apply it
+    ensureCMMode(this.props.mode).then(() => {
+      this.codeMirror?.setOption('mode', this.props.mode);
+    });
 
     this._bindCMHandler('blur', (instance: any) => {
       if (!this.props.enableFormatting) return;

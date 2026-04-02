@@ -48,20 +48,42 @@ compiler.run((err, stats) => {
     }
   }
 
-  // Step 4: Generate ESM entry (dist/index.mjs)
+  // Step 4: Make CJS entry self-contained for Node.js consumers
   //
-  // A self-contained ESM module that wraps the CJS webpack bundle,
-  // providing module/exports/require stubs, and re-exports the public API.
-  // No script injection or separate runtime file needed.
-  console.log('\nGenerating ESM entry...');
-  let cjsCode = fs.readFileSync(path.join(distDir, 'index.js'), 'utf-8');
+  // Webpack's code splitting creates async chunks loaded via <script> tags.
+  // This doesn't work in Node.js. Pre-load all chunks by concatenating them
+  // before the main bundle — the JSONP callbacks register their modules
+  // so they're available synchronously when the main bundle needs them.
+  console.log('\nGenerating self-contained CJS entry...');
+  const mainCode = fs.readFileSync(path.join(distDir, 'index.js'), 'utf-8');
+  const chunkFiles = fs.readdirSync(distDir)
+    .filter(f => f.startsWith('chunk-') && f.endsWith('.js'))
+    .sort();
+  const allChunks = chunkFiles.map(f => fs.readFileSync(path.join(distDir, f), 'utf-8'));
+  // Chunks use push() to register with the JSONP array, which must exist.
+  // The main bundle creates it, so we put chunks AFTER the main bundle header
+  // but before module execution. Simplest: concat chunks + main.
+  // Actually, webpack's webpackJsonpCallback processes the push() calls
+  // retroactively, so chunks can go before or after. Put them after for safety.
+  fs.writeFileSync(
+    path.join(distDir, 'index.js'),
+    mainCode + '\n' + allChunks.join('\n'),
+  );
+  console.log(`  Inlined ${chunkFiles.length} chunks into index.js`);
 
-  // Expose __webpack_require__ so the require() stub can delegate to
-  // webpack's bundled polyfills for noParse'd modules that use bare
-  // require("os"), require("fs"), etc.
+  // Step 5: Generate ESM entry (dist/index.mjs)
+  //
+  // Wraps the split webpack main chunk (NOT the concatenated CJS) in ESM.
+  // Async chunks are loaded at runtime via script tags using the public path.
+  console.log('\nGenerating ESM entry...');
+  let cjsCode = mainCode;
+
+  // Set public path from __webpack_public_path__ (defined in the ESM wrapper
+  // via import.meta.url) so webpack's async chunk loading resolves correctly.
+  // Also expose __webpack_require__ for the require() stub.
   cjsCode = cjsCode.replace(
     /(__webpack_require__\.p\s*=\s*)""/g,
-    '$1"";globalThis.__PARSERS_WR__=__webpack_require__;void 0'
+    '$1(typeof __webpack_public_path__!=="undefined"?__webpack_public_path__:"");globalThis.__PARSERS_WR__=__webpack_require__;void 0'
   );
 
   // Build a mapping from bare module names to webpack module IDs.
@@ -98,6 +120,9 @@ compiler.run((err, stats) => {
   const requireMap = JSON.stringify(bareNameToId);
 
   const esmEntry = [
+    '// Public path for webpack async chunk loading — resolves relative to this module.',
+    'var __webpack_public_path__ = import.meta.url.replace(/[^/]*$/, "");',
+    '',
     '// CJS shims — the webpack bundle expects module/exports/require.',
     'var module = {exports: {}};',
     'var exports = module.exports;',

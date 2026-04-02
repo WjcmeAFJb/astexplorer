@@ -18,7 +18,8 @@
     "./swc.wasm": "./dist/swc.wasm",
     "./syn.wasm": "./dist/syn.wasm",
     "./go.wasm": "./dist/go.wasm",
-    "./monkey.wasm": "./dist/monkey.wasm"
+    "./monkey.wasm": "./dist/monkey.wasm",
+    "./dist/*": "./dist/*"
   },
   "scripts": {
     "build": "NODE_OPTIONS=--openssl-legacy-provider node build.js --production",
