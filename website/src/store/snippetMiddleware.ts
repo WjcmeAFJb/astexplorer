@@ -18,7 +18,7 @@ export default (storageAdapter: any) => (store: any) => (next: any) => (action: 
       // If CLEAR_ERROR action happens after a URL was loaded, clear the URL
       if (clearURLOnClearError) {
         clearURLOnClearError = false;
-        global.location.hash = '';
+        window.location.hash = '';
       }
       return next(action);
     case actions.LOAD_SNIPPET:

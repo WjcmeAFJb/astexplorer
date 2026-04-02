@@ -8,8 +8,8 @@ type Transformer = import('../types').Transformer;
 async function transform(transformer: Transformer, transformCode: string, code: string): Promise<TransformResult> {
   // Transforms may make use of Node's __filename global. See GitHub issue #420.
   // So we define a dummy one.
-  if (!global.__filename) {
-    global.__filename = 'transform.js';
+  if (!globalThis.__filename) {
+    globalThis.__filename = 'transform.js';
   }
   if (!transformer._promise) {
     transformer._promise = new Promise(transformer.loadTransformer);

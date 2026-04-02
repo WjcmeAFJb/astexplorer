@@ -1,4 +1,5 @@
-import defaultParserInterface from '../utils/defaultParserInterface'
+import defaultParserInterface from '../utils/defaultParserInterface';
+import {getWasmUrl} from '../wasm-config';
 
 type GoParser = {parseFile: (code: string) => Record<string, unknown>};
 
@@ -15,9 +16,9 @@ export default {
   locationProps: new Set(['Loc']),
 
   async loadParser(callback: (realParser: GoParser) => void) {
-    require(['astexplorer-go/go', 'astexplorer-go/parser.wasm'], async (_goRuntime: unknown, wasmModule: {default: string}) => {
+    require(['astexplorer-go/go'], async () => {
       const go = (window as unknown as {_go: {run: (inst: WebAssembly.Instance) => void, importObject: WebAssembly.Imports}})._go;
-      const result = await WebAssembly.instantiateStreaming(fetch(wasmModule.default), go.importObject);
+      const result = await WebAssembly.instantiateStreaming(fetch(getWasmUrl('go')), go.importObject);
       go.run(result.instance);
       callback({
         parseFile: (code: string) => JSON.parse((window as unknown as {__GO_PARSE_FILE__: (code: string) => string}).__GO_PARSE_FILE__(code)),

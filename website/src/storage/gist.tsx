@@ -6,7 +6,7 @@ import {getParserByID} from 'astexplorer-parsers';
 type SnippetData = import('../types').SnippetData;
 
 function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | null {
-  let match = global.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);
+  let match = window.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);
   if (match) {
     return {
       id: match[1],

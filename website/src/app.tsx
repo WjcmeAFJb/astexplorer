@@ -19,17 +19,22 @@ import {astexplorer, persist, revive} from './store/reducers';
 import {createStore, applyMiddleware, compose} from 'redux';
 import {canSaveTransform, getRevision} from './store/selectors';
 import {loadSnippet} from './store/actions';
-import ReactDOM from 'react-dom';
-// @ts-expect-error — React 18 createRoot exists on react-dom but TypeScript types want react-dom/client
-const createRoot: (container: Element) => { render: (element: React.ReactElement) => void } = ReactDOM.createRoot;
+import {createRoot} from 'react-dom/client';
 import * as gist from './storage/gist';
 import * as parse from './storage/parse';
 import StorageHandler from './storage';
 import '../css/style.css';
+import {configureWasm} from 'astexplorer-parsers';
+import swcWasm from 'astexplorer-parsers/swc.wasm';
+import synWasm from 'astexplorer-parsers/syn.wasm';
+import goWasm from 'astexplorer-parsers/go.wasm';
+import monkeyWasm from 'astexplorer-parsers/monkey.wasm';
 import parserMiddleware from './store/parserMiddleware';
 import snippetMiddleware from './store/snippetMiddleware';
 import transformerMiddleware from './store/transformerMiddleware';
 import cx from './utils/classnames';
+
+configureWasm({ swc: swcWasm, syn: synWasm, go: goWasm, monkey: monkeyWasm });
 
 function resize() {
   publish('PANEL_RESIZE');
@@ -98,7 +103,7 @@ createRoot(document.getElementById('container')!).render(
   </Provider>,
 );
 
-global.onhashchange = () => {
+window.onhashchange = () => {
   store.dispatch(loadSnippet() as any);
 };
 
@@ -106,7 +111,7 @@ if (location.hash.length > 1) {
   store.dispatch(loadSnippet() as any);
 }
 
-global.onbeforeunload = () => {
+window.onbeforeunload = () => {
   const state = store.getState();
   if (canSaveTransform(state)) {
     return 'You have unsaved transform code. Do you really want to leave?';

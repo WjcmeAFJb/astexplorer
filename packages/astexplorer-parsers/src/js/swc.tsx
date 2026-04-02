@@ -1,6 +1,7 @@
 import React from 'react';
 import defaultParserInterface from './utils/defaultESTreeParserInterface';
 import pkg from '@swc/wasm-web/package.json';
+import {getWasmUrl} from '../wasm-config';
 
 const ID = 'swc';
 
@@ -14,9 +15,8 @@ export default {
   locationProps: new Set(['range', 'loc', 'start', 'end']),
 
   loadParser(callback: (realParser: typeof import('@swc/wasm-web')) => void) {
-    require(['@swc/wasm-web/wasm.js', '@swc/wasm-web/wasm_bg.wasm'], (instance: typeof import('@swc/wasm-web'), wasmModule: {default: string} | string) => {
-      const wasm = typeof wasmModule === 'string' ? wasmModule : wasmModule.default;
-      instance.default(wasm).then(() => {
+    require(['@swc/wasm-web/wasm.js'], (instance: typeof import('@swc/wasm-web')) => {
+      instance.default(getWasmUrl('swc')).then(() => {
         callback(instance)
       });
     });

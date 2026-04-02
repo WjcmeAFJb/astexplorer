@@ -1,5 +1,6 @@
 import defaultParserInterface from '../utils/defaultParserInterface';
 import pkg from 'astexplorer-syn/package.json';
+import {getWasmUrl} from '../wasm-config';
 
 type LineOffsetsMixin = {lineOffsets: number[]};
 
@@ -16,14 +17,13 @@ export default {
   locationProps: new Set(['span']),
 
   loadParser(callback: (realParser: typeof import('astexplorer-syn')) => void) {
-    require(['astexplorer-syn', 'astexplorer-syn/astexplorer_syn_bg.wasm'], async (syn: Record<string, unknown>, wasmModule: Record<string, unknown> | string) => {
+    require(['astexplorer-syn', 'astexplorer-syn/astexplorer_syn_bg.wasm'], async (syn: Record<string, unknown>, wasmModule: Record<string, unknown>) => {
       // astexplorer-syn is built for wasm-bindgen's "bundler" target, which expects
       // the bundler to handle WASM natively. But webpack 4 + file-loader gives the
       // _bg.js glue code a URL string instead of real WASM exports. We fix this by
       // manually fetching/instantiating the WASM binary and patching the module
       // exports object that _bg.js holds a reference to.
-      const url = typeof wasmModule === 'string' ? wasmModule : wasmModule.default as string;
-      const wasmBytes = await (await fetch(url)).arrayBuffer();
+      const wasmBytes = await (await fetch(getWasmUrl('syn'))).arrayBuffer();
 
       // Collect the __wbg_*/__wbindgen_* glue functions that the WASM imports
       const importFuncs: Record<string, unknown> = {};

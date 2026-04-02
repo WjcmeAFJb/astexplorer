@@ -6,7 +6,7 @@ import {getTransformerByID, getParserByID} from 'astexplorer-parsers';
  * @returns {{id: string, rev: string | number} | null}
  */
 function getIDAndRevisionFromHash() {
-  let match = global.location.hash.match(/^#\/(?!gist\/)([^/]+)(?:\/(latest|\d*))?/);
+  let match = window.location.hash.match(/^#\/(?!gist\/)([^/]+)(?:\/(latest|\d*))?/);
   if (match) {
     return {
       id: match[1],
@@ -46,7 +46,7 @@ export function matchesURL() {
 export function updateHash(revision: Revision): void {
   const rev = revision.getRevisionID();
   const newHash = '/' + revision.getSnippetID() + (rev && rev !== 0 ? '/' + rev : '');
-  global.location.hash = newHash;
+  window.location.hash = newHash;
 }
 
 /**

@@ -1,7 +1,4 @@
 // Global type augmentations for astexplorer
-// This file provides type declarations for browser globals accessed via
-// `global.*` (webpack polyfills `global` to `window`) and for CSS module
-// imports used by the webpack build.
 
 declare module '*.css' {
   const content: Record<string, string>;
@@ -14,8 +11,6 @@ declare namespace globalThis {
   var tern: Record<string, unknown>;
   var __filename: string;
 }
-
-declare var global: typeof globalThis & Window;
 
 interface Window {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: (...args: unknown[]) => unknown;
@@ -95,8 +90,20 @@ declare module 'worker-loader!./hermes-worker.ts' {
   export default HermesWorker;
 }
 
-// SWC WASM binary
-declare module '@swc/wasm-web/wasm_bg.wasm' {
+// WASM binaries exported from astexplorer-parsers
+declare module 'astexplorer-parsers/swc.wasm' {
+  const url: string;
+  export default url;
+}
+declare module 'astexplorer-parsers/syn.wasm' {
+  const url: string;
+  export default url;
+}
+declare module 'astexplorer-parsers/go.wasm' {
+  const url: string;
+  export default url;
+}
+declare module 'astexplorer-parsers/monkey.wasm' {
   const url: string;
   export default url;
 }

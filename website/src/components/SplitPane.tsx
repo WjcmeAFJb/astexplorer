@@ -34,7 +34,7 @@ export default function SplitPane({vertical, className, children, onResize}: any
 
     const offset = vertical ? container.current.offsetTop : container.current.offsetLeft;
     const size = vertical ? container.current.offsetHeight : container.current.offsetWidth;
-    global.document.body.style.cursor = vertical ? 'row-resize' : 'col-resize';
+    document.body.style.cursor = vertical ? 'row-resize' : 'col-resize';
     let moveHandler = (event: MouseEvent) => {
       event.preventDefault();
       const newPosition = ((vertical ? event.pageY : event.pageX) - offset) / size * 100;
@@ -44,7 +44,7 @@ export default function SplitPane({vertical, className, children, onResize}: any
     let upHandler = () => {
       document.removeEventListener('mousemove', moveHandler);
       document.removeEventListener('mouseup', upHandler);
-      global.document.body.style.cursor = '';
+      document.body.style.cursor = '';
 
       if (onResize) {
         onResize();

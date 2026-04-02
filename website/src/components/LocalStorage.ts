@@ -1,6 +1,6 @@
 type AppState = import('../types').AppState;
 
-const storage = global.localStorage;
+const storage = window.localStorage;
 const key = 'explorerSettingsV1';
 const noop = () => {};
 

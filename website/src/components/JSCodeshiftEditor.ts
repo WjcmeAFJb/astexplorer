@@ -36,7 +36,7 @@ function loadTern(): void {
       'acorn',
     ],
     (_1: unknown, _2: unknown, acorn: typeof import('acorn')) => {
-      global.acorn = acorn;
+      globalThis.acorn = acorn;
       require(
         [
           'tern',
@@ -46,7 +46,7 @@ function loadTern(): void {
           'tern/defs/ecmascript.json',
         ],
         (tern: {registerPlugin: (name: string, init: (...args: unknown[]) => void) => void, [k: string]: unknown}, _: unknown, infer: {cx: () => {topScope: unknown, definitions: Record<string, Record<string, unknown>>}, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}, jscs_def: unknown, ecmascript: unknown) => {
-          global.tern = tern;
+          globalThis.tern = tern;
           tern.registerPlugin('transformer', (server: any) => {
             server.on('afterLoad', (file: any) => {
               const fnVal = file.scope.props.transformer;

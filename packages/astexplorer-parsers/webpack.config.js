@@ -41,6 +41,9 @@ module.exports = {
     filename: 'index.js',
     library: 'astexplorer-parsers',
     libraryTarget: 'commonjs2',
+    // Use globalThis so the bundle works in both browsers and Node.js.
+    // Default 'window' causes ReferenceError in Node.js environments.
+    globalObject: 'globalThis',
   },
 
   externals: [
@@ -79,6 +82,8 @@ module.exports = {
       'java-parser/package.json': path.join(websiteNodeModules, 'java-parser', 'package.json'),
       // Go WASM runtime
       'gojs': path.join(websiteNodeModules, 'astexplorer-go', 'go.js'),
+      // Browser-safe fs shim with realpathSync.native etc.
+      'fs': path.resolve(__dirname, 'src', 'shims', 'fs-browser.js'),
     },
   },
 
@@ -122,6 +127,15 @@ module.exports = {
           path.join(websiteNodeModules, '@gengjiawen', 'monkey-wasm'),
         ],
         loader: 'file-loader',
+        options: {
+          name(resourcePath) {
+            if (resourcePath.includes('@swc')) return 'swc.wasm';
+            if (resourcePath.includes('astexplorer-syn')) return 'syn.wasm';
+            if (resourcePath.includes('astexplorer-go')) return 'go.wasm';
+            if (resourcePath.includes('monkey-wasm')) return 'monkey.wasm';
+            return '[name].[ext]';
+          },
+        },
       },
       // eslint4's esquery import needs the CJS build
       {
@@ -233,7 +247,7 @@ module.exports = {
 
   node: {
     child_process: 'empty',
-    fs: 'empty',
+    fs: false, // resolved via alias to src/shims/fs-browser.js
     module: 'empty',
     net: 'empty',
     readline: 'empty',

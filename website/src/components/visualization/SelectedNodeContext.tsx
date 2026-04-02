@@ -22,11 +22,11 @@ function setSelectedNode(node: unknown, cb?: () => void) {
     unselectCallback();
   }
   if (node) {
-    global.$node = node;
+    globalThis.$node = node;
     unselectCallback = cb;
   } else {
     unselectCallback = null;
-    delete global.$node;
+    delete globalThis.$node;
   }
 }
 

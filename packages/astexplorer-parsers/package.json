@@ -3,7 +3,23 @@
   "version": "1.0.0",
   "description": "Parser definitions for astexplorer",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts"
+    },
+    "./swc.wasm": "./dist/swc.wasm",
+    "./syn.wasm": "./dist/syn.wasm",
+    "./go.wasm": "./dist/go.wasm",
+    "./monkey.wasm": "./dist/monkey.wasm"
+  },
   "scripts": {
     "build": "NODE_OPTIONS=--openssl-legacy-provider node build.js --production",
     "build-dev": "NODE_OPTIONS=--openssl-legacy-provider node build.js",
@@ -130,35 +146,93 @@
     "yaml-ast-parser": ">=0.0.43"
   },
   "peerDependenciesMeta": {
-    "@angular-eslint/template-parser": { "optional": true },
-    "@angular/compiler": { "optional": true },
-    "@babel/eslint-parser": { "optional": true },
-    "@creditkarma/thrift-parser": { "optional": true },
-    "@gengjiawen/monkey-wasm": { "optional": true },
-    "@glimmer/compiler": { "optional": true },
-    "@glimmer/syntax": { "optional": true },
-    "@humanwhocodes/momoa": { "optional": true },
-    "@mdx-js/mdx": { "optional": true },
-    "@swc/wasm-web": { "optional": true },
-    "@typescript-eslint/parser": { "optional": true },
-    "@vue/compiler-dom": { "optional": true },
-    "@webassemblyjs/wast-parser": { "optional": true },
-    "astexplorer-go": { "optional": true },
-    "astexplorer-refmt": { "optional": true },
-    "astexplorer-syn": { "optional": true },
-    "cherow": { "optional": true },
-    "filbert": { "optional": true },
-    "flow-parser": { "optional": true },
-    "glsl-parser": { "optional": true },
-    "glsl-tokenizer": { "optional": true },
-    "hermes-parser": { "optional": true },
-    "hyntax": { "optional": true },
-    "scalameta-parsers": { "optional": true },
-    "seafox": { "optional": true },
-    "solidity-parser-antlr": { "optional": true },
-    "solidity-parser-diligence": { "optional": true },
-    "tenko": { "optional": true },
-    "traceur": { "optional": true }
+    "@angular-eslint/template-parser": {
+      "optional": true
+    },
+    "@angular/compiler": {
+      "optional": true
+    },
+    "@babel/eslint-parser": {
+      "optional": true
+    },
+    "@creditkarma/thrift-parser": {
+      "optional": true
+    },
+    "@gengjiawen/monkey-wasm": {
+      "optional": true
+    },
+    "@glimmer/compiler": {
+      "optional": true
+    },
+    "@glimmer/syntax": {
+      "optional": true
+    },
+    "@humanwhocodes/momoa": {
+      "optional": true
+    },
+    "@mdx-js/mdx": {
+      "optional": true
+    },
+    "@swc/wasm-web": {
+      "optional": true
+    },
+    "@typescript-eslint/parser": {
+      "optional": true
+    },
+    "@vue/compiler-dom": {
+      "optional": true
+    },
+    "@webassemblyjs/wast-parser": {
+      "optional": true
+    },
+    "astexplorer-go": {
+      "optional": true
+    },
+    "astexplorer-refmt": {
+      "optional": true
+    },
+    "astexplorer-syn": {
+      "optional": true
+    },
+    "cherow": {
+      "optional": true
+    },
+    "filbert": {
+      "optional": true
+    },
+    "flow-parser": {
+      "optional": true
+    },
+    "glsl-parser": {
+      "optional": true
+    },
+    "glsl-tokenizer": {
+      "optional": true
+    },
+    "hermes-parser": {
+      "optional": true
+    },
+    "hyntax": {
+      "optional": true
+    },
+    "scalameta-parsers": {
+      "optional": true
+    },
+    "seafox": {
+      "optional": true
+    },
+    "solidity-parser-antlr": {
+      "optional": true
+    },
+    "solidity-parser-diligence": {
+      "optional": true
+    },
+    "tenko": {
+      "optional": true
+    },
+    "traceur": {
+      "optional": true
+    }
   },
   "dependencies": {
   }

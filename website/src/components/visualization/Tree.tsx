@@ -16,7 +16,7 @@ const STORAGE_KEY = 'tree_settings';
  * @returns {Record<string, boolean>}
  */
 function initSettings() {
-  const storedSettings = global.localStorage.getItem(STORAGE_KEY);
+  const storedSettings = window.localStorage.getItem(STORAGE_KEY);
   return storedSettings ?
     (JSON.parse(storedSettings) as Record<string, boolean>) :
     {
@@ -31,7 +31,7 @@ function initSettings() {
 function reducer(state: Record<string, boolean>, element: any): Record<string, boolean> {
   const newState = {...state, [element.name]: element.checked};
 
-  global.localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
   return newState;
 }
 

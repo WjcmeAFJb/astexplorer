@@ -62,5 +62,6 @@ export function getTransformerByID(id: string): Transformer {
   return transformerByID[id];
 }
 
+export {configureWasm} from './wasm-config';
 export type {Category, Parser, Transformer} from './types';
 export type {SettingsConfiguration, TransformResultWithMap, WalkResult} from './types';

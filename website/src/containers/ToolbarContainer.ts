@@ -53,8 +53,8 @@ function mapDispatchToProps(dispatch: import('redux').Dispatch) {
     onSave: () => dispatch(save(false)),
     onFork: () => dispatch(save(true)),
     onNew: () => {
-      if (global.location.hash) {
-        global.location.hash = '';
+      if (window.location.hash) {
+        window.location.hash = '';
       } else {
         dispatch(reset());
       }

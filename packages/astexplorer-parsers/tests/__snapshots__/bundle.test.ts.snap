@@ -6520,7 +6520,7 @@ exports[`parsers dist bundle > registry > parser versions snapshot 1`] = `
   "parse5": "6.0.0",
   "pbkit": "0.0.38",
   "php-parser": "3.0.0",
-  "postcss": "8.4.7",
+  "postcss": "8.5.8",
   "posthtml-parser": "0.5.3",
   "pug": "5.0.1",
   "python": "0.1.20",
