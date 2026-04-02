@@ -132,6 +132,23 @@ test.describe('AST Explorer smoke tests', () => {
       await page.waitForTimeout(300);
       await expect(page).toHaveScreenshot('category-dropdown.png', { maxDiffPixelRatio: 0.01 });
     });
+
+    // Syntax highlighting screenshots — verify CodeMirror modes load correctly
+    const highlightCategories = [
+      'css', 'go', 'handlebars', 'htmlmixed', 'java', 'json',
+      'lua', 'markdown', 'php', 'python', 'rust', 'sql', 'yaml',
+    ];
+    for (const id of highlightCategories) {
+      test(`${id} syntax highlighting`, async ({ page }) => {
+        await page.goto('/');
+        await waitForTree(page);
+        await selectCategory(page, id);
+        await waitForTree(page);
+        // Wait for CodeMirror mode to load and apply
+        await page.waitForTimeout(500);
+        await expect(page).toHaveScreenshot(`highlight-${id}.png`, { maxDiffPixelRatio: 0.01 });
+      });
+    }
   });
 
   test.describe('JavaScript parsers', () => {
