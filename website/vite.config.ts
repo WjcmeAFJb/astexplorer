@@ -15,7 +15,7 @@ function copyParsersChunks() {
       const parsersOut = path.join(assetsDir, 'parsers');
       fs.mkdirSync(parsersOut, { recursive: true });
       for (const file of fs.readdirSync(parsersDir)) {
-        if (file.startsWith('chunk-') && file.endsWith('.js')) {
+        if (file.startsWith('chunk-') && (file.endsWith('.js') || file.endsWith('.js.map'))) {
           fs.copyFileSync(path.join(parsersDir, file), path.join(parsersOut, file));
         }
       }

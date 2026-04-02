@@ -61,13 +61,13 @@ compiler.run((err, stats) => {
     .sort();
   const allChunks = chunkFiles.map(f => fs.readFileSync(path.join(distDir, f), 'utf-8'));
   // Chunks use push() to register with the JSONP array, which must exist.
-  // The main bundle creates it, so we put chunks AFTER the main bundle header
-  // but before module execution. Simplest: concat chunks + main.
-  // Actually, webpack's webpackJsonpCallback processes the push() calls
-  // retroactively, so chunks can go before or after. Put them after for safety.
+  // The main bundle creates it, so we put chunks AFTER the main bundle.
+  // Strip the main chunk's sourcemap reference since it becomes invalid
+  // after concatenation (the individual chunk .map files remain valid).
+  const mainWithoutMap = mainCode.replace(/\/\/# sourceMappingURL=.*$/m, '');
   fs.writeFileSync(
     path.join(distDir, 'index.js'),
-    mainCode + '\n' + allChunks.join('\n'),
+    mainWithoutMap + '\n' + allChunks.join('\n'),
   );
   console.log(`  Inlined ${chunkFiles.length} chunks into index.js`);
 
