@@ -132,16 +132,78 @@ describe('selectors (mutation-tested)', () => {
     expect(selectors.getRevision(makeState())).toBeNull();
   });
 
-  test('canSave returns boolean', () => {
-    expect(typeof selectors.canSave(makeState())).toBe('boolean');
+  test('canSave returns true when code is dirty and no revision', () => {
+    const state = makeState();
+    state.workbench.code = 'changed code';
+    state.workbench.initialCode = 'original';
+    expect(selectors.canSave(state)).toBe(true);
   });
 
-  test('canFork returns false by default', () => {
+  test('canSave returns true when no revision (always saveable)', () => {
+    expect(selectors.canSave(makeState())).toBe(true);
+  });
+
+  test('canSave with revision checks canSave() method', () => {
+    const rev = { canSave: () => true, getParserID: () => 'acorn', getParserSettings: () => null };
+    const state = makeState({ activeRevision: rev });
+    state.workbench.code = 'changed';
+    state.workbench.initialCode = 'original';
+    expect(selectors.canSave(state)).toBe(true);
+  });
+
+  test('canSave false when revision.canSave() returns false', () => {
+    const rev = { canSave: () => false, getParserID: () => 'acorn', getParserSettings: () => null };
+    const state = makeState({ activeRevision: rev });
+    state.workbench.code = 'changed';
+    state.workbench.initialCode = 'original';
+    expect(selectors.canSave(state)).toBe(false);
+  });
+
+  test('canFork true with revision, false without', () => {
     expect(selectors.canFork(makeState())).toBe(false);
+    expect(selectors.canFork(makeState({ activeRevision: { id: 'r1' } }))).toBe(true);
   });
 
-  test('canSaveTransform returns false by default', () => {
-    expect(selectors.canSaveTransform(makeState())).toBe(false);
+  test('canSaveTransform true when transform panel shown and code dirty', () => {
+    const state = makeState({ showTransformPanel: true });
+    state.workbench.transform.code = 'changed';
+    state.workbench.transform.initialCode = 'original';
+    expect(selectors.canSaveTransform(state)).toBe(true);
+  });
+
+  test('canSaveTransform false when transform panel hidden', () => {
+    const state = makeState({ showTransformPanel: false });
+    state.workbench.transform.code = 'changed';
+    state.workbench.transform.initialCode = 'original';
+    expect(selectors.canSaveTransform(state)).toBe(false);
+  });
+
+  test('canSaveTransform false when code matches initial', () => {
+    const state = makeState({ showTransformPanel: true });
+    state.workbench.transform.code = 'same';
+    state.workbench.transform.initialCode = 'same';
+    expect(selectors.canSaveTransform(state)).toBe(false);
+  });
+
+  test('canSave true when parser settings changed from revision', () => {
+    const rev = {
+      canSave: () => true,
+      getParserID: () => 'acorn',
+      getParserSettings: () => ({ jsx: false }),
+    };
+    const state = makeState({ activeRevision: rev });
+    // parserSettings differ from saved
+    expect(selectors.canSave(state)).toBe(true);
+  });
+
+  test('canSave true when parser ID differs from revision', () => {
+    const rev = {
+      canSave: () => true,
+      getParserID: () => 'different-parser',
+      getParserSettings: () => null,
+    };
+    const state = makeState({ activeRevision: rev });
+    expect(selectors.canSave(state)).toBe(true);
   });
 
   test('showSettingsDrawer returns exact value', () => {
