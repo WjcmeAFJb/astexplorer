@@ -160,6 +160,30 @@ describe('TransformButton', () => {
     const items = div.querySelectorAll('li');
     expect(items.length).toBe(jsCat.transformers.length);
   });
+
+  test('clicking transformer in dropdown calls onTransformChange', () => {
+    const onChange = vi.fn();
+    const div = renderToDiv(
+      <TransformButton category={jsCat} transformer={null} showTransformer={false} onTransformChange={onChange} />,
+    );
+    // Click the button inside the first <li> (a transformer)
+    const firstLiButton = div.querySelector('li button') as HTMLButtonElement;
+    expect(firstLiButton).toBeTruthy();
+    Simulate.click(firstLiButton);
+    expect(onChange).toHaveBeenCalled();
+  });
+
+  test('clicking li element in dropdown also calls onTransformChange', () => {
+    const onChange = vi.fn();
+    const div = renderToDiv(
+      <TransformButton category={jsCat} transformer={null} showTransformer={false} onTransformChange={onChange} />,
+    );
+    // Click on the <li> itself (not the button)
+    const firstLi = div.querySelector('li') as HTMLLIElement;
+    expect(firstLi).toBeTruthy();
+    Simulate.click(firstLi);
+    expect(onChange).toHaveBeenCalled();
+  });
 });
 
 describe('KeyMapButton', () => {

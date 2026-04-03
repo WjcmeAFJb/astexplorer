@@ -50,4 +50,58 @@ describe('LocalStorage', () => {
     expect(readState()).toBeUndefined();
     spy.mockRestore();
   });
+
+  test('writeState writes and readState can read back', () => {
+    const state = { keyMap: 'vim', parser: 'babel' };
+    writeState(state);
+    const result = readState();
+    expect(result).toEqual(state);
+  });
+
+  test('writeState with complex nested state', () => {
+    const state = {
+      parser: 'acorn',
+      settings: { ecmaVersion: 2020, jsx: true },
+      nested: { deep: { value: 42 } },
+    };
+    writeState(state);
+    const stored = localStorage.getItem('explorerSettingsV1');
+    expect(JSON.parse(stored!)).toEqual(state);
+  });
+
+  test('readState returns undefined when storage has empty string', () => {
+    localStorage.setItem('explorerSettingsV1', '');
+    // Empty string is falsy, so readState returns undefined
+    const result = readState();
+    expect(result).toBeUndefined();
+  });
+});
+
+describe('LocalStorage with no localStorage', () => {
+  test('noop functions when localStorage is unavailable', async () => {
+    // Save and restore original localStorage
+    const origLocalStorage = window.localStorage;
+    // Delete localStorage to simulate unavailable storage
+    // We need to re-import the module after removing localStorage
+    vi.resetModules();
+
+    // Override window.localStorage to simulate it being unavailable
+    Object.defineProperty(window, 'localStorage', {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    });
+
+    const mod = await import('../src/components/LocalStorage');
+    // When storage is falsy, writeState and readState should be noops
+    expect(() => mod.writeState({ x: 1 })).not.toThrow();
+    expect(mod.readState()).toBeUndefined();
+
+    // Restore
+    Object.defineProperty(window, 'localStorage', {
+      value: origLocalStorage,
+      configurable: true,
+      writable: true,
+    });
+  });
 });

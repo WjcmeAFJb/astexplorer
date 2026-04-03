@@ -250,5 +250,88 @@ describe('storage/gist', () => {
       const rev = await makeGistRevision();
       expect(rev.getTransformerID()).toBeUndefined();
     });
+
+    test('getShareInfo returns JSX with share links', async () => {
+      const rev = await makeGistRevision();
+      const shareInfo = rev.getShareInfo();
+      expect(shareInfo).toBeTruthy();
+      // It's a React element
+      expect(shareInfo.type).toBe('div');
+      expect(shareInfo.props.className).toBe('shareInfo');
+    });
+  });
+
+  describe('fork error handling', () => {
+    test('throws on error response from fork', async () => {
+      server.use(
+        rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.json(GIST_DATA))),
+        rest.post('*/api/v1/gist/gist123/v1abc', (req, res, ctx) => res(ctx.status(500))),
+      );
+      global.location.hash = '#/gist/gist123';
+      const existing = (await gist.fetchFromURL())!;
+      await expect(gist.fork(existing, { code: 'forked' } as any)).rejects.toThrow('Unable to fork');
+    });
+  });
+
+  describe('update error handling', () => {
+    test('throws on error response from update', async () => {
+      server.use(
+        rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.json(GIST_DATA))),
+        rest.patch('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.status(500))),
+      );
+      global.location.hash = '#/gist/gist123';
+      const existing = (await gist.fetchFromURL())!;
+      await expect(gist.update(existing, { code: 'updated' } as any)).rejects.toThrow('Unable to update');
+    });
+  });
+
+  describe('Revision getShareInfo rendering', () => {
+    test('getShareInfo contains current revision URL', async () => {
+      server.use(
+        rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.json(GIST_DATA))),
+      );
+      global.location.hash = '#/gist/gist123';
+      const rev = (await gist.fetchFromURL())!;
+      const shareInfo = rev.getShareInfo();
+
+      // Render the share info to check content
+      const React = await import('react');
+      const { renderToString } = await import('react-dom/server');
+      const html = renderToString(shareInfo);
+      expect(html).toContain('https://astexplorer.net/#/gist/gist123/v1abc');
+      expect(html).toContain('https://astexplorer.net/#/gist/gist123/latest');
+      expect(html).toContain('https://gist.github.com/gist123/v1abc');
+    });
+  });
+
+  describe('fetchFromURL with unknown error', () => {
+    test('throws unknown error for non-404 status', async () => {
+      server.use(
+        rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.status(500))),
+      );
+      global.location.hash = '#/gist/gist123';
+      await expect(gist.fetchFromURL()).rejects.toThrow('Unknown error');
+    });
+  });
+
+  describe('Revision.getCode with unknown config version', () => {
+    test('returns empty string when config version is unknown', async () => {
+      const unknownVersionConfig = JSON.stringify({ v: 99, parserID: 'acorn', settings: {} });
+      server.use(
+        rest.get('*/api/v1/gist/gist123', (req, res, ctx) =>
+          res(ctx.json({
+            ...GIST_DATA,
+            files: {
+              ...GIST_DATA.files,
+              'astexplorer.json': { content: unknownVersionConfig },
+            },
+          })),
+        ),
+      );
+      global.location.hash = '#/gist/gist123';
+      const rev = (await gist.fetchFromURL())!;
+      // getSource returns undefined for unknown version, getCode falls back to ''
+      expect(rev.getCode()).toBe('');
+    });
   });
 });

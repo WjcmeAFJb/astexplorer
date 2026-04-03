@@ -216,5 +216,58 @@ describe('storage/parse', () => {
       parse.updateHash(rev);
       expect(global.location.hash).toContain('xyz/3');
     });
+
+    test('sets hash without revision when rev is 0', async () => {
+      server.use(
+        rest.get('*/api/v1/parse/abc/0', (req, res, ctx) =>
+          res(ctx.json({ snippetID: 'abc', revisionID: 0, parserID: 'acorn' }))
+        ),
+      );
+      global.location.hash = '#/abc';
+      const rev = (await parse.fetchFromURL())!;
+      parse.updateHash(rev);
+      // revisionID is 0, so hash should be just '/abc'
+      expect(global.location.hash).toContain('abc');
+    });
+  });
+
+  describe('Revision getShareInfo', () => {
+    test('getShareInfo returns React element with share links', async () => {
+      server.use(
+        rest.get('*/api/v1/parse/test/0', (req, res, ctx) =>
+          res(ctx.json({ snippetID: 'test', revisionID: 5, parserID: 'esprima' }))
+        ),
+      );
+      global.location.hash = '#/test';
+      const rev = (await parse.fetchFromURL())!;
+      const shareInfo = rev.getShareInfo();
+
+      expect(shareInfo).toBeTruthy();
+      expect(shareInfo.type).toBe('div');
+      expect(shareInfo.props.className).toBe('shareInfo');
+
+      // Render to check contents
+      const React = await import('react');
+      const { renderToString } = await import('react-dom/server');
+      const html = renderToString(shareInfo);
+      expect(html).toContain('https://astexplorer.net/#/gist/test/5');
+      expect(html).toContain('https://astexplorer.net/#/gist/test/latest');
+      expect(html).toContain('Current Revision');
+      expect(html).toContain('Latest Revision');
+    });
+  });
+
+  describe('fetchFromURL with latest revision', () => {
+    test('fetches with latest as revision', async () => {
+      server.use(
+        rest.get('*/api/v1/parse/abc/latest', (req, res, ctx) =>
+          res(ctx.json({ snippetID: 'abc', revisionID: 'latest', parserID: 'acorn' }))
+        ),
+      );
+      global.location.hash = '#/abc/latest';
+      const rev = await parse.fetchFromURL();
+      expect(rev).toBeTruthy();
+      expect(rev!.getRevisionID()).toBe('latest');
+    });
   });
 });
