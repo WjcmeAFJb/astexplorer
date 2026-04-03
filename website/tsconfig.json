@@ -14,7 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "astexplorer-parsers": ["../packages/astexplorer-parsers/dist/index"],
-      "astexplorer-parsers/src/types": ["../packages/astexplorer-parsers/dist/types"]
+      "astexplorer-parsers/types": ["../packages/astexplorer-parsers/dist/types"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.d.ts"],
