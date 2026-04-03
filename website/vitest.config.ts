@@ -1,9 +1,4 @@
 import { defineConfig } from 'vitest/config';
-import path from 'path';
-
-const parsersAlias = {
-  'astexplorer-parsers': path.resolve(__dirname, '..', 'packages', 'astexplorer-parsers', 'dist', 'index.mjs'),
-};
 
 export default defineConfig({
   test: {
@@ -16,8 +11,5 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}'],
       exclude: ['src/**/*.d.ts', 'src/app.tsx', 'src/shims/**'],
     },
-  },
-  resolve: {
-    alias: parsersAlias,
   },
 });
