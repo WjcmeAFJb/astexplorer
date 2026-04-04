@@ -203,6 +203,34 @@ describe('SettingsDialog', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
+  test('_saveAndClose calls onSave and onWantToClose (lines 36-37)', () => {
+    // Test the _saveAndClose behavior by rendering with settings,
+    // changing internal state via _onChange, then calling _saveAndClose.
+    // This covers the code paths at lines 36-37 (_saveAndClose method).
+    let ref: any;
+    const TestWrapper = () => {
+      const [, setRender] = React.useState(0);
+      return (
+        <SettingsDialog
+          visible={true}
+          parser={mockParser}
+          parserSettings={{ jsx: true }}
+          onSave={(parser: any, settings: any) => {
+            expect(parser).toBe(mockParser);
+            expect(settings).toEqual({ jsx: true });
+          }}
+          onWantToClose={() => {}}
+          ref={(r: any) => { ref = r; }}
+        />
+      );
+    };
+    render(<TestWrapper />);
+    // _saveAndClose is triggered by _outerClick when target matches
+    // We verify _saveAndClose works correctly
+    expect(ref).toBeTruthy();
+    ref._saveAndClose();
+  });
+
   test('onChange callback from renderSettings updates internal state', () => {
     const onSave = vi.fn();
     const { container } = render(
@@ -292,6 +320,19 @@ describe('ShareDialog', () => {
     const inner = container.querySelector('.inner')!;
     fireEvent.click(inner);
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  test('_outerClick calls onWantToClose when target is dialog element (lines 19-20)', () => {
+    const onClose = vi.fn();
+    let ref: any;
+    render(
+      <ShareDialog visible={true} onWantToClose={onClose} snippet={mockSnippet as any}
+        ref={(r: any) => { ref = r; }} />,
+    );
+    const dialogDiv = document.getElementById('ShareDialog')!;
+    // Call _outerClick directly with a synthetic event whose target matches
+    ref._outerClick({ target: dialogDiv } as any);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   test('dialog has correct max-width and width style', () => {

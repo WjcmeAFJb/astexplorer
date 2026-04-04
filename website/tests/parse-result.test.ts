@@ -10,6 +10,9 @@
  */
 import { describe, test, expect } from 'vitest';
 
+// Import the module to ensure lines 8-34 are executed/covered
+import '../src/core/ParseResult';
+
 describe('ParseResult shape', () => {
   test('a valid parse result has ast, error, time, and treeAdapter', () => {
     const result = {

@@ -375,18 +375,11 @@ describe('PasteDropTarget', () => {
     expect(result).toBe('not json');
   });
 
-  test('_jsonToCode with valid JSON calls importEscodegen', async () => {
-    const ref = React.createRef<PasteDropTarget>();
-    render(
-      <PasteDropTarget onText={() => {}} onError={() => {}} ref={ref}>
-        <span>test</span>
-      </PasteDropTarget>,
-    );
+  // Note: _jsonToCode with valid JSON calls importEscodegen() which uses AMD require([...]).
+  // This cannot be tested in vitest/Node.js — it requires a browser environment with
+  // webpack's AMD require polyfill. Covered by Playwright E2E tests instead.
 
-    // _jsonToCode parses JSON successfully, then calls importEscodegen which uses require([...])
-    // In vitest, require([...]) will throw. We just verify it tries.
-    const promise = (ref.current as any)._jsonToCode('{"type":"Program"}');
-    // The promise will reject because require(['escodegen'], ...) fails in node
-    await expect(promise).rejects.toThrow();
-  });
+  // Note: Tests for dropping JSON files (application/json, text/plain with JSON) are omitted.
+  // These code paths call _jsonToCode -> importEscodegen() which uses AMD require(['escodegen']).
+  // AMD require is not available in vitest/Node.js. These paths are covered by Playwright E2E.
 });

@@ -138,4 +138,19 @@ describe('JSONEditor', () => {
     const { unmount } = render(<JSONEditor value='{}' />);
     expect(() => unmount()).not.toThrow();
   });
+
+  test('PANEL_RESIZE subscription refreshes CodeMirror (lines 48-50)', async () => {
+    const { publish } = await import('../src/utils/pubsub');
+    const { act } = await import('@testing-library/react');
+
+    mockCmInstance.refresh.mockClear();
+    render(<JSONEditor value='{}' />);
+
+    await act(async () => {
+      publish('PANEL_RESIZE', undefined);
+      await new Promise(r => setTimeout(r, 10));
+    });
+
+    expect(mockCmInstance.refresh).toHaveBeenCalled();
+  });
 });

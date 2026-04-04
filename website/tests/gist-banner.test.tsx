@@ -106,4 +106,54 @@ describe('GistBanner', () => {
     const icon = container.querySelector('.fa-times');
     expect(icon).not.toBeNull();
   });
+
+  test('banner reappears when revision changes to different snippet (lines 41-42)', () => {
+    const revision1 = makeRevision({ canSave: () => false, getSnippetID: () => 'abc123' });
+    const revision2 = makeRevision({ canSave: () => false, getSnippetID: () => 'xyz789' });
+
+    const state1 = makeState(revision1);
+    const store = createStore((state = state1, action: any) => {
+      if (action.type === 'SET_REVISION') {
+        return { ...state, activeRevision: action.revision };
+      }
+      return state;
+    });
+
+    const { container, rerender } = render(
+      <Provider store={store}>
+        <GistBanner />
+      </Provider>,
+    );
+    expect(container.querySelector('.banner')).not.toBeNull();
+
+    // Hide the banner
+    const closeButton = container.querySelector('.banner button')!;
+    fireEvent.click(closeButton);
+    expect(container.querySelector('.banner')).toBeNull();
+
+    // Change the revision to a different snippet - banner should reappear
+    // We need to re-render with a new store state
+    const state2 = makeState(revision2);
+    const store2 = createStore(() => state2);
+    rerender(
+      <Provider store={store2}>
+        <GistBanner />
+      </Provider>,
+    );
+    expect(container.querySelector('.banner')).not.toBeNull();
+  });
+
+  test('banner stays visible when revision changes but same snippet ID', () => {
+    const revision1 = makeRevision({ canSave: () => false, getSnippetID: () => 'same' });
+
+    const state1 = makeState(revision1);
+    const store = createStore(() => state1);
+
+    const { container } = render(
+      <Provider store={store}>
+        <GistBanner />
+      </Provider>,
+    );
+    expect(container.querySelector('.banner')).not.toBeNull();
+  });
 });

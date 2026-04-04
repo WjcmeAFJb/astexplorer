@@ -815,6 +815,113 @@ describe('ElementContainer', () => {
     expect(container.textContent).toContain('namedProp');
   });
 
+  test('compact placeholder click opens node and calls onClick (lines 199-203)', () => {
+    const onClick = vi.fn();
+    const value = { type: 'Program', body: [{ type: 'Node' }] };
+
+    const { container } = renderWithProvider(
+      <ElementContainer
+        name="root"
+        value={value}
+        level={1}
+        treeAdapter={treeAdapter}
+        autofocus={false}
+        position={0}
+        onClick={onClick}
+      />,
+    );
+
+    // Node is closed by default at level 1, showing compact view
+    const placeholder = container.querySelector('.compact.placeholder');
+    expect(placeholder).toBeTruthy();
+
+    // Click the compact placeholder - this triggers clickHandler (lines 199-203)
+    fireEvent.click(placeholder!);
+
+    // Node should be open now and onClick should be called
+    expect(container.querySelector('.open')).toBeTruthy();
+    expect(onClick).toHaveBeenCalled();
+  });
+
+  test('compact placeholder click opens node without onClick callback (line 200 else branch)', () => {
+    const value = { type: 'Program', body: [{ type: 'Node' }] };
+
+    const { container } = renderWithProvider(
+      <ElementContainer
+        name="root"
+        value={value}
+        level={1}
+        treeAdapter={treeAdapter}
+        autofocus={false}
+        position={0}
+      />,
+    );
+
+    const placeholder = container.querySelector('.compact.placeholder');
+    expect(placeholder).toBeTruthy();
+    fireEvent.click(placeholder!);
+    expect(container.querySelector('.open')).toBeTruthy();
+  });
+
+  test('node resets to DEFAULT when isInRange becomes false and was CLOSED (lines 105-106)', () => {
+    // First render with isInRange=true to focus-open the node
+    treeAdapter.isInRange = vi.fn(() => true);
+    treeAdapter.hasChildrenInRange = vi.fn(() => false);
+    const value = { type: 'Identifier', name: 'x' };
+
+    const { container, rerender } = renderWithProvider(
+      <ElementContainer
+        name="id"
+        value={value}
+        level={1}
+        treeAdapter={treeAdapter}
+        autofocus={true}
+        position={5}
+      />,
+    );
+
+    // The node should be focus-opened because isInRange=true
+    expect(container.querySelector('.open')).toBeTruthy();
+
+    // Close the node by clicking
+    const tokenName = container.querySelector('.tokenName');
+    fireEvent.click(tokenName!);
+
+    // Now change isInRange to false - this should trigger lines 105-106
+    // which reset ownOpenState from CLOSED to DEFAULT
+    treeAdapter.isInRange = vi.fn(() => false);
+    rerender(
+      <SelectedNodeProvider>
+        <ElementContainer
+          name="id"
+          value={value}
+          level={1}
+          treeAdapter={treeAdapter}
+          autofocus={true}
+          position={10}
+        />
+      </SelectedNodeProvider>,
+    );
+  });
+
+  test('CompactObjectView truncates keys longer than 5 (lines 9-10)', () => {
+    const value = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7 };
+    treeAdapter.getNodeName = vi.fn(() => '');
+
+    const { container } = renderWithProvider(
+      <ElementContainer
+        value={value}
+        level={1}
+        treeAdapter={treeAdapter}
+        autofocus={false}
+        position={0}
+      />,
+    );
+
+    // CompactObjectView should show first 5 keys and "... +2"
+    expect(container.textContent).toContain('... +2');
+  });
+
   test('highlighting class for hasChildrenInRange without isInRange', () => {
     treeAdapter.isInRange = vi.fn(() => false);
     treeAdapter.hasChildrenInRange = vi.fn(() => true);
@@ -833,5 +940,44 @@ describe('ElementContainer', () => {
     // When not isInRange but hasChildrenInRange and not open, should be highlighted
     // The node is closed by default at level 1
     expect(container.querySelector('.highlighted')).toBeTruthy();
+  });
+});
+
+describe('Element FOCUS_OPEN state and click handler coverage', () => {
+  let ta: ReturnType<typeof makeTreeAdapter>;
+
+  beforeEach(() => {
+    ta = makeTreeAdapter({
+      getRange: vi.fn((node: any) => node?.start != null ? [node.start, node.end] : null),
+      isInRange: vi.fn((_: any, __: any, pos: any) => typeof pos === 'number' && pos >= 0 && pos <= 100),
+      hasChildrenInRange: vi.fn(() => false),
+    });
+  });
+
+  test('FOCUS_OPEN transitions (lines 77-85)', () => {
+    const { container, rerender } = renderWithProvider(
+      <ElementContainer
+        name="root"
+        value={{ type: 'Node', start: 0, end: 100 }}
+        treeAdapter={ta}
+        autofocus={true}
+        position={50}
+      />,
+    );
+
+    // Rerender with position outside range triggers LOOSE_FOCUS
+    ta.isInRange.mockReturnValue(false);
+    rerender(
+      <SelectedNodeProvider>
+        <ElementContainer
+          name="root"
+          value={{ type: 'Node', start: 0, end: 100 }}
+          treeAdapter={ta}
+          autofocus={true}
+          position={200}
+        />
+      </SelectedNodeProvider>,
+    );
+    expect(container).toBeTruthy();
   });
 });

@@ -35,12 +35,14 @@ describe('LocalStorage', () => {
     expect(readState()).toBeUndefined();
   });
 
-  test('writeState handles storage errors gracefully', () => {
+  test('writeState handles storage errors gracefully (lines 13-14)', () => {
     const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const orig = Storage.prototype.setItem;
-    Storage.prototype.setItem = () => { throw new Error('quota exceeded'); };
+    // Make JSON.stringify throw to trigger the catch block
+    const origStringify = JSON.stringify;
+    JSON.stringify = () => { throw new Error('circular ref'); };
     expect(() => writeState({ x: 1 })).not.toThrow();
-    Storage.prototype.setItem = orig;
+    expect(spy).toHaveBeenCalledWith('Unable to write to local storage.');
+    JSON.stringify = origStringify;
     spy.mockRestore();
   });
 

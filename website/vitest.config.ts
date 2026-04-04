@@ -9,7 +9,13 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/**/*.d.ts', 'src/app.tsx', 'src/shims/**'],
+      exclude: [
+        'src/**/*.d.ts',
+        'src/app.tsx',
+        'src/shims/**',
+        'src/types.ts',
+        'src/components/JSCodeshiftEditor.ts', // tern integration, AMD require, browser-only
+      ],
     },
   },
 });

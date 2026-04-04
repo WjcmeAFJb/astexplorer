@@ -518,6 +518,59 @@ describe('Editor', () => {
     expect(result).toEqual({ value: 'new' });
   });
 
+  test('changes handler calls clearTimeout and sets timer (lines 144-146)', async () => {
+    const onContentChange = vi.fn();
+    mockDoc.getValue.mockReturnValue('changed');
+    mockDoc.indexFromPos.mockReturnValue(7);
+
+    render(
+      <Editor value="initial" onContentChange={onContentChange} />,
+    );
+    await flushMicrotasks();
+
+    // Find the 'changes' handler registered on CodeMirror
+    const changesHandler = mockCmInstance.on.mock.calls.find(
+      (c: unknown[]) => c[0] === 'changes',
+    )?.[1] as () => void;
+    expect(changesHandler).toBeDefined();
+
+    // Call the handler - this covers lines 144 (clearTimeout) and 146 (setTimeout)
+    changesHandler();
+
+    // Wait for the setTimeout(200ms) to fire
+    await act(async () => {
+      await new Promise(r => setTimeout(r, 250));
+    });
+
+    expect(onContentChange).toHaveBeenCalledWith({ value: 'changed', cursor: 7 });
+  });
+
+  test('cursorActivity handler calls clearTimeout and sets timer (lines 149-151)', async () => {
+    const onActivity = vi.fn();
+    mockDoc.indexFromPos.mockReturnValue(42);
+
+    render(
+      <Editor value="hello" onActivity={onActivity} />,
+    );
+    await flushMicrotasks();
+
+    // Find the 'cursorActivity' handler
+    const cursorHandler = mockCmInstance.on.mock.calls.find(
+      (c: unknown[]) => c[0] === 'cursorActivity',
+    )?.[1] as () => void;
+    expect(cursorHandler).toBeDefined();
+
+    // Call the handler - this covers lines 149 (clearTimeout) and 151 (setTimeout)
+    cursorHandler();
+
+    // Wait for the setTimeout(100ms) to fire
+    await act(async () => {
+      await new Promise(r => setTimeout(r, 150));
+    });
+
+    expect(onActivity).toHaveBeenCalledWith(42);
+  });
+
   test('shouldComponentUpdate returns true when error changes', async () => {
     let editorRef: Editor | null = null;
     const error1 = { message: 'e1' };
