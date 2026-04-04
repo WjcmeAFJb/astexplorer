@@ -11,6 +11,24 @@ export default defineConfig({
       instances: [{ browser: 'chromium' }],
       headless: true,
     },
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.d.ts',
+        'src/app.tsx',
+        'src/shims/**',
+        'src/types.ts',
+        'src/components/JSCodeshiftEditor.ts',
+      ],
+    },
+  },
+  optimizeDeps: {
+    include: [
+      'react', 'react-dom', 'react-redux', 'redux', 'prop-types',
+      'codemirror', 'codemirror/keymap/vim', 'codemirror/keymap/emacs',
+      'codemirror/keymap/sublime', 'codemirror/mode/javascript/javascript',
+    ],
   },
   resolve: {
     alias: {
