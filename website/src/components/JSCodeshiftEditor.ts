@@ -1,4 +1,4 @@
-// oxlint-disable typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-return, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
+// oxlint-disable typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-return, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- Tern/CodeMirror addon APIs are untyped; no type definitions available
 import CodeMirror from 'codemirror';
 import PropTypes from 'prop-types';
 import Editor from './Editor';

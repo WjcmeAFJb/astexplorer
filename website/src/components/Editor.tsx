@@ -1,4 +1,4 @@
-// oxlint-disable max-lines, typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/strict-boolean-expressions -- suppression comments push past 300 line limit; legacy untyped code
+// oxlint-disable max-lines, typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/strict-boolean-expressions -- CodeMirror API is untyped; internal callbacks use any-typed CodeMirror instance
 import CodeMirror from 'codemirror';
 import 'codemirror/keymap/vim';
 import 'codemirror/keymap/emacs';

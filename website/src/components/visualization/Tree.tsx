@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import Element from './tree/Element';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -18,15 +17,20 @@ const STORAGE_KEY = 'tree_settings';
  */
 function initSettings() {
   const storedSettings = window.localStorage.getItem(STORAGE_KEY);
-  return storedSettings ?
-    (JSON.parse(storedSettings) as Record<string, boolean>) :
-    {
-      autofocus: true,
-      hideFunctions: true,
-      hideEmptyKeys: false,
-      hideLocationData: false,
-      hideTypeKeys: false,
-    };
+  if (storedSettings !== null && storedSettings !== '') {
+    const parsed: unknown = JSON.parse(storedSettings);
+    if (typeof parsed === 'object' && parsed !== null) {
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- JSON.parse returns unknown; we validated it's a non-null object
+      return parsed as Record<string, boolean>;
+    }
+  }
+  return {
+    autofocus: true,
+    hideFunctions: true,
+    hideEmptyKeys: false,
+    hideLocationData: false,
+    hideTypeKeys: false,
+  };
 }
 
 function reducer(state: Record<string, boolean>, element: {name: string; checked: boolean}): Record<string, boolean> {

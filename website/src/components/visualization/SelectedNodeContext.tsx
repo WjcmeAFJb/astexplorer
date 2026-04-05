@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import React from 'react';
 
 type SetSelectedNodeFn = (node: unknown, cb?: () => void) => void;
@@ -10,7 +9,7 @@ const SelectedNodeContext: React.Context<SetSelectedNodeFn | undefined> = React.
  */
 function useSelectedNode() {
   const context = React.useContext(SelectedNodeContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useSelectedNode must be used within a SelectedNodeContext');
   }
   return context;
@@ -19,10 +18,10 @@ function useSelectedNode() {
 let unselectCallback: (() => void) | null;
 
 function setSelectedNode(node: unknown, cb?: () => void) {
-  if (unselectCallback) {
+  if (unselectCallback !== undefined && unselectCallback !== null) {
     unselectCallback();
   }
-  if (node) {
+  if (node !== null && node !== undefined) {
     globalThis.$node = node;
     unselectCallback = cb;
   } else {

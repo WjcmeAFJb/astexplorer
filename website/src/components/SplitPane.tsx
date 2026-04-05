@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import cx from '../utils/classnames';
@@ -14,12 +13,19 @@ const styleB = {
   minHeight: 0,
 };
 
+type SplitPaneProps = {
+  vertical?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+  onResize?: () => void;
+};
+
 /**
 
  * Creates a left-right split pane inside its container.
  */
-// oxlint-disable-next-line max-lines-per-function, typescript-eslint(no-explicit-any) -- SplitPane has complex mouse interaction logic that is tightly coupled; props come from parent components with heterogeneous prop shapes
-export default function SplitPane({vertical, className, children, onResize}: any): React.ReactElement {
+// oxlint-disable-next-line max-lines-per-function -- SplitPane has complex mouse interaction logic that is tightly coupled
+export default function SplitPane({vertical, className, children, onResize}: SplitPaneProps): React.ReactElement {
   // Position is really the size (width or height) of the first (left or top)
   // panel, as percentage of the parent containers size. The remaining elements
   // are sized and layed out through flexbox.
@@ -27,19 +33,19 @@ export default function SplitPane({vertical, className, children, onResize}: any
   const container = React.useRef((null as HTMLDivElement | null))
 
   const onMouseDown = React.useCallback( function(event: React.MouseEvent<HTMLDivElement>) {
-    if (!container.current) {
+    if (container.current === null) {
       return;
     }
 
     // This is needed to prevent text selection in Safari
     event.preventDefault();
 
-    const offset = vertical ? container.current.offsetTop : container.current.offsetLeft;
-    const size = vertical ? container.current.offsetHeight : container.current.offsetWidth;
-    document.body.style.cursor = vertical ? 'row-resize' : 'col-resize';
+    const offset = vertical === true ? container.current.offsetTop : container.current.offsetLeft;
+    const size = vertical === true ? container.current.offsetHeight : container.current.offsetWidth;
+    document.body.style.cursor = vertical === true ? 'row-resize' : 'col-resize';
     let moveHandler = (moveEvent: MouseEvent) => {
       moveEvent.preventDefault();
-      const newPosition = ((vertical ? moveEvent.pageY : moveEvent.pageX) - offset) / size * 100;
+      const newPosition = ((vertical === true ? moveEvent.pageY : moveEvent.pageX) - offset) / size * 100;
       // Using 99% as the max value prevents the divider from disappearing
       setPosition(Math.min(Math.max(0, newPosition), 99));
     };
@@ -48,7 +54,7 @@ export default function SplitPane({vertical, className, children, onResize}: any
       document.removeEventListener('mouseup', upHandler);
       document.body.style.cursor = '';
 
-      if (onResize) {
+      if (onResize !== undefined) {
         onResize();
       }
     };
@@ -57,19 +63,19 @@ export default function SplitPane({vertical, className, children, onResize}: any
     document.addEventListener('mouseup', upHandler);
   }, [vertical, onResize, container])
 
-  children = React.Children.toArray(children)
+  const childArray = React.Children.toArray(children)
 
-  if (children.length < 2) {
+  if (childArray.length < 2) {
     return (
       <div className={className} style={{display: 'flex'}}>
-        {children}
+        {childArray}
       </div>
     );
   }
 
   const styleA = {...baseStyle};
 
-  if (vertical) {
+  if (vertical === true) {
     // top
     styleA.minHeight = styleA.maxHeight = position + '%'
   } else {
@@ -81,21 +87,21 @@ export default function SplitPane({vertical, className, children, onResize}: any
     <div
       ref={container}
       className={className}
-      style={{display: 'flex', flexDirection: vertical ? 'column' : 'row'}}>
+      style={{display: 'flex', flexDirection: vertical === true ? 'column' : 'row'}}>
       <div style={styleA}>
-        {children[0]}
+        {childArray[0]}
       </div>
       {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- divider is a drag handle; keyboard resize is not applicable */}
       <div
         className={cx({
           'splitpane-divider': true,
-          vertical: vertical,
-          horizontal: !vertical,
+          vertical: vertical === true,
+          horizontal: vertical !== true,
         })}
         onMouseDown={onMouseDown}
       />
       <div style={styleB}>
-        {children[1]}
+        {childArray[1]}
       </div>
     </div>
   );

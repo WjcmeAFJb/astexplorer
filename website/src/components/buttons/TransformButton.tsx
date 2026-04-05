@@ -1,4 +1,4 @@
-// oxlint-disable jsx-a11y/click-events-have-key-events, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- menu <li> elements delegate to inner <button> which provides keyboard access; legacy untyped code
+// oxlint-disable jsx-a11y/click-events-have-key-events, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- menu <li> elements delegate to inner <button>; event.target type narrowing via instanceof; props are optional booleans
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
@@ -14,52 +14,56 @@ type TransformButtonProps = {
 
 export default class TransformButton extends React.Component<TransformButtonProps> {
   static displayName = 'TransformButton';
-    constructor(props: TransformButtonProps) {
-    super(props);
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._onClick = this._onClick.bind(this);
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._onToggle = this._onToggle.bind(this);
-  }
 
-  // @ts-expect-error — target is EventTarget but used as HTMLElement; onClick always fires on HTML elements
-  _onClick({target}) {
-    let transformID;
-    if ((target as HTMLElement).nodeName.toLowerCase() === 'li') {
-      transformID = ((target as HTMLElement).children[0] as HTMLButtonElement).value;
+  _onClick = (event: React.MouseEvent<HTMLLIElement>) => {
+    const target = event.target;
+    let transformID: string;
+    if (target instanceof HTMLLIElement) {
+      const firstChild = target.children[0];
+      if (firstChild instanceof HTMLButtonElement) {
+        transformID = firstChild.value;
+      } else {
+        return;
+      }
+    } else if (target instanceof HTMLButtonElement) {
+      transformID = target.value;
     } else {
-      transformID = (target as HTMLButtonElement).value;
+      return;
     }
-    this.props.onTransformChange(getTransformerByID(transformID));
-  }
+    this.props.onTransformChange?.(getTransformerByID(transformID));
+  };
 
-  _onToggle() {
-    if (this.props.transformer) {
+  _onToggle = () => {
+    if (this.props.transformer !== undefined) {
       // oxlint-disable-next-line unicorn/no-null -- onTransformChange API uses null to signal "no transformer selected"
-      this.props.onTransformChange(null);
+      this.props.onTransformChange?.(null);
     }
-  }
+  };
 
   render() {
-    const transformers = this.props.category.transformers.filter(
+    const category = this.props.category;
+    if (category === undefined) {
+      return null; // oxlint-disable-line unicorn/no-null -- React render requires null for no output
+    }
+    const transformers = category.transformers.filter(
       t => t.showInMenu !== false || t === this.props.transformer,
     );
     return (
       <div className={cx({
         button: true,
         menuButton: true,
-        disabled: this.props.category.transformers.length === 0,
+        disabled: category.transformers.length === 0,
       })}>
         <button
           type="button"
           onClick={this._onToggle}
-          disabled={this.props.category.transformers.length === 0}>
+          disabled={category.transformers.length === 0}>
           <i
             className={cx({
               fa: true,
               'fa-lg': true,
-              'fa-toggle-off': !this.props.showTransformer,
-              'fa-toggle-on': this.props.showTransformer,
+              'fa-toggle-off': this.props.showTransformer !== true,
+              'fa-toggle-on': this.props.showTransformer === true,
               'fa-fw': true,
             })}
           />
@@ -70,7 +74,7 @@ export default class TransformButton extends React.Component<TransformButtonProp
             <li
               key={transformer.id}
               className={cx({
-                selected: this.props.showTransformer &&
+                selected: this.props.showTransformer === true &&
                   this.props.transformer === transformer,
               })}
               onClick={this._onClick}>

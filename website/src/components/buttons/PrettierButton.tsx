@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
@@ -16,8 +15,8 @@ export default function PrettierButton(props: PrettierButtonProps): React.ReactE
             className={cx({
               fa: true,
               'fa-lg': true,
-              'fa-toggle-off': !props.enableFormatting,
-              'fa-toggle-on': props.enableFormatting,
+              'fa-toggle-off': props.enableFormatting !== true,
+              'fa-toggle-on': props.enableFormatting === true,
               'fa-fw': true,
             })}
           />

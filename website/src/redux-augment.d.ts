@@ -1,4 +1,4 @@
-// oxlint-disable import/no-unassigned-import -- side-effect import required for TypeScript module augmentation of react-redux
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect import required for TypeScript module augmentation of react-redux
 import 'react-redux';
 
 declare module 'react-redux' {

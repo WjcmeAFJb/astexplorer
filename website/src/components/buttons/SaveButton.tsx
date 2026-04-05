@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
@@ -15,15 +14,15 @@ export default function SaveButton({canSave, saving, forking, onSave}: SaveButto
     <button
       type="button"
       disabled={
-        !canSave || saving || forking
+        canSave !== true || saving === true || forking === true
       }
       onClick={onSave}>
       <i
         className={cx({
           fa: true,
-          'fa-spinner': saving,
-          'fa-pulse': saving,
-          'fa-floppy-o': !saving,
+          'fa-spinner': saving === true,
+          'fa-pulse': saving === true,
+          'fa-floppy-o': saving !== true,
           'fa-fw': true,
         })}
       />&nbsp;Save

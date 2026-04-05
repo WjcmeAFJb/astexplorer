@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 /**
  * This may be a horrible way to do it, but this function is called from React
  * components to "collect" all elements that represent AST nodes that are
@@ -19,28 +18,40 @@
  */
 let nodes: Set<React.RefObject<HTMLElement>>;
 
+// oxlint-disable-next-line max-lines-per-function -- focus logic requires handling init/add/focus in a single dispatcher
 export default function(message: 'init' | 'add' | 'focus', arg?: React.RefObject<HTMLElement>) {
   switch (message) {
     case 'init':
       nodes = new Set();
       break;
     case 'add':
-      nodes.add(arg);
+      if (arg !== undefined) {
+        nodes.add(arg);
+      }
       break;
     // oxlint-disable max-depth -- focus logic requires nested conditionals for size=1 vs size>1 paths within try/catch
     case 'focus': {
+      if (arg === undefined) {
+        break;
+      }
       const root = arg.current;
+      if (root === null || root === undefined) {
+        break;
+      }
       const size = nodes.size;
       try {
         if (size === 1) {
-          (nodes.values().next().value as React.RefObject<HTMLElement>).current.scrollIntoView();
+          const [firstRef] = nodes;
+          if (firstRef !== undefined && firstRef.current !== null && firstRef.current !== undefined) {
+            firstRef.current.scrollIntoView();
+          }
         } else if (size > 1) {
           const rootRect = root.getBoundingClientRect();
           const center = (rootRect.y + rootRect.height) / 2 + rootRect.y;
           // oxlint-disable-next-line unicorn/no-null -- null represents "no closest element found yet"; compared with === null below
           let closest: [HTMLElement, number] | null = null;
           for (const ref of nodes) {
-            if (!ref.current) {
+            if (ref.current === null || ref.current === undefined) {
               continue;
             }
             const elementRect = ref.current.getBoundingClientRect();
@@ -59,8 +70,8 @@ export default function(message: 'init' | 'add' | 'focus', arg?: React.RefObject
           }
         }
       } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Unable to scroll node into view:', (e as Error).message);
+        const error = e instanceof Error ? e : new Error(String(e));
+        console.error('Unable to scroll node into view:', error.message);
       }
 
     }

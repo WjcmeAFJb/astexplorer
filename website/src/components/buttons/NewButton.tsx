@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -12,7 +11,7 @@ export default function SaveButton({saving, forking, onNew}: NewButtonProps): Re
   return (
     <button
       type="button"
-      disabled={saving || forking}
+      disabled={saving === true || forking === true}
       onClick={onNew}>
       <i className="fa fa-file-o fa-fw" />&nbsp;New
     </button>

@@ -1,12 +1,12 @@
-// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
+// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- Gist API response is untyped; config uses || for legacy empty-string compatibility
 import React from 'react';
 import api from './api';
 import {getParserByID} from 'astexplorer-parsers';
 import type {SnippetData} from '../types';
 
 function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | null {
-  let match = window.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);
-  if (match) {
+  const match = window.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);
+  if (match !== null) {
     return {
       id: match[1],
       rev: match[2],
@@ -18,14 +18,15 @@ function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | nul
 
 function fetchSnippet(snippetID: string, revisionID?: string): Promise<Revision> {
   return api(
-    `/gist/${snippetID}` + (revisionID ? `/${revisionID}` : ''),
+    `/gist/${snippetID}` + (revisionID === undefined ? '' : `/${revisionID}`),
     {
       method: 'GET',
     },
   )
   .then(response => {
     if (response.ok) {
-      return response.json();
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- response.json() returns Promise<any>; fetch API boundary
+      return response.json() as Promise<GistData>;
     }
     switch (response.status) {
       case 404:
@@ -47,7 +48,7 @@ export function matchesURL(): boolean {
 
 export function fetchFromURL(): Promise<Revision | null> {
   const data = getIDAndRevisionFromHash();
-  if (!data) {
+  if (data === null) {
     // oxlint-disable-next-line unicorn/no-null -- fetchFromURL returns Promise<Revision | null>; null means "no snippet to load"
     return Promise.resolve(null);
   }
@@ -71,7 +72,8 @@ export function create(data: SnippetData): Promise<Revision> {
   )
   .then(response => {
     if (response.ok) {
-      return response.json();
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- response.json() returns Promise<any>; fetch API boundary
+      return response.json() as Promise<GistData>;
     }
     throw new Error('Unable to create snippet.');
   })
@@ -86,7 +88,7 @@ export function update(revision: Revision, data: SnippetData): Promise<Revision>
   // Fetch latest version of snippet
   return fetchSnippet(revision.getSnippetID())
     .then(latestRevision => {
-      if (latestRevision.getTransformerID() && !data.toolID) {
+      if (latestRevision.getTransformerID() !== undefined && (data.toolID === undefined || data.toolID === '')) {
         // Revision was updated to *remove* the transformer, hence we have
         // to signal the server to delete the transform.js file
         // oxlint-disable-next-line unicorn/no-null -- SnippetData.transform is string | null; null signals the server to delete the transform file
@@ -104,7 +106,8 @@ export function update(revision: Revision, data: SnippetData): Promise<Revision>
       )
       .then(response => {
         if (response.ok) {
-          return response.json();
+          // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- response.json() returns Promise<any>; fetch API boundary
+      return response.json() as Promise<GistData>;
         }
         throw new Error('Unable to update snippet.');
       })
@@ -129,7 +132,8 @@ export function fork(revision: Revision, data: SnippetData): Promise<Revision> {
   )
   .then(response => {
     if (response.ok) {
-      return response.json();
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- response.json() returns Promise<any>; fetch API boundary
+      return response.json() as Promise<GistData>;
     }
     throw new Error('Unable to fork snippet.');
   })
@@ -165,7 +169,8 @@ class Revision {
 
     constructor(gist: GistData) {
     this._gist = gist;
-    this._config = (JSON.parse(gist.files['astexplorer.json'].content) as GistConfig);
+    // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- JSON.parse returns unknown; the gist format guarantees GistConfig shape
+    this._config = JSON.parse(gist.files['astexplorer.json'].content) as GistConfig;
   }
 
   canSave(): boolean {
@@ -189,8 +194,8 @@ class Revision {
   }
 
   getTransformCode(): string {
-    const transformFile = this._gist.files['transform.js'];
-    return transformFile ? transformFile.content : '';
+    const transformFile: GistFile | undefined = this._gist.files['transform.js'];
+    return transformFile === undefined ? '' : transformFile.content;
   }
 
   getParserID(): string {
@@ -198,9 +203,7 @@ class Revision {
   }
 
   getCode(): string {
-    if (this._code === null || this._code === undefined) {
-      this._code = getSource(this._config, this._gist) || '';
-    }
+    this._code ??= getSource(this._config, this._gist) ?? '';
     return this._code;
   }
 

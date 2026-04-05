@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 import ForkButton from './ForkButton';
@@ -20,8 +19,8 @@ type SnippetButtonProps = {
 };
 
 export default function SnippetButton(props: SnippetButtonProps): React.ReactElement {
-  const canForkAndNotSave = props.canFork && !props.canSave;
-  const savingOrForking = props.saving || props.forking;
+  const canForkAndNotSave = props.canFork === true && props.canSave !== true;
+  const savingOrForking = props.saving === true || props.forking === true;
 
   return (
     <div className="button menuButton">
@@ -40,7 +39,7 @@ export default function SnippetButton(props: SnippetButtonProps): React.ReactEle
         title={canForkAndNotSave ? 'Fork' : 'Save'}
         style={{minWidth: 0}}
         disabled={
-          savingOrForking || !(props.canSave || props.canFork)
+          savingOrForking || (props.canSave !== true && props.canFork !== true)
         }
         onClick={canForkAndNotSave ? props.onFork : props.onSave}>
         <i

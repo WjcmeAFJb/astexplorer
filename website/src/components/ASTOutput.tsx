@@ -1,4 +1,4 @@
-// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
+// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- DOM event.target narrowing; optional boolean props
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../utils/classnames';
@@ -6,8 +6,8 @@ import visualizations from './visualization';
 
 const {useState} = React;
 
-function formatTime(time: number | null): string | undefined {
-  if (!time) {
+function formatTime(time: number | null | undefined): string | undefined {
+  if (time === null || time === undefined || time === 0) {
     return undefined;
   }
   if (time < 1000) {
@@ -27,7 +27,7 @@ export default function ASTOutput({parseResult={}, position}: ASTOutputProps): R
   const {ast} = parseResult;
   let output;
 
-  if (parseResult.error) {
+  if (parseResult.error !== undefined) {
     output =
       <div style={{
         padding: 20,
@@ -36,7 +36,7 @@ export default function ASTOutput({parseResult={}, position}: ASTOutputProps): R
       }}>
         {parseResult.error.message}
       </div>;
-  } else if (ast) {
+  } else if (ast !== undefined && ast !== null) {
     output = (
       <ErrorBoundary>
         {
@@ -49,13 +49,17 @@ export default function ASTOutput({parseResult={}, position}: ASTOutputProps): R
     )
   }
 
-  let buttons = visualizations.map(
+  const buttons = visualizations.map(
     (cls, index) =>
       <button
         key={index}
         value={index}
-        // @ts-expect-error — value is string from DOM, compared with == (loose); state is number
-        onClick={event => setSelectedOutput((event.target as HTMLButtonElement).value)}
+        onClick={event => {
+          const target = event.target;
+          if (target instanceof HTMLButtonElement) {
+            setSelectedOutput(Number(target.value));
+          }
+        }}
         className={cx({
           active: selectedOutput === index,
         })}>
