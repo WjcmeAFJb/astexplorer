@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
 
@@ -24,7 +23,3 @@ export default function PrettierButton(props: PrettierButtonProps): React.ReactE
       </button>);
 }
 
-PrettierButton.propTypes = {
-  toggleFormatting: PropTypes.func,
-  enableFormatting: PropTypes.bool,
-}

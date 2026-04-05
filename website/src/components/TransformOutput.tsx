@@ -1,12 +1,16 @@
 /*eslint no-new-func: 0*/
 import Editor from './Editor';
 import JSONEditor from './JSONEditor';
-import PropTypes from 'prop-types';
 import * as React from 'react';
-import type {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
-import type {TransformResult} from '../types';
+import type {TransformResult, SourceMapConsumer} from '../types';
 
-import stringify from 'json-stringify-safe';
+function safeStringify(value: unknown, space: number): string {
+  try {
+    return JSON.stringify(value, null, space);
+  } catch {
+    return String(value);
+  }
+}
 
 function positionFromIndex(index: number, map: SourceMapConsumer | null | undefined): {line: number, ch: number} | undefined {
   if (map === null || map === undefined) {
@@ -66,16 +70,10 @@ export default function TransformOutput({transformResult, mode}: {transformResul
           /> :
           <JSONEditor
             className="container no-toolbar"
-            value={stringify(result.result,
-              null, 2)}
+            value={safeStringify(result.result, 2)}
           />
         )
       }
     </div>
   );
 }
-
-TransformOutput.propTypes = {
-  transformResult: PropTypes.object,
-  mode: PropTypes.string,
-};

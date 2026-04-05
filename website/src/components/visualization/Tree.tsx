@@ -1,5 +1,4 @@
 import Element from './tree/Element';
-import PropTypes from 'prop-types';
 import React from 'react';
 import {publish} from '../../utils/pubsub';
 import {treeAdapterFromParseResult} from '../../core/TreeAdapter';
@@ -106,7 +105,3 @@ export default function Tree({parseResult, position}: TreeProps): React.ReactEle
   );
 }
 
-Tree.propTypes = {
-  parseResult: PropTypes.object,
-  position: PropTypes.number,
-};

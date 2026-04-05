@@ -6,7 +6,12 @@
  * pull in the types below for editor / tsc --checkJs support.
  */
 
-import type {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
+/** Minimal SourceMapConsumer shape (source-map package has broken typings field). */
+export type SourceMapConsumer = {
+  sourcesContent: string[];
+  sources: string[];
+  generatedPositionFor(originalPosition: {line: number; column: number; source: string}): {line: number | null; column: number | null; lastColumn: number | null};
+};
 
 // ---------------------------------------------------------------------------
 // Parser-related types (re-exported from astexplorer-parsers)
@@ -133,17 +138,8 @@ export type AppState = {
 // Redux actions
 // ---------------------------------------------------------------------------
 
-export type ActionType = 'SET_ERROR' | 'CLEAR_ERROR' | 'LOAD_SNIPPET' | 'START_LOADING_SNIPPET' |
-  'DONE_LOADING_SNIPPET' | 'CLEAR_SNIPPET' | 'CHANGE_CATEGORY' | 'SELECT_TRANSFORMER' |
-  'HIDE_TRANSFORMER' | 'SET_TRANSFORM' | 'SET_TRANSFORM_RESULT' | 'SET_PARSER' |
-  'SET_PARSER_SETTINGS' | 'SET_PARSE_RESULT' | 'SET_SNIPPET' | 'OPEN_SETTINGS_DIALOG' |
-  'CLOSE_SETTINGS_DIALOG' | 'EXPAND_SETTINGS_DRAWER' | 'COLLAPSE_SETTINGS_DRAWER' |
-  'OPEN_SHARE_DIALOG' | 'CLOSE_SHARE_DIALOG' | 'SET_CODE' | 'SET_CURSOR' |
-  'DROP_TEXT' | 'SAVE' | 'START_SAVE' | 'END_SAVE' | 'RESET' | 'TOGGLE_FORMATTING' |
-  'SET_KEY_MAP' | 'INIT';
-
 export type Action = {
-  type: ActionType;
+  type: string;
   error?: Error | null;
   parser?: Parser;
   settings?: Record<string, unknown>;

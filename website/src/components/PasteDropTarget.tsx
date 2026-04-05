@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { categories } from 'astexplorer-parsers';
 
@@ -58,9 +57,7 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
       }
       const cbdata = event.clipboardData;
       // Plain text
-      // @ts-expect-error -- operator precedence: !indexOf > -1 compares boolean > number; existing code behavior
-      // oxlint-disable-next-line typescript-eslint/strict-boolean-expressions -- legacy clipboard API check: cbdata.types.indexOf may not exist on older DOMStringList implementations
-      if (!cbdata.types.indexOf || !cbdata.types.indexOf('text/plain') > -1) {
+      if (!Array.isArray(cbdata.types) || !cbdata.types.includes('text/plain')) {
         return;
       }
       event.stopPropagation();
@@ -105,36 +102,29 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
         }
         event.preventDefault();
         event.stopPropagation();
-        const reader = new FileReader();
-        reader.addEventListener('load', readerEvent => {
-          if (readerEvent.target === null) {
-            return;
-          }
-          let text: string | ArrayBuffer | null | Promise<string | ArrayBuffer | null> = readerEvent.target.result;
+        const dropEvent = event;
+        void file.text().then((fileText: string) => {
+          let text: string | Promise<string> = fileText;
           if (categoryId === 'JSON' || categoryId === 'TEXT') {
-            // @ts-expect-error -- text is reassigned from string|ArrayBuffer to Promise; resolved via Promise.resolve below
-            text = this._jsonToCode(text).then(
+            text = this._jsonToCode(fileText).then(
               (codeText: string) => {
                 categoryId = 'javascript';
                 return codeText;
               },
               (ex: Error) => {
                 if (categoryId === 'JSON') {
-                  this._onASTError('drop', readerEvent, ex);
-                } else {
-                  categoryId = undefined;
-                  return text;
+                  this._onASTError('drop', dropEvent, ex);
                 }
+                categoryId = undefined;
+                return fileText;
               },
             );
           }
-          // oxlint-disable-next-line promise/always-return, typescript-eslint/no-floating-promises -- side-effect only: dispatching drop text to parent
-          Promise.resolve(text).then((resolvedText: string) => {
-            this.props.onText?.('drop', readerEvent, resolvedText, categoryId);
+          return Promise.resolve(text).then((resolvedText: string) => {
+            this.props.onText?.('drop', dropEvent, resolvedText, categoryId);
+            return null;
           });
         });
-        // oxlint-disable-next-line unicorn/prefer-blob-reading-methods -- FileReader.onload callback uses readerEvent arg; refactoring to file.text() would lose it
-        reader.readAsText(file);
       }, true);
 
       this._bindListener(target, 'dragleave', () => {
@@ -197,8 +187,3 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
   }
 }
 
-PasteDropTarget.propTypes = {
-  onText: PropTypes.func,
-  onError: PropTypes.func,
-  children: PropTypes.node,
-};

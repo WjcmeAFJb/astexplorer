@@ -1,6 +1,5 @@
 import CompactArrayView from './CompactArrayView';
 import CompactObjectView from './CompactObjectView';
-import PropTypes from 'prop-types';
 import {publish} from '../../../utils/pubsub';
 import React from 'react';
 import {useSelectedNode} from '../SelectedNodeContext';
@@ -356,21 +355,6 @@ const Element = React.memo( function Element({
     ((nextProps.isInRange === true || nextProps.hashChildrenInRange === true) && prevProps.position === nextProps.position);
 });
 
-// @ts-expect-error — React 16 supports propTypes on memo; @types/react uses a type alias that cannot be augmented
-Element.propTypes = {
-  name: PropTypes.string,
-  value: PropTypes.any,
-  computed: PropTypes.bool,
-  open: PropTypes.bool,
-  level: PropTypes.number,
-  treeAdapter: PropTypes.object.isRequired,
-  autofocus: PropTypes.bool,
-  parent: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.array,
-  ]),
-};
-
 const NOT_COMPUTED = {};
 
 const FunctionElement = React.memo( function FunctionElement(props: ElementProps) {
@@ -409,8 +393,7 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
           onClick={() => {
             try {
               if (typeof value !== 'function') return;
-              const fn = value as (...args: unknown[]) => unknown;
-              const result: unknown = fn.call(parent);
+              const result: unknown = value.call(parent);
               console.log(result); // eslint-disable-line no-console
               setComputedValue(result);
             } catch(err) {
@@ -458,13 +441,6 @@ const PrimitiveElement = React.memo( function PrimitiveElement({
   );
 });
 
-// @ts-expect-error — React 16 memo propTypes
-PrimitiveElement.propTypes = {
-  name: PropTypes.string,
-  value: PropTypes.any,
-  computed: PropTypes.bool,
-};
-
 type PropertyNameProps = {
   name?: string;
   computed?: boolean;
@@ -481,13 +457,6 @@ const PropertyName = React.memo( function PropertyName({name, computed, onClick}
     </span>
   );
 });
-
-// @ts-expect-error — React 16 memo propTypes
-PropertyName.propTypes = {
-  name: PropTypes.string,
-  computed: PropTypes.bool,
-  onClick: PropTypes.func,
-};
 
 export default function ElementContainer(props: ElementProps): React.ReactElement {
   const [selected, setSelected] = useState(false);

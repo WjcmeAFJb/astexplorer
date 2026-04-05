@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import CategoryButton from './buttons/CategoryButton';
 import ParserButton from './buttons/ParserButton';
@@ -59,19 +58,3 @@ export default function Toolbar(props: ToolbarProps): React.ReactElement {
   );
 }
 
-Toolbar.propTypes = {
-  saving: PropTypes.bool,
-  forking: PropTypes.bool,
-  onSave: PropTypes.func,
-  onFork: PropTypes.func,
-  onParserChange: PropTypes.func,
-  onParserSettingsButtonClick: PropTypes.func,
-  onShareButtonClick: PropTypes.func,
-  onTransformChange: PropTypes.func,
-  onKeyMapChange: PropTypes.func,
-  parser: PropTypes.object,
-  transformer: PropTypes.object,
-  showTransformer: PropTypes.bool,
-  canSave: PropTypes.bool,
-  canFork: PropTypes.bool,
-};

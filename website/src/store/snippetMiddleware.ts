@@ -20,11 +20,10 @@ export default (storageAdapter: StorageAdapter) => (store: MiddlewareAPI<Dispatc
       return loadSnippet(store.getState(), next, storageAdapter);
     case actions.SAVE:
       next(actions.startSave(action.fork === true));
-      void saveSnippet(action, store.getState(), next, storageAdapter)
-        .then(() => {
-          next(actions.endSave(action.fork === true));
-          return undefined;
-        });
+      void (async () => {
+        await saveSnippet(action, store.getState(), next, storageAdapter);
+        next(actions.endSave(action.fork === true));
+      })();
       break;
     default:
       // Pass on

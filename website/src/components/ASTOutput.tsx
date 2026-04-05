@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../utils/classnames';
 import visualizations from './visualization';
@@ -78,10 +77,6 @@ export default function ASTOutput({parseResult={}, position}: ASTOutputProps): R
   );
 }
 
-ASTOutput.propTypes = {
-  parseResult: PropTypes.object,
-  position: PropTypes.number,
-};
 
 class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
   constructor(props: {children: React.ReactNode}) {
@@ -109,6 +104,3 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
   }
 }
 
-ErrorBoundary.propTypes = {
-  children: PropTypes.node,
-};

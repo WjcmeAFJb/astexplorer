@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
 import {getCategoryByID, categories} from 'astexplorer-parsers';
@@ -66,7 +65,3 @@ export default class CategoryButton extends React.Component<CategoryButtonProps>
   }
 }
 
-CategoryButton.propTypes = {
-  onCategoryChange: PropTypes.func.isRequired,
-  category: PropTypes.object.isRequired,
-};

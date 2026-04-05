@@ -16,12 +16,24 @@ function getIDAndRevisionFromHash() {
   return null;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isParseSnippetData(value: unknown): value is ParseSnippetData {
+  if (typeof value !== 'object' || value === null) return false;
+  return 'snippetID' in value && 'revisionID' in value;
+}
+
 function fetchSnippet(snippetID: string, revisionID?: string | number): Promise<Revision> {
   return api(`/parse/${snippetID}/${revisionID}`)
     .then(async response => {
       if (response.ok) {
         const data: unknown = await response.json();
-        return data as ParseSnippetData;
+        if (!isParseSnippetData(data)) {
+          throw new Error('Invalid snippet data');
+        }
+        return data;
       }
       switch (response.status) {
         case 404:
@@ -173,7 +185,10 @@ class Revision {
       return false;
     }
     const parsed: unknown = JSON.parse(parserSettings);
-    return parsed as Record<string, unknown>;
+    if (!isRecord(parsed)) {
+      return null;
+    }
+    return parsed;
   }
 
   getShareInfo(): React.ReactElement {

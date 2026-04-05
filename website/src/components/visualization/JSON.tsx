@@ -1,8 +1,15 @@
 import JSONEditor from '../JSONEditor';
-import PropTypes from 'prop-types';
 import React from 'react';
 
-import stringify from 'json-stringify-safe';
+const globalJSON = globalThis.JSON;
+
+function safeStringify(value: unknown, space: number): string {
+  try {
+    return globalJSON.stringify(value, null, space);
+  } catch {
+    return String(value);
+  }
+}
 
 type JSONViewProps = {
   parseResult: { ast: unknown };
@@ -12,11 +19,7 @@ export default function JSON({parseResult}: JSONViewProps): React.ReactElement {
   return (
     <JSONEditor
       className="container"
-      value={stringify(parseResult.ast, null, 2)}
+      value={safeStringify(parseResult.ast, 2)}
     />
   );
 }
-
-JSON.propTypes = {
-  parseResult: PropTypes.object,
-};

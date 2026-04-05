@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 type LoadingIndicatorProps = {
@@ -18,6 +17,3 @@ export default function LoadingIndicator(props: LoadingIndicatorProps): React.Re
   return undefined;
 }
 
-LoadingIndicator.propTypes = {
-  visible: PropTypes.bool,
-};

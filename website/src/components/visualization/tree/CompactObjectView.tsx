@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 type CompactObjectViewProps = {
@@ -24,7 +23,3 @@ export default function CompactObjectView({keys, onClick}: CompactObjectViewProp
   );
 }
 
-CompactObjectView.propTypes = {
-  keys: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onClick: PropTypes.func,
-};

@@ -1,6 +1,5 @@
 import {getTransformer, getTransformCode, getCode, showTransformer} from './selectors';
-import {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
-import type {TransformResult, Transformer, AppState, Action} from '../types';
+import type {TransformResult, Transformer, AppState, Action, SourceMapConsumer} from '../types';
 import type {MiddlewareAPI, Dispatch} from 'redux';
 
 async function transform(transformer: Transformer, transformCode: string, code: string): Promise<TransformResult> {
@@ -8,26 +7,26 @@ async function transform(transformer: Transformer, transformCode: string, code: 
   // So we define a dummy one.
   globalThis.__filename ??= 'transform.js';
   transformer._promise ??= new Promise(transformer.loadTransformer);
-  let realTransformer: {version?: string, [key: string]: unknown} | undefined;
+  let realTransformerVersion: string | undefined;
   try {
     const resolved: unknown = await transformer._promise;
-    if (resolved !== null && resolved !== undefined && typeof resolved === 'object') {
-      realTransformer = resolved as {version?: string, [key: string]: unknown};
+    if (resolved !== null && resolved !== undefined && typeof resolved === 'object' && 'version' in resolved) {
+      realTransformerVersion = String(resolved.version);
     }
-    let result = await transformer.transform(realTransformer, transformCode, code);
-    let map = null;
+    let result = await transformer.transform(resolved, transformCode, code);
+    let map: SourceMapConsumer | null = null;
     if (typeof result !== 'string') {
-      if (result.map !== undefined && result.map !== null) {
-        map = new SourceMapConsumer(result.map);
+      if (result.map !== undefined && result.map !== null && typeof result.map === 'object') {
+        map = result.map;
       }
       result = result.code;
     }
-    return { result, map, version: realTransformer.version, error: null };
+    return { result, map, version: realTransformerVersion, error: null };
   } catch(err) {
     const error = err instanceof Error ? err : new Error(String(err));
     return {
       error,
-      version: realTransformer === undefined ? '' : realTransformer.version,
+      version: realTransformerVersion ?? '',
     };
   }
 }

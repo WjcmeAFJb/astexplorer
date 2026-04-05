@@ -1,5 +1,5 @@
 // Global type augmentations for astexplorer
-export {};
+export type GlobalMarker = 'global-type-augmentations';
 
 declare module '*.css' {
   const content: Record<string, string>;
@@ -8,7 +8,7 @@ declare module '*.css' {
 
 declare global {
   var $node: unknown;
-  var acorn: typeof import('acorn');
+  var acorn: Record<string, unknown>;
   var tern: Record<string, unknown>;
   var __filename: string;
 
@@ -138,6 +138,12 @@ declare module 'halting-problem' {
 declare module 'babel-plugin-macros/package' {
   const value: { name: string; version: string; [key: string]: unknown };
   export default value;
+}
+
+// lodash.isequal — deep equality comparison
+declare module 'lodash.isequal' {
+  function isEqual(a: unknown, b: unknown): boolean;
+  export default isEqual;
 }
 
 // prop-types — runtime prop validation library (not type-checked)

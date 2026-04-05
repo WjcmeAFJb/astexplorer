@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import * as React from 'react';
 import cx from '../utils/classnames';
 
@@ -106,9 +105,3 @@ export default function SplitPane({vertical, className, children, onResize}: Spl
   );
 }
 
-SplitPane.propTypes = {
-  vertical: PropTypes.bool,
-  className: PropTypes.string,
-  children: PropTypes.node,
-  onResize: PropTypes.func,
-};

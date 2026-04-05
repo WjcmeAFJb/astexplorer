@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import type {Parser} from '../../types';
 
@@ -14,14 +13,6 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
   static displayName = 'SettingsDialog';
     constructor(props: SettingsDialogProps) {
     super(props);
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._outerClick = this._outerClick.bind(this);
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._onChange = this._onChange.bind(this);
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._reset = this._reset.bind(this);
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._saveAndClose = this._saveAndClose.bind(this);
     this.state = {
       parserSettings: this.props.parserSettings,
     };
@@ -33,24 +24,24 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
     }
   }
 
-    _outerClick(event: React.MouseEvent<HTMLDivElement>) {
+    _outerClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === document.querySelector('#SettingsDialog')) {
       this._saveAndClose();
     }
-  }
+  };
 
-    _onChange(newSettings: Record<string, unknown>) {
+    _onChange = (newSettings: Record<string, unknown>) => {
     this.setState({parserSettings: newSettings});
-  }
+  };
 
-  _saveAndClose() {
+  _saveAndClose = () => {
     this.props.onSave(this.props.parser, this.state.parserSettings);
     this.props.onWantToClose();
-  }
+  };
 
-  _reset() {
+  _reset = () => {
     this.setState({parserSettings: {}});
-  }
+  };
 
   render() {
     if (this.props.visible === true && this.props.parser.renderSettings) {
@@ -80,10 +71,3 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
   }
 }
 
-SettingsDialog.propTypes = {
-  onSave: PropTypes.func,
-  onWantToClose: PropTypes.func,
-  visible: PropTypes.bool,
-  parser: PropTypes.object.isRequired,
-  parserSettings: PropTypes.object,
-};

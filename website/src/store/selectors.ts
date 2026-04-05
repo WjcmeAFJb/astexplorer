@@ -1,5 +1,8 @@
-// @ts-expect-error — no declaration file
-import isEqual from 'lodash.isequal';
+// lodash.isequal has no type declarations; wrap to provide a typed interface
+function isEqual(a: unknown, b: unknown): boolean {
+  const _isEqual: (a: unknown, b: unknown) => boolean = require('lodash.isequal');
+  return _isEqual(a, b);
+}
 import {getParserByID, getTransformerByID} from 'astexplorer-parsers';
 import type {TransformResult, ParseResult, Revision, Transformer, Parser, AppState} from '../types';
 
@@ -150,7 +153,7 @@ const didParserSettingsChange: (state: AppState) => boolean = createSelector(
     const savedParserSettings = revisionArg.getParserSettings();
     return (
       parserArg.id !== revisionArg.getParserID() ||
-      (savedParserSettings !== null && !Boolean(isEqual(parserSettings, savedParserSettings)))
+      (savedParserSettings !== null && !isEqual(parserSettings, savedParserSettings))
     );
   },
 );

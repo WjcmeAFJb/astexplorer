@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import {getParserByID} from 'astexplorer-parsers';
 import type {Parser, Category} from '../../types';
@@ -47,9 +46,3 @@ export default class ParserButton extends React.Component<ParserButtonProps> {
   }
 }
 
-ParserButton.propTypes = {
-  onParserChange: PropTypes.func,
-  onParserSettingsButtonClick: PropTypes.func,
-  parser: PropTypes.object,
-  category: PropTypes.object,
-};

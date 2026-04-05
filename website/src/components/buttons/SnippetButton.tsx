@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import ForkButton from './ForkButton';
 import NewButton from './NewButton';
@@ -57,11 +56,3 @@ export default function SnippetButton(props: SnippetButtonProps): React.ReactEle
   );
 }
 
-SnippetButton.propTypes = {
-  canFork: PropTypes.bool,
-  canSave: PropTypes.bool,
-  forking: PropTypes.bool,
-  onFork: PropTypes.func,
-  onSave: PropTypes.func,
-  saving: PropTypes.bool,
-};

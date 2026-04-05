@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 type NewButtonProps = {
@@ -18,9 +17,4 @@ export default function SaveButton({saving, forking, onNew}: NewButtonProps): Re
   );
 }
 
-SaveButton.propTypes = {
-  saving: PropTypes.bool,
-  forking: PropTypes.bool,
-  onNew: PropTypes.func,
-};
 

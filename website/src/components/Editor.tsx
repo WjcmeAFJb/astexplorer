@@ -2,7 +2,6 @@ import CodeMirror from 'codemirror';
 import 'codemirror/keymap/vim';
 import 'codemirror/keymap/emacs';
 import 'codemirror/keymap/sublime';
-import PropTypes from 'prop-types';
 import {subscribe, clear} from '../utils/pubsub';
 import React from 'react';
 import {ensureCMMode} from '../codemirrorModes';
@@ -61,9 +60,9 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       this.codeMirror.setValue(this.props.value);
     }
     if (this.props.mode !== prevProps.mode) {
-      // oxlint-disable-next-line promise/always-return -- side-effect only: applying CodeMirror mode after async load
-      ensureCMMode(this.props.mode).then(() => {
+        void ensureCMMode(this.props.mode).then(() => {
         this.codeMirror?.setOption('mode', this.props.mode);
+        return null;
       });
     }
     if (this.props.keyMap !== prevProps.keyMap) {
@@ -92,14 +91,14 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       let oldError = this.props.error;
       if (oldError) {
         let lineNumber = this._getErrorLine(oldError);
-        if (lineNumber) {
+        if (lineNumber !== undefined && lineNumber !== 0) {
           this.codeMirror.removeLineClass(lineNumber-1, 'text', 'errorMarker');
         }
       }
 
       if (error) {
         let lineNumber = this._getErrorLine(error);
-        if (lineNumber) {
+        if (lineNumber !== undefined && lineNumber !== 0) {
           this.codeMirror.addLineClass(lineNumber-1, 'text', 'errorMarker');
         }
       }
@@ -123,36 +122,38 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       },
     );
     // Load the CodeMirror mode asynchronously, then apply it
-    // oxlint-disable-next-line promise/always-return -- side-effect only: applying CodeMirror mode after async load
-    ensureCMMode(this.props.mode).then(() => {
+    void ensureCMMode(this.props.mode).then(() => {
       this.codeMirror?.setOption('mode', this.props.mode);
+      return null;
     });
 
-    // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- CodeMirror event handler receives untyped instance; no public type for display.maxLineLength
-    this._bindCMHandler('blur', (instance: any) => {
-      if (!this.props.enableFormatting) return;
+    this._bindCMHandler('blur', () => {
+      if (this.props.enableFormatting !== true) return;
+
+      const cm = this.codeMirror;
+      if (cm === null || cm === undefined) return;
 
       require(['prettier/standalone', 'prettier/parser-babel'], (prettier: {format: (code: string, options: Record<string, unknown>) => string}, babel: unknown) => {
-        const currValue = instance.doc.getValue();
+        const currValue = cm.getDoc().getValue();
+        const cmEl = cm.getWrapperElement();
+        const maxLineLength = cmEl.clientWidth;
         const options = Object.assign({},
           defaultPrettierOptions,
           {
-            printWidth: instance.display.maxLineLength,
+            printWidth: maxLineLength,
             plugins: [babel],
           });
-        instance.doc.setValue(prettier.format(currValue, options));
+        cm.getDoc().setValue(prettier.format(currValue, options));
       });
     });
 
     this._bindCMHandler('changes', () => {
       clearTimeout(this._updateTimer);
-      // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- .bind() returns any; TS limitation
-      this._updateTimer = setTimeout(this._onContentChange.bind(this), 200);
+      this._updateTimer = setTimeout(() => this._onContentChange(), 200);
     });
     this._bindCMHandler('cursorActivity', () => {
       clearTimeout(this._updateTimer);
-      // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- .bind() returns any; TS limitation
-      this._updateTimer = setTimeout(this._onActivity.bind(this), 100);
+      this._updateTimer = setTimeout(() => this._onActivity(), 100);
     });
 
     this._subscriptions.push(
@@ -163,7 +164,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       }),
     );
 
-    if (this.props.highlight) {
+    if (this.props.highlight === true) {
             this._markerRange = null;
             this._mark = null;
       this._subscriptions.push(
@@ -178,8 +179,9 @@ export default class Editor extends React.Component<EditorProps, {value: string}
             this._mark.clear();
           }
           let [start, end] = range.map((index: number) => this._posFromIndex(doc, index));
-          if (!start || !end) {
-            this._markerRange = this._mark = null;
+          if (start === undefined || start === null || end === undefined || end === null) {
+            this._markerRange = null;
+            this._mark = null;
             return;
           }
           this._mark = this.codeMirror.markText(
@@ -261,20 +263,6 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     );
   }
 }
-
-Editor.propTypes = {
-  value: PropTypes.string,
-  highlight: PropTypes.bool,
-  lineNumbers: PropTypes.bool,
-  readOnly: PropTypes.bool,
-  onContentChange: PropTypes.func,
-  onActivity: PropTypes.func,
-  posFromIndex: PropTypes.func,
-  error: PropTypes.object,
-  mode: PropTypes.string,
-  enableFormatting: PropTypes.bool,
-  keyMap: PropTypes.string,
-};
 
 Editor.defaultProps = {
   value: '',

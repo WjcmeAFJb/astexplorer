@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 type SettingsDrawerProps = {
@@ -31,8 +30,3 @@ export default class SettingsDrawer extends React.Component<SettingsDrawerProps>
   }
 }
 
-SettingsDrawer.propTypes = {
-  onWantToExpand: PropTypes.func,
-  onWantToCollapse: PropTypes.func,
-  isOpen: PropTypes.bool,
-};

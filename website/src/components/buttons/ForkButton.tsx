@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
 
@@ -34,9 +33,3 @@ export default class ForkButton extends React.Component<ForkButtonProps> {
   }
 }
 
-ForkButton.propTypes = {
-  canFork: PropTypes.bool,
-  saving: PropTypes.bool,
-  forking: PropTypes.bool,
-  onFork: PropTypes.func,
-};

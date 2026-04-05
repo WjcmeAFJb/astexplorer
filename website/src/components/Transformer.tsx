@@ -1,6 +1,5 @@
 import Editor from './Editor';
 import JSCodeshiftEditor from './JSCodeshiftEditor';
-import PropTypes from 'prop-types';
 import {publish} from '../utils/pubsub';
 import * as React from 'react';
 import SplitPane from './SplitPane';
@@ -53,14 +52,3 @@ export default function Transformer(props: TransformerProps): React.ReactElement
   );
 }
 
-Transformer.propTypes = {
-  defaultTransformCode: PropTypes.string,
-  transformCode: PropTypes.string,
-  transformer: PropTypes.object,
-  mode: PropTypes.string,
-  keyMap: PropTypes.string,
-  onContentChange: PropTypes.func,
-  toggleFormatting: PropTypes.func,
-  enableFormatting: PropTypes.bool,
-  transformResult: PropTypes.object,
-};

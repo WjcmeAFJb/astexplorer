@@ -1,42 +1,19 @@
-import type {StorageBackend, AppState} from './types';
-import type {AnyAction} from 'redux';
-import * as LocalStorage from './components/LocalStorage';
-import ASTOutputContainer from './containers/ASTOutputContainer';
-import CodeEditorContainer from './containers/CodeEditorContainer';
-import ErrorMessageContainer from './containers/ErrorMessageContainer';
+import type {AppState} from './types';
+import {
+  ASTOutputContainer, CodeEditorContainer, ErrorMessageContainer,
+  LoadingIndicatorContainer, PasteDropTargetContainer,
+  SettingsDialogContainer, ShareDialogContainer,
+  ToolbarContainer, TransformerContainer,
+} from './containers';
 import GistBanner from './components/GistBanner';
-import LoadingIndicatorContainer from './containers/LoadingIndicatorContainer';
-import PasteDropTargetContainer from './containers/PasteDropTargetContainer';
-import PropTypes from 'prop-types';
 import {publish} from './utils/pubsub';
 import * as React from 'react';
-import SettingsDialogContainer from './containers/SettingsDialogContainer';
-import ShareDialogContainer from './containers/ShareDialogContainer';
 import SplitPane from './components/SplitPane';
-import ToolbarContainer from './containers/ToolbarContainer';
-import TransformerContainer from './containers/TransformerContainer';
-import debounce from './utils/debounce';
 import {Provider, connect} from 'react-redux';
-import {astexplorer, persist, revive} from './store/reducers';
-import {createStore, applyMiddleware, compose} from 'redux';
-import {canSaveTransform, getRevision} from './store/selectors';
-import {loadSnippet} from './store/actions';
 import {createRoot} from 'react-dom/client';
-import * as gist from './storage/gist';
-import * as parse from './storage/parse';
-import StorageHandler from './storage';
+import {store} from './storeSetup';
 import '../css/style.css';
-import {configureWasm} from 'astexplorer-parsers';
-import swcWasm from 'astexplorer-parsers/swc.wasm';
-import synWasm from 'astexplorer-parsers/syn.wasm';
-import goWasm from 'astexplorer-parsers/go.wasm';
-import monkeyWasm from 'astexplorer-parsers/monkey.wasm';
-import parserMiddleware from './store/parserMiddleware';
-import snippetMiddleware from './store/snippetMiddleware';
-import transformerMiddleware from './store/transformerMiddleware';
 import cx from './utils/classnames';
-
-configureWasm({ swc: swcWasm, syn: synWasm, go: goWasm, monkey: monkeyWasm });
 
 function resize() {
   publish('PANEL_RESIZE');
@@ -69,11 +46,6 @@ function App({showTransformer, hasError}: {showTransformer: boolean, hasError: b
   );
 }
 
-App.propTypes = {
-  hasError: PropTypes.bool,
-  showTransformer: PropTypes.bool,
-};
-
 const AppContainer = connect(
   (state: AppState) => ({
     showTransformer: state.showTransformPanel,
@@ -81,44 +53,8 @@ const AppContainer = connect(
   }),
 )(App);
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?? compose;
-const backends: StorageBackend[] = [gist, parse];
-const storageAdapter = new StorageHandler(backends);
-const store = createStore(
-  astexplorer,
-  revive(LocalStorage.readState()),
-  composeEnhancers(
-    applyMiddleware(snippetMiddleware(storageAdapter), parserMiddleware, transformerMiddleware),
-  ),
-);
-store.subscribe(debounce(() => {
-  const state = store.getState();
-  // We are not persisting the state while looking at an existing revision
-  if (getRevision(state) === null || getRevision(state) === undefined) {
-    LocalStorage.writeState(persist(state));
-  }
-}));
-store.dispatch({type: 'INIT'});
-
 createRoot(document.querySelector('#container')!).render(
   <Provider store={store}>
     <AppContainer />
   </Provider>,
 );
-
-window.addEventListener('hashchange', () => {
-  // oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- loadSnippet() returns a typed action but store.dispatch expects AnyAction
-  store.dispatch(loadSnippet() as AnyAction);
-});
-
-if (location.hash.length > 1) {
-  // oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- loadSnippet() returns a typed action but store.dispatch expects AnyAction
-  store.dispatch(loadSnippet() as AnyAction);
-}
-
-window.addEventListener('beforeunload', (event) => {
-  const state = store.getState();
-  if (canSaveTransform(state)) {
-    event.preventDefault();
-  }
-});

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
 
@@ -46,9 +45,5 @@ class KeyMapButton extends React.Component<KeyMapButtonProps> {
   }
 }
 
-KeyMapButton.propTypes = {
-  onKeyMapChange: PropTypes.func,
-  keyMap: PropTypes.string,
-}
 
 export default KeyMapButton

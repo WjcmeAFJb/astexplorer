@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import type {Revision} from '../../types';
 
@@ -10,17 +9,12 @@ type ShareDialogProps = {
 
 export default class ShareDialog extends React.Component<ShareDialogProps> {
   static displayName = 'ShareDialog';
-    constructor(props: ShareDialogProps) {
-    super(props);
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._outerClick = this._outerClick.bind(this);
-  }
 
-    _outerClick(event: React.MouseEvent<HTMLDivElement>) {
+    _outerClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === document.querySelector('#ShareDialog')) {
       this.props.onWantToClose();
     }
-  }
+  };
 
   render() {
     if (this.props.visible) {
@@ -41,8 +35,3 @@ export default class ShareDialog extends React.Component<ShareDialogProps> {
   }
 }
 
-ShareDialog.propTypes = {
-  onWantToClose: PropTypes.func.isRequired,
-  visible: PropTypes.bool.isRequired,
-  snippet: PropTypes.object,
-};
