@@ -11,7 +11,9 @@
     "chevrotain": "^12.0.0",
     "happy-dom": "^20.8.9",
     "jsdom": "^29.0.1",
+    "nyc": "^18.0.0",
     "oxlint": "^1.57.0",
+    "v8-to-istanbul": "^9.3.0",
     "vitest": "^3.2.4"
   }
 }

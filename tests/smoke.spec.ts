@@ -1,4 +1,5 @@
-import { test, expect, type Page, type ConsoleMessage } from '@playwright/test';
+import { test, expect } from './coverage-fixture';
+import type { Page, ConsoleMessage } from '@playwright/test';
 
 // ---------------------------------------------------------------------------
 // Helpers
