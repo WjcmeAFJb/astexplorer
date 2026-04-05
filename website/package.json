@@ -220,7 +220,8 @@
     "test:mutation": "npx stryker run",
     "build:webpack": "NODE_OPTIONS=--openssl-legacy-provider rimraf ../out/* && cross-env NODE_ENV=production webpack --mode=production",
     "build-dev:webpack": "NODE_OPTIONS=--openssl-legacy-provider rimraf ../out/* && cross-env NODE_ENV=development webpack -d --mode=development",
-    "lint": "node_modules/eslint/bin/eslint.js src/",
+    "lint": "oxlint --type-aware -c .oxlintrc.json src/ tests/",
+    "lint:fix": "oxlint --type-aware -c .oxlintrc.json --fix src/ tests/",
     "fontcustom": "fontcustom compile ./fontcustom/input-svg/ --config=./fontcustom/config.yml"
   }
 }

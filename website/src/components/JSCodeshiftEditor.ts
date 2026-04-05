@@ -23,7 +23,7 @@ export default class JSCodeshiftEditor extends Editor {
     });
 
     this._bindCMHandler('cursorActivity', (cm: CodeMirror.Editor) => {
-      server && server.updateArgHints(cm);
+      if (server) server.updateArgHints(cm);
     });
   }
 }

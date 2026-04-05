@@ -5,6 +5,7 @@ declare module '*.css' {
   export default content;
 }
 
+// oxlint-disable-next-line no-shadow-restricted-names -- TypeScript global augmentation
 declare namespace globalThis {
   var $node: unknown;
   var acorn: typeof import('acorn');

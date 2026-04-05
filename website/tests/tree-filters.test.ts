@@ -373,7 +373,7 @@ describe('TreeAdapter', () => {
       let capturedFromArray: boolean | undefined;
       const spy = { test: (_v: unknown, _k: string, fromArray?: boolean) => { capturedFromArray = fromArray; return false; } };
       const a = makeAdapter({ filters: [spy as any], filterValues: {} });
-      [...a.walkNode([1, 2, 3])]; // array node
+      Array.from(a.walkNode([1, 2, 3])); // consume generator for array node
       expect(capturedFromArray).toBe(true);
     });
   });
