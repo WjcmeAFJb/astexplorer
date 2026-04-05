@@ -24,7 +24,6 @@ type SplitPaneProps = {
 
  * Creates a left-right split pane inside its container.
  */
-// oxlint-disable-next-line max-lines-per-function -- SplitPane has complex mouse interaction logic that is tightly coupled
 export default function SplitPane({vertical, className, children, onResize}: SplitPaneProps): React.ReactElement {
   // Position is really the size (width or height) of the first (left or top)
   // panel, as percentage of the parent containers size. The remaining elements
@@ -91,8 +90,8 @@ export default function SplitPane({vertical, className, children, onResize}: Spl
       <div style={styleA}>
         {childArray[0]}
       </div>
-      {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- divider is a drag handle; keyboard resize is not applicable */}
       <div
+        role="separator"
         className={cx({
           'splitpane-divider': true,
           vertical: vertical === true,

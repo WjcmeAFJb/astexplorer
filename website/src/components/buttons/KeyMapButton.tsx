@@ -1,4 +1,3 @@
-// oxlint-disable jsx-a11y/click-events-have-key-events -- menu <li> elements delegate to inner <button> which provides keyboard access
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
@@ -34,7 +33,8 @@ class KeyMapButton extends React.Component<KeyMapButtonProps> {
               key={keyMap}
               // @ts-expect-error — disabled is not standard on <li> but used for styling
               disabled={this.props.keyMap === keyMap}
-              onClick={() => this.props.onKeyMapChange(keyMap)}>
+              onClick={() => this.props.onKeyMapChange(keyMap)}
+              onKeyDown={() => this.props.onKeyMapChange(keyMap)}>
               <button type="button" >
                 {keyMap}
               </button>

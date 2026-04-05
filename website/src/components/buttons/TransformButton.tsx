@@ -1,4 +1,3 @@
-// oxlint-disable jsx-a11y/click-events-have-key-events, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- menu <li> elements delegate to inner <button>; event.target type narrowing via instanceof; props are optional booleans
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
@@ -15,7 +14,7 @@ type TransformButtonProps = {
 export default class TransformButton extends React.Component<TransformButtonProps> {
   static displayName = 'TransformButton';
 
-  _onClick = (event: React.MouseEvent<HTMLLIElement>) => {
+  _onClick = (event: React.MouseEvent<HTMLLIElement> | React.KeyboardEvent<HTMLLIElement>) => {
     const target = event.target;
     let transformID: string;
     if (target instanceof HTMLLIElement) {
@@ -76,7 +75,8 @@ export default class TransformButton extends React.Component<TransformButtonProp
                 selected: this.props.showTransformer === true &&
                   this.props.transformer === transformer,
               })}
-              onClick={this._onClick}>
+              onClick={this._onClick}
+              onKeyDown={this._onClick}>
               <button value={transformer.id} type="button" >
                 {transformer.displayName}
               </button>

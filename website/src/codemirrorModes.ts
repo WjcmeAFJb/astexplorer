@@ -28,14 +28,14 @@ const modeLoaders: Record<string, () => Promise<unknown>> = {
 
 const loaded = new Set<string>();
 
-export function ensureCMMode(mode: string | {name: string} | undefined): Promise<void> {
-  if (mode === undefined) return Promise.resolve();
+export async function ensureCMMode(mode: string | {name: string} | undefined): Promise<void> {
+  if (mode === undefined) return;
   const name = typeof mode === 'string' ? mode : mode.name;
-  if (loaded.has(name)) return Promise.resolve();
+  if (loaded.has(name)) return;
 
-  if (!(name in modeLoaders)) return Promise.resolve();
+  if (!(name in modeLoaders)) return;
   const loader = modeLoaders[name];
 
-  // oxlint-disable-next-line promise/always-return -- side-effect only: caching loaded mode name
-  return loader().then(() => { loaded.add(name); });
+  await loader();
+  loaded.add(name);
 }

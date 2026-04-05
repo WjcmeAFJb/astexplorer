@@ -15,13 +15,17 @@ const STORAGE_KEY = 'tree_settings';
 /**
  * @returns {Record<string, boolean>}
  */
+function isSettingsRecord(value: unknown): value is Record<string, boolean> {
+  if (typeof value !== 'object' || value === null) return false;
+  return Object.values(value).every(v => typeof v === 'boolean');
+}
+
 function initSettings() {
   const storedSettings = window.localStorage.getItem(STORAGE_KEY);
   if (storedSettings !== null && storedSettings !== '') {
     const parsed: unknown = JSON.parse(storedSettings);
-    if (typeof parsed === 'object' && parsed !== null) {
-      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- JSON.parse returns unknown; we validated it's a non-null object
-      return parsed as Record<string, boolean>;
+    if (isSettingsRecord(parsed)) {
+      return parsed;
     }
   }
   return {
@@ -60,8 +64,7 @@ export default function Tree({parseResult, position}: TreeProps): React.ReactEle
   const [settings, updateSettings] = useReducer(reducer, null, initSettings);
   const treeAdapter = useMemo(
     () => treeAdapterFromParseResult(parseResult, settings),
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- intentionally depend on parseResult.treeAdapter, not the full parseResult object, to avoid unnecessary recalculation
-    [parseResult.treeAdapter, settings],
+    [parseResult, settings],
   );
   const rootElement = useRef((null as HTMLUListElement | null));
 

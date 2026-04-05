@@ -36,7 +36,6 @@ export default class JSCodeshiftEditor extends Editor {
   }
 }
 
-// oxlint-disable-next-line max-lines-per-function -- deeply nested async require callbacks cannot be split without losing closure context
 function loadTern(): void {
   require(
     [

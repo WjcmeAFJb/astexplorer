@@ -8,7 +8,6 @@ import GistBanner from './components/GistBanner';
 import LoadingIndicatorContainer from './containers/LoadingIndicatorContainer';
 import PasteDropTargetContainer from './containers/PasteDropTargetContainer';
 import PropTypes from 'prop-types';
-// oxlint-disable-next-line import/max-dependencies -- app entry point
 import {publish} from './utils/pubsub';
 import * as React from 'react';
 import SettingsDialogContainer from './containers/SettingsDialogContainer';
@@ -82,10 +81,9 @@ const AppContainer = connect(
   }),
 )(App);
 
-// oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- Redux DevTools extension injects untyped compose; cast is safe
-const composeEnhancers: typeof compose = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose) ?? compose;
-// oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- gist/parse modules satisfy StorageBackend at runtime; TS modules lack direct type export
-const storageAdapter = new StorageHandler(([gist, parse] as StorageBackend[]));
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?? compose;
+const backends: StorageBackend[] = [gist, parse];
+const storageAdapter = new StorageHandler(backends);
 const store = createStore(
   astexplorer,
   revive(LocalStorage.readState()),
@@ -100,8 +98,7 @@ store.subscribe(debounce(() => {
     LocalStorage.writeState(persist(state));
   }
 }));
-// oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- INIT action is a custom bootstrap type not in the Redux Action union
-store.dispatch({type: 'INIT'} as AnyAction);
+store.dispatch({type: 'INIT'});
 
 createRoot(document.querySelector('#container')!).render(
   <Provider store={store}>

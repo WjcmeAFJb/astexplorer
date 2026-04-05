@@ -1,4 +1,3 @@
-// oxlint-disable jsx-a11y/click-events-have-key-events -- menu <li> elements delegate to inner <button> which provides keyboard access
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
@@ -29,16 +28,10 @@ type CategoryButtonProps = {
 
 export default class CategoryButton extends React.Component<CategoryButtonProps> {
   static displayName = 'CategoryButton';
-    constructor(props: CategoryButtonProps) {
-    super(props);
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._onClick = this._onClick.bind(this);
-  }
-
-  _onClick({currentTarget}: {currentTarget: HTMLElement}) {
-    let categoryID = currentTarget.dataset.id;
+  _onClick = ({currentTarget}: {currentTarget: HTMLElement}) => {
+    const categoryID = currentTarget.dataset.id;
     this.props.onCategoryChange(getCategoryByID(categoryID));
-  }
+  };
 
   render() {
     return (
@@ -55,7 +48,7 @@ export default class CategoryButton extends React.Component<CategoryButtonProps>
         </span>
         <ul>
           {categories.map(category => (
-            <li key={category.id} onClick={this._onClick} data-id={category.id}>
+            <li key={category.id} onClick={this._onClick} onKeyDown={this._onClick} data-id={category.id}>
               <button type="button">
                 <i
                   className={cx(categoryIcon[category.id] || 'fa-file-o', {

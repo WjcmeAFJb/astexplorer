@@ -3,7 +3,6 @@
  * Converts a JS value to a sensible string representation.
  */
 export default function stringify(value: unknown): string {
-  // oxlint-disable-next-line typescript-eslint/switch-exhaustiveness-check -- default case handles remaining typeof values (string, boolean, symbol)
   switch (typeof value) {
     case 'function':
       return value.toString().match(/function[^(]*\([^)]*\)/)[0];
@@ -14,7 +13,9 @@ export default function stringify(value: unknown): string {
     case 'number':
     case 'bigint':
       return Number.isNaN(value) ? 'NaN' : String(value);
-    default:
+    case 'boolean':
+    case 'string':
+    case 'symbol':
       return JSON.stringify(value);
   }
 }

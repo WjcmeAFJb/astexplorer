@@ -16,10 +16,9 @@ export default function CompactObjectView({keys, onClick}: CompactObjectViewProp
   return (
     <span>
       <span className="p">{'{'}</span>
-      {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
-      <span className="compact placeholder ge" role="button" tabIndex={0} onClick={onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e); }}>
+      <button className="compact placeholder ge" tabIndex={0} onClick={onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e); }}>
         {keys.join(', ')}
-      </span>
+      </button>
       <span className="p">{'}'}</span>
     </span>
   );

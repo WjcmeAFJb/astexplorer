@@ -1,4 +1,3 @@
-// oxlint-disable max-lines, max-lines-per-function -- complex tree visualization (550+ lines, deeply nested render functions)
 import CompactArrayView from './CompactArrayView';
 import CompactObjectView from './CompactObjectView';
 import PropTypes from 'prop-types';
@@ -136,7 +135,6 @@ type ElementProps = {
   position?: number;
 };
 
-// oxlint-disable-next-line no-shadow -- props destructuring shadows are intentional; renderChild uses same names for clarity
 const Element = React.memo( function Element({
   name,
   value,
@@ -207,21 +205,20 @@ const Element = React.memo( function Element({
     [onClick, setOpenState],
   );
 
-    // oxlint-disable-next-line no-shadow -- renderChild intentionally uses same param names as parent component for clarity
-    function renderChild(key: string, value: unknown, parent: unknown, name: string | undefined, computed: boolean) {
-    if (treeAdapter.isArray(value) || treeAdapter.isObject(value) || typeof value === 'function') {
-      const ElementType = typeof value === 'function' ? FunctionElement : ElementContainer;
+    function renderChild(childKey: string, childValue: unknown, childParent: unknown, childName: string | undefined, childComputed: boolean) {
+    if (treeAdapter.isArray(childValue) || treeAdapter.isObject(childValue) || typeof childValue === 'function') {
+      const ElementType = typeof childValue === 'function' ? FunctionElement : ElementContainer;
       return (
         <ElementType
-          key={key}
-          name={name}
+          key={childKey}
+          name={childName}
           open={openState === OPEN_STATES.DEEP_OPEN}
-          value={value}
-          computed={computed}
+          value={childValue}
+          computed={childComputed}
           level={level + 1}
           treeAdapter={treeAdapter}
           autofocus={autofocus}
-          parent={parent}
+          parent={childParent}
           onClick={clickHandler}
           position={position}
         />
@@ -229,10 +226,10 @@ const Element = React.memo( function Element({
     }
     return (
       <PrimitiveElement
-        key={key}
-        name={name}
-        value={value}
-        computed={computed}
+        key={childKey}
+        name={childName}
+        value={childValue}
+        computed={childComputed}
       />
     );
   }
@@ -248,9 +245,8 @@ const Element = React.memo( function Element({
     if (!treeAdapter.isArray(value)) {
       const nodeName = treeAdapter.getNodeName(value);
       if (nodeName) {
-        /* oxlint-disable jsx-a11y/prefer-tag-over-role, typescript-eslint/no-unsafe-type-assertion -- must remain a span; keyboard event forwarded to click handler */
         valueOutput =
-          <span className="tokenName nc" role="button" tabIndex={0} onClick={onToggleClick} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onToggleClick(e as unknown as React.MouseEvent); }}>
+          <button type="button" className="tokenName nc" tabIndex={0} onClick={onToggleClick}>
             {nodeName}{' '}
             {selected === true ?
               <span className="ge" style={{fontSize: '0.8em'}}>
@@ -258,8 +254,7 @@ const Element = React.memo( function Element({
               </span> :
               null
             }
-          </span>
-        /* oxlint-enable jsx-a11y/prefer-tag-over-role, typescript-eslint/no-unsafe-type-assertion */
+          </button>
       }
     }
 
@@ -323,7 +318,6 @@ const Element = React.memo( function Element({
 
   let classNames = cx({
     entry: true,
-    // oxlint-disable-next-line typescript-eslint/prefer-nullish-coalescing -- boolean expression: falsy values (false) are semantically meaningful here
     highlighted: isInRange === true && (hasChildrenInRange !== true || !isOpen) || isInRange !== true && hasChildrenInRange === true && !isOpen,
     toggable: showToggler,
     open: isOpen,
@@ -359,7 +353,6 @@ const Element = React.memo( function Element({
     prevProps.hasChildrenInRange === nextProps.hasChildrenInRange &&
     //
     // @ts-expect-error — hashChildrenInRange is a typo for hasChildrenInRange in original code; kept as-is
-    // oxlint-disable-next-line typescript-eslint/prefer-nullish-coalescing -- boolean expression: falsy values are semantically meaningful
     ((nextProps.isInRange === true || nextProps.hashChildrenInRange === true) && prevProps.position === nextProps.position);
 });
 
@@ -408,19 +401,17 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
     <li className="entry">
       {name !== undefined && name !== '' ? <PropertyName name={name} computed={computed} /> : undefined}
       <span className="value">
-        {/* oxlint-disable jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
-        <span
+        <button
+          type="button"
           className="ge invokeable"
-          role="button"
           tabIndex={0}
           title="Click to invoke function"
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click(); }}
           onClick={() => {
             try {
-              // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment), typescript-eslint/no-unsafe-type-assertion -- .call() returns any; value confirmed function by parent routing
-              const result = (value as (...args: unknown[]) => unknown).call(parent);
+              if (typeof value !== 'function') return;
+              const fn = value as (...args: unknown[]) => unknown;
+              const result: unknown = fn.call(parent);
               console.log(result); // eslint-disable-line no-console
-              // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- result is dynamic
               setComputedValue(result);
             } catch(err) {
               const caughtError = err instanceof Error ? err : new Error(String(err));
@@ -429,8 +420,7 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
             }
           }}>
           (...)
-        </span>
-        {/* oxlint-enable jsx-a11y/prefer-tag-over-role */}
+        </button>
       </span>
       {error  ?
         <span>
@@ -446,9 +436,6 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
   );
 });
 
-// @ts-expect-error — React 16 memo propTypes (see Element.propTypes above)
-// oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
-FunctionElement.propTypes = Element.propTypes;
 
 type PrimitiveElementProps = {
   name?: string;
@@ -486,14 +473,12 @@ type PropertyNameProps = {
 
 const PropertyName = React.memo( function PropertyName({name, computed, onClick}: PropertyNameProps) {
   return (
-    /* oxlint-disable jsx-a11y/prefer-tag-over-role, typescript-eslint/no-unsafe-type-assertion -- must remain a span; keyboard event forwarded to click handler */
     <span className="key">
-      <span className="name nb" role="button" tabIndex={0} onClick={onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e as unknown as React.MouseEvent); }}>
+      <button type="button" className="name nb" tabIndex={0} onClick={onClick}>
         {computed === true ? <span title="computed">*{name}</span> : name }
-      </span>
+      </button>
       <span className="p">:&nbsp;</span>
     </span>
-    /* oxlint-enable jsx-a11y/prefer-tag-over-role, typescript-eslint/no-unsafe-type-assertion */
   );
 });
 
@@ -508,6 +493,8 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
   const [selected, setSelected] = useState(false);
   const setSelectedNode = useSelectedNode();
   const isInRange = props.treeAdapter.isInRange(props.value, props.name, props.position);
+  const propValue = props.value;
+  const propOnClick = props.onClick;
   const onClick = useCallback(
     (state: number, own: boolean | undefined) => {
       if (own === true) {
@@ -515,16 +502,15 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
           setSelectedNode(null);
           setSelected(false);
         } else {
-          setSelectedNode(props.value, () => setSelected(false));
+          setSelectedNode(propValue, () => setSelected(false));
           setSelected(true);
         }
       }
-      if (props.onClick) {
-        props.onClick(state);
+      if (propOnClick !== undefined) {
+        propOnClick(state);
       }
     },
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- using specific props rather than entire props object to avoid unnecessary callback recreation
-    [props.value, props.onClick, setSelectedNode],
+    [propValue, propOnClick, setSelectedNode],
   );
 
   return (
@@ -540,6 +526,3 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
   );
 }
 
-// @ts-expect-error — React 16 memo propTypes
-// oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- @ts-expect-error makes type error
-ElementContainer.propTypes = Element.propTypes;

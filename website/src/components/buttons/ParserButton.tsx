@@ -1,4 +1,3 @@
-// oxlint-disable jsx-a11y/click-events-have-key-events -- menu <li> elements delegate to inner <button> which provides keyboard access
 import PropTypes from 'prop-types';
 import React from 'react';
 import {getParserByID} from 'astexplorer-parsers';
@@ -13,16 +12,10 @@ type ParserButtonProps = {
 
 export default class ParserButton extends React.Component<ParserButtonProps> {
   static displayName = 'ParserButton';
-    constructor(props: ParserButtonProps) {
-    super(props);
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._onClick = this._onClick.bind(this);
-  }
-
-  _onClick({currentTarget}: {currentTarget: HTMLElement}) {
-    let parserID = currentTarget.dataset.id;
+  _onClick = ({currentTarget}: {currentTarget: HTMLElement}) => {
+    const parserID = currentTarget.dataset.id;
     this.props.onParserChange(getParserByID(parserID));
-  }
+  };
 
   render() {
     const parsers = this.props.category.parsers.filter(p => p.showInMenu);
@@ -34,7 +27,7 @@ export default class ParserButton extends React.Component<ParserButtonProps> {
         </span>
         <ul>
           {parsers.map(parser => (
-            <li key={parser.id} onClick={this._onClick} data-id={parser.id}>
+            <li key={parser.id} onClick={this._onClick} onKeyDown={this._onClick} data-id={parser.id}>
               <button type="button" >
                 {parser.displayName}
               </button>

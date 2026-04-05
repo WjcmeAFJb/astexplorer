@@ -1,38 +1,48 @@
 // Global type augmentations for astexplorer
+export {};
 
 declare module '*.css' {
   const content: Record<string, string>;
   export default content;
 }
 
-// oxlint-disable-next-line no-shadow-restricted-names, no-redeclare -- TypeScript global augmentation requires redeclaring globalThis
-declare namespace globalThis {
+declare global {
   var $node: unknown;
-  // oxlint-disable-next-line typescript-eslint/consistent-type-imports -- import() is required in ambient declaration files
   var acorn: typeof import('acorn');
   var tern: Record<string, unknown>;
   var __filename: string;
-}
 
-interface Window {
-  __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: (...args: unknown[]) => unknown;
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: (...args: unknown[]) => unknown;
+  }
+
+  // Webpack AMD-style require used by the project.
+  interface WebpackRequire {
+    // Each call site casts params to specific types via JSDoc @type annotations.
+    (deps: string[], callback: (...modules: unknown[]) => void): void;
+    context(directory: string, useSubdirectories: boolean, regExp: RegExp): {
+      keys(): string[];
+      <T>(id: string): T;
+    };
+  }
+  var require: WebpackRequire;
+
+  var process: { env: Record<string, string | undefined> };
+
+  // CodeMirror addon: Tern integration
+  namespace CodeMirror {
+    class TernServer {
+      constructor(options: unknown);
+      complete(cm: CodeMirror.Editor): void;
+      showType(cm: CodeMirror.Editor): void;
+      showDocs(cm: CodeMirror.Editor): void;
+      updateArgHints(cm: CodeMirror.Editor): void;
+    }
+  }
 }
 
 // No global type aliases — each parser types its own AST nodes and
 // loaded modules concretely via import() or inline @typedef.
-
-// Webpack AMD-style require used by the project.
-interface WebpackRequire {
-  // Each call site casts params to specific types via JSDoc @type annotations.
-  (deps: string[], callback: (...modules: unknown[]) => void): void;
-  context(directory: string, useSubdirectories: boolean, regExp: RegExp): {
-    keys(): string[];
-    <T>(id: string): T;
-  };
-}
-declare var require: WebpackRequire;
-
-declare var process: { env: Record<string, string | undefined> };
 
 // ---------------------------------------------------------------------------
 // Third-party module declarations
@@ -45,18 +55,6 @@ declare module 'source-map/lib/source-map-consumer' {
     sources: string[];
     sourcesContent: string[];
     generatedPositionFor(pos: {line: number; column: number; source: string}): {line: number | null; column: number | null};
-  }
-}
-
-// CodeMirror addon: Tern integration
-declare namespace CodeMirror {
-  // oxlint-disable-next-line max-classes-per-file -- ambient declaration file
-  class TernServer {
-    constructor(options: unknown);
-    complete(cm: CodeMirror.Editor): void;
-    showType(cm: CodeMirror.Editor): void;
-    showDocs(cm: CodeMirror.Editor): void;
-    updateArgHints(cm: CodeMirror.Editor): void;
   }
 }
 
@@ -147,8 +145,7 @@ declare module 'prop-types' {
   interface Validator<T> {
     isRequired: Validator<T>;
   }
-  // oxlint-disable-next-line no-redeclare -- intentionally reusing PropTypes name for the interface and const in this declaration
-  interface PropTypes {
+  interface PropTypesStatic {
     any: Validator<unknown>;
     array: Validator<unknown[]>;
     bool: Validator<boolean>;
@@ -167,6 +164,6 @@ declare module 'prop-types' {
     shape(object: Record<string, Validator<unknown>>): Validator<unknown>;
     exact(object: Record<string, Validator<unknown>>): Validator<unknown>;
   }
-  const PropTypes: PropTypes;
+  const PropTypes: PropTypesStatic;
   export default PropTypes;
 }

@@ -20,7 +20,6 @@ type ASTOutputProps = {
   position?: number;
 };
 
-// oxlint-disable-next-line max-lines-per-function -- ASTOutput manages multiple visualization modes with tab switching
 export default function ASTOutput({parseResult={}, position}: ASTOutputProps): React.ReactElement {
   const [selectedOutput, setSelectedOutput] = useState(0);
   const {ast} = parseResult;

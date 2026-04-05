@@ -21,10 +21,10 @@ function fetchSnippet(snippetID: string, revisionID?: string): Promise<Revision>
       method: 'GET',
     },
   )
-  .then(response => {
+  .then(async response => {
     if (response.ok) {
-      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- response.json() returns Promise<any>; fetch API boundary
-      return response.json() as Promise<GistData>;
+      const data: unknown = await response.json();
+      return data as GistData;
     }
     switch (response.status) {
       case 404:
@@ -67,10 +67,10 @@ export function create(data: SnippetData): Promise<Revision> {
       body: JSON.stringify(data),
     },
   )
-  .then(response => {
+  .then(async response => {
     if (response.ok) {
-      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- response.json() returns Promise<any>; fetch API boundary
-      return response.json() as Promise<GistData>;
+      const data: unknown = await response.json();
+      return data as GistData;
     }
     throw new Error('Unable to create snippet.');
   })
@@ -100,10 +100,10 @@ export function update(revision: Revision, data: SnippetData): Promise<Revision>
           body: JSON.stringify(data),
         },
       )
-      .then(response => {
+      .then(async response => {
         if (response.ok) {
-          // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- response.json() returns Promise<any>; fetch API boundary
-      return response.json() as Promise<GistData>;
+          const data: unknown = await response.json();
+      return data as GistData;
         }
         throw new Error('Unable to update snippet.');
       })
@@ -126,10 +126,10 @@ export function fork(revision: Revision, data: SnippetData): Promise<Revision> {
       body: JSON.stringify(data),
     },
   )
-  .then(response => {
+  .then(async response => {
     if (response.ok) {
-      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- response.json() returns Promise<any>; fetch API boundary
-      return response.json() as Promise<GistData>;
+      const data: unknown = await response.json();
+      return data as GistData;
     }
     throw new Error('Unable to fork snippet.');
   })
@@ -164,8 +164,8 @@ class Revision {
 
     constructor(gist: GistData) {
     this._gist = gist;
-    // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- JSON.parse returns unknown; the gist format guarantees GistConfig shape
-    this._config = JSON.parse(gist.files['astexplorer.json'].content) as GistConfig;
+    const parsed: unknown = JSON.parse(gist.files['astexplorer.json'].content);
+    this._config = parsed as GistConfig;
   }
 
   canSave(): boolean {
@@ -243,7 +243,6 @@ class Revision {
 }
 
 function getSource(config: GistConfig, gist: GistData): string | undefined {
-  // oxlint-disable-next-line typescript-eslint/switch-exhaustiveness-check -- config.v is a number; only v1 and v2 are known gist formats, default handles future versions
   switch (config.v) {
     case 1:
       return gist.files['code.js'].content;

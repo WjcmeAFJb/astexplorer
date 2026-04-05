@@ -30,8 +30,6 @@ class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
     this.state = {
       visible: true,
     };
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-    this._hide = this._hide.bind(this);
   }
 
   componentDidUpdate(prevProps: GistBannerProps) {
@@ -43,9 +41,9 @@ class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
     }
   }
 
-  _hide() {
+  _hide = () => {
     this.setState({visible: false});
-  }
+  };
 
   render() {
     if (!this.state.visible) {

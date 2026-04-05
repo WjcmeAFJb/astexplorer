@@ -3,6 +3,11 @@ import type {AppState} from '../types';
 const storage = window.localStorage;
 const key = 'explorerSettingsV1';
 const noop = () => {};
+const noopRead = (): AppState | undefined => undefined;
+
+function isAppState(value: unknown): value is AppState {
+  return typeof value === 'object' && value !== null;
+}
 
 export const writeState: (state: Record<string, unknown>) => void = storage !== null && storage !== undefined ?
   state => {
@@ -21,9 +26,8 @@ export const readState: () => AppState | undefined = storage !== null && storage
       const state = storage.getItem(key);
       if (state !== null && state !== '') {
         const parsed: unknown = JSON.parse(state);
-        if (typeof parsed === 'object' && parsed !== null) {
-          // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- JSON.parse returns unknown; we validated it's a non-null object
-          return parsed as AppState;
+        if (isAppState(parsed)) {
+          return parsed;
         }
       }
     } catch {
@@ -31,5 +35,4 @@ export const readState: () => AppState | undefined = storage !== null && storage
       console.warn('Unable to read from local storage.');
     }
   } :
-  // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- noop returns undefined which is compatible with AppState | undefined
-  (noop as () => AppState | undefined);
+  noopRead;

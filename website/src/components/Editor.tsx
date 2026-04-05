@@ -110,7 +110,6 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     return ((this.props.posFromIndex ? this.props : doc).posFromIndex(index) as {line: number, ch: number});
   }
 
-  // oxlint-disable-next-line max-lines-per-function -- componentDidMount sets up CodeMirror instance with multiple event handlers
   componentDidMount() {
         this._CMHandlers = [];
         this._subscriptions = [];

@@ -22,10 +22,9 @@ export default class CompactArrayView extends React.Component<CompactArrayViewPr
     return (
       <span>
         <span className="p">{'['}</span>
-        {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
-        <span className="compact placeholder ge" role="button" tabIndex={0} onClick={this.props.onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && this.props.onClick) this.props.onClick(e); }}>
+        <button className="compact placeholder ge" tabIndex={0} onClick={this.props.onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && this.props.onClick) this.props.onClick(e); }}>
           {count + ' element' + (count > 1 ? 's' : '')}
-        </span>
+        </button>
         <span className="p">{']'}</span>
       </span>
     );

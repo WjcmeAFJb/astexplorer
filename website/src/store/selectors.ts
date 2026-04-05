@@ -8,8 +8,8 @@ import type {TransformResult, ParseResult, Revision, Transformer, Parser, AppSta
 // createSelector uses Function.apply which loses type information.
 function createSelector<R = unknown>(deps: Array<(state: AppState) => unknown>, f: (...args: unknown[]) => R): (state: AppState) => R {
   return function(state) {
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- Function.apply returns any; TS limitation
-    return f.apply(this, deps.map(d => d(state)));
+    const args = deps.map(d => d(state));
+    return f(...args);
   }
 }
 
@@ -150,8 +150,7 @@ const didParserSettingsChange: (state: AppState) => boolean = createSelector(
     const savedParserSettings = revisionArg.getParserSettings();
     return (
       parserArg.id !== revisionArg.getParserID() ||
-      // oxlint-disable-next-line typescript-eslint(no-unsafe-call), typescript-eslint(strict-boolean-expressions), typescript-eslint(no-unsafe-type-assertion) -- isEqual is from an untyped module (lodash.isequal)
-      (savedParserSettings !== null && !(isEqual(parserSettings, savedParserSettings) as boolean))
+      (savedParserSettings !== null && !Boolean(isEqual(parserSettings, savedParserSettings)))
     );
   },
 );

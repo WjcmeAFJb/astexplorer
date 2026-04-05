@@ -46,7 +46,6 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
     throw ex;
   }
 
-  // oxlint-disable-next-line max-lines-per-function -- componentDidMount binds multiple DOM event listeners; splitting would scatter related logic
   componentDidMount() {
         this._listeners = [];
     const target = this.container;

@@ -8,7 +8,6 @@ let clearURLOnClearError = false;
 let cancelLoad: () => void = () => {}
 
 export default (storageAdapter: StorageAdapter) => (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
-  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- middleware intentionally handles only relevant action types
   switch (action.type) {
     case actions.CLEAR_ERROR:
       // If CLEAR_ERROR action happens after a URL was loaded, clear the URL
@@ -22,8 +21,10 @@ export default (storageAdapter: StorageAdapter) => (store: MiddlewareAPI<Dispatc
     case actions.SAVE:
       next(actions.startSave(action.fork === true));
       void saveSnippet(action, store.getState(), next, storageAdapter)
-        // oxlint-disable-next-line promise/no-callback-in-promise -- redux middleware must call next() after save completes
-        .then(() => next(actions.endSave(action.fork === true)));
+        .then(() => {
+          next(actions.endSave(action.fork === true));
+          return undefined;
+        });
       break;
     default:
       // Pass on

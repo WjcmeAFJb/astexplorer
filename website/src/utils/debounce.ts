@@ -1,18 +1,17 @@
 export default function debounce(f: (...args: unknown[]) => void, timeout?: number): (...args: unknown[]) => void {
     let timer: ReturnType<typeof setTimeout> | undefined;
-    let lastArgs: unknown[];
-    let lastThis: unknown;
+    let pending: { context: unknown; args: unknown[] } | undefined;
 
-  return function(...args) {
-    // oxlint-disable-next-line typescript-eslint/no-this-alias, unicorn/no-this-assignment -- debounce must capture `this` for deferred apply()
-    lastThis = this;
-    lastArgs = args;
+  return function(this: unknown, ...args: unknown[]) {
+    pending = { context: this, args };
     if (timer !== undefined) {
       return;
     }
     timer = setTimeout(() => {
       timer = undefined;
-      f.apply(lastThis, lastArgs);
+      if (pending !== undefined) {
+        f.apply(pending.context, pending.args);
+      }
     }, timeout);
   };
 }

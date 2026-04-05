@@ -177,8 +177,10 @@ const TreeAdapterConfigs: Record<string, AdapterOptions & Record<string, unknown
         return null;
       }
       if (node.range !== undefined && node.range !== null) {
-        // oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- node.range is checked to exist; it is a [number, number] tuple from the AST
-        return (node.range as [number, number]);
+        const range = node.range;
+        if (Array.isArray(range) && typeof range[0] === 'number' && typeof range[1] === 'number') {
+          return [range[0], range[1]];
+        }
       }
       if (typeof node.start === 'number' && typeof node.end === 'number') {
         return [node.start, node.end];

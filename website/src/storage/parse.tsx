@@ -18,10 +18,10 @@ function getIDAndRevisionFromHash() {
 
 function fetchSnippet(snippetID: string, revisionID?: string | number): Promise<Revision> {
   return api(`/parse/${snippetID}/${revisionID}`)
-    .then(response => {
+    .then(async response => {
       if (response.ok) {
-        // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- response.json() returns Promise<any>; fetch API boundary
-        return response.json() as Promise<ParseSnippetData>;
+        const data: unknown = await response.json();
+        return data as ParseSnippetData;
       }
       switch (response.status) {
         case 404:
@@ -172,8 +172,8 @@ class Revision {
     if (parserSettings === undefined || parserSettings === '') {
       return false;
     }
-    // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- JSON.parse returns unknown; server data is expected to be Record<string, unknown>
-    return JSON.parse(parserSettings) as Record<string, unknown>;
+    const parsed: unknown = JSON.parse(parserSettings);
+    return parsed as Record<string, unknown>;
   }
 
   getShareInfo(): React.ReactElement {

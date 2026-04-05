@@ -10,8 +10,10 @@ async function transform(transformer: Transformer, transformCode: string, code: 
   transformer._promise ??= new Promise(transformer.loadTransformer);
   let realTransformer: {version?: string, [key: string]: unknown} | undefined;
   try {
-    // oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- transformer._promise resolves to an untyped third-party module
-    realTransformer = await transformer._promise as {version?: string, [key: string]: unknown};
+    const resolved: unknown = await transformer._promise;
+    if (resolved !== null && resolved !== undefined && typeof resolved === 'object') {
+      realTransformer = resolved as {version?: string, [key: string]: unknown};
+    }
     let result = await transformer.transform(realTransformer, transformCode, code);
     let map = null;
     if (typeof result !== 'string') {
@@ -30,7 +32,6 @@ async function transform(transformer: Transformer, transformCode: string, code: 
   }
 }
 
-// oxlint-disable-next-line max-lines-per-function -- Redux middleware orchestrates multiple async operations
 export default (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (action: Action) => {
   const oldState = store.getState();
   next(action);
@@ -53,8 +54,7 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     getTransformCode(oldState) !== newTransformCode ||
     getCode(oldState) !== newCode
   ) {
-    // oxlint-disable-next-line typescript-eslint(strict-boolean-expressions) -- runtime guard: transformer/code may be null at runtime despite types (e.g. rehydrated from storage)
-    if (!newTransformer || newCode === null || newCode === undefined) {
+    if (newTransformer === undefined || newTransformer === null || newCode === null || newCode === undefined) {
       return;
     }
 

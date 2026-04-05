@@ -18,7 +18,6 @@
  */
 let nodes: Set<React.RefObject<HTMLElement>>;
 
-// oxlint-disable-next-line max-lines-per-function -- focus logic requires handling init/add/focus in a single dispatcher
 export default function(message: 'init' | 'add' | 'focus', arg?: React.RefObject<HTMLElement>) {
   switch (message) {
     case 'init':
@@ -29,7 +28,6 @@ export default function(message: 'init' | 'add' | 'focus', arg?: React.RefObject
         nodes.add(arg);
       }
       break;
-    // oxlint-disable max-depth -- focus logic requires nested conditionals for size=1 vs size>1 paths within try/catch
     case 'focus': {
       if (arg === undefined) {
         break;
