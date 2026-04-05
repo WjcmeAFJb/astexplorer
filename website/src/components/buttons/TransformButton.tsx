@@ -35,7 +35,6 @@ export default class TransformButton extends React.Component<TransformButtonProp
 
   _onToggle = () => {
     if (this.props.transformer !== undefined) {
-      // oxlint-disable-next-line unicorn/no-null -- onTransformChange API uses null to signal "no transformer selected"
       this.props.onTransformChange?.(null);
     }
   };
@@ -43,7 +42,7 @@ export default class TransformButton extends React.Component<TransformButtonProp
   render() {
     const category = this.props.category;
     if (category === undefined) {
-      return null; // oxlint-disable-line unicorn/no-null -- React render requires null for no output
+      return null;
     }
     const transformers = category.transformers.filter(
       t => t.showInMenu !== false || t === this.props.transformer,

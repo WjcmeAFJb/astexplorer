@@ -20,7 +20,6 @@ export default class StorageHandler {
         return backend;
       }
     }
-    // oxlint-disable-next-line unicorn/no-null -- return type is StorageBackend | null; null means "no backend owns this revision"
     return null;
   }
 
@@ -33,7 +32,6 @@ export default class StorageHandler {
    */
   fetchFromURL() {
     if (/^#?\/?$/.test(window.location.hash)) {
-      // oxlint-disable-next-line unicorn/no-null -- fetchFromURL returns Promise<Revision | null>; null means "no snippet to load"
       return Promise.resolve(null);
     }
     for (const backend of this._backends) {

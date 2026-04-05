@@ -54,10 +54,10 @@ function loadTern(): void {
           '../defs/jscodeshift.json',
           'tern/defs/ecmascript.json',
         ],
-        // oxlint-disable-next-line typescript-eslint/no-explicit-any -- Tern plugin API: ternServer/file objects have no type definitions
+        // oxlint-disable-next-line typescript-eslint/no-explicit-any -- Tern plugin API: untyped internals with no @types package */
         (tern: {registerPlugin: (name: string, init: (...args: unknown[]) => void) => void, [k: string]: unknown}, _: unknown, infer: {cx: () => {topScope: unknown, definitions: Record<string, Record<string, unknown>>}, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}, jscs_def: unknown, ecmascript: unknown) => {
           globalThis.tern = tern;
-          /* oxlint-disable typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-return, typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-type-assertion, unicorn/no-null -- Tern plugin API: ternServer, file, fnVal, fnType are all untyped Tern internals with no @types package */
+          /* oxlint-disable typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-return, typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-type-assertion -- Tern plugin API: untyped internals with no @types package */
           tern.registerPlugin('transformer', (ternServer: any) => {
             ternServer.on('afterLoad', (file: any) => {
               const fnVal = file.scope.props.transformer;
@@ -76,7 +76,7 @@ function loadTern(): void {
               }
             });
           });
-          /* oxlint-enable typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-return, typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-type-assertion, unicorn/no-null */
+          /* oxlint-enable typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-return, typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-type-assertion */
 
           // oxlint-disable-next-line typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-type-assertion -- TernServer constructor not in @types/codemirror
           server = new (CodeMirror as any).TernServer({

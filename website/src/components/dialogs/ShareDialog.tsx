@@ -37,7 +37,6 @@ export default class ShareDialog extends React.Component<ShareDialogProps> {
         </div>
       );
     }
-    // oxlint-disable-next-line unicorn/no-null -- React render: null is the standard way to render nothing
     return null;
   }
 }

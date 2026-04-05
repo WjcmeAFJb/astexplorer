@@ -67,7 +67,6 @@ export default function TransformOutput({transformResult, mode}: {transformResul
           <JSONEditor
             className="container no-toolbar"
             value={stringify(result.result,
-              // oxlint-disable-next-line unicorn/no-null -- JSON.stringify API requires null as the replacer argument
               null, 2)}
           />
         )

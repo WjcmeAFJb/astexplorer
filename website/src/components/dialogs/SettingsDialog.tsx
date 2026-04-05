@@ -76,7 +76,6 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
         </div>
       );
     }
-    // oxlint-disable-next-line unicorn/no-null -- React render: null is the standard way to render nothing
     return null;
   }
 }

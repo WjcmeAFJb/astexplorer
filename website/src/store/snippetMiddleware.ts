@@ -43,7 +43,6 @@ async function loadSnippet(state: AppState, next: Dispatch, storageAdapter: Stor
   // Do not clear URL anymore, we are loading a new one
   clearURLOnClearError = false;
 
-  // oxlint-disable-next-line unicorn/no-null -- actions.setError accepts Error | null; null clears the error state
   next(actions.setError(null));
   next(actions.startLoadingSnippet());
 

@@ -28,7 +28,6 @@ type PasteDropTargetProps = PasteDropTargetOwnProps & Record<string, unknown>;
 export default class PasteDropTarget extends React.Component<PasteDropTargetProps, {dragging: boolean}> {
   static displayName = 'PasteDropTarget';
   _listeners: Array<() => void> | null = [];
-  // oxlint-disable-next-line unicorn/no-null -- DOM ref initial state: null is the standard for "not yet mounted"
   container: HTMLElement | null = null;
 
     constructor(props: PasteDropTargetProps) {
@@ -152,7 +151,6 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
         removeListener();
       }
     }
-    // oxlint-disable-next-line unicorn/no-null -- cleanup: releasing listener array reference on unmount
     this._listeners = null;
   }
 
@@ -187,7 +185,6 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
       <div className="dropIndicator">
         <div>Drop the code or (JSON-encoded) AST file here</div>
       </div> :
-      // oxlint-disable-next-line unicorn/no-null -- React conditional rendering: null is idiomatic for rendering nothing
       null;
 
     return (

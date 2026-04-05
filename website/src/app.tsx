@@ -63,7 +63,6 @@ function App({showTransformer, hasError}: {showTransformer: boolean, hasError: b
             <CodeEditorContainer />
             <ASTOutputContainer />
           </SplitPane>
-          {/* oxlint-disable-next-line unicorn/no-null -- React conditional rendering requires null to render nothing */}
           {showTransformer ? <TransformerContainer /> : null}
         </SplitPane>
       </PasteDropTargetContainer>

@@ -237,13 +237,9 @@ const Element = React.memo( function Element({
     );
   }
 
-  // oxlint-disable-next-line unicorn/no-null -- React JSX rendering: null is the idiomatic way to render nothing in React
   let valueOutput = null;
-  // oxlint-disable-next-line unicorn/no-null -- React JSX rendering: null is the idiomatic way to render nothing in React
   let content = null;
-  // oxlint-disable-next-line unicorn/no-null -- React JSX rendering: null is the idiomatic way to render nothing in React
   let prefix = null;
-  // oxlint-disable-next-line unicorn/no-null -- React JSX rendering: null is the idiomatic way to render nothing in React
   let suffix = null;
   let showToggler = false;
 
@@ -260,7 +256,6 @@ const Element = React.memo( function Element({
               <span className="ge" style={{fontSize: '0.8em'}}>
                 {' = $node'}
               </span> :
-              // oxlint-disable-next-line unicorn/no-null -- React JSX conditional: null is idiomatic for rendering nothing
               null
             }
           </span>
@@ -387,7 +382,6 @@ const NOT_COMPUTED = {};
 
 const FunctionElement = React.memo( function FunctionElement(props: ElementProps) {
   const [computedValue, setComputedValue] = useState(NOT_COMPUTED);
-  // oxlint-disable-next-line unicorn/no-null -- React useState initial value: null is the standard pattern for "not yet set" state
   const [error, setError] = useState((null as Error | null));
   const {name, value, parent, computed, treeAdapter} = props;
 
@@ -518,7 +512,6 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
     (state: number, own: boolean | undefined) => {
       if (own === true) {
         if (state === OPEN_STATES.CLOSED) {
-          // oxlint-disable-next-line unicorn/no-null -- setSelectedNode uses null to signal deselection; matches the context API's falsy check
           setSelectedNode(null);
           setSelected(false);
         } else {

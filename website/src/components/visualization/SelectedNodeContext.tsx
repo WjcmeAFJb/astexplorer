@@ -25,7 +25,6 @@ function setSelectedNode(node: unknown, cb?: () => void) {
     globalThis.$node = node;
     unselectCallback = cb;
   } else {
-    // oxlint-disable-next-line unicorn/no-null -- clearing callback reference when deselecting a node
     unselectCallback = null;
     delete globalThis.$node;
   }

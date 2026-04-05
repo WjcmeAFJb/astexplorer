@@ -38,7 +38,6 @@ export class TreeAdapter {
  */
   getRange(node: unknown): [number, number] | null | undefined {
     if (node === null || node === undefined) {
-      // oxlint-disable-next-line unicorn/no-null -- return type is [number, number] | null | undefined; null matches the nodeToRange API contract
       return null;
     }
     // Typecast: node is unknown but guaranteed non-null here; WeakMap requires object keys
@@ -147,7 +146,6 @@ const TreeAdapterConfigs: Record<string, AdapterOptions & Record<string, unknown
   default: {
     filters: [],
     openByDefault: () => false,
-    // oxlint-disable-next-line unicorn/no-null -- nodeToRange API returns [number, number] | null; null means "no range"
     nodeToRange: (): null => null,
     nodeToName: (): string => { throw new Error('nodeToName must be passed');},
     walkNode: (): never => { throw new Error('walkNode must be passed');},
@@ -176,7 +174,6 @@ const TreeAdapterConfigs: Record<string, AdapterOptions & Record<string, unknown
     },
         nodeToRange(node: Record<string, unknown>): [number, number] | null {
       if (node === null || node === undefined || typeof node !== 'object') {
-        // oxlint-disable-next-line unicorn/no-null -- nodeToRange API returns [number, number] | null; null means "no range"
         return null;
       }
       if (node.range !== undefined && node.range !== null) {
@@ -186,7 +183,6 @@ const TreeAdapterConfigs: Record<string, AdapterOptions & Record<string, unknown
       if (typeof node.start === 'number' && typeof node.end === 'number') {
         return [node.start, node.end];
       }
-      // oxlint-disable-next-line unicorn/no-null -- nodeToRange API returns [number, number] | null; null means "no range"
       return null;
     },
         nodeToName(node: Record<string, unknown>): string {

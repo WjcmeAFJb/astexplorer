@@ -74,7 +74,6 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
           result: {
             time: Date.now() - start,
             ast: ast,
-            // oxlint-disable-next-line unicorn/no-null -- ParseResult type uses null to indicate "no error"
             error: null,
             treeAdapter,
           },
@@ -86,11 +85,8 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
         next({
           type: 'SET_PARSE_RESULT',
           result: {
-            // oxlint-disable-next-line unicorn/no-null -- ParseResult type uses null for error cases
             time: null,
-            // oxlint-disable-next-line unicorn/no-null -- ParseResult type uses null for error cases
             ast: null,
-            // oxlint-disable-next-line unicorn/no-null -- ParseResult type uses null for error cases
             treeAdapter: null,
             error,
           },

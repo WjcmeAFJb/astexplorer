@@ -57,7 +57,6 @@ type TreeProps = {
 };
 
 export default function Tree({parseResult, position}: TreeProps): React.ReactElement {
-  // oxlint-disable-next-line unicorn/no-null -- React useReducer API requires null as the second arg when using a lazy initializer
   const [settings, updateSettings] = useReducer(reducer, null, initSettings);
   const treeAdapter = useMemo(
     () => treeAdapterFromParseResult(parseResult, settings),

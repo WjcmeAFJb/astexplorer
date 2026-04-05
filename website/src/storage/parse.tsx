@@ -13,7 +13,6 @@ function getIDAndRevisionFromHash() {
       rev: match[2] ?? 0,
     };
   }
-  // oxlint-disable-next-line unicorn/no-null -- return type is object | null; null means "no match found in URL"
   return null;
 }
 
@@ -60,7 +59,6 @@ export function fetchFromURL() {
   if (urlParameters !== null) {
     return fetchSnippet(urlParameters.id, urlParameters.rev);
   }
-  // oxlint-disable-next-line unicorn/no-null -- fetchFromURL returns Promise<Revision | null>; null means "no snippet to load"
   return Promise.resolve(null);
 }
 
@@ -168,7 +166,6 @@ class Revision {
   getParserSettings(): Record<string, unknown> | false | null {
     const settings = this._data.settings;
     if (settings === undefined) {
-      // oxlint-disable-next-line unicorn/no-null -- getParserSettings returns Record | false | null; null means "no settings available"
       return null;
     }
     const parserSettings = settings[this.getParserID()];

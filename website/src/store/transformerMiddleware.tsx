@@ -13,7 +13,6 @@ async function transform(transformer: Transformer, transformCode: string, code: 
     // oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- transformer._promise resolves to an untyped third-party module
     realTransformer = await transformer._promise as {version?: string, [key: string]: unknown};
     let result = await transformer.transform(realTransformer, transformCode, code);
-    // oxlint-disable-next-line unicorn/no-null -- TransformResult.map is typed as SourceMapConsumer | null
     let map = null;
     if (typeof result !== 'string') {
       if (result.map !== undefined && result.map !== null) {
@@ -21,7 +20,6 @@ async function transform(transformer: Transformer, transformCode: string, code: 
       }
       result = result.code;
     }
-    // oxlint-disable-next-line unicorn/no-null -- TransformResult.error is typed as Error | null; null means "no error"
     return { result, map, version: realTransformer.version, error: null };
   } catch(err) {
     const error = err instanceof Error ? err : new Error(String(err));
