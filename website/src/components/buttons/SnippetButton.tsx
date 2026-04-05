@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 import ForkButton from './ForkButton';
@@ -6,7 +7,19 @@ import SaveButton from './SaveButton';
 import ShareButton from './ShareButton';
 import cx from '../../utils/classnames';
 
-export default function SnippetButton(props?: any): React.ReactElement {
+type SnippetButtonProps = {
+  canFork?: boolean;
+  canSave?: boolean;
+  forking?: boolean;
+  saving?: boolean;
+  onFork?: () => void;
+  onSave?: () => void;
+  onNew?: () => void;
+  onShareButtonClick?: () => void;
+  snippet?: unknown;
+};
+
+export default function SnippetButton(props: SnippetButtonProps): React.ReactElement {
   const canForkAndNotSave = props.canFork && !props.canSave;
   const savingOrForking = props.saving || props.forking;
 

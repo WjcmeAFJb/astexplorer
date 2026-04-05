@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/no-null -- legacy code uses null for storage state values
 import type {SnippetData, Revision, StorageBackend} from '../types';
 
 export default class StorageHandler {

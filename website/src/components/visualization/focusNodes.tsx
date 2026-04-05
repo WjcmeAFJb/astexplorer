@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 /**
  * This may be a horrible way to do it, but this function is called from React
  * components to "collect" all elements that represent AST nodes that are
@@ -36,6 +37,7 @@ export default function(message: 'init' | 'add' | 'focus', arg?: React.RefObject
         } else if (size > 1) {
           const rootRect = root.getBoundingClientRect();
           const center = (rootRect.y + rootRect.height) / 2 + rootRect.y;
+          // oxlint-disable-next-line unicorn/no-null -- null represents "no closest element found yet"; compared with === null below
           let closest: [HTMLElement, number] | null = null;
           for (const ref of nodes) {
             if (!ref.current) {

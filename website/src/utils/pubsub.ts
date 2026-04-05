@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 const subscribers: Record<string, Array<(data: unknown) => void>> = {};
 
 export function subscribe(topic: string, handler: (data: unknown) => void): () => void {

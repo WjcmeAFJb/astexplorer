@@ -1,3 +1,4 @@
+// oxlint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions, typescript-eslint/strict-boolean-expressions -- dialog backdrop: click-outside-to-close pattern does not need keyboard equivalent; legacy untyped code
 import PropTypes from 'prop-types';
 import React from 'react';
 import type {Parser} from '../../types';
@@ -76,6 +77,7 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
         </div>
       );
     }
+    // oxlint-disable-next-line unicorn/no-null -- React render: null is the standard way to render nothing
     return null;
   }
 }

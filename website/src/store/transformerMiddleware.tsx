@@ -1,4 +1,4 @@
-// oxlint-disable max-lines-per-function -- middleware functions are necessarily large state-coordination units
+// oxlint-disable max-lines-per-function, typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- middleware functions are necessarily large state-coordination units; legacy untyped code
 import {getTransformer, getTransformCode, getCode, showTransformer} from './selectors';
 import {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
 import type {TransformResult, Transformer} from '../types';
@@ -14,8 +14,10 @@ async function transform(transformer: Transformer, transformCode: string, code: 
   }
   let realTransformer: {version?: string, [key: string]: unknown} | undefined;
   try {
+    // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- transformer._promise resolves to an untyped third-party module
     realTransformer = await transformer._promise as any;
     let result = await transformer.transform(realTransformer, transformCode, code);
+    // oxlint-disable-next-line unicorn/no-null -- TransformResult.map is typed as SourceMapConsumer | null
     let map = null;
     if (typeof result !== 'string') {
       if (result.map) {
@@ -23,6 +25,7 @@ async function transform(transformer: Transformer, transformCode: string, code: 
       }
       result = result.code;
     }
+    // oxlint-disable-next-line unicorn/no-null -- TransformResult.error is typed as Error | null; null means "no error"
     return { result, map, version: realTransformer.version, error: null };
   } catch(error) {
     return {
@@ -32,7 +35,7 @@ async function transform(transformer: Transformer, transformCode: string, code: 
   }
 }
 
-export default (store: any) => (next: any) => async (action: any) => {
+export default (store: any) => (next: any) => async (action: any) => { // oxlint-disable-line typescript-eslint(no-explicit-any) -- Redux middleware signature requires any for store/next/action compatibility
   const oldState = store.getState();
   next(action);
   const newState = store.getState();

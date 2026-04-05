@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import React from 'react';
 import api from './api';
 import {getParserByID} from 'astexplorer-parsers';
@@ -11,6 +12,7 @@ function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | nul
       rev: match[2],
     };
   }
+  // oxlint-disable-next-line unicorn/no-null -- return type is object | null; null means "no match found in URL"
   return null;
 }
 
@@ -46,6 +48,7 @@ export function matchesURL(): boolean {
 export function fetchFromURL(): Promise<Revision | null> {
   const data = getIDAndRevisionFromHash();
   if (!data) {
+    // oxlint-disable-next-line unicorn/no-null -- fetchFromURL returns Promise<Revision | null>; null means "no snippet to load"
     return Promise.resolve(null);
   }
   return fetchSnippet(data.id, data.rev);
@@ -86,6 +89,7 @@ export function update(revision: Revision, data: SnippetData): Promise<Revision>
       if (latestRevision.getTransformerID() && !data.toolID) {
         // Revision was updated to *remove* the transformer, hence we have
         // to signal the server to delete the transform.js file
+        // oxlint-disable-next-line unicorn/no-null -- SnippetData.transform is string | null; null signals the server to delete the transform file
         data.transform = null;
       }
       return api(
@@ -156,6 +160,7 @@ type GistConfig = {
 class Revision {
   _gist: GistData;
   _config: GistConfig;
+  // oxlint-disable-next-line unicorn/no-null -- _code is string | null; null means "not yet computed"
   _code: string | null = null;
 
     constructor(gist: GistData) {

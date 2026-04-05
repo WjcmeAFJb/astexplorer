@@ -1,8 +1,14 @@
+// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
 
-export default function PrettierButton(props?: any): React.ReactElement {
+type PrettierButtonProps = {
+  toggleFormatting?: () => void;
+  enableFormatting?: boolean;
+};
+
+export default function PrettierButton(props: PrettierButtonProps): React.ReactElement {
   return (<button type="button"
             className="toggleBtn"
             onClick={props.toggleFormatting}>

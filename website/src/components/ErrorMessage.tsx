@@ -27,6 +27,7 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps> {
           </div>
         </div>
       </div> :
+      // oxlint-disable-next-line unicorn/no-null -- React render: null is the standard way to conditionally render nothing
       null;
   }
 }

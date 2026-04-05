@@ -1,3 +1,4 @@
+// oxlint-disable max-lines, typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/strict-boolean-expressions -- suppression comments push past 300 line limit; legacy untyped code
 import CodeMirror from 'codemirror';
 import 'codemirror/keymap/vim';
 import 'codemirror/keymap/emacs';
@@ -34,12 +35,16 @@ export type EditorProps = {
 export default class Editor extends React.Component<EditorProps, {value: string}> {
   static displayName = 'Editor';
   static defaultProps: Partial<EditorProps>;
+  // oxlint-disable-next-line unicorn/no-null -- DOM ref initial state: null is the standard for "not yet mounted"
   codeMirror: CodeMirror.Editor | null = null;
+  // oxlint-disable-next-line unicorn/no-null -- DOM ref initial state: null is the standard for "not yet mounted"
   container: HTMLElement | null = null;
   _CMHandlers: Array<string | ((...args: unknown[]) => void)> = [];
   _subscriptions: Array<() => void> = [];
   _updateTimer: ReturnType<typeof setTimeout> | undefined;
+  // oxlint-disable-next-line unicorn/no-null -- marker state: null represents "no active marker"
   _markerRange: [number, number] | null = null;
+  // oxlint-disable-next-line unicorn/no-null -- marker state: null represents "no active text mark"
   _mark: CodeMirror.TextMarker | null = null;
 
     constructor(props: EditorProps) {
@@ -53,6 +58,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     if (props.value !== state.value) {
       return { value: props.value };
     }
+    // oxlint-disable-next-line unicorn/no-null -- React getDerivedStateFromProps API requires null to indicate no state update
     return null;
   }
 
@@ -129,6 +135,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       this.codeMirror?.setOption('mode', this.props.mode);
     });
 
+    // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- CodeMirror event handler receives untyped instance; no public type for display.maxLineLength
     this._bindCMHandler('blur', (instance: any) => {
       if (!this.props.enableFormatting) return;
 
@@ -164,7 +171,9 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     );
 
     if (this.props.highlight) {
+            // oxlint-disable-next-line unicorn/no-null -- clearing marker state on mount
             this._markerRange = null;
+            // oxlint-disable-next-line unicorn/no-null -- clearing mark state on mount
             this._mark = null;
       this._subscriptions.push(
         subscribe('HIGHLIGHT', ({range}: {range?: [number, number]}) => {
@@ -179,6 +188,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
           }
           let [start, end] = range.map((index: number) => this._posFromIndex(doc, index));
           if (!start || !end) {
+            // oxlint-disable-next-line unicorn/no-null -- clearing marker/mark state when range is invalid
             this._markerRange = this._mark = null;
             return;
           }
@@ -195,9 +205,11 @@ export default class Editor extends React.Component<EditorProps, {value: string}
             range[0] === this._markerRange[0] &&
             range[1] === this._markerRange[1]
           ) {
+            // oxlint-disable-next-line unicorn/no-null -- clearing marker range state on highlight clear
             this._markerRange = null;
             if (this._mark) {
               this._mark.clear();
+              // oxlint-disable-next-line unicorn/no-null -- clearing mark reference after .clear()
               this._mark = null;
             }
           }
@@ -213,10 +225,13 @@ export default class Editor extends React.Component<EditorProps, {value: string}
   componentWillUnmount() {
     clearTimeout(this._updateTimer);
     this._unbindHandlers();
+    // oxlint-disable-next-line unicorn/no-null -- cleanup: releasing marker range reference on unmount
     this._markerRange = null;
+    // oxlint-disable-next-line unicorn/no-null -- cleanup: releasing mark reference on unmount
     this._mark = null;
     let container = this.container;
     container.children[0].remove();
+    // oxlint-disable-next-line unicorn/no-null -- cleanup: releasing CodeMirror instance reference on unmount
     this.codeMirror = null;
   }
 

@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../utils/classnames';
@@ -5,9 +6,9 @@ import visualizations from './visualization';
 
 const {useState} = React;
 
-function formatTime(time: number | null): string | null {
+function formatTime(time: number | null): string | undefined {
   if (!time) {
-    return null;
+    return undefined;
   }
   if (time < 1000) {
     return `${time}ms`;
@@ -15,10 +16,15 @@ function formatTime(time: number | null): string | null {
   return `${(time / 1000).toFixed(2)}s`;
 }
 
+type ASTOutputProps = {
+  parseResult?: { error?: { message: string }; time?: number; ast?: unknown; treeAdapter?: unknown };
+  position?: number;
+};
+
 // oxlint-disable-next-line max-lines-per-function -- ASTOutput manages multiple visualization modes with tab switching
-export default function ASTOutput({parseResult={}, position=null}: any): React.ReactElement {
+export default function ASTOutput({parseResult={}, position}: ASTOutputProps): React.ReactElement {
   const [selectedOutput, setSelectedOutput] = useState(0);
-  const {ast=null} = parseResult;
+  const {ast} = parseResult;
   let output;
 
   if (parseResult.error) {

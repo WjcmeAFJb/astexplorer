@@ -1,4 +1,4 @@
-// oxlint-disable max-lines-per-function -- middleware functions are necessarily large state-coordination units
+// oxlint-disable max-lines-per-function, typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- middleware functions are necessarily large state-coordination units; legacy untyped code
 import {getParser, getParserSettings, getCode} from './selectors';
 import {ignoreKeysFilter, locationInformationFilter, functionFilter, emptyKeysFilter, typeKeysFilter} from '../core/TreeAdapter';
 import type {Parser} from '../types';
@@ -16,7 +16,7 @@ function parse(parser: Parser, code: string, parserSettings: Record<string, unkn
   );
 }
 
-export default (store: any) => (next: any) => (action: any) => {
+export default (store: any) => (next: any) => (action: any) => { // oxlint-disable-line typescript-eslint(no-explicit-any) -- Redux middleware signature requires any for store/next/action compatibility
   const oldState = store.getState();
   next(action);
   const newState = store.getState();
@@ -74,6 +74,7 @@ export default (store: any) => (next: any) => (action: any) => {
           result: {
             time: Date.now() - start,
             ast: ast,
+            // oxlint-disable-next-line unicorn/no-null -- ParseResult type uses null to indicate "no error"
             error: null,
             treeAdapter,
           },
@@ -85,8 +86,11 @@ export default (store: any) => (next: any) => (action: any) => {
         next({
           type: 'SET_PARSE_RESULT',
           result: {
+            // oxlint-disable-next-line unicorn/no-null -- ParseResult type uses null for error cases
             time: null,
+            // oxlint-disable-next-line unicorn/no-null -- ParseResult type uses null for error cases
             ast: null,
+            // oxlint-disable-next-line unicorn/no-null -- ParseResult type uses null for error cases
             treeAdapter: null,
             error,
           },

@@ -1,3 +1,4 @@
+// oxlint-disable jsx-a11y/click-events-have-key-events -- menu <li> elements delegate to inner <button> which provides keyboard access
 import PropTypes from 'prop-types';
 import React from 'react';
 import {getParserByID} from 'astexplorer-parsers';

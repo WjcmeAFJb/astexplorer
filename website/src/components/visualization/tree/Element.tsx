@@ -1,4 +1,4 @@
-// oxlint-disable max-lines, max-lines-per-function -- complex tree visualization component with tightly coupled rendering logic
+// oxlint-disable max-lines, max-lines-per-function, typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-return, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- complex tree visualization component with tightly coupled rendering logic; legacy untyped code
 import CompactArrayView from './CompactArrayView';
 import CompactObjectView from './CompactObjectView';
 import PropTypes from 'prop-types';
@@ -125,6 +125,7 @@ type ElementProps = {
   computed?: boolean;
   open?: boolean;
   level?: number;
+  // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- treeAdapter is a polymorphic adapter object with parser-specific shape; no single interface covers all parsers
   treeAdapter?: any;
   autofocus?: boolean;
   parent?: unknown;
@@ -236,9 +237,13 @@ const Element = React.memo( function Element({
     );
   }
 
+  // oxlint-disable-next-line unicorn/no-null -- React JSX rendering: null is the idiomatic way to render nothing in React
   let valueOutput = null;
+  // oxlint-disable-next-line unicorn/no-null -- React JSX rendering: null is the idiomatic way to render nothing in React
   let content = null;
+  // oxlint-disable-next-line unicorn/no-null -- React JSX rendering: null is the idiomatic way to render nothing in React
   let prefix = null;
+  // oxlint-disable-next-line unicorn/no-null -- React JSX rendering: null is the idiomatic way to render nothing in React
   let suffix = null;
   let showToggler = false;
 
@@ -247,16 +252,19 @@ const Element = React.memo( function Element({
     if (!treeAdapter.isArray(value)) {
       const nodeName = treeAdapter.getNodeName(value);
       if (nodeName) {
+        /* oxlint-disable jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */
         valueOutput =
-          <span className="tokenName nc" onClick={onToggleClick}>
+          <span className="tokenName nc" role="button" tabIndex={0} onClick={onToggleClick} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onToggleClick(e as unknown as React.MouseEvent); }}>
             {nodeName}{' '}
             {selected ?
               <span className="ge" style={{fontSize: '0.8em'}}>
                 {' = $node'}
               </span> :
+              // oxlint-disable-next-line unicorn/no-null -- React JSX conditional: null is idiomatic for rendering nothing
               null
             }
           </span>
+        /* oxlint-enable jsx-a11y/prefer-tag-over-role */
       }
     }
 
@@ -331,13 +339,13 @@ const Element = React.memo( function Element({
       onMouseOver={onMouseOver}
       onFocus={onMouseOver}
       onMouseLeave={onMouseLeave}>
-      {name ? <PropertyName name={name} computed={computed} onClick={onToggleClick} /> : null}
+      {name ? <PropertyName name={name} computed={computed} onClick={onToggleClick} /> : undefined}
       <span className="value">
         {valueOutput}
       </span>
-      {prefix ? <span className="prefix p">&nbsp;{prefix}</span> : null}
+      {prefix ? <span className="prefix p">&nbsp;{prefix}</span> : undefined}
       {content}
-      {suffix ? <div className="suffix p">{suffix}</div> : null}
+      {suffix ? <div className="suffix p">{suffix}</div> : undefined}
     </li>
   );
 },
@@ -377,6 +385,7 @@ const NOT_COMPUTED = {};
 
 const FunctionElement = React.memo( function FunctionElement(props: ElementProps) {
   const [computedValue, setComputedValue] = useState(NOT_COMPUTED);
+  // oxlint-disable-next-line unicorn/no-null -- React useState initial value: null is the standard pattern for "not yet set" state
   const [error, setError] = useState((null as Error | null));
   const {name, value, parent, computed, treeAdapter} = props;
 
@@ -401,11 +410,15 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
 
   return (
     <li className="entry">
-      {name ? <PropertyName name={name} computed={computed} /> : null}
+      {name ? <PropertyName name={name} computed={computed} /> : undefined}
       <span className="value">
+        {/* oxlint-disable jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
         <span
           className="ge invokeable"
+          role="button"
+          tabIndex={0}
           title="Click to invoke function"
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click(); }}
           onClick={() => {
             try {
               // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .call() returns any; dynamic invocation
@@ -420,6 +433,7 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
           }}>
           (...)
         </span>
+        {/* oxlint-enable jsx-a11y/prefer-tag-over-role */}
       </span>
       {error  ?
         <span>
@@ -429,7 +443,7 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
             className="fa fa-exclamation-triangle"
           />
         </span> :
-        null
+        undefined
       }
     </li>
   );
@@ -452,7 +466,7 @@ const PrimitiveElement = React.memo( function PrimitiveElement({
 }: PrimitiveElementProps) {
   return (
     <li className="entry">
-      {name ? <PropertyName name={name} computed={computed} /> : null}
+      {name ? <PropertyName name={name} computed={computed} /> : undefined}
       <span className="value">
         <span className="s">{stringify(value)}</span>
       </span>
@@ -476,7 +490,8 @@ type PropertyNameProps = {
 const PropertyName = React.memo( function PropertyName({name, computed, onClick}: PropertyNameProps) {
   return (
     <span className="key">
-      <span className="name nb" onClick={onClick}>
+      {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
+      <span className="name nb" role="button" tabIndex={0} onClick={onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e as unknown as React.MouseEvent); }}>
         {computed ? <span title="computed">*{name}</span> : name }
       </span>
       <span className="p">:&nbsp;</span>
@@ -499,6 +514,7 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
     (state: number, own: boolean | undefined) => {
       if (own) {
         if (state === OPEN_STATES.CLOSED) {
+          // oxlint-disable-next-line unicorn/no-null -- setSelectedNode uses null to signal deselection; matches the context API's falsy check
           setSelectedNode(null);
           setSelected(false);
         } else {

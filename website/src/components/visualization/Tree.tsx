@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import Element from './tree/Element';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -28,14 +29,14 @@ function initSettings() {
     };
 }
 
-function reducer(state: Record<string, boolean>, element: any): Record<string, boolean> {
+function reducer(state: Record<string, boolean>, element: {name: string; checked: boolean}): Record<string, boolean> {
   const newState = {...state, [element.name]: element.checked};
 
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
   return newState;
 }
 
-function makeCheckbox(name: string, settings: Record<string, boolean>, updateSettings: any): React.ReactElement {
+function makeCheckbox(name: string, settings: Record<string, boolean>, updateSettings: React.Dispatch<{name: string; checked: boolean}>): React.ReactElement {
   return (
     <input
       type="checkbox"
@@ -46,7 +47,13 @@ function makeCheckbox(name: string, settings: Record<string, boolean>, updateSet
   );
 }
 
-export default function Tree({parseResult, position}: any): React.ReactElement {
+type TreeProps = {
+  parseResult: { ast: unknown; treeAdapter: unknown };
+  position?: number;
+};
+
+export default function Tree({parseResult, position}: TreeProps): React.ReactElement {
+  // oxlint-disable-next-line unicorn/no-null -- React useReducer API requires null as the second arg when using a lazy initializer
   const [settings, updateSettings] = useReducer(reducer, null, initSettings);
   const treeAdapter = useMemo(
     () => treeAdapterFromParseResult(parseResult, settings),

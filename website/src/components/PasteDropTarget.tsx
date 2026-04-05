@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 import { categories } from 'astexplorer-parsers';
@@ -28,6 +29,7 @@ type PasteDropTargetProps = PasteDropTargetOwnProps & Record<string, unknown>;
 export default class PasteDropTarget extends React.Component<PasteDropTargetProps, {dragging: boolean}> {
   static displayName = 'PasteDropTarget';
   _listeners: Array<() => void> | null = [];
+  // oxlint-disable-next-line unicorn/no-null -- DOM ref initial state: null is the standard for "not yet mounted"
   container: HTMLElement | null = null;
 
     constructor(props: PasteDropTargetProps) {
@@ -138,6 +140,7 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
     for (const removeListener of this._listeners) {
       removeListener();
     }
+    // oxlint-disable-next-line unicorn/no-null -- cleanup: releasing listener array reference on unmount
     this._listeners = null;
   }
 
@@ -149,7 +152,7 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
     catch {
       return Promise.resolve(json);
     }
-    return importEscodegen().then((escodegen: any) => {
+    return importEscodegen().then((escodegen) => {
       return escodegen.generate(ast, {format: {indent: {style: '  '}}});
     });
   }
@@ -169,6 +172,7 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
       <div className="dropIndicator">
         <div>Drop the code or (JSON-encoded) AST file here</div>
       </div> :
+      // oxlint-disable-next-line unicorn/no-null -- React conditional rendering: null is idiomatic for rendering nothing
       null;
 
     return (

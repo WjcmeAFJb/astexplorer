@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-return, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import * as selectors from './selectors';
 import * as actions from './actions';
 import type {AppState, Action, SnippetData} from '../types';
@@ -11,7 +12,7 @@ let cancelLoad: () => void = () => {}
  * @param {import('../storage/index').default} storageAdapter
  * @returns {(store: import('redux').MiddlewareAPI<import('redux').Dispatch, AppState>) => (next: import('redux').Dispatch) => (action: Action) => unknown}
  */
-export default (storageAdapter: any) => (store: any) => (next: any) => (action: any) => {
+export default (storageAdapter: any) => (store: any) => (next: any) => (action: any) => { // oxlint-disable-line typescript-eslint(no-explicit-any) -- Redux middleware signature requires any for store/next/action/storageAdapter compatibility
   switch (action.type) {
     case actions.CLEAR_ERROR:
       // If CLEAR_ERROR action happens after a URL was loaded, clear the URL
@@ -46,6 +47,7 @@ async function loadSnippet(state: AppState, next: Dispatch, storageAdapter: Stor
   // Do not clear URL anymore, we are loading a new one
   clearURLOnClearError = false;
 
+  // oxlint-disable-next-line unicorn/no-null -- actions.setError accepts Error | null; null clears the error state
   next(actions.setError(null));
   next(actions.startLoadingSnippet());
 

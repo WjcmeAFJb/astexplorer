@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-call, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 // @ts-expect-error — no declaration file
 import isEqual from 'lodash.isequal';
 import {getParserByID, getTransformerByID} from 'astexplorer-parsers';

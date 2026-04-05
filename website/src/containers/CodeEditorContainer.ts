@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import {connect} from 'react-redux';
 import {setCode, setCursor} from '../store/actions';
 import Editor from '../components/Editor';

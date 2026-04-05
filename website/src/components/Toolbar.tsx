@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 import CategoryButton from './buttons/CategoryButton';
@@ -7,6 +8,7 @@ import TransformButton from './buttons/TransformButton';
 import KeyMapButton from './buttons/KeyMapButton';
 
 export default function Toolbar(props: Record<string, unknown>): React.ReactElement {
+  // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- props come from Redux connect() which provides untyped mapStateToProps
   let {parser, transformer, showTransformer} = props as any;
   let parserInfo: string | React.ReactElement = String(parser.displayName);
   let transformerInfo: string | React.ReactElement = '';

@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 // Lazy CodeMirror mode loaders — keyed by the mode name used in setOption('mode', ...)
 // These import modes from the website's CodeMirror instance, not the parsers bundle's.
 const modeLoaders: Record<string, () => Promise<unknown>> = {

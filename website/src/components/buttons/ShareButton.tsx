@@ -1,7 +1,13 @@
+// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function ShareButton({onShareButtonClick, snippet}: any): React.ReactElement {
+type ShareButtonProps = {
+  onShareButtonClick?: () => void;
+  snippet?: unknown;
+};
+
+export default function ShareButton({onShareButtonClick, snippet}: ShareButtonProps): React.ReactElement {
   return (
     <button
       type="button"

@@ -49,10 +49,12 @@ class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
 
   render() {
     if (!this.state.visible) {
+      // oxlint-disable-next-line unicorn/no-null -- React render: null is the standard way to conditionally render nothing
       return null;
     }
 
     if (!this.props.revision || this.props.revision.canSave()) {
+      // oxlint-disable-next-line unicorn/no-null -- React render: null is the standard way to conditionally render nothing
       return null;
     }
 

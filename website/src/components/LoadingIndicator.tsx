@@ -1,7 +1,12 @@
+// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function LoadingIndicator(props?: any): React.ReactElement | null {
+type LoadingIndicatorProps = {
+  visible?: boolean;
+};
+
+export default function LoadingIndicator(props: LoadingIndicatorProps): React.ReactElement | undefined {
   return props.visible ?
     <div
       className="loadingIndicator cover">
@@ -9,7 +14,7 @@ export default function LoadingIndicator(props?: any): React.ReactElement | null
         <i className="fa fa-lg fa-spinner fa-pulse"></i>
       </div>
     </div> :
-    null;
+    undefined;
 }
 
 LoadingIndicator.propTypes = {

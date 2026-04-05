@@ -1,3 +1,4 @@
+// oxlint-disable jsx-a11y/click-events-have-key-events, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- menu <li> elements delegate to inner <button> which provides keyboard access; legacy untyped code
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
@@ -34,6 +35,7 @@ export default class TransformButton extends React.Component<TransformButtonProp
 
   _onToggle() {
     if (this.props.transformer) {
+      // oxlint-disable-next-line unicorn/no-null -- onTransformChange API uses null to signal "no transformer selected"
       this.props.onTransformChange(null);
     }
   }

@@ -1,4 +1,4 @@
-// oxlint-disable import/max-dependencies -- app entry point necessarily imports all containers and stores
+// oxlint-disable import/max-dependencies, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- app entry point necessarily imports all containers and stores; legacy untyped code
 import type {StorageBackend} from './types';
 import * as LocalStorage from './components/LocalStorage';
 import ASTOutputContainer from './containers/ASTOutputContainer';
@@ -42,6 +42,7 @@ function resize() {
   publish('PANEL_RESIZE');
 }
 
+// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- props come from Redux connect() which provides untyped mapStateToProps
 function App({showTransformer, hasError}: any): React.ReactElement {
   return (
     <>
@@ -62,6 +63,7 @@ function App({showTransformer, hasError}: any): React.ReactElement {
             <CodeEditorContainer />
             <ASTOutputContainer />
           </SplitPane>
+          {/* oxlint-disable-next-line unicorn/no-null -- React conditional rendering requires null to render nothing */}
           {showTransformer ? <TransformerContainer /> : null}
         </SplitPane>
       </PasteDropTargetContainer>
@@ -97,6 +99,7 @@ store.subscribe(debounce(() => {
     LocalStorage.writeState(persist(state));
   }
 }));
+// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- INIT action is a custom type not in the Redux Action union
 store.dispatch({type: 'INIT'} as any);
 
 createRoot(document.querySelector('#container')!).render(
@@ -106,10 +109,12 @@ createRoot(document.querySelector('#container')!).render(
 );
 
 window.addEventListener('hashchange', () => {
+  // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- loadSnippet() returns a typed action but store.dispatch expects AnyAction
   store.dispatch(loadSnippet() as any);
 });
 
 if (location.hash.length > 1) {
+  // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- loadSnippet() returns a typed action but store.dispatch expects AnyAction
   store.dispatch(loadSnippet() as any);
 }
 

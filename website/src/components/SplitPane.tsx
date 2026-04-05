@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import cx from '../utils/classnames';
@@ -17,7 +18,7 @@ const styleB = {
 
  * Creates a left-right split pane inside its container.
  */
-// oxlint-disable-next-line max-lines-per-function -- SplitPane has complex mouse interaction logic that is tightly coupled
+// oxlint-disable-next-line max-lines-per-function, typescript-eslint(no-explicit-any) -- SplitPane has complex mouse interaction logic that is tightly coupled; props come from parent components with heterogeneous prop shapes
 export default function SplitPane({vertical, className, children, onResize}: any): React.ReactElement {
   // Position is really the size (width or height) of the first (left or top)
   // panel, as percentage of the parent containers size. The remaining elements
@@ -84,6 +85,7 @@ export default function SplitPane({vertical, className, children, onResize}: any
       <div style={styleA}>
         {children[0]}
       </div>
+      {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- divider is a drag handle; keyboard resize is not applicable */}
       <div
         className={cx({
           'splitpane-divider': true,

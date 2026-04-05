@@ -1,3 +1,4 @@
+// oxlint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- dialog backdrop: click-outside-to-close pattern does not need keyboard equivalent
 import PropTypes from 'prop-types';
 import React from 'react';
 import type {Revision} from '../../types';
@@ -37,6 +38,7 @@ export default class ShareDialog extends React.Component<ShareDialogProps> {
         </div>
       );
     }
+    // oxlint-disable-next-line unicorn/no-null -- React render: null is the standard way to render nothing
     return null;
   }
 }

@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-return -- legacy Redux action creators use any for payload flexibility
 import type { Revision, Category, Transformer, Parser } from '../types';
 
 export const SET_ERROR = 'SET_ERROR';

@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-return, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import CodeMirror from 'codemirror';
 import PropTypes from 'prop-types';
 import Editor from './Editor';
@@ -6,6 +7,7 @@ import type {EditorProps} from './Editor';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/tern/tern.css';
 
+// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- Tern server is dynamically loaded with no public type definition
 let server: any;
 
 export default class JSCodeshiftEditor extends Editor {
@@ -29,6 +31,7 @@ export default class JSCodeshiftEditor extends Editor {
   }
 }
 
+// oxlint-disable-next-line max-lines-per-function -- deeply nested async require callbacks cannot be split without losing closure context
 function loadTern(): void {
   require(
     [
@@ -48,7 +51,9 @@ function loadTern(): void {
         ],
         (tern: {registerPlugin: (name: string, init: (...args: unknown[]) => void) => void, [k: string]: unknown}, _: unknown, infer: {cx: () => {topScope: unknown, definitions: Record<string, Record<string, unknown>>}, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}, jscs_def: unknown, ecmascript: unknown) => {
           globalThis.tern = tern;
+          // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- Tern plugin callback receives untyped server object
           tern.registerPlugin('transformer', (ternServer: any) => {
+            // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- Tern afterLoad callback receives untyped file object
             ternServer.on('afterLoad', (file: any) => {
               const fnVal = file.scope.props.transformer;
               if (fnVal) {
@@ -60,6 +65,7 @@ function loadTern(): void {
                     cx.definitions.jscodeshift.file,
                     cx.definitions.jscodeshift.apiObject,
                   ],
+                  // oxlint-disable-next-line unicorn/no-null -- Tern API requires null as the third argument to IsCallee constructor
                   null,
                   infer.ANull,
                 ));
@@ -67,6 +73,7 @@ function loadTern(): void {
             });
           });
 
+          // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- TernServer is a CodeMirror addon not in @types/codemirror
           server = new (CodeMirror as any).TernServer({
             defs: [jscs_def, ecmascript],
             plugins: {

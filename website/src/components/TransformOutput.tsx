@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-member-access, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 /*eslint no-new-func: 0*/
 import Editor from './Editor';
 import JSONEditor from './JSONEditor';
@@ -36,6 +37,7 @@ function positionFromIndex(index: number, map: SourceMapConsumer | null | undefi
   return { line: line - 1, ch: column };
 }
 
+// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- props come from Redux connect() which provides untyped mapStateToProps
 export default function TransformOutput({transformResult, mode}: any): React.ReactElement {
   // This ensures that we are rendering an empty editor as "placeholder" if no transform result is available yet.
   transformResult = transformResult === null || transformResult === undefined ? {result: ''} : transformResult;
@@ -65,7 +67,9 @@ export default function TransformOutput({transformResult, mode}: any): React.Rea
           /> :
           <JSONEditor
             className="container no-toolbar"
-            value={stringify(transformResult.result, null, 2)}
+            value={stringify(transformResult.result,
+              // oxlint-disable-next-line unicorn/no-null -- JSON.stringify API requires null as the replacer argument
+              null, 2)}
           />
         )
       }

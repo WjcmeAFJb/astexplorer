@@ -1,4 +1,4 @@
-// oxlint-disable max-lines-per-function, max-lines, typescript-eslint/switch-exhaustiveness-check -- reducer is a single large switch; each sub-reducer handles a subset of action types with default fallthrough
+// oxlint-disable max-lines-per-function, max-lines, typescript-eslint/switch-exhaustiveness-check, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- reducer is a single large switch; each sub-reducer handles a subset of action types with default fallthrough; legacy untyped code
 import * as actions from './actions';
 import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from 'astexplorer-parsers';
 import type {Revision, Category, Transformer, Action, WorkbenchState, AppState} from '../types';
@@ -14,11 +14,14 @@ const initialState: AppState = {
   loadingSnippet: false,
   forking: false,
   saving: false,
+  // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to represent "no cursor"; checked by identity in selectors
   cursor: null,
+  // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to represent "no error"; checked by identity in selectors
   error: null,
   showTransformPanel: false,
 
   // Snippet related state
+  // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to represent "no revision loaded"
   selectedRevision: null,
 
   // Workbench settings
@@ -31,7 +34,9 @@ const initialState: AppState = {
 
   workbench: {
     parser: defaultParser.id,
+    // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no parser-specific settings"
     parserSettings: null,
+    // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no parse error"
     parseError: null,
     code: defaultParser.category.codeExample,
     keyMap: 'default',
@@ -39,7 +44,9 @@ const initialState: AppState = {
     transform: {
       code: '',
       initialCode: '',
+      // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no transformer selected"
       transformer: null,
+      // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no transform result yet"
       transformResult: null,
     },
   },
@@ -73,7 +80,8 @@ export function revive(state: AppState =initialState): AppState {
     workbench: {
       ...state.workbench,
       initialCode: state.workbench.code,
-      parserSettings: state.parserSettings[state.workbench.parser] || null,
+      // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no parser-specific settings"
+      parserSettings: state.parserSettings[state.workbench.parser] ?? null,
       transform: {
         ...state.workbench.transform,
         initialCode: state.workbench.transform.code,
@@ -131,7 +139,8 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
       getDefaultParser(category).id;
     return {
       parser,
-      parserSettings: fullState.parserSettings[parser] || null,
+      // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no parser-specific settings"
+      parserSettings: fullState.parserSettings[parser] ?? null,
       code: category.codeExample,
       initialCode: category.codeExample,
     };
@@ -161,7 +170,8 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         if (action.parser !== state.parser) {
           // Update parser settings
           newState.parserSettings =
-            fullState.parserSettings[action.parser.id] || null;
+            // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no parser-specific settings"
+            fullState.parserSettings[action.parser.id] ?? null;
 
           // Check if we might want to reformat the code example
           const transformer = getTransformerByID(state.transform.transformer)
@@ -194,7 +204,8 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         if (differentParser) {
           newState.parser = action.transformer.defaultParserID;
           newState.parserSettings =
-            fullState.parserSettings[action.transformer.defaultParserID] || null;
+            // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no parser-specific settings"
+            fullState.parserSettings[action.transformer.defaultParserID] ?? null;
         }
 
         if (differentTransformer) {
@@ -203,6 +214,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
           newState.transform = {
             ...state.transform,
             transformer: action.transformer.id,
+            // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no transform result yet"
             transformResult: null,
             code: snippetHasDifferentTransform ?
               state.transform.code :
@@ -241,7 +253,8 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         return {
           ...state,
           parser: parserID,
-          parserSettings: revision.getParserSettings() || fullState.parserSettings[parserID] || null,
+          // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no parser-specific settings"
+          parserSettings: revision.getParserSettings() ?? fullState.parserSettings[parserID] ?? null,
           code: revision.getCode(),
           initialCode: revision.getCode(),
           transform: {
@@ -258,7 +271,8 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         const reset = Boolean(actions.RESET);
         const newState = {
           ...state,
-          parserSettings: fullState.parserSettings[state.parser] || null,
+          // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no parser-specific settings"
+          parserSettings: fullState.parserSettings[state.parser] ?? null,
           code: getParserByID(state.parser).category.codeExample,
           initialCode: getParserByID(state.parser).category.codeExample,
         };
@@ -386,6 +400,7 @@ function cursor(state: number | null =initialState.cursor, action: Action): numb
     case actions.RESET:
     case actions.SET_SNIPPET:
     case actions.CLEAR_SNIPPET:
+      // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to represent "no cursor"
       return null;
     default:
       return state;
@@ -397,6 +412,7 @@ function error(state: Error | null =initialState.error, action: Action): Error |
     case actions.SET_ERROR:
       return action.error;
     case actions.CLEAR_ERROR:
+      // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to represent "no error"
       return null;
     default:
       return state;
@@ -425,6 +441,7 @@ function activeRevision(state: Revision | null =initialState.selectedRevision, a
     case actions.SELECT_CATEGORY:
     case actions.CLEAR_SNIPPET:
     case actions.RESET:
+      // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to represent "no active revision"
       return null;
     default:
       return state;

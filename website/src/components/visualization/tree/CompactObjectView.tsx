@@ -1,7 +1,13 @@
+// oxlint-disable typescript-eslint/no-unsafe-type-assertion -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function CompactObjectView({keys, onClick}: any): React.ReactElement {
+type CompactObjectViewProps = {
+  keys: string[];
+  onClick?: (event: React.MouseEvent) => void;
+};
+
+export default function CompactObjectView({keys, onClick}: CompactObjectViewProps): React.ReactElement {
   if (keys.length === 0) {
     return <span className="p">{'{ }'}</span>;
   }
@@ -11,7 +17,8 @@ export default function CompactObjectView({keys, onClick}: any): React.ReactElem
   return (
     <span>
       <span className="p">{'{'}</span>
-      <span className="compact placeholder ge" onClick={onClick}>
+      {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
+      <span className="compact placeholder ge" role="button" tabIndex={0} onClick={onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e as unknown as React.MouseEvent); }}>
         {keys.join(', ')}
       </span>
       <span className="p">{'}'}</span>

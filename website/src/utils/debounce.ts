@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/no-null, typescript-eslint/strict-boolean-expressions -- legacy code uses null for timer state; strict boolean checks not feasible without full type migration
 export default function debounce(f: (...args: unknown[]) => void, timeout?: number): (...args: unknown[]) => void {
     let timer: ReturnType<typeof setTimeout> | null;
     let lastArgs: unknown[];

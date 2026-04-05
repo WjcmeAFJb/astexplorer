@@ -1,7 +1,14 @@
+// oxlint-disable typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function SaveButton({saving, forking, onNew}: any): React.ReactElement {
+type NewButtonProps = {
+  saving?: boolean;
+  forking?: boolean;
+  onNew?: () => void;
+};
+
+export default function SaveButton({saving, forking, onNew}: NewButtonProps): React.ReactElement {
   return (
     <button
       type="button"

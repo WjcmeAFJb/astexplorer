@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-member-access -- legacy untyped code; full strict typing migration tracked as tech debt
 import Editor from './Editor';
 import JSCodeshiftEditor from './JSCodeshiftEditor';
 import PropTypes from 'prop-types';
@@ -11,6 +12,7 @@ function resize() {
   publish('PANEL_RESIZE');
 }
 
+// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- props come from Redux connect() which provides untyped mapStateToProps
 export default function Transformer(props?: any): React.ReactElement {
   const plainEditor = React.createElement(
     props.transformer.id === 'jscodeshift' ? JSCodeshiftEditor : Editor,

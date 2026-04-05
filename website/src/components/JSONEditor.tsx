@@ -14,7 +14,9 @@ type JSONEditorProps = {
 
 export default class Editor extends React.Component<JSONEditorProps> {
   static displayName = 'JSONEditor';
+  // oxlint-disable-next-line unicorn/no-null -- DOM ref initial state: null is the standard for "not yet mounted"
   codeMirror: CodeMirror.Editor | null = null;
+  // oxlint-disable-next-line unicorn/no-null -- DOM ref initial state: null is the standard for "not yet mounted"
   container: HTMLElement | null = null;
   _subscriptions: Array<() => void> = [];
 
@@ -57,6 +59,7 @@ export default class Editor extends React.Component<JSONEditorProps> {
     this._unbindHandlers();
     let container = this.container;
     container.children[0].remove();
+    // oxlint-disable-next-line unicorn/no-null -- cleanup: releasing CodeMirror instance reference on unmount
     this.codeMirror = null;
   }
 

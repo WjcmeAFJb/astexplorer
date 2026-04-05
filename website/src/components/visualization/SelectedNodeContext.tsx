@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import React from 'react';
 
 type SetSelectedNodeFn = (node: unknown, cb?: () => void) => void;
@@ -25,6 +26,7 @@ function setSelectedNode(node: unknown, cb?: () => void) {
     globalThis.$node = node;
     unselectCallback = cb;
   } else {
+    // oxlint-disable-next-line unicorn/no-null -- clearing callback reference when deselecting a node
     unselectCallback = null;
     delete globalThis.$node;
   }

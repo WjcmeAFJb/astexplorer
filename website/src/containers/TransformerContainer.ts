@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import {connect} from 'react-redux';
 import Transformer from '../components/Transformer';
 import {setTransformState, toggleFormatting} from '../store/actions';

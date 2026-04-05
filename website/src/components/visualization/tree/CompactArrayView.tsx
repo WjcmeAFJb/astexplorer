@@ -1,3 +1,4 @@
+// oxlint-disable typescript-eslint/no-unsafe-type-assertion -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -22,7 +23,8 @@ export default class CompactArrayView extends React.Component<CompactArrayViewPr
     return (
       <span>
         <span className="p">{'['}</span>
-        <span className="compact placeholder ge" onClick={this.props.onClick}>
+        {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
+        <span className="compact placeholder ge" role="button" tabIndex={0} onClick={this.props.onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && this.props.onClick) this.props.onClick(e as unknown as React.MouseEvent); }}>
           {count + ' element' + (count > 1 ? 's' : '')}
         </span>
         <span className="p">{']'}</span>
