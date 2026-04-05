@@ -1,11 +1,7 @@
-// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 const subscribers: Record<string, Array<(data: unknown) => void>> = {};
 
 export function subscribe(topic: string, handler: (data: unknown) => void): () => void {
-  let handlers = subscribers[topic];
-  if (!handlers) {
-    handlers = subscribers[topic] = [];
-  }
+  const handlers = subscribers[topic] ??= [];
   if (!handlers.includes(handler)) {
     handlers.push(handler);
   }
@@ -14,9 +10,9 @@ export function subscribe(topic: string, handler: (data: unknown) => void): () =
 }
 
 export function publish(topic: string, data?: unknown): void {
-  if (subscribers[topic]) {
+  if (subscribers[topic] !== undefined) {
     setTimeout(function callSubscribers() {
-      if (subscribers[topic]) {
+      if (subscribers[topic] !== undefined) {
         const handlers = subscribers[topic];
         for (var i = 0; i < handlers.length; i++) {
           handlers[i](data);

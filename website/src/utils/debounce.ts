@@ -1,6 +1,5 @@
-// oxlint-disable unicorn/no-null, typescript-eslint/strict-boolean-expressions -- legacy code uses null for timer state; strict boolean checks not feasible without full type migration
 export default function debounce(f: (...args: unknown[]) => void, timeout?: number): (...args: unknown[]) => void {
-    let timer: ReturnType<typeof setTimeout> | null;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     let lastArgs: unknown[];
     let lastThis: unknown;
 
@@ -8,11 +7,11 @@ export default function debounce(f: (...args: unknown[]) => void, timeout?: numb
     // oxlint-disable-next-line typescript-eslint/no-this-alias, unicorn/no-this-assignment -- debounce must capture `this` for deferred apply()
     lastThis = this;
     lastArgs = args;
-    if (timer) {
+    if (timer !== undefined) {
       return;
     }
     timer = setTimeout(() => {
-      timer = null;
+      timer = undefined;
       f.apply(lastThis, lastArgs);
     }, timeout);
   };

@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- DOM event.target narrowing; clipboard/file API guard checks
 import PropTypes from 'prop-types';
 import React from 'react';
 import { categories } from 'astexplorer-parsers';

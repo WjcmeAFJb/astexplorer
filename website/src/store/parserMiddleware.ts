@@ -1,4 +1,3 @@
-// oxlint-disable max-lines-per-function -- middleware functions are necessarily large state-coordination units
 import {getParser, getParserSettings, getCode} from './selectors';
 import {ignoreKeysFilter, locationInformationFilter, functionFilter, emptyKeysFilter, typeKeysFilter} from '../core/TreeAdapter';
 import type {Parser, AppState, Action} from '../types';
@@ -15,6 +14,7 @@ function parse(parser: Parser, code: string, parserSettings: Record<string, unkn
   );
 }
 
+// oxlint-disable-next-line max-lines-per-function -- Redux middleware orchestrates multiple async operations
 export default (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
   const oldState = store.getState();
   next(action);

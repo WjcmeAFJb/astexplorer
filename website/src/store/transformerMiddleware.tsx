@@ -1,4 +1,3 @@
-// oxlint-disable max-lines-per-function -- middleware functions are necessarily large state-coordination units
 import {getTransformer, getTransformCode, getCode, showTransformer} from './selectors';
 import {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
 import type {TransformResult, Transformer, AppState, Action} from '../types';
@@ -33,6 +32,7 @@ async function transform(transformer: Transformer, transformCode: string, code: 
   }
 }
 
+// oxlint-disable-next-line max-lines-per-function -- Redux middleware orchestrates multiple async operations
 export default (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (action: Action) => {
   const oldState = store.getState();
   next(action);

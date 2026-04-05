@@ -1,4 +1,4 @@
-// oxlint-disable max-lines, max-lines-per-function, typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-return, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- complex tree visualization component with tightly coupled rendering logic; legacy untyped code
+// oxlint-disable max-lines, max-lines-per-function -- complex tree visualization (550+ lines, deeply nested render functions)
 import CompactArrayView from './CompactArrayView';
 import CompactObjectView from './CompactObjectView';
 import PropTypes from 'prop-types';
@@ -6,6 +6,7 @@ import {publish} from '../../../utils/pubsub';
 import React from 'react';
 import {useSelectedNode} from '../SelectedNodeContext';
 import focusNodes from '../focusNodes'
+import type {TreeAdapter} from '../../../core/TreeAdapter';
 
 import cx from '../../../utils/classnames';
 import stringify from '../../../utils/stringify';
@@ -125,8 +126,7 @@ type ElementProps = {
   computed?: boolean;
   open?: boolean;
   level?: number;
-  // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- treeAdapter is a polymorphic adapter object with parser-specific shape; no single interface covers all parsers
-  treeAdapter?: any;
+  treeAdapter?: TreeAdapter;
   autofocus?: boolean;
   parent?: unknown;
   isInRange?: boolean;
@@ -157,10 +157,10 @@ const Element = React.memo( function Element({
   ) || level === 0;
   const [openState, setOpenState] = useOpenState(
     open,
-    autofocus && (isInRange || hasChildrenInRange),
+    autofocus === true && (isInRange === true || hasChildrenInRange === true),
   );
   const element = useRef((null as HTMLLIElement | null));
-  if (autofocus && isInRange && !hasChildrenInRange) {
+  if (autofocus === true && isInRange === true && hasChildrenInRange !== true) {
     focusNodes('add', element);
   }
 
@@ -247,16 +247,16 @@ const Element = React.memo( function Element({
   let suffix = null;
   let showToggler = false;
 
-  if (value && typeof value === 'object') {
+  if (value !== undefined && value !== null && typeof value === 'object') {
     // Render a useful name for object like nodes
     if (!treeAdapter.isArray(value)) {
       const nodeName = treeAdapter.getNodeName(value);
       if (nodeName) {
-        /* oxlint-disable jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */
+        /* oxlint-disable jsx-a11y/prefer-tag-over-role, typescript-eslint/no-unsafe-type-assertion -- must remain a span; keyboard event forwarded to click handler */
         valueOutput =
           <span className="tokenName nc" role="button" tabIndex={0} onClick={onToggleClick} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onToggleClick(e as unknown as React.MouseEvent); }}>
             {nodeName}{' '}
-            {selected ?
+            {selected === true ?
               <span className="ge" style={{fontSize: '0.8em'}}>
                 {' = $node'}
               </span> :
@@ -264,7 +264,7 @@ const Element = React.memo( function Element({
               null
             }
           </span>
-        /* oxlint-enable jsx-a11y/prefer-tag-over-role */
+        /* oxlint-enable jsx-a11y/prefer-tag-over-role, typescript-eslint/no-unsafe-type-assertion */
       }
     }
 
@@ -328,7 +328,8 @@ const Element = React.memo( function Element({
 
   let classNames = cx({
     entry: true,
-    highlighted: isInRange && (!hasChildrenInRange || !isOpen) || !isInRange && hasChildrenInRange && !isOpen,
+    // oxlint-disable-next-line typescript-eslint/prefer-nullish-coalescing -- boolean expression: falsy values (false) are semantically meaningful here
+    highlighted: isInRange === true && (hasChildrenInRange !== true || !isOpen) || isInRange !== true && hasChildrenInRange === true && !isOpen,
     toggable: showToggler,
     open: isOpen,
   });
@@ -339,13 +340,13 @@ const Element = React.memo( function Element({
       onMouseOver={onMouseOver}
       onFocus={onMouseOver}
       onMouseLeave={onMouseLeave}>
-      {name ? <PropertyName name={name} computed={computed} onClick={onToggleClick} /> : undefined}
+      {name !== undefined && name !== '' ? <PropertyName name={name} computed={computed} onClick={onToggleClick} /> : undefined}
       <span className="value">
         {valueOutput}
       </span>
-      {prefix ? <span className="prefix p">&nbsp;{prefix}</span> : undefined}
+      {prefix !== null && prefix !== '' ? <span className="prefix p">&nbsp;{prefix}</span> : undefined}
       {content}
-      {suffix ? <div className="suffix p">{suffix}</div> : undefined}
+      {suffix !== null && suffix !== '' ? <div className="suffix p">{suffix}</div> : undefined}
     </li>
   );
 },
@@ -363,7 +364,8 @@ const Element = React.memo( function Element({
     prevProps.hasChildrenInRange === nextProps.hasChildrenInRange &&
     //
     // @ts-expect-error — hashChildrenInRange is a typo for hasChildrenInRange in original code; kept as-is
-    ((nextProps.isInRange || nextProps.hashChildrenInRange) && prevProps.position === nextProps.position);
+    // oxlint-disable-next-line typescript-eslint/prefer-nullish-coalescing -- boolean expression: falsy values are semantically meaningful
+    ((nextProps.isInRange === true || nextProps.hashChildrenInRange === true) && prevProps.position === nextProps.position);
 });
 
 // @ts-expect-error — React 16 supports propTypes on memo; @types/react uses a type alias that cannot be augmented
@@ -410,7 +412,7 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
 
   return (
     <li className="entry">
-      {name ? <PropertyName name={name} computed={computed} /> : undefined}
+      {name !== undefined && name !== '' ? <PropertyName name={name} computed={computed} /> : undefined}
       <span className="value">
         {/* oxlint-disable jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
         <span
@@ -421,14 +423,15 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click(); }}
           onClick={() => {
             try {
-              // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .call() returns any; dynamic invocation
+              // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment), typescript-eslint/no-unsafe-type-assertion -- .call() returns any; value confirmed function by parent routing
               const result = (value as (...args: unknown[]) => unknown).call(parent);
               console.log(result); // eslint-disable-line no-console
               // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- result is dynamic
               setComputedValue(result);
             } catch(err) {
-              console.error(`Unable to run "${name}": `, (err as Error).message); // eslint-disable-line no-console
-              setError((err as Error));
+              const caughtError = err instanceof Error ? err : new Error(String(err));
+              console.error(`Unable to run "${name}": `, caughtError.message); // eslint-disable-line no-console
+              setError(caughtError);
             }
           }}>
           (...)
@@ -466,7 +469,7 @@ const PrimitiveElement = React.memo( function PrimitiveElement({
 }: PrimitiveElementProps) {
   return (
     <li className="entry">
-      {name ? <PropertyName name={name} computed={computed} /> : undefined}
+      {name !== undefined && name !== '' ? <PropertyName name={name} computed={computed} /> : undefined}
       <span className="value">
         <span className="s">{stringify(value)}</span>
       </span>
@@ -489,13 +492,14 @@ type PropertyNameProps = {
 
 const PropertyName = React.memo( function PropertyName({name, computed, onClick}: PropertyNameProps) {
   return (
+    /* oxlint-disable jsx-a11y/prefer-tag-over-role, typescript-eslint/no-unsafe-type-assertion -- must remain a span; keyboard event forwarded to click handler */
     <span className="key">
-      {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
       <span className="name nb" role="button" tabIndex={0} onClick={onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e as unknown as React.MouseEvent); }}>
-        {computed ? <span title="computed">*{name}</span> : name }
+        {computed === true ? <span title="computed">*{name}</span> : name }
       </span>
       <span className="p">:&nbsp;</span>
     </span>
+    /* oxlint-enable jsx-a11y/prefer-tag-over-role, typescript-eslint/no-unsafe-type-assertion */
   );
 });
 
@@ -512,7 +516,7 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
   const isInRange = props.treeAdapter.isInRange(props.value, props.name, props.position);
   const onClick = useCallback(
     (state: number, own: boolean | undefined) => {
-      if (own) {
+      if (own === true) {
         if (state === OPEN_STATES.CLOSED) {
           // oxlint-disable-next-line unicorn/no-null -- setSelectedNode uses null to signal deselection; matches the context API's falsy check
           setSelectedNode(null);

@@ -1,4 +1,3 @@
-// oxlint-disable import/max-dependencies -- app entry point necessarily imports all containers and stores
 import type {StorageBackend, AppState} from './types';
 import type {AnyAction} from 'redux';
 import * as LocalStorage from './components/LocalStorage';
@@ -9,6 +8,7 @@ import GistBanner from './components/GistBanner';
 import LoadingIndicatorContainer from './containers/LoadingIndicatorContainer';
 import PasteDropTargetContainer from './containers/PasteDropTargetContainer';
 import PropTypes from 'prop-types';
+// oxlint-disable-next-line import/max-dependencies -- app entry point
 import {publish} from './utils/pubsub';
 import * as React from 'react';
 import SettingsDialogContainer from './containers/SettingsDialogContainer';

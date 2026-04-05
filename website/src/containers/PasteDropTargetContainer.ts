@@ -1,4 +1,3 @@
-// oxlint-disable unicorn/no-null -- legacy code uses null for Redux state initialization
 import {connect} from 'react-redux';
 import PasteDropTarget from '../components/PasteDropTarget';
 import {setError, dropText} from '../store/actions';
@@ -13,4 +12,4 @@ function mapDispatchToProps(dispatch: Dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(PasteDropTarget);
+export default connect(undefined, mapDispatchToProps)(PasteDropTarget);

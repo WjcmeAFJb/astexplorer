@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- Gist API response is untyped; config uses || for legacy empty-string compatibility
 import React from 'react';
 import api from './api';
 import {getParserByID} from 'astexplorer-parsers';

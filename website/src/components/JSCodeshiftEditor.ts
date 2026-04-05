@@ -1,4 +1,4 @@
-// oxlint-disable typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-return, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- Tern/CodeMirror addon APIs are untyped; no type definitions available
+// oxlint-disable unicorn/filename-case -- PascalCase with JS acronym is conventional for React components
 import CodeMirror from 'codemirror';
 import PropTypes from 'prop-types';
 import Editor from './Editor';
@@ -7,7 +7,8 @@ import type {EditorProps} from './Editor';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/tern/tern.css';
 
-// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- Tern server is dynamically loaded with no public type definition
+// Tern server instance — dynamically loaded, no public TypeScript definitions exist
+// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- Tern has no @types package
 let server: any;
 
 export default class JSCodeshiftEditor extends Editor {
@@ -20,13 +21,17 @@ export default class JSCodeshiftEditor extends Editor {
     super.componentDidMount();
 
     this.codeMirror.setOption('extraKeys', {
-      'Ctrl-Space': cm => server && server.complete(cm),
-      'Ctrl-I': cm => server && server.showType(cm),
-      'Ctrl-O': cm => server && server.showDocs(cm),
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access -- Tern API
+      'Ctrl-Space': (cm: CodeMirror.Editor) => { if (server !== undefined) server.complete(cm); },
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access -- Tern API
+      'Ctrl-I': (cm: CodeMirror.Editor) => { if (server !== undefined) server.showType(cm); },
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access -- Tern API
+      'Ctrl-O': (cm: CodeMirror.Editor) => { if (server !== undefined) server.showDocs(cm); },
     });
 
     this._bindCMHandler('cursorActivity', (cm: CodeMirror.Editor) => {
-      if (server) server.updateArgHints(cm);
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access -- Tern API
+      if (server !== undefined) server.updateArgHints(cm);
     });
   }
 }
@@ -49,14 +54,14 @@ function loadTern(): void {
           '../defs/jscodeshift.json',
           'tern/defs/ecmascript.json',
         ],
+        // oxlint-disable-next-line typescript-eslint/no-explicit-any -- Tern plugin API: ternServer/file objects have no type definitions
         (tern: {registerPlugin: (name: string, init: (...args: unknown[]) => void) => void, [k: string]: unknown}, _: unknown, infer: {cx: () => {topScope: unknown, definitions: Record<string, Record<string, unknown>>}, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}, jscs_def: unknown, ecmascript: unknown) => {
           globalThis.tern = tern;
-          // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- Tern plugin callback receives untyped server object
+          /* oxlint-disable typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-return, typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-type-assertion, unicorn/no-null -- Tern plugin API: ternServer, file, fnVal, fnType are all untyped Tern internals with no @types package */
           tern.registerPlugin('transformer', (ternServer: any) => {
-            // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- Tern afterLoad callback receives untyped file object
             ternServer.on('afterLoad', (file: any) => {
               const fnVal = file.scope.props.transformer;
-              if (fnVal) {
+              if (fnVal !== undefined && fnVal !== null) {
                 const fnType = fnVal.getFunctionType();
                 const cx = infer.cx();
                 fnType.propagate(new infer.IsCallee(
@@ -65,15 +70,15 @@ function loadTern(): void {
                     cx.definitions.jscodeshift.file,
                     cx.definitions.jscodeshift.apiObject,
                   ],
-                  // oxlint-disable-next-line unicorn/no-null -- Tern API requires null as the third argument to IsCallee constructor
                   null,
                   infer.ANull,
                 ));
               }
             });
           });
+          /* oxlint-enable typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-return, typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-type-assertion, unicorn/no-null */
 
-          // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- TernServer is a CodeMirror addon not in @types/codemirror
+          // oxlint-disable-next-line typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-type-assertion -- TernServer constructor not in @types/codemirror
           server = new (CodeMirror as any).TernServer({
             defs: [jscs_def, ecmascript],
             plugins: {

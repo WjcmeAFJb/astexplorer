@@ -1,4 +1,3 @@
-// oxlint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions, typescript-eslint/strict-boolean-expressions -- dialog backdrop: click-outside-to-close pattern does not need keyboard equivalent; legacy untyped code
 import PropTypes from 'prop-types';
 import React from 'react';
 import type {Parser} from '../../types';
@@ -54,9 +53,9 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
   }
 
   render() {
-    if (this.props.visible && this.props.parser.renderSettings) {
+    if (this.props.visible === true && this.props.parser.renderSettings) {
       return (
-        <div id="SettingsDialog" className="dialog" onClick={this._outerClick}>
+        <div id="SettingsDialog" className="dialog" role="dialog" onClick={this._outerClick} onKeyDown={(e) => { if (e.key === 'Escape') this._saveAndClose(); }}>
           <div className="inner">
             <div className="header">
               <h3>{this.props.parser.displayName} Settings</h3>

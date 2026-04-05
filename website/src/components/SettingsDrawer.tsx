@@ -1,4 +1,3 @@
-// oxlint-disable jsx-a11y/prefer-tag-over-role -- collapsed drawer must remain a div to preserve layout styling
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -27,7 +26,7 @@ export default class SettingsDrawer extends React.Component<SettingsDrawerProps>
           <button onClick={this._collapse}>Close</button>
         </div>
       :
-        <div className='settings-drawer__collapsed' role="button" tabIndex={0} onClick={this._expand} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') this._expand(); }}></div>
+        <button className='settings-drawer__collapsed' tabIndex={0} onClick={this._expand} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') this._expand(); }}></button>
     );
   }
 }

@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- Parse API response is untyped
 import React from 'react';
 import api from './api';
 import {getTransformerByID, getParserByID} from 'astexplorer-parsers';

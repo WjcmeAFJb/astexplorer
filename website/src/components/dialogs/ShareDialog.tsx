@@ -1,4 +1,3 @@
-// oxlint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- dialog backdrop: click-outside-to-close pattern does not need keyboard equivalent
 import PropTypes from 'prop-types';
 import React from 'react';
 import type {Revision} from '../../types';
@@ -26,7 +25,7 @@ export default class ShareDialog extends React.Component<ShareDialogProps> {
   render() {
     if (this.props.visible) {
       return (
-        <div id="ShareDialog" className="dialog" onClick={this._outerClick}>
+        <div id="ShareDialog" className="dialog" role="dialog" onClick={this._outerClick} onKeyDown={(e) => { if (e.key === 'Escape') this.props.onWantToClose(); }}>
           <div className="inner" style={{maxWidth: '80%', width: 600}}>
             <div className="body">
               {this.props.snippet.getShareInfo()}

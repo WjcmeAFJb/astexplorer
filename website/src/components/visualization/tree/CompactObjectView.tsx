@@ -1,10 +1,9 @@
-// oxlint-disable typescript-eslint/no-unsafe-type-assertion -- legacy untyped code; full strict typing migration tracked as tech debt
 import PropTypes from 'prop-types';
 import React from 'react';
 
 type CompactObjectViewProps = {
   keys: string[];
-  onClick?: (event: React.MouseEvent) => void;
+  onClick?: (event: React.MouseEvent | React.KeyboardEvent) => void;
 };
 
 export default function CompactObjectView({keys, onClick}: CompactObjectViewProps): React.ReactElement {
@@ -18,7 +17,7 @@ export default function CompactObjectView({keys, onClick}: CompactObjectViewProp
     <span>
       <span className="p">{'{'}</span>
       {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- must remain a span to preserve tree node inline styling */}
-      <span className="compact placeholder ge" role="button" tabIndex={0} onClick={onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e as unknown as React.MouseEvent); }}>
+      <span className="compact placeholder ge" role="button" tabIndex={0} onClick={onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e); }}>
         {keys.join(', ')}
       </span>
       <span className="p">{'}'}</span>

@@ -1,4 +1,3 @@
-// oxlint-disable max-lines-per-function, max-lines -- reducer is a single large switch; each sub-reducer handles a subset of action types with default fallthrough
 import * as actions from './actions';
 import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from 'astexplorer-parsers';
 import type {Revision, Category, Transformer, Action, WorkbenchState, AppState} from '../types';
@@ -133,6 +132,7 @@ function getDefaultTransform(transformer: Transformer, workbenchState: Workbench
   return transformer.defaultTransform
 }
 
+// oxlint-disable-next-line max-lines-per-function -- Redux sub-reducer handles many action types in a single switch
 function workbench(state: WorkbenchState =initialState.workbench, action: Action, fullState: AppState): WorkbenchState {
     function parserFromCategory(category: Category): Partial<WorkbenchState> {
     const parser = fullState.parserPerCategory[category.id] !== undefined && fullState.parserPerCategory[category.id] !== ''
@@ -473,4 +473,5 @@ function pick<T extends Record<string, unknown>>(obj: T, ...properties: string[]
     (result as Record<string, unknown>)[prop] = obj[prop];
   }
   return result;
+// oxlint-disable max-lines -- Redux reducer file consolidates all app state transitions
 }

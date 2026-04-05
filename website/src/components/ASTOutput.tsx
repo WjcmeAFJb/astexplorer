@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- DOM event.target narrowing; optional boolean props
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../utils/classnames';

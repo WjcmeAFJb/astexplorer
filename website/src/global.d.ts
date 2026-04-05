@@ -1,4 +1,3 @@
-// oxlint-disable max-classes-per-file -- ambient declaration file; multiple class declarations are standard for .d.ts files
 // Global type augmentations for astexplorer
 
 declare module '*.css' {
@@ -51,6 +50,7 @@ declare module 'source-map/lib/source-map-consumer' {
 
 // CodeMirror addon: Tern integration
 declare namespace CodeMirror {
+  // oxlint-disable-next-line max-classes-per-file -- ambient declaration file
   class TernServer {
     constructor(options: unknown);
     complete(cm: CodeMirror.Editor): void;
