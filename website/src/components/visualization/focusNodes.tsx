@@ -26,6 +26,7 @@ export default function(message: 'init' | 'add' | 'focus', arg?: React.RefObject
     case 'add':
       nodes.add(arg);
       break;
+    // oxlint-disable max-depth -- focus logic requires nested conditionals for size=1 vs size>1 paths within try/catch
     case 'focus': {
       const root = arg.current;
       const size = nodes.size;
@@ -35,24 +36,24 @@ export default function(message: 'init' | 'add' | 'focus', arg?: React.RefObject
         } else if (size > 1) {
           const rootRect = root.getBoundingClientRect();
           const center = (rootRect.y + rootRect.height) / 2 + rootRect.y;
-          const closest = Array.from(nodes).reduce((closest: [HTMLElement, number] | null, element: React.RefObject<HTMLElement>): [HTMLElement, number] | null => {
-            if (!element.current) {
-              return closest;
+          let closest: [HTMLElement, number] | null = null;
+          for (const ref of nodes) {
+            if (!ref.current) {
+              continue;
             }
-            const elementRect = element.current.getBoundingClientRect();
+            const elementRect = ref.current.getBoundingClientRect();
             const distance = elementRect.y - center;
             const minDistance = Math.min(
               Math.abs(distance),
               Math.abs(distance + elementRect.height),
             );
 
-            if (!closest || (closest as any)[1] > minDistance) {
-              return [element.current, minDistance];
+            if (closest === null || closest[1] > minDistance) {
+              closest = [ref.current, minDistance];
             }
-            return closest;
-          }, null);
-          if (closest) {
-            (closest as any)[0].scrollIntoView();
+          }
+          if (closest !== null) {
+            closest[0].scrollIntoView();
           }
         }
       } catch (e) {

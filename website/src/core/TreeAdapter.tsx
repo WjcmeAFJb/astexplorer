@@ -1,7 +1,4 @@
-type ParseResult = import('../types').ParseResult;
-type TreeFilter = import('../types').TreeFilter;
-type WalkResult = import('../types').WalkResult;
-type AdapterOptions = import('../types').AdapterOptions;
+import type {ParseResult, TreeFilter, WalkResult, AdapterOptions} from '../types';
 
 /**
  * Configurable base class for all tree traversal.
@@ -22,7 +19,7 @@ class TreeAdapter {
    * @returns {TreeFilter[]}
    */
   getConfigurableFilters() {
-    return (this._adapterOptions.filters || []).filter(filter => Boolean(filter.key));
+    return (this._adapterOptions.filters ?? []).filter(filter => Boolean(filter.key));
   }
 
   /**
@@ -40,7 +37,7 @@ class TreeAdapter {
    * text and focusing nodes in the tree.
  */
   getRange(node: unknown): [number, number] | null | undefined {
-    if (node == null) {
+    if (node === null || node === undefined) {
       return null;
     }
     // Typecast: node is unknown but guaranteed non-null here; WeakMap requires object keys
@@ -84,16 +81,16 @@ class TreeAdapter {
     // Not everything that is rendered has location associated with it (most
     // commonly arrays). In such a case we are a looking whether the node
     // contains any other nodes with location data (recursively).
-    for (const {value: child, key} of this.walkNode(node)) {
-      if (this.isInRange(child, key, position)) {
+    for (const {value: child, key: childKey} of this.walkNode(node)) {
+      if (this.isInRange(child, childKey, position)) {
         return true;
       }
     }
-    for (const {value: child, key} of this.walkNode(node)) {
+    for (const {value: child, key: childKey} of this.walkNode(node)) {
       if (seen.has(child)) {
         continue;
       }
-      if (this.hasChildrenInRange(child, key, position, seen)) {
+      if (this.hasChildrenInRange(child, childKey, position, seen)) {
         return true;
       }
     }
@@ -126,10 +123,10 @@ class TreeAdapter {
    * @yields {WalkResult}
  */
   *walkNode(node: unknown): Generator<WalkResult> {
-    if (node != null) {
+    if (node !== null && node !== undefined) {
       for (const result of this._adapterOptions.walkNode(node)) {
         if (
-          (this._adapterOptions.filters || []).some(filter => {
+          (this._adapterOptions.filters ?? []).some(filter => {
             if (filter.key && !this._filterValues[filter.key]) {
               return false;
             }
@@ -164,9 +161,12 @@ const TreeAdapterConfigs: Record<string, AdapterOptions & Record<string, unknown
     openByDefaultNodes: new Set(['Program']),
     openByDefaultKeys: new Set([
       'body',
-      'elements', // array literals
-      'declarations', // variable declaration
-      'expression', // expression statements
+      // array literals
+      'elements',
+      // variable declaration
+      'declarations',
+      // expression statements
+      'expression',
     ]),
     /**
  @this {{openByDefaultNodes: Set<unknown>, openByDefaultKeys: Set<string>}} @param {Record<string, unknown>} node @param {string} key
@@ -212,7 +212,7 @@ export function ignoreKeysFilter(keys?: Set<string>, key?: string, label?: strin
   return {
     key,
     label,
-    test(_: unknown, key: string) { return  keys.has(key); },
+    test(_: unknown, nodeKey: string) { return  keys.has(nodeKey); },
   };
 }
 
@@ -242,7 +242,7 @@ export function emptyKeysFilter() {
   return {
     key: 'hideEmptyKeys',
     label: 'Hide empty keys',
-    test(value: unknown, key: string, fromArray?: boolean) { return value == null && !fromArray; },
+    test(value: unknown, key: string, fromArray?: boolean) { return (value === null || value === undefined) && !fromArray; },
   };
 }
 
@@ -255,7 +255,7 @@ export function typeKeysFilter(keys?: Set<string>): TreeFilter {
 }
 
 function createTreeAdapter(type: string, adapterOptions: Partial<AdapterOptions>, filterValues: Record<string, boolean>): TreeAdapter {
-  if (TreeAdapterConfigs[type] == null) {
+  if (TreeAdapterConfigs[type] === null || TreeAdapterConfigs[type] === undefined) {
     throw new Error(`Unknown tree adapter type "${type}"`);
   }
   return new TreeAdapter(

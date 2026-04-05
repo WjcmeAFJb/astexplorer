@@ -13,6 +13,7 @@ type JSONEditorProps = {
 };
 
 export default class Editor extends React.Component<JSONEditorProps> {
+  static displayName = 'JSONEditor';
   codeMirror: CodeMirror.Editor | null = null;
   container: HTMLElement | null = null;
   _subscriptions: Array<() => void> = [];
@@ -55,7 +56,7 @@ export default class Editor extends React.Component<JSONEditorProps> {
   componentWillUnmount() {
     this._unbindHandlers();
     let container = this.container;
-    container.removeChild(container.children[0]);
+    container.children[0].remove();
     this.codeMirror = null;
   }
 
@@ -65,7 +66,8 @@ export default class Editor extends React.Component<JSONEditorProps> {
 
   render() {
     return (
-      <div id="JSONEditor" className={this.props.className} // @ts-expect-error — ref callback returns assignment value instead of void
+      // @ts-expect-error — ref callback returns assignment value instead of void
+      <div id="JSONEditor" className={this.props.className}
         ref={c => this.container = c}/>
     );
   }

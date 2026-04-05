@@ -1,7 +1,4 @@
-type Revision = import('../types').Revision;
-type Category = import('../types').Category;
-type Transformer = import('../types').Transformer;
-type Parser = import('../types').Parser;
+import type { Revision, Category, Transformer, Parser } from '../types';
 
 export const SET_ERROR = 'SET_ERROR';
 export const CLEAR_ERROR = 'CLEAR_ERROR';

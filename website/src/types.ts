@@ -6,6 +6,8 @@
  * pull in the types below for editor / tsc --checkJs support.
  */
 
+import type {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
+
 // ---------------------------------------------------------------------------
 // Parser-related types (re-exported from astexplorer-parsers)
 // ---------------------------------------------------------------------------
@@ -94,7 +96,7 @@ export type TransformState = {
 export type TransformResult = {
   result?: string;
   error?: Error;
-  map?: import('source-map/lib/source-map-consumer').SourceMapConsumer | null;
+  map?: SourceMapConsumer | null;
   version?: string;
 };
 

@@ -1,9 +1,8 @@
-
-
 import * as selectors from './selectors';
 import * as actions from './actions';
-type AppState = import('../types').AppState;
-type Action = import('../types').Action;
+import type {AppState, Action, SnippetData} from '../types';
+import type {Dispatch} from 'redux';
+import type StorageAdapter from '../storage/index';
 
 let clearURLOnClearError = false;
 let cancelLoad: () => void = () => {}
@@ -26,6 +25,7 @@ export default (storageAdapter: any) => (store: any) => (next: any) => (action: 
     case actions.SAVE:
       next(actions.startSave(action.fork));
       saveSnippet(action, store.getState(), next, storageAdapter)
+        // oxlint-disable-next-line promise/no-callback-in-promise -- redux middleware must call next() after save completes
         .then(() => next(actions.endSave(action.fork)));
       break;
     default:
@@ -34,7 +34,7 @@ export default (storageAdapter: any) => (store: any) => (next: any) => (action: 
   }
 }
 
-async function loadSnippet(state: AppState, next: import('redux').Dispatch, storageAdapter: import('../storage/index').default): Promise<void> {
+async function loadSnippet(state: AppState, next: Dispatch, storageAdapter: StorageAdapter): Promise<void> {
   // Ignore changes to the URL while a snippet is being saved (that process will
   // update the URL.
   if (selectors.isSaving(state) || selectors.isForking(state)) {
@@ -71,7 +71,7 @@ async function loadSnippet(state: AppState, next: import('redux').Dispatch, stor
   }
 }
 
-async function saveSnippet({fork}: Action, state: AppState, next: import('redux').Dispatch, storageAdapter: import('../storage/index').default): Promise<void> {
+async function saveSnippet({fork}: Action, state: AppState, next: Dispatch, storageAdapter: StorageAdapter): Promise<void> {
   const revision = selectors.getRevision(state);
   const parser = selectors.getParser(state);
   const parserSettings = selectors.getParserSettings(state);
@@ -80,7 +80,7 @@ async function saveSnippet({fork}: Action, state: AppState, next: import('redux'
   const transformer = selectors.getTransformer(state);
   const showTransformPanel = selectors.showTransformer(state);
 
-    const data: import('../types').SnippetData = {
+    const data: SnippetData = {
     parserID: parser.id,
     settings: {
       [parser.id]: parserSettings,

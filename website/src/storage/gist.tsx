@@ -1,9 +1,7 @@
-
-
 import React from 'react';
 import api from './api';
 import {getParserByID} from 'astexplorer-parsers';
-type SnippetData = import('../types').SnippetData;
+import type {SnippetData} from '../types';
 
 function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | null {
   let match = window.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);
@@ -74,7 +72,7 @@ export function create(data: SnippetData): Promise<Revision> {
     }
     throw new Error('Unable to create snippet.');
   })
-  .then((data: GistData) => new Revision(data));
+  .then((gistData: GistData) => new Revision(gistData));
 }
 
 /**
@@ -106,7 +104,7 @@ export function update(revision: Revision, data: SnippetData): Promise<Revision>
         }
         throw new Error('Unable to update snippet.');
       })
-      .then((data: GistData) => new Revision(data));
+      .then((gistData: GistData) => new Revision(gistData));
     });
 }
 
@@ -131,7 +129,7 @@ export function fork(revision: Revision, data: SnippetData): Promise<Revision> {
     }
     throw new Error('Unable to fork snippet.');
   })
-  .then((data: GistData) => new Revision(data));
+  .then((gistData: GistData) => new Revision(gistData));
 }
 
 type GistFile = {
@@ -195,7 +193,7 @@ class Revision {
   }
 
   getCode(): string {
-    if (this._code == null) {
+    if (this._code === null || this._code === undefined) {
       this._code = getSource(this._config, this._gist) || '';
     }
     return this._code;
@@ -242,6 +240,7 @@ class Revision {
 }
 
 function getSource(config: GistConfig, gist: GistData): string | undefined {
+  // oxlint-disable-next-line typescript-eslint/switch-exhaustiveness-check -- config.v is a number; only v1 and v2 are known gist formats, default handles future versions
   switch (config.v) {
     case 1:
       return gist.files['code.js'].content;
@@ -249,5 +248,7 @@ function getSource(config: GistConfig, gist: GistData): string | undefined {
       const ext = getParserByID(config.parserID).category.fileExtension;
       return gist.files[`source.${ext}`].content;
     }
+    default:
+      return undefined;
   }
 }

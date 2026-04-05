@@ -2,14 +2,16 @@ import {connect} from 'react-redux';
 import ErrorMessage from '../components/ErrorMessage';
 import {clearError} from '../store/actions';
 import {getError} from '../store/selectors';
+import type {AppState} from '../types';
+import type {Dispatch} from 'redux';
 
-function mapStateToProps(state: import('../types').AppState) {
+function mapStateToProps(state: AppState) {
   return {
     error: getError(state),
   };
 }
 
-function mapDispatchToProps(dispatch: import('redux').Dispatch) {
+function mapDispatchToProps(dispatch: Dispatch) {
   return {
     onWantToClose: () => dispatch(clearError()),
   };

@@ -1,4 +1,4 @@
-type AppState = import('../types').AppState;
+import type {AppState} from '../types';
 
 const storage = window.localStorage;
 const key = 'explorerSettingsV1';
@@ -8,7 +8,7 @@ export const writeState: (state: Record<string, unknown>) => void = storage ?
   state => {
     try {
       storage.setItem(key, JSON.stringify(state));
-    } catch(e) {
+    } catch {
       // eslint-disable-next-line no-console
       console.warn('Unable to write to local storage.');
     }
@@ -22,7 +22,7 @@ export const readState: () => AppState | undefined = storage ?
       if (state) {
         return (JSON.parse(state) as AppState);
       }
-    } catch(e) {
+    } catch {
       // eslint-disable-next-line no-console
       console.warn('Unable to read from local storage.');
     }

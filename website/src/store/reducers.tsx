@@ -1,14 +1,7 @@
-
-
+// oxlint-disable max-lines-per-function, max-lines, typescript-eslint/switch-exhaustiveness-check -- reducer is a single large switch; each sub-reducer handles a subset of action types with default fallthrough
 import * as actions from './actions';
 import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from 'astexplorer-parsers';
-type Revision = import('../types').Revision;
-type Category = import('../types').Category;
-type Transformer = import('../types').Transformer;
-type Action = import('../types').Action;
-type TransformState = import('../types').TransformState;
-type WorkbenchState = import('../types').WorkbenchState;
-type AppState = import('../types').AppState;
+import type {Revision, Category, Transformer, Action, WorkbenchState, AppState} from '../types';
 
 const defaultParser = getDefaultParser(getCategoryByID('javascript'));
 
@@ -386,7 +379,7 @@ function cursor(state: number | null =initialState.cursor, action: Action): numb
     case actions.SET_CODE:
       // If this action is triggered and the cursor = 0, then the code must be
       // loaded
-      if (action.cursor != null && action.cursor !== 0) {
+      if (action.cursor !== null && action.cursor !== undefined && action.cursor !== 0) {
         return action.cursor;
       }
       return state;
@@ -439,8 +432,9 @@ function activeRevision(state: Revision | null =initialState.selectedRevision, a
 }
 
 function pick<T extends Record<string, unknown>>(obj: T, ...properties: string[]): Partial<T> {
-  return (properties.reduce(
-    (result: Record<string, unknown>, prop: string) => (result[prop] = obj[prop], result),
-    ({} as Record<string, unknown>),
-  ) as Partial<T>);
+  const result: Record<string, unknown> = {};
+  for (const prop of properties) {
+    result[prop] = obj[prop];
+  }
+  return result as Partial<T>;
 }

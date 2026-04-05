@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
 import {getCategoryByID, categories} from 'astexplorer-parsers';
+import type {Category} from '../../types';
 
 const categoryIcon: Record<string, string> = {
   'text/x-scala': 'icon-scala',
@@ -21,11 +22,12 @@ const categoryIcon: Record<string, string> = {
 };
 
 type CategoryButtonProps = {
-  onCategoryChange?: (category: import('../../types').Category) => void;
-  category?: import('../../types').Category;
+  onCategoryChange?: (category: Category) => void;
+  category?: Category;
 };
 
 export default class CategoryButton extends React.Component<CategoryButtonProps> {
+  static displayName = 'CategoryButton';
     constructor(props: CategoryButtonProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
@@ -33,7 +35,7 @@ export default class CategoryButton extends React.Component<CategoryButtonProps>
   }
 
   _onClick({currentTarget}: {currentTarget: HTMLElement}) {
-    let categoryID = currentTarget.getAttribute('data-id');
+    let categoryID = currentTarget.dataset.id;
     this.props.onCategoryChange(getCategoryByID(categoryID));
   }
 

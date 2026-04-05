@@ -10,12 +10,14 @@ type ForkButtonProps = {
 };
 
 export default class ForkButton extends React.Component<ForkButtonProps> {
+  static displayName = 'ForkButton';
   render() {
     const { canFork, saving, forking, onFork } = this.props;
     return (
       <button
         type="button"
         disabled={
+          // oxlint-disable-next-line typescript-eslint/prefer-nullish-coalescing -- boolean logical OR, not nullish coalescing
           !canFork || saving || forking
         }
         onClick={onFork}>

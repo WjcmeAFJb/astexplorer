@@ -8,6 +8,7 @@ type SettingsDrawerProps = {
 };
 
 export default class SettingsDrawer extends React.Component<SettingsDrawerProps> {
+  static displayName = 'SettingsDrawer';
     constructor(props: SettingsDrawerProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation

@@ -1,8 +1,9 @@
 import {connect} from 'react-redux';
 import PasteDropTarget from '../components/PasteDropTarget';
 import {setError, dropText} from '../store/actions';
+import type {Dispatch} from 'redux';
 
-function mapDispatchToProps(dispatch: import('redux').Dispatch) {
+function mapDispatchToProps(dispatch: Dispatch) {
   return {
     onText: (type: string, event: Event, code: string, categoryId: string) => {
       dispatch(dropText(code, categoryId));

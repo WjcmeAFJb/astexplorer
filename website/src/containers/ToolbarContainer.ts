@@ -12,8 +12,10 @@ import {
 } from '../store/actions';
 import Toolbar from '../components/Toolbar';
 import * as selectors from '../store/selectors';
+import type {AppState, Parser, Category, Transformer} from '../types';
+import type {Dispatch} from 'redux';
 
-function mapStateToProps(state: import('../types').AppState) {
+function mapStateToProps(state: AppState) {
   const parser = selectors.getParser(state);
 
   return {
@@ -30,12 +32,12 @@ function mapStateToProps(state: import('../types').AppState) {
   };
 }
 
-function mapDispatchToProps(dispatch: import('redux').Dispatch) {
+function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    onParserChange: (parser: import('../types').Parser) => {
+    onParserChange: (parser: Parser) => {
       dispatch(setParser(parser));
     },
-    onCategoryChange: (category: import('../types').Category) => {
+    onCategoryChange: (category: Category) => {
       dispatch(selectCategory(category));
     },
     onParserSettingsButtonClick: () => {
@@ -44,7 +46,7 @@ function mapDispatchToProps(dispatch: import('redux').Dispatch) {
     onShareButtonClick: () => {
       dispatch(openShareDialog());
     },
-    onTransformChange: (transformer: import('../types').Transformer | null) => {
+    onTransformChange: (transformer: Transformer | null) => {
       dispatch(transformer ? selectTransformer(transformer) : hideTransformer());
     },
     onKeyMapChange: (keyMap: string) => {

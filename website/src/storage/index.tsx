@@ -1,6 +1,4 @@
-type SnippetData = import('../types').SnippetData;
-type Revision = import('../types').Revision;
-type StorageBackend = import('../types').StorageBackend;
+import type {SnippetData, Revision, StorageBackend} from '../types';
 
 export default class StorageHandler {
   _backends: StorageBackend[];

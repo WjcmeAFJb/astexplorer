@@ -50,6 +50,7 @@ export default function Tree({parseResult, position}: any): React.ReactElement {
   const [settings, updateSettings] = useReducer(reducer, null, initSettings);
   const treeAdapter = useMemo(
     () => treeAdapterFromParseResult(parseResult, settings),
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- intentionally depend on parseResult.treeAdapter, not the full parseResult object, to avoid unnecessary recalculation
     [parseResult.treeAdapter, settings],
   );
   const rootElement = useRef((null as HTMLUListElement | null));

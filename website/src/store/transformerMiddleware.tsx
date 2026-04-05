@@ -1,9 +1,7 @@
-
-
+// oxlint-disable max-lines-per-function -- middleware functions are necessarily large state-coordination units
 import {getTransformer, getTransformCode, getCode, showTransformer} from './selectors';
 import {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
-type TransformResult = import('../types').TransformResult;
-type Transformer = import('../types').Transformer;
+import type {TransformResult, Transformer} from '../types';
 
 async function transform(transformer: Transformer, transformCode: string, code: string): Promise<TransformResult> {
   // Transforms may make use of Node's __filename global. See GitHub issue #420.
@@ -51,12 +49,12 @@ export default (store: any) => (next: any) => async (action: any) => {
 
   if (
     action.type === 'INIT' ||
-    show != showTransformer(oldState) ||
+    show !== showTransformer(oldState) ||
     getTransformer(oldState) !== newTransformer ||
     getTransformCode(oldState) !== newTransformCode ||
     getCode(oldState) !== newCode
   ) {
-    if (!newTransformer || newCode == null) {
+    if (!newTransformer || newCode === null || newCode === undefined) {
       return;
     }
 

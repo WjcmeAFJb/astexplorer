@@ -3,6 +3,7 @@
  * Converts a JS value to a sensible string representation.
  */
 export default function stringify(value: unknown): string {
+  // oxlint-disable-next-line typescript-eslint/switch-exhaustiveness-check -- default case handles remaining typeof values (string, boolean, symbol)
   switch (typeof value) {
     case 'function':
       return value.toString().match(/function[^(]*\([^)]*\)/)[0];

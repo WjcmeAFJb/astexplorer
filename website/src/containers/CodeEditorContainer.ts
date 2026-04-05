@@ -1,21 +1,21 @@
-
-
 import {connect} from 'react-redux';
 import {setCode, setCursor} from '../store/actions';
 import Editor from '../components/Editor';
 import {getCode, getParser, getParseResult, getKeyMap} from '../store/selectors';
-type AppState = import('../types').AppState;
+import type {AppState} from '../types';
+import type {Dispatch} from 'redux';
 
 function mapStateToProps(state: AppState) {
   return {
     keyMap: getKeyMap(state),
     value: getCode(state),
+    // oxlint-disable-next-line typescript-eslint/prefer-nullish-coalescing -- empty string editorMode should fall back to category.id
     mode: getParser(state).category.editorMode || getParser(state).category.id,
-    error: (getParseResult(state) || {}).error,
+    error: (getParseResult(state) ?? {}).error,
   };
 }
 
-function mapDispatchToProps(dispatch: import('redux').Dispatch) {
+function mapDispatchToProps(dispatch: Dispatch) {
   return {
     onContentChange: ({value, cursor}: {value: string, cursor: number}) => {
       dispatch(setCode({code: value, cursor}));

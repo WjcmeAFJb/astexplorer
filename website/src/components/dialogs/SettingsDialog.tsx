@@ -1,15 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import type {Parser} from '../../types';
 
 type SettingsDialogProps = {
-  onSave?: (parser: import('../../types').Parser, settings: Record<string, unknown>) => void;
+  onSave?: (parser: Parser, settings: Record<string, unknown>) => void;
   onWantToClose?: () => void;
   visible?: boolean;
-  parser: import('../../types').Parser;
+  parser: Parser;
   parserSettings?: Record<string, unknown> | null;
 };
 
 export default class SettingsDialog extends React.Component<SettingsDialogProps, {parserSettings: Record<string, unknown> | null}> {
+  static displayName = 'SettingsDialog';
     constructor(props: SettingsDialogProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
@@ -32,7 +34,7 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
   }
 
     _outerClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (event.target === document.getElementById('SettingsDialog')) {
+    if (event.target === document.querySelector('#SettingsDialog')) {
       this._saveAndClose();
     }
   }

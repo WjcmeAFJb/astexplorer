@@ -2,15 +2,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from '../../utils/classnames';
 import {getTransformerByID} from 'astexplorer-parsers';
+import type {Category, Transformer} from '../../types';
 
 type TransformButtonProps = {
-  category?: import('../../types').Category;
-  transformer?: import('../../types').Transformer;
+  category?: Category;
+  transformer?: Transformer;
   showTransformer?: boolean;
-  onTransformChange?: (transformer: import('../../types').Transformer | null) => void;
+  onTransformChange?: (transformer: Transformer | null) => void;
 };
 
 export default class TransformButton extends React.Component<TransformButtonProps> {
+  static displayName = 'TransformButton';
     constructor(props: TransformButtonProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
@@ -38,18 +40,18 @@ export default class TransformButton extends React.Component<TransformButtonProp
 
   render() {
     const transformers = this.props.category.transformers.filter(
-      t => t.showInMenu !== false || t == this.props.transformer,
+      t => t.showInMenu !== false || t === this.props.transformer,
     );
     return (
       <div className={cx({
         button: true,
         menuButton: true,
-        disabled: !this.props.category.transformers.length,
+        disabled: this.props.category.transformers.length === 0,
       })}>
         <button
           type="button"
           onClick={this._onToggle}
-          disabled={!this.props.category.transformers.length}>
+          disabled={this.props.category.transformers.length === 0}>
           <i
             className={cx({
               fa: true,
@@ -61,7 +63,7 @@ export default class TransformButton extends React.Component<TransformButtonProp
           />
           &nbsp;Transform
         </button>
-        {!!transformers.length && <ul>
+        {transformers.length > 0 && <ul>
           {transformers.map(transformer => (
             <li
               key={transformer.id}

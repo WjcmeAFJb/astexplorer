@@ -1,3 +1,4 @@
+// oxlint-disable max-lines, max-lines-per-function -- complex tree visualization component with tightly coupled rendering logic
 import CompactArrayView from './CompactArrayView';
 import CompactObjectView from './CompactObjectView';
 import PropTypes from 'prop-types';
@@ -134,6 +135,7 @@ type ElementProps = {
   position?: number;
 };
 
+// oxlint-disable-next-line no-shadow -- props destructuring shadows are intentional; renderChild uses same names for clarity
 const Element = React.memo( function Element({
   name,
   value,
@@ -174,7 +176,7 @@ const Element = React.memo( function Element({
       }
       setOpenState(newOpenState);
     },
-    [onClick, isOpen],
+    [onClick, isOpen, setOpenState],
   );
 
   const range = treeAdapter.getRange(value);
@@ -201,9 +203,10 @@ const Element = React.memo( function Element({
         onClick(OPEN_STATES.OPEN);
       }
     },
-    [onClick],
+    [onClick, setOpenState],
   );
 
+    // oxlint-disable-next-line no-shadow -- renderChild intentionally uses same param names as parent component for clarity
     function renderChild(key: string, value: unknown, parent: unknown, name: string | undefined, computed: boolean) {
     if (treeAdapter.isArray(value) || treeAdapter.isObject(value) || typeof value === 'function') {
       const ElementType = typeof value === 'function' ? FunctionElement : ElementContainer;
@@ -265,13 +268,13 @@ const Element = React.memo( function Element({
         suffix = ']';
         const node = value;
         let elements = Array.from(treeAdapter.walkNode(value))
-          .filter(({key}) => key !== 'length')
-          .map(({key, value, computed}) => renderChild(
-            key,
-            value,
+          .filter(({key: k}) => k !== 'length')
+          .map(({key: childKey, value: childValue, computed: childComputed}) => renderChild(
+            childKey,
+            childValue,
             node,
-            Number.isInteger(+key) ? undefined : key,
-            computed,
+            Number.isInteger(+childKey) ? undefined : childKey,
+            childComputed,
           ));
         content = <ul className="value-body">{elements}</ul>;
       } else {
@@ -287,33 +290,31 @@ const Element = React.memo( function Element({
       }
       // @ts-expect-error — value.length access after typeof guard
       showToggler = value.length > 0;
+    } else if (isOpen) {
+      prefix = '{';
+      suffix = '}';
+      const node = value;
+      let elements = Array.from(treeAdapter.walkNode(value))
+        .map(({key: childKey, value: childValue, computed: childComputed}) => renderChild(
+          childKey,
+          childValue,
+          node,
+          childKey,
+          childComputed,
+        ));
+      content = <ul className="value-body">{elements}</ul>;
+      showToggler = elements.length > 0;
     } else {
-      if (isOpen) {
-        prefix = '{';
-        suffix = '}';
-        const node = value;
-        let elements = Array.from(treeAdapter.walkNode(value))
-          .map(({key, value, computed}) => renderChild(
-            key,
-            value,
-            node,
-            key,
-            computed,
-          ));
-        content = <ul className="value-body">{elements}</ul>;
-        showToggler = elements.length > 0;
-      } else {
-        let keys = Array.from(treeAdapter.walkNode(value), ({key}) => key);
-        valueOutput =
-          <span>
-            {valueOutput}
-            <CompactObjectView
-              onClick={onToggleClick}
-              keys={keys}
-            />
-          </span>;
-        showToggler = keys.length > 0;
-      }
+      let keys = Array.from(treeAdapter.walkNode(value), ({key}) => key);
+      valueOutput =
+        <span>
+          {valueOutput}
+          <CompactObjectView
+            onClick={onToggleClick}
+            keys={keys}
+          />
+        </span>;
+      showToggler = keys.length > 0;
     }
   }
 
@@ -328,6 +329,7 @@ const Element = React.memo( function Element({
       ref={element}
       className={classNames}
       onMouseOver={onMouseOver}
+      onFocus={onMouseOver}
       onMouseLeave={onMouseLeave}>
       {name ? <PropertyName name={name} computed={computed} onClick={onToggleClick} /> : null}
       <span className="value">
@@ -407,10 +409,10 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
           onClick={() => {
             try {
               // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .call() returns any; dynamic invocation
-              const computedValue = (value as (...args: unknown[]) => unknown).call(parent);
-              console.log(computedValue); // eslint-disable-line no-console
-              // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- computedValue is dynamic
-              setComputedValue(computedValue);
+              const result = (value as (...args: unknown[]) => unknown).call(parent);
+              console.log(result); // eslint-disable-line no-console
+              // oxlint-disable-next-line typescript-eslint(no-unsafe-argument) -- result is dynamic
+              setComputedValue(result);
             } catch(err) {
               console.error(`Unable to run "${name}": `, (err as Error).message); // eslint-disable-line no-console
               setError((err as Error));
@@ -508,7 +510,8 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
         props.onClick(state);
       }
     },
-    [props.value, props.onClick],
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- using specific props rather than entire props object to avoid unnecessary callback recreation
+    [props.value, props.onClick, setSelectedNode],
   );
 
   return (

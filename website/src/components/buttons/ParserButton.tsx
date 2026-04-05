@@ -1,15 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {getParserByID} from 'astexplorer-parsers';
+import type {Parser, Category} from '../../types';
 
 type ParserButtonProps = {
-  onParserChange?: (parser: import('../../types').Parser) => void;
+  onParserChange?: (parser: Parser) => void;
   onParserSettingsButtonClick?: () => void;
-  parser?: import('../../types').Parser;
-  category?: import('../../types').Category;
+  parser?: Parser;
+  category?: Category;
 };
 
 export default class ParserButton extends React.Component<ParserButtonProps> {
+  static displayName = 'ParserButton';
     constructor(props: ParserButtonProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
@@ -17,7 +19,7 @@ export default class ParserButton extends React.Component<ParserButtonProps> {
   }
 
   _onClick({currentTarget}: {currentTarget: HTMLElement}) {
-    let parserID = currentTarget.getAttribute('data-id');
+    let parserID = currentTarget.dataset.id;
     this.props.onParserChange(getParserByID(parserID));
   }
 

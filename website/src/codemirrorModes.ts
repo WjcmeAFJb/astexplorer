@@ -36,5 +36,6 @@ export function ensureCMMode(mode: string | {name: string} | undefined): Promise
   const loader = modeLoaders[name];
   if (!loader) return Promise.resolve();
 
+  // oxlint-disable-next-line promise/always-return -- side-effect only: caching loaded mode name
   return loader().then(() => { loaded.add(name); });
 }

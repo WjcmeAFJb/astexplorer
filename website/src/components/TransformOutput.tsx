@@ -3,10 +3,11 @@ import Editor from './Editor';
 import JSONEditor from './JSONEditor';
 import PropTypes from 'prop-types';
 import * as React from 'react';
+import type {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
 
 import stringify from 'json-stringify-safe';
 
-function positionFromIndex(index: number, map: import('source-map/lib/source-map-consumer').SourceMapConsumer | null | undefined): {line: number, ch: number} {
+function positionFromIndex(index: number, map: SourceMapConsumer | null | undefined): {line: number, ch: number} {
   if (!map) {
     return;
   }
@@ -37,7 +38,7 @@ function positionFromIndex(index: number, map: import('source-map/lib/source-map
 
 export default function TransformOutput({transformResult, mode}: any): React.ReactElement {
   // This ensures that we are rendering an empty editor as "placeholder" if no transform result is available yet.
-  transformResult = transformResult == null ? {result: ''} : transformResult;
+  transformResult = transformResult === null || transformResult === undefined ? {result: ''} : transformResult;
 
   const posFromIndex = React.useCallback(
     (index: number) => positionFromIndex(index, transformResult.map),

@@ -1,3 +1,5 @@
+// oxlint-disable import/max-dependencies -- app entry point necessarily imports all containers and stores
+import type {StorageBackend} from './types';
 import * as LocalStorage from './components/LocalStorage';
 import ASTOutputContainer from './containers/ASTOutputContainer';
 import CodeEditorContainer from './containers/CodeEditorContainer';
@@ -80,7 +82,7 @@ const AppContainer = connect(
 )(App);
 
 const composeEnhancers: typeof compose = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose) || compose;
-const storageAdapter = new StorageHandler(([gist, parse] as import('./types').StorageBackend[]));
+const storageAdapter = new StorageHandler(([gist, parse] as StorageBackend[]));
 const store = createStore(
   astexplorer,
   revive(LocalStorage.readState()),
@@ -97,23 +99,23 @@ store.subscribe(debounce(() => {
 }));
 store.dispatch({type: 'INIT'} as any);
 
-createRoot(document.getElementById('container')!).render(
+createRoot(document.querySelector('#container')!).render(
   <Provider store={store}>
     <AppContainer />
   </Provider>,
 );
 
-window.onhashchange = () => {
+window.addEventListener('hashchange', () => {
   store.dispatch(loadSnippet() as any);
-};
+});
 
 if (location.hash.length > 1) {
   store.dispatch(loadSnippet() as any);
 }
 
-window.onbeforeunload = () => {
+window.addEventListener('beforeunload', (event) => {
   const state = store.getState();
   if (canSaveTransform(state)) {
-    return 'You have unsaved transform code. Do you really want to leave?';
+    event.preventDefault();
   }
-};
+});

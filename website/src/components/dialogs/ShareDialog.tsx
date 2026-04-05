@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import type {Revision} from '../../types';
 
 type ShareDialogProps = {
   onWantToClose: () => void;
   visible: boolean;
-  snippet?: import('../../types').Revision;
+  snippet?: Revision;
 };
 
 export default class ShareDialog extends React.Component<ShareDialogProps> {
+  static displayName = 'ShareDialog';
     constructor(props: ShareDialogProps) {
     super(props);
     // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
@@ -15,7 +17,7 @@ export default class ShareDialog extends React.Component<ShareDialogProps> {
   }
 
     _outerClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (event.target === document.getElementById('ShareDialog')) {
+    if (event.target === document.querySelector('#ShareDialog')) {
       this.props.onWantToClose();
     }
   }

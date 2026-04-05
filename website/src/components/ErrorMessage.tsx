@@ -7,6 +7,7 @@ type ErrorMessageProps = {
 };
 
 export default class ErrorMessage extends React.Component<ErrorMessageProps> {
+  static displayName = 'ErrorMessage';
   render() {
     return this.props.error ?
       <div className="cover">

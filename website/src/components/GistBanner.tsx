@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 import {getRevision} from '../store/selectors';
+import type {Revision, AppState} from '../types';
 
 const buttonStyle: React.CSSProperties = {
   backgroundColor: 'transparent',
@@ -20,7 +21,7 @@ const buttonStyle: React.CSSProperties = {
 };
 
 type GistBannerProps = {
-  revision?: import('../types').Revision | null;
+  revision?: Revision | null;
 };
 
 class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
@@ -71,4 +72,4 @@ GistBanner.propTypes = {
   revision: PropTypes.object,
 }
 
-export default connect((state: import('../types').AppState) => ({revision: getRevision(state)}))(GistBanner);
+export default connect((state: AppState) => ({revision: getRevision(state)}))(GistBanner);

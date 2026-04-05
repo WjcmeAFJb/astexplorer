@@ -2,8 +2,10 @@ import {connect} from 'react-redux';
 import Transformer from '../components/Transformer';
 import {setTransformState, toggleFormatting} from '../store/actions';
 import * as selectors from '../store/selectors';
+import type {AppState} from '../types';
+import type {Dispatch} from 'redux';
 
-function mapStateToProps(state: import('../types').AppState) {
+function mapStateToProps(state: AppState) {
   return {
     transformer: selectors.getTransformer(state),
     // Either the transform example or the transform code from the current
@@ -11,6 +13,7 @@ function mapStateToProps(state: import('../types').AppState) {
     // changed and we can save.
     defaultTransformCode: selectors.getInitialTransformCode(state),
     transformCode: selectors.getTransformCode(state),
+    // oxlint-disable-next-line typescript-eslint/prefer-nullish-coalescing -- empty string editorMode should fall back to category.id
     mode:
       selectors.getParser(state).category.editorMode ||
       selectors.getParser(state).category.id,
@@ -20,7 +23,7 @@ function mapStateToProps(state: import('../types').AppState) {
   };
 }
 
-function mapDispatchToProps(dispatch: import('redux').Dispatch) {
+function mapDispatchToProps(dispatch: Dispatch) {
   return {
     onContentChange: ({value, cursor}: {value: string, cursor: number}) => {
       dispatch(setTransformState({code: value, cursor}));

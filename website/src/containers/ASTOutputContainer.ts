@@ -1,9 +1,7 @@
-
-
 import {connect} from 'react-redux';
 import ASTOutput from '../components/ASTOutput';
 import * as selectors from '../store/selectors';
-type AppState = import('../types').AppState;
+import type {AppState} from '../types';
 
 function mapStateToProps(state: AppState) {
   return {

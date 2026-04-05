@@ -32,6 +32,7 @@ export type EditorProps = {
 };
 
 export default class Editor extends React.Component<EditorProps, {value: string}> {
+  static displayName = 'Editor';
   static defaultProps: Partial<EditorProps>;
   codeMirror: CodeMirror.Editor | null = null;
   container: HTMLElement | null = null;
@@ -60,6 +61,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       this.codeMirror.setValue(this.props.value);
     }
     if (this.props.mode !== prevProps.mode) {
+      // oxlint-disable-next-line promise/always-return -- side-effect only: applying CodeMirror mode after async load
       ensureCMMode(this.props.mode).then(() => {
         this.codeMirror?.setOption('mode', this.props.mode);
       });
@@ -82,7 +84,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
   }
 
     _getErrorLine(error: EditorProps['error']): number | undefined {
-    return error.loc ? error.loc.line : (error.lineNumber || error.line);
+    return error.loc ? error.loc.line : (error.lineNumber ?? error.line);
   }
 
     _setError(error?: EditorProps['error']) {
@@ -108,6 +110,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     return ((this.props.posFromIndex ? this.props : doc).posFromIndex(index) as {line: number, ch: number});
   }
 
+  // oxlint-disable-next-line max-lines-per-function -- componentDidMount sets up CodeMirror instance with multiple event handlers
   componentDidMount() {
         this._CMHandlers = [];
         this._subscriptions = [];
@@ -121,6 +124,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       },
     );
     // Load the CodeMirror mode asynchronously, then apply it
+    // oxlint-disable-next-line promise/always-return -- side-effect only: applying CodeMirror mode after async load
     ensureCMMode(this.props.mode).then(() => {
       this.codeMirror?.setOption('mode', this.props.mode);
     });
@@ -212,7 +216,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     this._markerRange = null;
     this._mark = null;
     let container = this.container;
-    container.removeChild(container.children[0]);
+    container.children[0].remove();
     this.codeMirror = null;
   }
 
@@ -251,7 +255,8 @@ export default class Editor extends React.Component<EditorProps, {value: string}
 
   render() {
     return (
-      <div className="editor" // @ts-expect-error — ref callback returns assignment value (element) instead of void
+      // @ts-expect-error — ref callback returns assignment value (element) instead of void
+      <div className="editor"
         ref={c => this.container = c}/>
     );
   }

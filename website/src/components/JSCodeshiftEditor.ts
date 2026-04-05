@@ -1,6 +1,7 @@
 import CodeMirror from 'codemirror';
 import PropTypes from 'prop-types';
 import Editor from './Editor';
+import type {EditorProps} from './Editor';
 
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/tern/tern.css';
@@ -8,7 +9,7 @@ import 'codemirror/addon/tern/tern.css';
 let server: any;
 
 export default class JSCodeshiftEditor extends Editor {
-    constructor(props: import('./Editor').EditorProps) {
+    constructor(props: EditorProps) {
     super(props);
     loadTern();
   }
@@ -35,7 +36,7 @@ function loadTern(): void {
       'codemirror/addon/tern/tern',
       'acorn',
     ],
-    (_1: unknown, _2: unknown, acorn: typeof import('acorn')) => {
+    (_1: unknown, _2: unknown, acorn: { [key: string]: unknown }) => {
       globalThis.acorn = acorn;
       require(
         [
@@ -47,8 +48,8 @@ function loadTern(): void {
         ],
         (tern: {registerPlugin: (name: string, init: (...args: unknown[]) => void) => void, [k: string]: unknown}, _: unknown, infer: {cx: () => {topScope: unknown, definitions: Record<string, Record<string, unknown>>}, IsCallee: {new(...args: unknown[]): unknown}, ANull: unknown, [k: string]: unknown}, jscs_def: unknown, ecmascript: unknown) => {
           globalThis.tern = tern;
-          tern.registerPlugin('transformer', (server: any) => {
-            server.on('afterLoad', (file: any) => {
+          tern.registerPlugin('transformer', (ternServer: any) => {
+            ternServer.on('afterLoad', (file: any) => {
               const fnVal = file.scope.props.transformer;
               if (fnVal) {
                 const fnType = fnVal.getFunctionType();

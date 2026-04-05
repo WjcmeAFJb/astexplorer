@@ -2,14 +2,16 @@ import { connect } from 'react-redux';
 import { expandSettingsDrawer, collapseSettingsDrawer } from '../store/actions';
 import { showSettingsDrawer } from '../store/selectors';
 import SettingsDrawer from '../components/SettingsDrawer';
+import type { AppState } from '../types';
+import type { Dispatch } from 'redux';
 
-function mapStateToProps(state: import('../types').AppState) {
+function mapStateToProps(state: AppState) {
   return {
     isOpen: showSettingsDrawer(state),
   };
 }
 
-function mapDispatchToProps(dispatch: import('redux').Dispatch) {
+function mapDispatchToProps(dispatch: Dispatch) {
   return {
     onWantToExpand: () => dispatch(expandSettingsDrawer()),
     onWantToCollapse: () => dispatch(collapseSettingsDrawer()),

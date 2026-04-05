@@ -1,14 +1,7 @@
-
-
 // @ts-expect-error — no declaration file
 import isEqual from 'lodash.isequal';
 import {getParserByID, getTransformerByID} from 'astexplorer-parsers';
-type TransformResult = import('../types').TransformResult;
-type ParseResult = import('../types').ParseResult;
-type Revision = import('../types').Revision;
-type Transformer = import('../types').Transformer;
-type Parser = import('../types').Parser;
-type AppState = import('../types').AppState;
+import type {TransformResult, ParseResult, Revision, Transformer, Parser, AppState} from '../types';
 
 // Our selectors are not computationally expensive so we can just use this
 // implementation.
@@ -130,15 +123,16 @@ export const canFork: (state: AppState) => boolean = createSelector(
 
 const canSaveCode: (state: AppState) => boolean = createSelector(
   [getRevision, isCodeDirty],
+  // can always save if there is no revision
   (revision: Revision | null | undefined, dirty: boolean) => (
-    !revision || // can always save if there is no revision
+    !revision ||
     dirty
   ),
 );
 
 export const canSaveTransform: (state: AppState) => boolean = createSelector(
   [showTransformer, isTransformDirty],
-  (showTransformer: boolean, dirty: boolean) => showTransformer && dirty,
+  (isShowTransformer: boolean, dirty: boolean) => isShowTransformer && dirty,
 );
 
 const didParserSettingsChange: (state: AppState) => boolean = createSelector(
@@ -158,8 +152,8 @@ const didParserSettingsChange: (state: AppState) => boolean = createSelector(
 
 export const canSave: (state: AppState) => boolean = createSelector(
   [getRevision, canSaveCode, canSaveTransform, didParserSettingsChange],
-  (revision: Revision | null | undefined, canSaveCode: boolean, canSaveTransform: boolean, didParserSettingsChange: boolean) => (
-    (canSaveCode || canSaveTransform || didParserSettingsChange) &&
-    (!revision || revision.canSave())
+  (rev: Revision | null | undefined, codeDirty: boolean, transformDirty: boolean, settingsChanged: boolean) => (
+    (codeDirty || transformDirty || settingsChanged) &&
+    (!rev || rev.canSave())
   ),
 );

@@ -1,3 +1,4 @@
+// oxlint-disable max-classes-per-file -- ambient declaration file; multiple class declarations are standard for .d.ts files
 // Global type augmentations for astexplorer
 
 declare module '*.css' {
@@ -5,9 +6,10 @@ declare module '*.css' {
   export default content;
 }
 
-// oxlint-disable-next-line no-shadow-restricted-names -- TypeScript global augmentation
+// oxlint-disable-next-line no-shadow-restricted-names, no-redeclare -- TypeScript global augmentation requires redeclaring globalThis
 declare namespace globalThis {
   var $node: unknown;
+  // oxlint-disable-next-line typescript-eslint/consistent-type-imports -- import() is required in ambient declaration files
   var acorn: typeof import('acorn');
   var tern: Record<string, unknown>;
   var __filename: string;
@@ -145,6 +147,7 @@ declare module 'prop-types' {
   interface Validator<T> {
     isRequired: Validator<T>;
   }
+  // oxlint-disable-next-line no-redeclare -- intentionally reusing PropTypes name for the interface and const in this declaration
   interface PropTypes {
     any: Validator<unknown>;
     array: Validator<unknown[]>;

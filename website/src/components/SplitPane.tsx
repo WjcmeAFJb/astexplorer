@@ -17,6 +17,7 @@ const styleB = {
 
  * Creates a left-right split pane inside its container.
  */
+// oxlint-disable-next-line max-lines-per-function -- SplitPane has complex mouse interaction logic that is tightly coupled
 export default function SplitPane({vertical, className, children, onResize}: any): React.ReactElement {
   // Position is really the size (width or height) of the first (left or top)
   // panel, as percentage of the parent containers size. The remaining elements
@@ -35,9 +36,9 @@ export default function SplitPane({vertical, className, children, onResize}: any
     const offset = vertical ? container.current.offsetTop : container.current.offsetLeft;
     const size = vertical ? container.current.offsetHeight : container.current.offsetWidth;
     document.body.style.cursor = vertical ? 'row-resize' : 'col-resize';
-    let moveHandler = (event: MouseEvent) => {
-      event.preventDefault();
-      const newPosition = ((vertical ? event.pageY : event.pageX) - offset) / size * 100;
+    let moveHandler = (moveEvent: MouseEvent) => {
+      moveEvent.preventDefault();
+      const newPosition = ((vertical ? moveEvent.pageY : moveEvent.pageX) - offset) / size * 100;
       // Using 99% as the max value prevents the divider from disappearing
       setPosition(Math.min(Math.max(0, newPosition), 99));
     };
@@ -53,7 +54,7 @@ export default function SplitPane({vertical, className, children, onResize}: any
 
     document.addEventListener('mousemove', moveHandler);
     document.addEventListener('mouseup', upHandler);
-  }, [vertical, position, container])
+  }, [vertical, onResize, container])
 
   children = React.Children.toArray(children)
 

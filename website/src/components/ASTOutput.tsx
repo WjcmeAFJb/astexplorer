@@ -15,6 +15,7 @@ function formatTime(time: number | null): string | null {
   return `${(time / 1000).toFixed(2)}s`;
 }
 
+// oxlint-disable-next-line max-lines-per-function -- ASTOutput manages multiple visualization modes with tab switching
 export default function ASTOutput({parseResult={}, position=null}: any): React.ReactElement {
   const [selectedOutput, setSelectedOutput] = useState(0);
   const {ast=null} = parseResult;
@@ -50,7 +51,7 @@ export default function ASTOutput({parseResult={}, position=null}: any): React.R
         // @ts-expect-error — value is string from DOM, compared with == (loose); state is number
         onClick={event => setSelectedOutput((event.target as HTMLButtonElement).value)}
         className={cx({
-          active: selectedOutput == index,
+          active: selectedOutput === index,
         })}>
         {cls.name}
       </button>,

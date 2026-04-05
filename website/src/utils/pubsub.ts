@@ -5,7 +5,7 @@ export function subscribe(topic: string, handler: (data: unknown) => void): () =
   if (!handlers) {
     handlers = subscribers[topic] = [];
   }
-  if (handlers.indexOf(handler) === -1) {
+  if (!handlers.includes(handler)) {
     handlers.push(handler);
   }
 
@@ -26,9 +26,7 @@ export function publish(topic: string, data?: unknown): void {
 }
 
 export function clear(unsubscribers: Array<() => void>): void {
-  unsubscribers.forEach(call);
-}
-
-function call(f: () => void): void {
-  return f();
+  for (const unsub of unsubscribers) {
+    unsub();
+  }
 }

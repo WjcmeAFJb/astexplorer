@@ -8,11 +8,11 @@ import KeyMapButton from './buttons/KeyMapButton';
 
 export default function Toolbar(props: Record<string, unknown>): React.ReactElement {
   let {parser, transformer, showTransformer} = props as any;
-  let parserInfo: string | React.ReactElement = parser.displayName;
+  let parserInfo: string | React.ReactElement = String(parser.displayName);
   let transformerInfo: string | React.ReactElement = '';
   if (parser) {
     if (parser.version) {
-      parserInfo += '-' + parser.version;
+      parserInfo = String(parserInfo) + '-' + String(parser.version);
     }
     if (parser.homepage) {
       parserInfo =
@@ -20,9 +20,9 @@ export default function Toolbar(props: Record<string, unknown>): React.ReactElem
     }
   }
   if (showTransformer) {
-    transformerInfo = transformer.displayName;
+    transformerInfo = String(transformer.displayName);
     if (transformer.version) {
-      transformerInfo += '-' + transformer.version;
+      transformerInfo = String(transformerInfo) + '-' + String(transformer.version);
     }
     if (transformer.homepage) {
       transformerInfo =

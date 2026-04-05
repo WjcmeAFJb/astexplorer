@@ -1,10 +1,7 @@
-
-
+// oxlint-disable max-lines-per-function -- middleware functions are necessarily large state-coordination units
 import {getParser, getParserSettings, getCode} from './selectors';
 import {ignoreKeysFilter, locationInformationFilter, functionFilter, emptyKeysFilter, typeKeysFilter} from '../core/TreeAdapter';
-type TreeFilter = import('../types').TreeFilter;
-type ParseResult = import('../types').ParseResult;
-type Parser = import('../types').Parser;
+import type {Parser} from '../types';
 
 function parse(parser: Parser, code: string, parserSettings: Record<string, unknown> | null): Promise<unknown> {
   if (!parser._promise) {
@@ -14,7 +11,7 @@ function parse(parser: Parser, code: string, parserSettings: Record<string, unkn
     realParser => parser.parse(
       realParser,
       code,
-      parserSettings || parser.getDefaultOptions(),
+      parserSettings ?? parser.getDefaultOptions(),
     ),
   );
 }
@@ -34,11 +31,12 @@ export default (store: any) => (next: any) => (action: any) => {
     getParserSettings(oldState) !== newParserSettings ||
     getCode(oldState) !== newCode
   ) {
-    if (!newParser || newCode == null) {
+    if (!newParser || newCode === null || newCode === undefined) {
       return;
     }
     const start = Date.now();
     return parse(newParser, newCode, newParserSettings).then(
+      // oxlint-disable-next-line promise/always-return -- middleware dispatches side effects; no meaningful return value
       ast => {
         // Did anything change in the meantime?
         if (
@@ -70,6 +68,7 @@ export default (store: any) => (next: any) => (action: any) => {
             locationProps: newParser.locationProps,
           },
         };
+        // oxlint-disable-next-line promise/no-callback-in-promise -- redux middleware must call next() inside promise callbacks
         next({
           type: 'SET_PARSE_RESULT',
           result: {
@@ -82,6 +81,7 @@ export default (store: any) => (next: any) => (action: any) => {
       },
       (error: Error) => {
         console.error(error); // eslint-disable-line no-console
+        // oxlint-disable-next-line promise/no-callback-in-promise -- redux middleware must call next() inside promise callbacks
         next({
           type: 'SET_PARSE_RESULT',
           result: {

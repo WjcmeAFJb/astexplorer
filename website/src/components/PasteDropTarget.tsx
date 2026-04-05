@@ -3,7 +3,7 @@ import React from 'react';
 import { categories } from 'astexplorer-parsers';
 
 function importEscodegen(): Promise<{generate: (ast: unknown, options: unknown) => string}> {
-  return new Promise(resolve => require(['escodegen'], resolve));
+  return new Promise(resolve => { require(['escodegen'], resolve); });
 }
 
 const acceptedFileTypes = new Map([
@@ -11,11 +11,11 @@ const acceptedFileTypes = new Map([
   ['text/plain', 'TEXT'],
 ]);
 
-categories.forEach(({ id, mimeTypes }) => {
-  mimeTypes.forEach((mimeType: string) => {
+for (const { id, mimeTypes } of categories) {
+  for (const mimeType of mimeTypes) {
     acceptedFileTypes.set(mimeType, id);
-  });
-});
+  }
+}
 
 type PasteDropTargetOwnProps = {
   onText?: (type: string, event: Event, code: string, categoryId?: string) => void;
@@ -26,6 +26,7 @@ type PasteDropTargetOwnProps = {
 type PasteDropTargetProps = PasteDropTargetOwnProps & Record<string, unknown>;
 
 export default class PasteDropTarget extends React.Component<PasteDropTargetProps, {dragging: boolean}> {
+  static displayName = 'PasteDropTarget';
   _listeners: Array<() => void> | null = [];
   container: HTMLElement | null = null;
 
@@ -45,6 +46,7 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
     throw ex;
   }
 
+  // oxlint-disable-next-line max-lines-per-function -- componentDidMount binds multiple DOM event listeners; splitting would scatter related logic
   componentDidMount() {
         this._listeners = [];
     let target = this.container;
@@ -98,14 +100,14 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
       event.preventDefault();
       event.stopPropagation();
       let reader = new FileReader();
-      reader.onload = readerEvent => {
+      reader.addEventListener('load', readerEvent => {
         let text = readerEvent.target.result;
         if (categoryId === 'JSON' || categoryId === 'TEXT') {
           // @ts-expect-error — text is reassigned from string|ArrayBuffer to Promise; resolved via Promise.resolve below
           text = this._jsonToCode(text).then(
-            text => {
+            codeText => {
               categoryId = 'javascript';
-              return text;
+              return codeText;
             },
             (ex: Error) => {
               if (categoryId === 'JSON') {
@@ -117,10 +119,12 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
             },
           );
         }
-        Promise.resolve(text).then((text: string) => {
-          this.props.onText('drop', readerEvent, text, categoryId);
+        // oxlint-disable-next-line promise/always-return -- side-effect only: dispatching drop text to parent
+        Promise.resolve(text).then((resolvedText: string) => {
+          this.props.onText('drop', readerEvent, resolvedText, categoryId);
         });
-      };
+      });
+      // oxlint-disable-next-line unicorn/prefer-blob-reading-methods -- FileReader.onload callback uses readerEvent arg; refactoring to file.text() would lose it
       reader.readAsText(file);
     }, true);
 
@@ -142,7 +146,7 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
     try {
       ast = (JSON.parse(json) as unknown);
     }
-    catch(err) {
+    catch {
       return Promise.resolve(json);
     }
     return importEscodegen().then((escodegen: any) => {
