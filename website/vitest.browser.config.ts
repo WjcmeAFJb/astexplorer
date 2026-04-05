@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     testTimeout: 30_000,
     include: ['tests/**/*.browser.test.{ts,tsx}'],
+    setupFiles: ['tests/browser-setup.ts'],
     browser: {
       enabled: true,
       provider: 'playwright',

@@ -272,3 +272,83 @@ describe('Containers with real Redux store in browser', () => {
     expect(editors.length).toBeGreaterThan(0);
   });
 });
+
+// ===========================================================================
+// Visual verification: components render with correct styles
+// ===========================================================================
+describe('Styled component screenshots', () => {
+  test('SettingsDialog renders styled', async () => {
+    const { default: SettingsDialog } = await import(
+      '../src/components/dialogs/SettingsDialog'
+    );
+
+    const mockParser = {
+      id: 'test',
+      displayName: 'Test Parser',
+      renderSettings: (settings: any, onChange: any) => (
+        <div className="settings">
+          <label><input type="checkbox" checked={settings?.jsx} onChange={() => onChange({...settings, jsx: !settings?.jsx})} /> JSX</label>
+        </div>
+      ),
+    };
+
+    render(
+      <SettingsDialog
+        visible={true}
+        parser={mockParser as any}
+        parserSettings={{ jsx: true }}
+        onSave={() => {}}
+        onWantToClose={() => {}}
+      />,
+    );
+
+    await expect(document.getElementById('SettingsDialog')).toBeTruthy();
+    await expect.element(document.getElementById('SettingsDialog')!).toBeVisible();
+  });
+
+  test('SplitPane renders styled with divider', async () => {
+    const { default: SplitPane } = await import('../src/components/SplitPane');
+
+    const { container } = render(
+      <SplitPane className="splitpane" vertical={false} onResize={() => {}}>
+        <div style={{ padding: '20px' }}>Left pane content</div>
+        <div style={{ padding: '20px' }}>Right pane content</div>
+      </SplitPane>,
+    );
+
+    const divider = container.querySelector('.splitpane-divider');
+    expect(divider).toBeTruthy();
+    // Divider should have dimensions (styled)
+    const rect = divider!.getBoundingClientRect();
+    expect(rect.height).toBeGreaterThan(0);
+  });
+
+  test('Toolbar renders styled with all buttons', async () => {
+    const { default: ToolbarContainer } = await import(
+      '../src/containers/ToolbarContainer'
+    );
+    const store = makeStore();
+    const { container } = renderWithStore(<ToolbarContainer />, store);
+
+    const toolbar = container.querySelector('#Toolbar');
+    expect(toolbar).toBeTruthy();
+    // Toolbar should have visible height (CSS applied)
+    const rect = toolbar!.getBoundingClientRect();
+    expect(rect.height).toBeGreaterThan(0);
+  });
+
+  test('CodeMirror editor renders styled', async () => {
+    const { default: Editor } = await import('../src/components/Editor');
+
+    const { container } = render(
+      <Editor value="const x = 1;\nconst y = 2;" mode="javascript" />,
+    );
+
+    const cm = container.querySelector('.CodeMirror');
+    expect(cm).toBeTruthy();
+    // CodeMirror should have visible dimensions
+    const rect = cm!.getBoundingClientRect();
+    expect(rect.height).toBeGreaterThan(0);
+    expect(rect.width).toBeGreaterThan(0);
+  });
+});
