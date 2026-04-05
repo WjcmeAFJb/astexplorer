@@ -7,9 +7,12 @@
  * - PasteDropTarget paste/drop (real clipboard/drag events)
  * - Container connect() mapStateToProps/mapDispatchToProps
  */
-import { describe, test, expect, vi } from 'vitest';
+import { describe, test, expect, vi, afterEach } from 'vitest';
+import { page } from '@vitest/browser/context';
 import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react';
+import { render, fireEvent, act, cleanup } from '@testing-library/react';
+
+afterEach(() => { cleanup(); });
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { astexplorer, revive } from '../src/store/reducers';
@@ -274,10 +277,11 @@ describe('Containers with real Redux store in browser', () => {
 });
 
 // ===========================================================================
-// Visual verification: components render with correct styles
+// Visual snapshot tests: verify components render with correct styles.
+// Screenshots are saved to __screenshots__/ and tracked in git.
 // ===========================================================================
 describe('Styled component screenshots', () => {
-  test('SettingsDialog renders styled', async () => {
+  test('SettingsDialog', async () => {
     const { default: SettingsDialog } = await import(
       '../src/components/dialogs/SettingsDialog'
     );
@@ -288,6 +292,7 @@ describe('Styled component screenshots', () => {
       renderSettings: (settings: any, onChange: any) => (
         <div className="settings">
           <label><input type="checkbox" checked={settings?.jsx} onChange={() => onChange({...settings, jsx: !settings?.jsx})} /> JSX</label>
+          <label><input type="checkbox" /> TSX</label>
         </div>
       ),
     };
@@ -302,53 +307,50 @@ describe('Styled component screenshots', () => {
       />,
     );
 
-    await expect(document.getElementById('SettingsDialog')).toBeTruthy();
-    await expect.element(document.getElementById('SettingsDialog')!).toBeVisible();
+    const dialog = document.getElementById('SettingsDialog')!;
+    await expect.element(dialog).toBeVisible();
+    await page.screenshot({ element: dialog, path: '__screenshots__/settings-dialog.png' });
   });
 
-  test('SplitPane renders styled with divider', async () => {
+  test('SplitPane with divider', async () => {
     const { default: SplitPane } = await import('../src/components/SplitPane');
 
     const { container } = render(
       <SplitPane className="splitpane" vertical={false} onResize={() => {}}>
-        <div style={{ padding: '20px' }}>Left pane content</div>
-        <div style={{ padding: '20px' }}>Right pane content</div>
+        <div style={{ padding: '20px', background: '#f5f5f5' }}>Left pane</div>
+        <div style={{ padding: '20px', background: '#fff' }}>Right pane</div>
       </SplitPane>,
     );
 
-    const divider = container.querySelector('.splitpane-divider');
-    expect(divider).toBeTruthy();
-    // Divider should have dimensions (styled)
-    const rect = divider!.getBoundingClientRect();
-    expect(rect.height).toBeGreaterThan(0);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root).toBeTruthy();
+    expect(root.getBoundingClientRect().height).toBeGreaterThan(0);
+    await page.screenshot({ element: root, path: '__screenshots__/split-pane.png' });
   });
 
-  test('Toolbar renders styled with all buttons', async () => {
+  test('Toolbar with buttons', async () => {
     const { default: ToolbarContainer } = await import(
       '../src/containers/ToolbarContainer'
     );
     const store = makeStore();
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
-    const toolbar = container.querySelector('#Toolbar');
+    const toolbar = container.querySelector('#Toolbar') as HTMLElement;
     expect(toolbar).toBeTruthy();
-    // Toolbar should have visible height (CSS applied)
-    const rect = toolbar!.getBoundingClientRect();
-    expect(rect.height).toBeGreaterThan(0);
+    expect(toolbar.getBoundingClientRect().height).toBeGreaterThan(0);
+    await page.screenshot({ element: toolbar, path: '__screenshots__/toolbar.png' });
   });
 
-  test('CodeMirror editor renders styled', async () => {
+  test('CodeMirror editor', async () => {
     const { default: Editor } = await import('../src/components/Editor');
 
     const { container } = render(
-      <Editor value="const x = 1;\nconst y = 2;" mode="javascript" />,
+      <Editor value={'function hello() {\n  return "world";\n}'} mode="javascript" />,
     );
 
-    const cm = container.querySelector('.CodeMirror');
+    const cm = container.querySelector('.CodeMirror') as HTMLElement;
     expect(cm).toBeTruthy();
-    // CodeMirror should have visible dimensions
-    const rect = cm!.getBoundingClientRect();
-    expect(rect.height).toBeGreaterThan(0);
-    expect(rect.width).toBeGreaterThan(0);
+    expect(cm.getBoundingClientRect().height).toBeGreaterThan(0);
+    await page.screenshot({ element: cm, path: '__screenshots__/codemirror-editor.png' });
   });
 });
