@@ -6,4 +6,6 @@ test-results
 website/.stryker-tmp
 website/coverage
 website/reports
-.stryker-tmpcoverage/
+website/tests/__screenshots__
+.stryker-tmp
+coverage/
