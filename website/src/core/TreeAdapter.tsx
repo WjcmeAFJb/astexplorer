@@ -1,10 +1,9 @@
-// oxlint-disable typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-return, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import type {ParseResult, TreeFilter, WalkResult, AdapterOptions} from '../types';
 
 /**
  * Configurable base class for all tree traversal.
  */
-class TreeAdapter {
+export class TreeAdapter {
   _ranges: WeakMap<object, [number, number] | null> = new WeakMap();
   _filterValues: Record<string, boolean>;
   _adapterOptions: AdapterOptions;
@@ -48,7 +47,7 @@ class TreeAdapter {
     }
     const {nodeToRange} = this._adapterOptions;
     let range = nodeToRange(node);
-    if (node && typeof node === 'object') {
+    if (typeof node === 'object') {
       this._ranges.set(node, range);
     }
     return range;
@@ -100,7 +99,7 @@ class TreeAdapter {
   }
 
     isLocationProp(key: string): boolean {
-    return this._adapterOptions.locationProps && this._adapterOptions.locationProps.has(key);
+    return this._adapterOptions.locationProps !== undefined && this._adapterOptions.locationProps !== null && this._adapterOptions.locationProps.has(key);
   }
 
   /**
@@ -129,7 +128,7 @@ class TreeAdapter {
       for (const result of this._adapterOptions.walkNode(node)) {
         if (
           (this._adapterOptions.filters ?? []).some(filter => {
-            if (filter.key && !this._filterValues[filter.key]) {
+            if (filter.key !== undefined && filter.key !== '' && !this._filterValues[filter.key]) {
               return false;
             }
             return filter.test(result.value, result.key, Array.isArray(node));
@@ -171,19 +170,17 @@ const TreeAdapterConfigs: Record<string, AdapterOptions & Record<string, unknown
       // expression statements
       'expression',
     ]),
-    /**
- @this {{openByDefaultNodes: Set<unknown>, openByDefaultKeys: Set<string>}} @param {Record<string, unknown>} node @param {string} key
- */
-    openByDefault(node: Record<string, unknown>, key: string) {
-      return node && this.openByDefaultNodes.has(node.type) ||
+    openByDefault(this: {openByDefaultNodes: Set<unknown>, openByDefaultKeys: Set<string>}, node: Record<string, unknown>, key: string) {
+      return (node !== null && node !== undefined && this.openByDefaultNodes.has(node.type)) ||
         this.openByDefaultKeys.has(key);
     },
         nodeToRange(node: Record<string, unknown>): [number, number] | null {
-      if (!(node && typeof node === 'object')) {
+      if (node === null || node === undefined || typeof node !== 'object') {
         // oxlint-disable-next-line unicorn/no-null -- nodeToRange API returns [number, number] | null; null means "no range"
         return null;
       }
-      if (node.range) {
+      if (node.range !== undefined && node.range !== null) {
+        // oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- node.range is checked to exist; it is a [number, number] tuple from the AST
         return (node.range as [number, number]);
       }
       if (typeof node.start === 'number' && typeof node.end === 'number') {
@@ -193,10 +190,10 @@ const TreeAdapterConfigs: Record<string, AdapterOptions & Record<string, unknown
       return null;
     },
         nodeToName(node: Record<string, unknown>): string {
-      return (node.type as string);
+      return String(node.type);
     },
         *walkNode(node: Record<string, unknown>) {
-      if (node && typeof node === 'object') {
+      if (typeof node === 'object') {
         for (let prop in node) {
           yield {
             value: node[prop],
@@ -247,7 +244,7 @@ export function emptyKeysFilter() {
   return {
     key: 'hideEmptyKeys',
     label: 'Hide empty keys',
-    test(value: unknown, key: string, fromArray?: boolean) { return (value === null || value === undefined) && !fromArray; },
+    test(value: unknown, _key: string, fromArray?: boolean) { return (value === null || value === undefined) && fromArray !== true; },
   };
 }
 

@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-return -- legacy Redux action creators use any for payload flexibility
 import type { Revision, Category, Transformer, Parser } from '../types';
 
 export const SET_ERROR = 'SET_ERROR';
@@ -40,7 +39,7 @@ export function setParserSettings(settings: Record<string, unknown>): {type: typ
   return {type: SET_PARSER_SETTINGS, settings};
 }
 
-export function save(fork?: boolean): {type: typeof SAVE, fork: boolean} {
+export function save(fork?: boolean): {type: typeof SAVE, fork: boolean | undefined} {
   return {type: SAVE, fork};
 }
 
@@ -116,11 +115,11 @@ export function hideTransformer(): {type: typeof HIDE_TRANSFORMER} {
   return {type: HIDE_TRANSFORMER};
 }
 
-export function setTransformState(state: any): {type: typeof SET_TRANSFORM, code: string, cursor?: number} {
+export function setTransformState(state: {code: string, cursor?: number}): {type: typeof SET_TRANSFORM, code: string, cursor?: number} {
   return {type: SET_TRANSFORM, ...state};
 }
 
-export function setCode(state: any): {type: typeof SET_CODE, code: string, cursor?: number} {
+export function setCode(state: {code: string, cursor?: number}): {type: typeof SET_CODE, code: string, cursor?: number} {
   return {type: SET_CODE, ...state};
 }
 

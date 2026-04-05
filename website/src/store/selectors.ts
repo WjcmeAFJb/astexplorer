@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/no-explicit-any, typescript-eslint/no-unsafe-call, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 // @ts-expect-error — no declaration file
 import isEqual from 'lodash.isequal';
 import {getParserByID, getTransformerByID} from 'astexplorer-parsers';
@@ -7,9 +6,7 @@ import type {TransformResult, ParseResult, Revision, Transformer, Parser, AppSta
 // Our selectors are not computationally expensive so we can just use this
 // implementation.
 // createSelector uses Function.apply which loses type information.
-// Callback parameters are untyped (any) because they come from heterogeneous
-// dependency return types. Each call site uses @type to declare the actual signature.
-function createSelector<R = any>(deps: Array<(state: AppState) => unknown>, f: (...args: any[]) => R): (state: AppState) => R {
+function createSelector<R = unknown>(deps: Array<(state: AppState) => unknown>, f: (...args: unknown[]) => R): (state: AppState) => R {
   return function(state) {
     // oxlint-disable-next-line typescript-eslint(no-unsafe-return) -- Function.apply returns any; TS limitation
     return f.apply(this, deps.map(d => d(state)));
@@ -119,15 +116,15 @@ const isTransformDirty: (state: AppState) => boolean = createSelector(
 
 export const canFork: (state: AppState) => boolean = createSelector(
   [getRevision],
-  (revision: Revision | null | undefined) => !!revision,
+  (revision: unknown) => revision !== null && revision !== undefined,
 );
 
 const canSaveCode: (state: AppState) => boolean = createSelector(
   [getRevision, isCodeDirty],
   // can always save if there is no revision
-  (revision: Revision | null | undefined, dirty: boolean) => (
-    !revision ||
-    dirty
+  (revision: unknown, dirty: unknown) => (
+    (revision === null || revision === undefined) ||
+    (dirty === true)
   ),
 );
 
@@ -136,25 +133,35 @@ export const canSaveTransform: (state: AppState) => boolean = createSelector(
   (isShowTransformer: boolean, dirty: boolean) => isShowTransformer && dirty,
 );
 
+function isRevision(value: unknown): value is Revision {
+  return value !== null && value !== undefined && typeof value === 'object' && 'getParserSettings' in value;
+}
+
+function isParser(value: unknown): value is Parser {
+  return value !== null && value !== undefined && typeof value === 'object' && 'id' in value;
+}
+
 const didParserSettingsChange: (state: AppState) => boolean = createSelector(
   [getParserSettings, getRevision, getParser],
-  (parserSettings: Record<string, unknown> | null, revision: Revision | null | undefined, parser: Parser) => {
-    const savedParserSettings = revision && revision.getParserSettings();
+  (parserSettings: unknown, revisionArg: unknown, parserArg: unknown) => {
+    if (!isRevision(revisionArg) || !isParser(parserArg)) {
+      return false;
+    }
+    const savedParserSettings = revisionArg.getParserSettings();
     return (
-      !!revision &&
-      (
-        parser.id !== revision.getParserID() ||
-        !!savedParserSettings && !isEqual(parserSettings, savedParserSettings)
-      )
-    )
-
+      parserArg.id !== revisionArg.getParserID() ||
+      // oxlint-disable-next-line typescript-eslint(no-unsafe-call), typescript-eslint(strict-boolean-expressions), typescript-eslint(no-unsafe-type-assertion) -- isEqual is from an untyped module (lodash.isequal)
+      (savedParserSettings !== null && !(isEqual(parserSettings, savedParserSettings) as boolean))
+    );
   },
 );
 
 export const canSave: (state: AppState) => boolean = createSelector(
   [getRevision, canSaveCode, canSaveTransform, didParserSettingsChange],
-  (rev: Revision | null | undefined, codeDirty: boolean, transformDirty: boolean, settingsChanged: boolean) => (
-    (codeDirty || transformDirty || settingsChanged) &&
-    (!rev || rev.canSave())
-  ),
+  (revArg: unknown, codeDirty: unknown, transformDirty: unknown, settingsChanged: unknown) => {
+    return (
+      (codeDirty === true || transformDirty === true || settingsChanged === true) &&
+      (!isRevision(revArg) || revArg.canSave())
+    );
+  },
 );

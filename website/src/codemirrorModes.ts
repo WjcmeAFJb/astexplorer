@@ -1,5 +1,4 @@
-// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
-// Lazy CodeMirror mode loaders — keyed by the mode name used in setOption('mode', ...)
+// Lazy CodeMirror mode loaders -- keyed by the mode name used in setOption('mode', ...)
 // These import modes from the website's CodeMirror instance, not the parsers bundle's.
 const modeLoaders: Record<string, () => Promise<unknown>> = {
   css: () => import('codemirror/mode/css/css'),
@@ -30,12 +29,12 @@ const modeLoaders: Record<string, () => Promise<unknown>> = {
 const loaded = new Set<string>();
 
 export function ensureCMMode(mode: string | {name: string} | undefined): Promise<void> {
-  if (!mode) return Promise.resolve();
+  if (mode === undefined) return Promise.resolve();
   const name = typeof mode === 'string' ? mode : mode.name;
   if (loaded.has(name)) return Promise.resolve();
 
+  if (!(name in modeLoaders)) return Promise.resolve();
   const loader = modeLoaders[name];
-  if (!loader) return Promise.resolve();
 
   // oxlint-disable-next-line promise/always-return -- side-effect only: caching loaded mode name
   return loader().then(() => { loaded.add(name); });

@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import {connect} from 'react-redux';
 import Transformer from '../components/Transformer';
 import {setTransformState, toggleFormatting} from '../store/actions';
@@ -7,6 +6,8 @@ import type {AppState} from '../types';
 import type {Dispatch} from 'redux';
 
 function mapStateToProps(state: AppState) {
+  const parser = selectors.getParser(state);
+  const editorMode = parser.category.editorMode;
   return {
     transformer: selectors.getTransformer(state),
     // Either the transform example or the transform code from the current
@@ -14,10 +15,7 @@ function mapStateToProps(state: AppState) {
     // changed and we can save.
     defaultTransformCode: selectors.getInitialTransformCode(state),
     transformCode: selectors.getTransformCode(state),
-    // oxlint-disable-next-line typescript-eslint/prefer-nullish-coalescing -- empty string editorMode should fall back to category.id
-    mode:
-      selectors.getParser(state).category.editorMode ||
-      selectors.getParser(state).category.id,
+    mode: editorMode !== undefined && editorMode !== '' ? editorMode : parser.category.id,
     enableFormatting: selectors.getFormattingState(state),
     keyMap: selectors.getKeyMap(state),
     transformResult: selectors.getTransformResult(state),

@@ -1,4 +1,3 @@
-// oxlint-disable typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import {connect} from 'react-redux';
 import {setCode, setCursor} from '../store/actions';
 import Editor from '../components/Editor';
@@ -7,11 +6,12 @@ import type {AppState} from '../types';
 import type {Dispatch} from 'redux';
 
 function mapStateToProps(state: AppState) {
+  const parser = getParser(state);
+  const editorMode = parser.category.editorMode;
   return {
     keyMap: getKeyMap(state),
     value: getCode(state),
-    // oxlint-disable-next-line typescript-eslint/prefer-nullish-coalescing -- empty string editorMode should fall back to category.id
-    mode: getParser(state).category.editorMode || getParser(state).category.id,
+    mode: editorMode !== undefined && editorMode !== '' ? editorMode : parser.category.id,
     error: (getParseResult(state) ?? {}).error,
   };
 }

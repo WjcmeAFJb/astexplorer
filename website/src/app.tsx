@@ -1,5 +1,6 @@
-// oxlint-disable import/max-dependencies, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- app entry point necessarily imports all containers and stores; legacy untyped code
-import type {StorageBackend} from './types';
+// oxlint-disable import/max-dependencies -- app entry point necessarily imports all containers and stores
+import type {StorageBackend, AppState} from './types';
+import type {AnyAction} from 'redux';
 import * as LocalStorage from './components/LocalStorage';
 import ASTOutputContainer from './containers/ASTOutputContainer';
 import CodeEditorContainer from './containers/CodeEditorContainer';
@@ -42,8 +43,7 @@ function resize() {
   publish('PANEL_RESIZE');
 }
 
-// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- props come from Redux connect() which provides untyped mapStateToProps
-function App({showTransformer, hasError}: any): React.ReactElement {
+function App({showTransformer, hasError}: {showTransformer: boolean, hasError: boolean}): React.ReactElement {
   return (
     <>
       <ErrorMessageContainer />
@@ -77,13 +77,15 @@ App.propTypes = {
 };
 
 const AppContainer = connect(
-  state => ({
+  (state: AppState) => ({
     showTransformer: state.showTransformPanel,
-    hasError: !!state.error,
+    hasError: state.error !== null,
   }),
 )(App);
 
-const composeEnhancers: typeof compose = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose) || compose;
+// oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- Redux DevTools extension injects untyped compose; cast is safe
+const composeEnhancers: typeof compose = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose) ?? compose;
+// oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- gist/parse modules satisfy StorageBackend at runtime; TS modules lack direct type export
 const storageAdapter = new StorageHandler(([gist, parse] as StorageBackend[]));
 const store = createStore(
   astexplorer,
@@ -95,12 +97,12 @@ const store = createStore(
 store.subscribe(debounce(() => {
   const state = store.getState();
   // We are not persisting the state while looking at an existing revision
-  if (!getRevision(state)) {
+  if (getRevision(state) === null || getRevision(state) === undefined) {
     LocalStorage.writeState(persist(state));
   }
 }));
-// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- INIT action is a custom type not in the Redux Action union
-store.dispatch({type: 'INIT'} as any);
+// oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- INIT action is a custom bootstrap type not in the Redux Action union
+store.dispatch({type: 'INIT'} as AnyAction);
 
 createRoot(document.querySelector('#container')!).render(
   <Provider store={store}>
@@ -109,13 +111,13 @@ createRoot(document.querySelector('#container')!).render(
 );
 
 window.addEventListener('hashchange', () => {
-  // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- loadSnippet() returns a typed action but store.dispatch expects AnyAction
-  store.dispatch(loadSnippet() as any);
+  // oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- loadSnippet() returns a typed action but store.dispatch expects AnyAction
+  store.dispatch(loadSnippet() as AnyAction);
 });
 
 if (location.hash.length > 1) {
-  // oxlint-disable-next-line typescript-eslint(no-explicit-any) -- loadSnippet() returns a typed action but store.dispatch expects AnyAction
-  store.dispatch(loadSnippet() as any);
+  // oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- loadSnippet() returns a typed action but store.dispatch expects AnyAction
+  store.dispatch(loadSnippet() as AnyAction);
 }
 
 window.addEventListener('beforeunload', (event) => {

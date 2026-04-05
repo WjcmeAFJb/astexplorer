@@ -1,16 +1,16 @@
-// oxlint-disable typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-member-access, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 /*eslint no-new-func: 0*/
 import Editor from './Editor';
 import JSONEditor from './JSONEditor';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import type {SourceMapConsumer} from 'source-map/lib/source-map-consumer';
+import type {TransformResult} from '../types';
 
 import stringify from 'json-stringify-safe';
 
-function positionFromIndex(index: number, map: SourceMapConsumer | null | undefined): {line: number, ch: number} {
-  if (!map) {
-    return;
+function positionFromIndex(index: number, map: SourceMapConsumer | null | undefined): {line: number, ch: number} | undefined {
+  if (map === null || map === undefined) {
+    return undefined;
   }
   const src = map.sourcesContent[0];
   if (index === 0) {
@@ -32,42 +32,41 @@ function positionFromIndex(index: number, map: SourceMapConsumer | null | undefi
     source: map.sources[0],
   }));
   if (line === null || column === null) {
-    return;
+    return undefined;
   }
   return { line: line - 1, ch: column };
 }
 
-// oxlint-disable-next-line typescript-eslint(no-explicit-any) -- props come from Redux connect() which provides untyped mapStateToProps
-export default function TransformOutput({transformResult, mode}: any): React.ReactElement {
+export default function TransformOutput({transformResult, mode}: {transformResult: TransformResult | null, mode: string}): React.ReactElement {
   // This ensures that we are rendering an empty editor as "placeholder" if no transform result is available yet.
-  transformResult = transformResult === null || transformResult === undefined ? {result: ''} : transformResult;
+  const result = transformResult ?? {result: ''};
 
   const posFromIndex = React.useCallback(
-    (index: number) => positionFromIndex(index, transformResult.map),
+    (index: number) => positionFromIndex(index, transformResult?.map),
     [transformResult],
   );
 
   return (
     <div className="output highlight">
-      {transformResult.error ?
+      {result.error !== undefined && result.error !== null ?
         <Editor
           highlight={false}
           key="error"
           lineNumbers={false}
           readOnly={true}
-          value={transformResult.error.message}
+          value={result.error.message}
         /> : (
-          typeof transformResult.result === 'string' ?
+          typeof result.result === 'string' ?
           <Editor
             posFromIndex={posFromIndex}
             mode={mode}
             key="output"
             readOnly={true}
-            value={transformResult.result}
+            value={result.result}
           /> :
           <JSONEditor
             className="container no-toolbar"
-            value={stringify(transformResult.result,
+            value={stringify(result.result,
               // oxlint-disable-next-line unicorn/no-null -- JSON.stringify API requires null as the replacer argument
               null, 2)}
           />

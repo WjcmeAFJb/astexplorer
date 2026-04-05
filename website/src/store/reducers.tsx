@@ -1,4 +1,4 @@
-// oxlint-disable max-lines-per-function, max-lines, typescript-eslint/switch-exhaustiveness-check, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- reducer is a single large switch; each sub-reducer handles a subset of action types with default fallthrough; legacy untyped code
+// oxlint-disable max-lines-per-function, max-lines -- reducer is a single large switch; each sub-reducer handles a subset of action types with default fallthrough
 import * as actions from './actions';
 import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from 'astexplorer-parsers';
 import type {Revision, Category, Transformer, Action, WorkbenchState, AppState} from '../types';
@@ -126,7 +126,7 @@ function getDefaultTransform(transformer: Transformer, workbenchState: Workbench
       transformer.defaultTransform,
       {
         parser: workbenchState.parser,
-        parserSettings: workbenchState.parserSettings || {},
+        parserSettings: workbenchState.parserSettings ?? {},
       },
     )
   }
@@ -135,8 +135,9 @@ function getDefaultTransform(transformer: Transformer, workbenchState: Workbench
 
 function workbench(state: WorkbenchState =initialState.workbench, action: Action, fullState: AppState): WorkbenchState {
     function parserFromCategory(category: Category): Partial<WorkbenchState> {
-    const parser = fullState.parserPerCategory[category.id] ||
-      getDefaultParser(category).id;
+    const parser = fullState.parserPerCategory[category.id] !== undefined && fullState.parserPerCategory[category.id] !== ''
+      ? fullState.parserPerCategory[category.id]
+      : getDefaultParser(category).id;
     return {
       parser,
       // oxlint-disable-next-line unicorn/no-null -- Redux state uses null to mean "no parser-specific settings"
@@ -146,6 +147,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
     };
   }
 
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch (action.type) {
     case actions.SELECT_CATEGORY:
       return {
@@ -175,7 +177,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
 
           // Check if we might want to reformat the code example
           const transformer = getTransformerByID(state.transform.transformer)
-          if (transformer && state.transform.code === getDefaultTransform(transformer, state)) {
+          if (transformer !== undefined && state.transform.code === getDefaultTransform(transformer, state)) {
             newState.transform = {
               ...state.transform,
               code: getDefaultTransform(transformer, newState),
@@ -189,7 +191,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
     case actions.SELECT_TRANSFORMER:
       {
         const parserIsCompatible =
-          action.transformer.compatibleParserIDs && action.transformer.compatibleParserIDs.has(state.parser)
+          action.transformer.compatibleParserIDs !== undefined && action.transformer.compatibleParserIDs !== null && action.transformer.compatibleParserIDs.has(state.parser)
         const differentParser =
           action.transformer.defaultParserID !== state.parser && !parserIsCompatible;
         const differentTransformer =
@@ -209,7 +211,8 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         }
 
         if (differentTransformer) {
-          const snippetHasDifferentTransform = fullState.activeRevision &&
+          const snippetHasDifferentTransform = fullState.activeRevision !== undefined &&
+            fullState.activeRevision !== null &&
             fullState.activeRevision.getTransformerID() === action.transformer.id;
           newState.transform = {
             ...state.transform,
@@ -276,7 +279,10 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
           code: getParserByID(state.parser).category.codeExample,
           initialCode: getParserByID(state.parser).category.codeExample,
         };
-        if (fullState.activeRevision && fullState.activeRevision.getTransformerID() || reset && state.transform.transformer) {
+        const activeTransformerID = fullState.activeRevision !== undefined && fullState.activeRevision !== null
+          ? fullState.activeRevision.getTransformerID()
+          : undefined;
+        if ((activeTransformerID !== undefined && activeTransformerID !== null && activeTransformerID !== '') || (reset && state.transform.transformer !== null && state.transform.transformer !== '')) {
           // Clear transform as well
           const transformer = getTransformerByID(state.transform.transformer);
           newState.transform = {
@@ -295,6 +301,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
 }
 
 function parserSettings(state: Record<string, Record<string, unknown>> =initialState.parserSettings, action: Action, fullState: AppState): Record<string, Record<string, unknown>> {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch (action.type) {
     case actions.SET_PARSER_SETTINGS:
       if (fullState.activeRevision) {
@@ -312,6 +319,7 @@ function parserSettings(state: Record<string, Record<string, unknown>> =initialS
 }
 
 function parserPerCategory(state: Record<string, string> =initialState.parserPerCategory, action: Action): Record<string, string> {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch (action.type) {
     case actions.SET_PARSER:
       return {...state, [action.parser.category.id]: action.parser.id};
@@ -321,6 +329,7 @@ function parserPerCategory(state: Record<string, string> =initialState.parserPer
 }
 
 function showSettingsDialog(state: boolean =initialState.showSettingsDialog, action: Action): boolean {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch(action.type) {
     case actions.OPEN_SETTINGS_DIALOG:
       return true;
@@ -332,6 +341,7 @@ function showSettingsDialog(state: boolean =initialState.showSettingsDialog, act
 }
 
 function showSettingsDrawer(state: boolean =initialState.showSettingsDrawer, action: Action): boolean {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch(action.type) {
     case actions.EXPAND_SETTINGS_DRAWER:
       return true;
@@ -343,6 +353,7 @@ function showSettingsDrawer(state: boolean =initialState.showSettingsDrawer, act
 }
 
 function showShareDialog(state: boolean =initialState.showShareDialog, action: Action): boolean {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch(action.type) {
     case actions.OPEN_SHARE_DIALOG:
       return true;
@@ -354,6 +365,7 @@ function showShareDialog(state: boolean =initialState.showShareDialog, action: A
 }
 
 function loadSnippet(state: boolean =initialState.loadingSnippet, action: Action): boolean {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch(action.type) {
     case actions.START_LOADING_SNIPPET:
       return true;
@@ -365,9 +377,10 @@ function loadSnippet(state: boolean =initialState.loadingSnippet, action: Action
 }
 
 function saving(state: boolean =initialState.saving, action: Action): boolean {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch(action.type) {
     case actions.START_SAVE:
-      return !action.fork;
+      return action.fork !== true;
     case actions.END_SAVE:
       return false;
     default:
@@ -376,9 +389,10 @@ function saving(state: boolean =initialState.saving, action: Action): boolean {
 }
 
 function forking(state: boolean =initialState.forking, action: Action): boolean {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch(action.type) {
     case actions.START_SAVE:
-      return action.fork;
+      return action.fork === true;
     case actions.END_SAVE:
       return false;
     default:
@@ -387,6 +401,7 @@ function forking(state: boolean =initialState.forking, action: Action): boolean 
 }
 
 function cursor(state: number | null =initialState.cursor, action: Action): number | null {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch(action.type) {
     case actions.SET_CURSOR:
       return action.cursor;
@@ -408,6 +423,7 @@ function cursor(state: number | null =initialState.cursor, action: Action): numb
 }
 
 function error(state: Error | null =initialState.error, action: Action): Error | null {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch (action.type) {
     case actions.SET_ERROR:
       return action.error;
@@ -420,6 +436,7 @@ function error(state: Error | null =initialState.error, action: Action): Error |
 }
 
 function showTransformPanel(state: boolean =initialState.showTransformPanel, action: Action): boolean {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch (action.type) {
     case actions.SELECT_TRANSFORMER:
       return true;
@@ -435,6 +452,7 @@ function showTransformPanel(state: boolean =initialState.showTransformPanel, act
 }
 
 function activeRevision(state: Revision | null =initialState.selectedRevision, action: Action): Revision | null {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- sub-reducer intentionally handles only relevant action types
   switch (action.type) {
     case actions.SET_SNIPPET:
       return action.revision;
@@ -449,9 +467,10 @@ function activeRevision(state: Revision | null =initialState.selectedRevision, a
 }
 
 function pick<T extends Record<string, unknown>>(obj: T, ...properties: string[]): Partial<T> {
-  const result: Record<string, unknown> = {};
+  const result: Partial<T> = {};
   for (const prop of properties) {
-    result[prop] = obj[prop];
+    // oxlint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- property key is from the same object type T
+    (result as Record<string, unknown>)[prop] = obj[prop];
   }
-  return result as Partial<T>;
+  return result;
 }

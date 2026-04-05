@@ -1,12 +1,11 @@
-// oxlint-disable max-lines-per-function, typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-assignment, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/prefer-nullish-coalescing, typescript-eslint/strict-boolean-expressions -- middleware functions are necessarily large state-coordination units; legacy untyped code
+// oxlint-disable max-lines-per-function -- middleware functions are necessarily large state-coordination units
 import {getParser, getParserSettings, getCode} from './selectors';
 import {ignoreKeysFilter, locationInformationFilter, functionFilter, emptyKeysFilter, typeKeysFilter} from '../core/TreeAdapter';
-import type {Parser} from '../types';
+import type {Parser, AppState, Action} from '../types';
+import type {MiddlewareAPI, Dispatch} from 'redux';
 
 function parse(parser: Parser, code: string, parserSettings: Record<string, unknown> | null): Promise<unknown> {
-  if (!parser._promise) {
-    parser._promise = new Promise(parser.loadParser);
-  }
+  parser._promise ??= new Promise(parser.loadParser);
   return parser._promise.then(
     realParser => parser.parse(
       realParser,
@@ -16,7 +15,7 @@ function parse(parser: Parser, code: string, parserSettings: Record<string, unkn
   );
 }
 
-export default (store: any) => (next: any) => (action: any) => { // oxlint-disable-line typescript-eslint(no-explicit-any) -- Redux middleware signature requires any for store/next/action compatibility
+export default (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
   const oldState = store.getState();
   next(action);
   const newState = store.getState();
@@ -31,6 +30,7 @@ export default (store: any) => (next: any) => (action: any) => { // oxlint-disab
     getParserSettings(oldState) !== newParserSettings ||
     getCode(oldState) !== newCode
   ) {
+    // oxlint-disable-next-line typescript-eslint(strict-boolean-expressions) -- runtime guard: parser/code may be null at runtime despite types (e.g. rehydrated from storage)
     if (!newParser || newCode === null || newCode === undefined) {
       return;
     }
@@ -51,7 +51,7 @@ export default (store: any) => (next: any) => (action: any) => { // oxlint-disab
           type: 'default',
           options: {
             // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
-            openByDefault: (newParser.opensByDefault || (() => false)).bind(newParser),
+            openByDefault: (newParser.opensByDefault ?? (() => false)).bind(newParser),
             // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation
             nodeToRange: newParser.nodeToRange.bind(newParser),
             // oxlint-disable-next-line typescript-eslint(no-unsafe-assignment) -- .bind() returns any; TS limitation

@@ -1,18 +1,14 @@
-// oxlint-disable typescript-eslint/no-unsafe-argument, typescript-eslint/no-unsafe-call, typescript-eslint/no-unsafe-member-access, typescript-eslint/no-unsafe-return, typescript-eslint/no-unsafe-type-assertion, typescript-eslint/strict-boolean-expressions -- legacy untyped code; full strict typing migration tracked as tech debt
 import * as selectors from './selectors';
 import * as actions from './actions';
 import type {AppState, Action, SnippetData} from '../types';
-import type {Dispatch} from 'redux';
+import type {Dispatch, MiddlewareAPI} from 'redux';
 import type StorageAdapter from '../storage/index';
 
 let clearURLOnClearError = false;
 let cancelLoad: () => void = () => {}
 
-/**
- * @param {import('../storage/index').default} storageAdapter
- * @returns {(store: import('redux').MiddlewareAPI<import('redux').Dispatch, AppState>) => (next: import('redux').Dispatch) => (action: Action) => unknown}
- */
-export default (storageAdapter: any) => (store: any) => (next: any) => (action: any) => { // oxlint-disable-line typescript-eslint(no-explicit-any) -- Redux middleware signature requires any for store/next/action/storageAdapter compatibility
+export default (storageAdapter: StorageAdapter) => (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
+  // oxlint-disable-next-line typescript-eslint(switch-exhaustiveness-check) -- middleware intentionally handles only relevant action types
   switch (action.type) {
     case actions.CLEAR_ERROR:
       // If CLEAR_ERROR action happens after a URL was loaded, clear the URL
@@ -24,10 +20,10 @@ export default (storageAdapter: any) => (store: any) => (next: any) => (action: 
     case actions.LOAD_SNIPPET:
       return loadSnippet(store.getState(), next, storageAdapter);
     case actions.SAVE:
-      next(actions.startSave(action.fork));
-      saveSnippet(action, store.getState(), next, storageAdapter)
+      next(actions.startSave(action.fork === true));
+      void saveSnippet(action, store.getState(), next, storageAdapter)
         // oxlint-disable-next-line promise/no-callback-in-promise -- redux middleware must call next() after save completes
-        .then(() => next(actions.endSave(action.fork)));
+        .then(() => next(actions.endSave(action.fork === true)));
       break;
     default:
       // Pass on
@@ -63,8 +59,8 @@ async function loadSnippet(state: AppState, next: Dispatch, storageAdapter: Stor
         next(actions.clearSnippet());
       }
     }
-  } catch(error) {
-    const errorMessage = 'Failed to fetch revision: ' + (error as Error).message;
+  } catch(err) {
+    const errorMessage = 'Failed to fetch revision: ' + (err instanceof Error ? err.message : String(err));
 
     clearURLOnClearError = true;
     next(actions.setError(new Error(errorMessage)));
@@ -101,17 +97,18 @@ async function saveSnippet({fork}: Action, state: AppState, next: Dispatch, stor
 
   try {
     let newRevision;
-    if (fork) {
+    if (fork === true) {
       newRevision = await storageAdapter.fork(revision, data);
-    } else if (revision) {
+    } else if (revision !== null && revision !== undefined) {
       newRevision = await storageAdapter.update(revision, data);
     } else {
       newRevision = await storageAdapter.create(data);
     }
-    if (newRevision) {
+    if (newRevision !== undefined && newRevision !== null) {
       storageAdapter.updateHash(newRevision);
     }
-  } catch (error) {
-    next(actions.setError((error as Error)));
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error(String(err));
+    next(actions.setError(error));
   }
 }
