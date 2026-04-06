@@ -63,20 +63,38 @@ describe('focusNodes', () => {
 
     // Mock getBoundingClientRect
     el1.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 100, width: 100, height: 20,
-      top: 100, left: 0, right: 100, bottom: 120,
+      x: 0,
+      y: 100,
+      width: 100,
+      height: 20,
+      top: 100,
+      left: 0,
+      right: 100,
+      bottom: 120,
       toJSON: () => {},
     }));
     el2.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 250, width: 100, height: 20,
-      top: 250, left: 0, right: 100, bottom: 270,
+      x: 0,
+      y: 250,
+      width: 100,
+      height: 20,
+      top: 250,
+      left: 0,
+      right: 100,
+      bottom: 270,
       toJSON: () => {},
     }));
 
     const rootEl = document.createElement('div');
     rootEl.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 0, width: 400, height: 400,
-      top: 0, left: 0, right: 400, bottom: 400,
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 400,
+      top: 0,
+      left: 0,
+      right: 400,
+      bottom: 400,
       toJSON: () => {},
     }));
 
@@ -86,8 +104,8 @@ describe('focusNodes', () => {
     focusNodes('focus', { current: rootEl } as any);
 
     // One of them should have scrollIntoView called
-    const totalCalls = (el1.scrollIntoView as any).mock.calls.length +
-      (el2.scrollIntoView as any).mock.calls.length;
+    const totalCalls =
+      (el1.scrollIntoView as any).mock.calls.length + (el2.scrollIntoView as any).mock.calls.length;
     expect(totalCalls).toBe(1);
   });
 
@@ -95,15 +113,27 @@ describe('focusNodes', () => {
     const el1 = document.createElement('div');
     el1.scrollIntoView = vi.fn();
     el1.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 100, width: 100, height: 20,
-      top: 100, left: 0, right: 100, bottom: 120,
+      x: 0,
+      y: 100,
+      width: 100,
+      height: 20,
+      top: 100,
+      left: 0,
+      right: 100,
+      bottom: 120,
       toJSON: () => {},
     }));
 
     const rootEl = document.createElement('div');
     rootEl.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 0, width: 400, height: 400,
-      top: 0, left: 0, right: 400, bottom: 400,
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 400,
+      top: 0,
+      left: 0,
+      right: 400,
+      bottom: 400,
       toJSON: () => {},
     }));
 
@@ -120,17 +150,16 @@ describe('focusNodes', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     const el = document.createElement('div');
-    el.scrollIntoView = vi.fn(() => { throw new Error('scroll error'); });
+    el.scrollIntoView = vi.fn(() => {
+      throw new Error('scroll error');
+    });
     focusNodes('add', { current: el } as any);
 
     const root = { current: document.createElement('div') };
     // Should not throw
     expect(() => focusNodes('focus', root as any)).not.toThrow();
 
-    expect(spy).toHaveBeenCalledWith(
-      'Unable to scroll node into view:',
-      'scroll error',
-    );
+    expect(spy).toHaveBeenCalledWith('Unable to scroll node into view:', 'scroll error');
 
     spy.mockRestore();
   });
@@ -141,8 +170,14 @@ describe('focusNodes', () => {
 
     const rootEl = document.createElement('div');
     rootEl.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 0, width: 400, height: 400,
-      top: 0, left: 0, right: 400, bottom: 400,
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 400,
+      top: 0,
+      left: 0,
+      right: 400,
+      bottom: 400,
       toJSON: () => {},
     }));
 
@@ -168,8 +203,14 @@ describe('focusNodes', () => {
     // Root spans 0 to 400, center at (0 + 400) / 2 + 0 = 200
     const rootEl = document.createElement('div');
     rootEl.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 0, width: 400, height: 400,
-      top: 0, left: 0, right: 400, bottom: 400,
+      x: 0,
+      y: 0,
+      width: 400,
+      height: 400,
+      top: 0,
+      left: 0,
+      right: 400,
+      bottom: 400,
       toJSON: () => {},
     }));
 
@@ -177,8 +218,14 @@ describe('focusNodes', () => {
     const el1 = document.createElement('div');
     el1.scrollIntoView = vi.fn();
     el1.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 190, width: 100, height: 20,
-      top: 190, left: 0, right: 100, bottom: 210,
+      x: 0,
+      y: 190,
+      width: 100,
+      height: 20,
+      top: 190,
+      left: 0,
+      right: 100,
+      bottom: 210,
       toJSON: () => {},
     }));
 
@@ -186,8 +233,14 @@ describe('focusNodes', () => {
     const el2 = document.createElement('div');
     el2.scrollIntoView = vi.fn();
     el2.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 500, width: 100, height: 20,
-      top: 500, left: 0, right: 100, bottom: 520,
+      x: 0,
+      y: 500,
+      width: 100,
+      height: 20,
+      top: 500,
+      left: 0,
+      right: 100,
+      bottom: 520,
       toJSON: () => {},
     }));
 

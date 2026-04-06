@@ -10,7 +10,11 @@
 export type SourceMapConsumer = {
   sourcesContent: string[];
   sources: string[];
-  generatedPositionFor(originalPosition: {line: number; column: number; source: string}): {line: number | null; column: number | null; lastColumn: number | null};
+  generatedPositionFor(originalPosition: { line: number; column: number; source: string }): {
+    line: number | null;
+    column: number | null;
+    lastColumn: number | null;
+  };
 };
 
 // ---------------------------------------------------------------------------
@@ -166,7 +170,7 @@ export type StorageBackend = {
   create: (data: SnippetData) => Promise<Revision>;
   update: (revision: Revision, data: SnippetData) => Promise<Revision>;
   fork: (revision: Revision, data: SnippetData) => Promise<Revision>;
-  updateHash?: ((revision: Revision) => void);
+  updateHash?: (revision: Revision) => void;
 };
 
 export type SnippetData = {

@@ -1,9 +1,9 @@
 import React from 'react';
 import api from './api';
-import {getParserByID} from 'astexplorer-parsers';
-import type {SnippetData, Revision as RevisionType} from '../types';
+import { getParserByID } from 'astexplorer-parsers';
+import type { SnippetData, Revision as RevisionType } from '../types';
 
-function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | null {
+function getIDAndRevisionFromHash(): { id: string; rev: string | undefined } | null {
   const match = window.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);
   if (match !== null) {
     return {
@@ -30,25 +30,22 @@ function asGistData(value: unknown): GistData {
 }
 
 function fetchSnippet(snippetID: string, revisionID?: string): Promise<Revision> {
-  return api(
-    `/gist/${snippetID}` + (revisionID === undefined ? '' : `/${revisionID}`),
-    {
-      method: 'GET',
-    },
-  )
-  .then(async response => {
-    if (response.ok) {
-      const json: unknown = await response.json();
-      return asGistData(json);
-    }
-    switch (response.status) {
-      case 404:
-        throw new Error(`Snippet with ID ${snippetID}/${revisionID} doesn't exist.`);
-      default:
-        throw new Error('Unknown error.');
-    }
+  return api(`/gist/${snippetID}` + (revisionID === undefined ? '' : `/${revisionID}`), {
+    method: 'GET',
   })
-  .then((response: GistData) => new Revision(response));
+    .then(async (response) => {
+      if (response.ok) {
+        const json: unknown = await response.json();
+        return asGistData(json);
+      }
+      switch (response.status) {
+        case 404:
+          throw new Error(`Snippet with ID ${snippetID}/${revisionID} doesn't exist.`);
+        default:
+          throw new Error('Unknown error.');
+      }
+    })
+    .then((response: GistData) => new Revision(response));
 }
 
 export function owns(snippet: RevisionType): boolean {
@@ -72,24 +69,21 @@ export function fetchFromURL(): Promise<Revision | null> {
  * Create a new snippet.
  */
 export function create(snippetData: SnippetData): Promise<Revision> {
-  return api(
-    '/gist',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(snippetData),
+  return api('/gist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  )
-  .then(async response => {
-    if (response.ok) {
-      const json: unknown = await response.json();
-      return asGistData(json);
-    }
-    throw new Error('Unable to create snippet.');
+    body: JSON.stringify(snippetData),
   })
-  .then((gistData: GistData) => new Revision(gistData));
+    .then(async (response) => {
+      if (response.ok) {
+        const json: unknown = await response.json();
+        return asGistData(json);
+      }
+      throw new Error('Unable to create snippet.');
+    })
+    .then((gistData: GistData) => new Revision(gistData));
 }
 
 /**
@@ -98,24 +92,23 @@ export function create(snippetData: SnippetData): Promise<Revision> {
  */
 export function update(revision: RevisionType, snippetData: SnippetData): Promise<Revision> {
   // Fetch latest version of snippet
-  return fetchSnippet(revision.getSnippetID())
-    .then(latestRevision => {
-      if (latestRevision.getTransformerID() !== undefined && (snippetData.toolID === undefined || snippetData.toolID === '')) {
-        // Revision was updated to *remove* the transformer, hence we have
-        // to signal the server to delete the transform.js file
-        snippetData.transform = null;
-      }
-      return api(
-        `/gist/${revision.getSnippetID()}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(snippetData),
-        },
-      )
-      .then(async response => {
+  return fetchSnippet(revision.getSnippetID()).then((latestRevision) => {
+    if (
+      latestRevision.getTransformerID() !== undefined &&
+      (snippetData.toolID === undefined || snippetData.toolID === '')
+    ) {
+      // Revision was updated to *remove* the transformer, hence we have
+      // to signal the server to delete the transform.js file
+      snippetData.transform = null;
+    }
+    return api(`/gist/${revision.getSnippetID()}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(snippetData),
+    })
+      .then(async (response) => {
         if (response.ok) {
           const json: unknown = await response.json();
           return asGistData(json);
@@ -123,7 +116,7 @@ export function update(revision: RevisionType, snippetData: SnippetData): Promis
         throw new Error('Unable to update snippet.');
       })
       .then((gistData: GistData) => new Revision(gistData));
-    });
+  });
 }
 
 /**
@@ -131,24 +124,21 @@ export function update(revision: RevisionType, snippetData: SnippetData): Promis
  * Fork existing snippet.
  */
 export function fork(revision: RevisionType, snippetData: SnippetData): Promise<Revision> {
-  return api(
-    `/gist/${revision.getSnippetID()}/${revision.getRevisionID()}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(snippetData),
+  return api(`/gist/${revision.getSnippetID()}/${revision.getRevisionID()}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  )
-  .then(async response => {
-    if (response.ok) {
-      const json: unknown = await response.json();
-      return asGistData(json);
-    }
-    throw new Error('Unable to fork snippet.');
+    body: JSON.stringify(snippetData),
   })
-  .then((gistData: GistData) => new Revision(gistData));
+    .then(async (response) => {
+      if (response.ok) {
+        const json: unknown = await response.json();
+        return asGistData(json);
+      }
+      throw new Error('Unable to fork snippet.');
+    })
+    .then((gistData: GistData) => new Revision(gistData));
 }
 
 type GistFile = {
@@ -177,10 +167,15 @@ class Revision {
   _config: GistConfig;
   _code: string | null = null;
 
-    constructor(gist: GistData) {
+  constructor(gist: GistData) {
     this._gist = gist;
     const parsed: unknown = JSON.parse(gist.files['astexplorer.json'].content);
-    if (typeof parsed !== 'object' || parsed === null || !('parserID' in parsed) || !('settings' in parsed)) {
+    if (
+      typeof parsed !== 'object' ||
+      parsed === null ||
+      !('parserID' in parsed) ||
+      !('settings' in parsed)
+    ) {
       throw new Error('Invalid gist config');
     }
     if (!isGistConfig(parsed)) {
@@ -237,7 +232,7 @@ class Revision {
           <dd>
             <input
               readOnly={true}
-              onFocus={e => e.target.select()}
+              onFocus={(e) => e.target.select()}
               value={`https://astexplorer.net/#/gist/${snippetID}/${revisionID}`}
             />
           </dd>
@@ -245,7 +240,7 @@ class Revision {
           <dd>
             <input
               readOnly={true}
-              onFocus={e => e.target.select()}
+              onFocus={(e) => e.target.select()}
               value={`https://astexplorer.net/#/gist/${snippetID}/latest`}
             />
           </dd>
@@ -253,7 +248,7 @@ class Revision {
           <dd>
             <input
               readOnly={true}
-              onFocus={e => e.target.select()}
+              onFocus={(e) => e.target.select()}
               value={`https://gist.github.com/${snippetID}/${revisionID}`}
             />
           </dd>

@@ -7,11 +7,22 @@ import ReactDOM from 'react-dom';
 
 vi.mock('astexplorer-parsers', () => ({
   categories: [
-    { id: 'javascript', displayName: 'JavaScript', parsers: [{ id: 'acorn', showInMenu: true, displayName: 'acorn', hasSettings: () => false }], transformers: [] },
-    { id: 'css', displayName: 'CSS', parsers: [{ id: 'cssom', showInMenu: true, displayName: 'cssom', hasSettings: () => false }], transformers: [] },
+    {
+      id: 'javascript',
+      displayName: 'JavaScript',
+      parsers: [{ id: 'acorn', showInMenu: true, displayName: 'acorn', hasSettings: () => false }],
+      transformers: [],
+    },
+    {
+      id: 'css',
+      displayName: 'CSS',
+      parsers: [{ id: 'cssom', showInMenu: true, displayName: 'cssom', hasSettings: () => false }],
+      transformers: [],
+    },
   ],
   getCategoryByID: (id: string) => ({
-    id, displayName: id,
+    id,
+    displayName: id,
     parsers: [{ id: 'acorn', showInMenu: true, displayName: 'acorn', hasSettings: () => false }],
     transformers: [],
   }),
@@ -40,7 +51,9 @@ describe('ErrorMessage', () => {
   });
 
   test('renders error message', () => {
-    const div = renderToDiv(<ErrorMessage error={new Error('Something failed')} onWantToClose={() => {}} />);
+    const div = renderToDiv(
+      <ErrorMessage error={new Error('Something failed')} onWantToClose={() => {}} />,
+    );
     expect(div.textContent).toContain('Something failed');
     expect(div.textContent).toContain('Error');
   });
@@ -68,7 +81,9 @@ describe('LoadingIndicator', () => {
 describe('SaveButton', () => {
   test('enabled when canSave and not saving/forking', () => {
     const onSave = vi.fn();
-    const div = renderToDiv(<SaveButton canSave={true} saving={false} forking={false} onSave={onSave} />);
+    const div = renderToDiv(
+      <SaveButton canSave={true} saving={false} forking={false} onSave={onSave} />,
+    );
     const btn = div.querySelector('button')!;
     expect(btn.disabled).toBe(false);
     require('react-dom/test-utils').Simulate.click(btn);
@@ -76,27 +91,37 @@ describe('SaveButton', () => {
   });
 
   test('disabled when saving', () => {
-    const div = renderToDiv(<SaveButton canSave={true} saving={true} forking={false} onSave={() => {}} />);
+    const div = renderToDiv(
+      <SaveButton canSave={true} saving={true} forking={false} onSave={() => {}} />,
+    );
     expect(div.querySelector('button')!.disabled).toBe(true);
   });
 
   test('disabled when forking', () => {
-    const div = renderToDiv(<SaveButton canSave={true} saving={false} forking={true} onSave={() => {}} />);
+    const div = renderToDiv(
+      <SaveButton canSave={true} saving={false} forking={true} onSave={() => {}} />,
+    );
     expect(div.querySelector('button')!.disabled).toBe(true);
   });
 
   test('disabled when canSave=false', () => {
-    const div = renderToDiv(<SaveButton canSave={false} saving={false} forking={false} onSave={() => {}} />);
+    const div = renderToDiv(
+      <SaveButton canSave={false} saving={false} forking={false} onSave={() => {}} />,
+    );
     expect(div.querySelector('button')!.disabled).toBe(true);
   });
 
   test('shows spinner when saving', () => {
-    const div = renderToDiv(<SaveButton canSave={true} saving={true} forking={false} onSave={() => {}} />);
+    const div = renderToDiv(
+      <SaveButton canSave={true} saving={true} forking={false} onSave={() => {}} />,
+    );
     expect(div.querySelector('.fa-spinner')).toBeTruthy();
   });
 
   test('shows floppy when not saving', () => {
-    const div = renderToDiv(<SaveButton canSave={true} saving={false} forking={false} onSave={() => {}} />);
+    const div = renderToDiv(
+      <SaveButton canSave={true} saving={false} forking={false} onSave={() => {}} />,
+    );
     expect(div.querySelector('.fa-floppy-o')).toBeTruthy();
   });
 });
@@ -104,7 +129,9 @@ describe('SaveButton', () => {
 describe('ForkButton', () => {
   test('enabled when canFork', () => {
     const onFork = vi.fn();
-    const div = renderToDiv(<ForkButton canFork={true} saving={false} forking={false} onFork={onFork} />);
+    const div = renderToDiv(
+      <ForkButton canFork={true} saving={false} forking={false} onFork={onFork} />,
+    );
     const btn = div.querySelector('button')!;
     expect(btn.disabled).toBe(false);
     require('react-dom/test-utils').Simulate.click(btn);
@@ -112,12 +139,16 @@ describe('ForkButton', () => {
   });
 
   test('disabled when forking', () => {
-    const div = renderToDiv(<ForkButton canFork={true} saving={false} forking={true} onFork={() => {}} />);
+    const div = renderToDiv(
+      <ForkButton canFork={true} saving={false} forking={true} onFork={() => {}} />,
+    );
     expect(div.querySelector('button')!.disabled).toBe(true);
   });
 
   test('shows spinner when forking', () => {
-    const div = renderToDiv(<ForkButton canFork={true} forking={true} saving={false} onFork={() => {}} />);
+    const div = renderToDiv(
+      <ForkButton canFork={true} forking={true} saving={false} onFork={() => {}} />,
+    );
     expect(div.querySelector('.fa-spinner')).toBeTruthy();
   });
 });
@@ -159,7 +190,9 @@ describe('PrettierButton', () => {
   });
 
   test('shows toggle-off when disabled', () => {
-    const div = renderToDiv(<PrettierButton enableFormatting={false} toggleFormatting={() => {}} />);
+    const div = renderToDiv(
+      <PrettierButton enableFormatting={false} toggleFormatting={() => {}} />,
+    );
     expect(div.querySelector('.fa-toggle-off')).toBeTruthy();
   });
 

@@ -1,14 +1,14 @@
 import Element from './tree/Element';
 import React from 'react';
-import {publish} from '../../utils/pubsub';
-import {treeAdapterFromParseResult} from '../../core/TreeAdapter';
-import {SelectedNodeProvider} from './SelectedNodeContext';
-import focusNodes from './focusNodes'
-import type {ParseResult} from '../../types';
+import { publish } from '../../utils/pubsub';
+import { treeAdapterFromParseResult } from '../../core/TreeAdapter';
+import { SelectedNodeProvider } from './SelectedNodeContext';
+import focusNodes from './focusNodes';
+import type { ParseResult } from '../../types';
 
-import './css/tree.css'
+import './css/tree.css';
 
-const {useReducer, useMemo, useRef, useLayoutEffect} = React;
+const { useReducer, useMemo, useRef, useLayoutEffect } = React;
 
 const STORAGE_KEY = 'tree_settings';
 
@@ -17,7 +17,7 @@ const STORAGE_KEY = 'tree_settings';
  */
 function isSettingsRecord(value: unknown): value is Record<string, boolean> {
   if (typeof value !== 'object' || value === null) return false;
-  return Object.values(value).every(v => typeof v === 'boolean');
+  return Object.values(value).every((v) => typeof v === 'boolean');
 }
 
 function initSettings() {
@@ -37,20 +37,27 @@ function initSettings() {
   };
 }
 
-function reducer(state: Record<string, boolean>, element: {name: string; checked: boolean}): Record<string, boolean> {
-  const newState = {...state, [element.name]: element.checked};
+function reducer(
+  state: Record<string, boolean>,
+  element: { name: string; checked: boolean },
+): Record<string, boolean> {
+  const newState = { ...state, [element.name]: element.checked };
 
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
   return newState;
 }
 
-function makeCheckbox(name: string, settings: Record<string, boolean>, updateSettings: React.Dispatch<{name: string; checked: boolean}>): React.ReactElement {
+function makeCheckbox(
+  name: string,
+  settings: Record<string, boolean>,
+  updateSettings: React.Dispatch<{ name: string; checked: boolean }>,
+): React.ReactElement {
   return (
     <input
       type="checkbox"
       name={name}
       checked={settings[name]}
-      onChange={event => updateSettings(event.target)}
+      onChange={(event) => updateSettings(event.target)}
     />
   );
 }
@@ -60,13 +67,13 @@ type TreeProps = {
   position?: number;
 };
 
-export default function Tree({parseResult, position}: TreeProps): React.ReactElement {
+export default function Tree({ parseResult, position }: TreeProps): React.ReactElement {
   const [settings, updateSettings] = useReducer(reducer, null, initSettings);
   const treeAdapter = useMemo(
     () => treeAdapterFromParseResult(parseResult, settings),
     [parseResult, settings],
   );
-  const rootElement = useRef((null as HTMLUListElement | null));
+  const rootElement = useRef(null as HTMLUListElement | null);
 
   focusNodes('init');
   useLayoutEffect(() => {
@@ -81,7 +88,7 @@ export default function Tree({parseResult, position}: TreeProps): React.ReactEle
           Autofocus
         </label>
         &#8203;
-        {treeAdapter.getConfigurableFilters().map(filter => {
+        {treeAdapter.getConfigurableFilters().map((filter) => {
           const key = filter.key;
           if (key === undefined) return null;
           return (
@@ -95,7 +102,12 @@ export default function Tree({parseResult, position}: TreeProps): React.ReactEle
           );
         })}
       </div>
-      <ul ref={rootElement} onMouseLeave={() => {publish('CLEAR_HIGHLIGHT');}}>
+      <ul
+        ref={rootElement}
+        onMouseLeave={() => {
+          publish('CLEAR_HIGHLIGHT');
+        }}
+      >
         <SelectedNodeProvider>
           <Element
             value={parseResult.ast}
@@ -109,4 +121,3 @@ export default function Tree({parseResult, position}: TreeProps): React.ReactEle
     </div>
   );
 }
-

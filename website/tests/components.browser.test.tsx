@@ -12,7 +12,9 @@ import { page } from '@vitest/browser/context';
 import React from 'react';
 import { render, fireEvent, act, cleanup } from '@testing-library/react';
 
-afterEach(() => { cleanup(); });
+afterEach(() => {
+  cleanup();
+});
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { astexplorer, revive } from '../src/store/reducers';
@@ -33,16 +35,12 @@ function renderWithStore(element: React.ReactElement, store?: any) {
 // ===========================================================================
 describe('SettingsDialog _outerClick in real browser', () => {
   test('clicking dialog backdrop calls saveAndClose', async () => {
-    const { default: SettingsDialog } = await import(
-      '../src/components/dialogs/SettingsDialog'
-    );
+    const { default: SettingsDialog } = await import('../src/components/dialogs/SettingsDialog');
 
     const mockParser = {
       id: 'test',
       displayName: 'Test',
-      renderSettings: (settings: any, onChange: any) => (
-        <div className="settings">settings</div>
-      ),
+      renderSettings: (settings: any, onChange: any) => <div className="settings">settings</div>,
     };
     const onSave = vi.fn();
     const onClose = vi.fn();
@@ -70,9 +68,7 @@ describe('SettingsDialog _outerClick in real browser', () => {
   });
 
   test('clicking inner content does NOT close', async () => {
-    const { default: SettingsDialog } = await import(
-      '../src/components/dialogs/SettingsDialog'
-    );
+    const { default: SettingsDialog } = await import('../src/components/dialogs/SettingsDialog');
 
     const mockParser = {
       id: 'test',
@@ -105,22 +101,14 @@ describe('SettingsDialog _outerClick in real browser', () => {
 // ===========================================================================
 describe('ShareDialog _outerClick in real browser', () => {
   test('clicking dialog backdrop calls onWantToClose', async () => {
-    const { default: ShareDialog } = await import(
-      '../src/components/dialogs/ShareDialog'
-    );
+    const { default: ShareDialog } = await import('../src/components/dialogs/ShareDialog');
 
     const mockSnippet = {
       getShareInfo: () => <div>Share info</div>,
     };
     const onClose = vi.fn();
 
-    render(
-      <ShareDialog
-        visible={true}
-        onWantToClose={onClose}
-        snippet={mockSnippet as any}
-      />,
-    );
+    render(<ShareDialog visible={true} onWantToClose={onClose} snippet={mockSnippet as any} />);
 
     const dialog = document.getElementById('ShareDialog')!;
     dialog.click();
@@ -151,9 +139,7 @@ describe('SplitPane mouse interaction in real browser', () => {
     fireEvent.mouseDown(divider!, { clientX: 100, clientY: 50 });
 
     // Trigger mousemove and mouseup
-    document.dispatchEvent(
-      new MouseEvent('mousemove', { clientX: 150, clientY: 50 }),
-    );
+    document.dispatchEvent(new MouseEvent('mousemove', { clientX: 150, clientY: 50 }));
     document.dispatchEvent(new MouseEvent('mouseup'));
 
     expect(onResize).toHaveBeenCalled();
@@ -172,9 +158,7 @@ describe('SplitPane mouse interaction in real browser', () => {
 
     const divider = container.querySelector('.splitpane-divider');
     fireEvent.mouseDown(divider!, { clientX: 50, clientY: 100 });
-    document.dispatchEvent(
-      new MouseEvent('mousemove', { clientX: 50, clientY: 150 }),
-    );
+    document.dispatchEvent(new MouseEvent('mousemove', { clientX: 50, clientY: 150 }));
     document.dispatchEvent(new MouseEvent('mouseup'));
     expect(onResize).toHaveBeenCalled();
   });
@@ -187,9 +171,7 @@ describe('Editor with real CodeMirror in browser', () => {
   test('renders with CodeMirror and sets mode', async () => {
     const { default: Editor } = await import('../src/components/Editor');
 
-    const { container } = render(
-      <Editor value="const x = 1;" mode="javascript" />,
-    );
+    const { container } = render(<Editor value="const x = 1;" mode="javascript" />);
 
     // Real CodeMirror should render
     const cm = container.querySelector('.CodeMirror');
@@ -202,9 +184,7 @@ describe('Editor with real CodeMirror in browser', () => {
 // ===========================================================================
 describe('Containers with real Redux store in browser', () => {
   test('ToolbarContainer maps all state props including transformer, keyMap, snippet (lines 16-30)', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     store.dispatch({ type: 'SET_KEY_MAP', keyMap: 'vim' } as any);
 
@@ -217,9 +197,7 @@ describe('Containers with real Redux store in browser', () => {
   });
 
   test('CodeEditorContainer renders with mapped state and has dispatch wiring (lines 21-22)', async () => {
-    const { default: CodeEditorContainer } = await import(
-      '../src/containers/CodeEditorContainer'
-    );
+    const { default: CodeEditorContainer } = await import('../src/containers/CodeEditorContainer');
     const store = makeStore();
 
     const { container } = renderWithStore(<CodeEditorContainer />, store);
@@ -237,9 +215,8 @@ describe('Containers with real Redux store in browser', () => {
   });
 
   test('PasteDropTargetContainer onError dispatches SET_ERROR (lines 8-9)', async () => {
-    const { default: PasteDropTargetContainer } = await import(
-      '../src/containers/PasteDropTargetContainer'
-    );
+    const { default: PasteDropTargetContainer } =
+      await import('../src/containers/PasteDropTargetContainer');
     const store = makeStore();
     const spy = vi.spyOn(store, 'dispatch');
 
@@ -254,9 +231,8 @@ describe('Containers with real Redux store in browser', () => {
   });
 
   test('TransformerContainer maps transformer state and dispatch (lines 49-60)', async () => {
-    const { default: TransformerContainer } = await import(
-      '../src/containers/TransformerContainer'
-    );
+    const { default: TransformerContainer } =
+      await import('../src/containers/TransformerContainer');
     const store = makeStore();
     store.dispatch({
       type: 'SELECT_TRANSFORMER',
@@ -282,17 +258,24 @@ describe('Containers with real Redux store in browser', () => {
 // ===========================================================================
 describe('Styled component screenshots', () => {
   test('SettingsDialog', async () => {
-    const { default: SettingsDialog } = await import(
-      '../src/components/dialogs/SettingsDialog'
-    );
+    const { default: SettingsDialog } = await import('../src/components/dialogs/SettingsDialog');
 
     const mockParser = {
       id: 'test',
       displayName: 'Test Parser',
       renderSettings: (settings: any, onChange: any) => (
         <div className="settings">
-          <label><input type="checkbox" checked={settings?.jsx} onChange={() => onChange({...settings, jsx: !settings?.jsx})} /> JSX</label>
-          <label><input type="checkbox" /> TSX</label>
+          <label>
+            <input
+              type="checkbox"
+              checked={settings?.jsx}
+              onChange={() => onChange({ ...settings, jsx: !settings?.jsx })}
+            />{' '}
+            JSX
+          </label>
+          <label>
+            <input type="checkbox" /> TSX
+          </label>
         </div>
       ),
     };
@@ -329,9 +312,7 @@ describe('Styled component screenshots', () => {
   });
 
   test('Toolbar with buttons', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ToolbarContainer />, store);
 

@@ -1,4 +1,4 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
   save,
   selectCategory,
@@ -12,8 +12,8 @@ import {
 } from '../store/actions';
 import Toolbar from '../components/Toolbar';
 import * as selectors from '../store/selectors';
-import type {AppState, Parser, Category, Transformer} from '../types';
-import type {Dispatch} from 'redux';
+import type { AppState, Parser, Category, Transformer } from '../types';
+import type { Dispatch } from 'redux';
 
 function mapStateToProps(state: AppState) {
   const parser = selectors.getParser(state);
@@ -50,7 +50,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
       dispatch(transformer ? selectTransformer(transformer) : hideTransformer());
     },
     onKeyMapChange: (keyMap: string) => {
-      dispatch(setKeyMap(keyMap))
+      dispatch(setKeyMap(keyMap));
     },
     onSave: () => dispatch(save(false)),
     onFork: () => dispatch(save(true)),
@@ -65,4 +65,3 @@ function mapDispatchToProps(dispatch: Dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Toolbar);
-

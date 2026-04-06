@@ -6,7 +6,7 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 
 // Flush pending microtasks (from ensureCMMode().then(...))
-const flushMicrotasks = () => act(() => new Promise(r => setTimeout(r, 0)));
+const flushMicrotasks = () => act(() => new Promise((r) => setTimeout(r, 0)));
 
 const { mockDoc, mockCmInstance, mockCodeMirror } = vi.hoisted(() => {
   const _mockDoc = {
@@ -197,7 +197,14 @@ describe('Editor', () => {
 
   test('getValue returns CodeMirror value', async () => {
     let editorRef: Editor | null = null;
-    render(<Editor ref={(ref: any) => { editorRef = ref; }} value="test" />);
+    render(
+      <Editor
+        ref={(ref: any) => {
+          editorRef = ref;
+        }}
+        value="test"
+      />,
+    );
     await flushMicrotasks();
     if (editorRef) {
       expect(editorRef.getValue()).toBe('initial code');
@@ -213,7 +220,9 @@ describe('Editor', () => {
     let editorRef: Editor | null = null;
     render(
       <Editor
-        ref={(ref: any) => { editorRef = ref; }}
+        ref={(ref: any) => {
+          editorRef = ref;
+        }}
         value="initial"
         onContentChange={onContentChange}
       />,
@@ -236,7 +245,9 @@ describe('Editor', () => {
     let editorRef: Editor | null = null;
     render(
       <Editor
-        ref={(ref: any) => { editorRef = ref; }}
+        ref={(ref: any) => {
+          editorRef = ref;
+        }}
         value="hello"
         onActivity={onActivity}
       />,
@@ -307,7 +318,7 @@ describe('Editor', () => {
     // publish uses setTimeout(fn, 0), so we need to flush
     await act(async () => {
       publish('HIGHLIGHT', { range: [0, 5] });
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     expect(mockCmInstance.markText).toHaveBeenCalled();
@@ -324,12 +335,12 @@ describe('Editor', () => {
 
     await act(async () => {
       publish('HIGHLIGHT', { range: [0, 3] });
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     await act(async () => {
       publish('HIGHLIGHT', { range: [2, 5] });
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     expect(mockMark.clear).toHaveBeenCalled();
@@ -344,7 +355,7 @@ describe('Editor', () => {
 
     await act(async () => {
       publish('HIGHLIGHT', {});
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     expect(mockCmInstance.markText).not.toHaveBeenCalled();
@@ -361,7 +372,7 @@ describe('Editor', () => {
 
     await act(async () => {
       publish('HIGHLIGHT', { range: [0, 5] });
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     expect(mockCmInstance.markText).not.toHaveBeenCalled();
@@ -381,12 +392,12 @@ describe('Editor', () => {
 
     await act(async () => {
       publish('HIGHLIGHT', { range: [0, 3] });
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     await act(async () => {
       publish('CLEAR_HIGHLIGHT', { range: [0, 3] });
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     expect(mockMark.clear).toHaveBeenCalled();
@@ -403,12 +414,12 @@ describe('Editor', () => {
 
     await act(async () => {
       publish('HIGHLIGHT', { range: [0, 3] });
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     await act(async () => {
       publish('CLEAR_HIGHLIGHT', undefined);
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     expect(mockMark.clear).toHaveBeenCalled();
@@ -425,13 +436,13 @@ describe('Editor', () => {
 
     await act(async () => {
       publish('HIGHLIGHT', { range: [0, 3] });
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
     mockMark.clear.mockClear();
 
     await act(async () => {
       publish('CLEAR_HIGHLIGHT', { range: [5, 10] });
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     expect(mockMark.clear).not.toHaveBeenCalled();
@@ -446,7 +457,7 @@ describe('Editor', () => {
 
     await act(async () => {
       publish('PANEL_RESIZE', undefined);
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     expect(mockCmInstance.refresh).toHaveBeenCalled();
@@ -458,7 +469,9 @@ describe('Editor', () => {
     let editorRef: Editor | null = null;
     render(
       <Editor
-        ref={(ref: any) => { editorRef = ref; }}
+        ref={(ref: any) => {
+          editorRef = ref;
+        }}
         value="hello"
         posFromIndex={customPosFromIndex}
       />,
@@ -503,18 +516,12 @@ describe('Editor', () => {
   });
 
   test('getDerivedStateFromProps returns null when value unchanged', () => {
-    const result = Editor.getDerivedStateFromProps(
-      { value: 'same' } as any,
-      { value: 'same' },
-    );
+    const result = Editor.getDerivedStateFromProps({ value: 'same' } as any, { value: 'same' });
     expect(result).toBeNull();
   });
 
   test('getDerivedStateFromProps returns new state when value changed', () => {
-    const result = Editor.getDerivedStateFromProps(
-      { value: 'new' } as any,
-      { value: 'old' },
-    );
+    const result = Editor.getDerivedStateFromProps({ value: 'new' } as any, { value: 'old' });
     expect(result).toEqual({ value: 'new' });
   });
 
@@ -523,9 +530,7 @@ describe('Editor', () => {
     mockDoc.getValue.mockReturnValue('changed');
     mockDoc.indexFromPos.mockReturnValue(7);
 
-    render(
-      <Editor value="initial" onContentChange={onContentChange} />,
-    );
+    render(<Editor value="initial" onContentChange={onContentChange} />);
     await flushMicrotasks();
 
     // Find the 'changes' handler registered on CodeMirror
@@ -539,7 +544,7 @@ describe('Editor', () => {
 
     // Wait for the setTimeout(200ms) to fire
     await act(async () => {
-      await new Promise(r => setTimeout(r, 250));
+      await new Promise((r) => setTimeout(r, 250));
     });
 
     expect(onContentChange).toHaveBeenCalledWith({ value: 'changed', cursor: 7 });
@@ -549,9 +554,7 @@ describe('Editor', () => {
     const onActivity = vi.fn();
     mockDoc.indexFromPos.mockReturnValue(42);
 
-    render(
-      <Editor value="hello" onActivity={onActivity} />,
-    );
+    render(<Editor value="hello" onActivity={onActivity} />);
     await flushMicrotasks();
 
     // Find the 'cursorActivity' handler
@@ -565,7 +568,7 @@ describe('Editor', () => {
 
     // Wait for the setTimeout(100ms) to fire
     await act(async () => {
-      await new Promise(r => setTimeout(r, 150));
+      await new Promise((r) => setTimeout(r, 150));
     });
 
     expect(onActivity).toHaveBeenCalledWith(42);
@@ -576,7 +579,13 @@ describe('Editor', () => {
     const error1 = { message: 'e1' };
     const error2 = { message: 'e2' };
     render(
-      <Editor ref={(ref: any) => { editorRef = ref; }} value="x" error={error1} />,
+      <Editor
+        ref={(ref: any) => {
+          editorRef = ref;
+        }}
+        value="x"
+        error={error1}
+      />,
     );
     await flushMicrotasks();
     expect(editorRef).not.toBeNull();
@@ -590,7 +599,12 @@ describe('Editor', () => {
   test('shouldComponentUpdate returns false when nothing changes', async () => {
     let editorRef: Editor | null = null;
     render(
-      <Editor ref={(ref: any) => { editorRef = ref; }} value="x" />,
+      <Editor
+        ref={(ref: any) => {
+          editorRef = ref;
+        }}
+        value="x"
+      />,
     );
     await flushMicrotasks();
     expect(editorRef).not.toBeNull();

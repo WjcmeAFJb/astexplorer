@@ -1,5 +1,5 @@
 import React from 'react';
-import type {Revision} from '../../types';
+import type { Revision } from '../../types';
 
 type ShareDialogProps = {
   onWantToClose: () => void;
@@ -10,7 +10,7 @@ type ShareDialogProps = {
 export default class ShareDialog extends React.Component<ShareDialogProps> {
   static displayName = 'ShareDialog';
 
-    _outerClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  _outerClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === document.querySelector('#ShareDialog')) {
       this.props.onWantToClose();
     }
@@ -19,8 +19,16 @@ export default class ShareDialog extends React.Component<ShareDialogProps> {
   render() {
     if (this.props.visible) {
       return (
-        <div id="ShareDialog" className="dialog" role="dialog" onClick={this._outerClick} onKeyDown={(e) => { if (e.key === 'Escape') this.props.onWantToClose(); }}>
-          <div className="inner" style={{maxWidth: '80%', width: 600}}>
+        <div
+          id="ShareDialog"
+          className="dialog"
+          role="dialog"
+          onClick={this._outerClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') this.props.onWantToClose();
+          }}
+        >
+          <div className="inner" style={{ maxWidth: '80%', width: 600 }}>
             <div className="body">
               {this.props.snippet !== undefined && this.props.snippet.getShareInfo()}
             </div>
@@ -34,4 +42,3 @@ export default class ShareDialog extends React.Component<ShareDialogProps> {
     return null;
   }
 }
-

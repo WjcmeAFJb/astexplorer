@@ -20,7 +20,7 @@ type ElementRef = { readonly current: HTMLElement | null };
 
 let nodes: Set<ElementRef>;
 
-export default function(message: 'init' | 'add' | 'focus', arg?: ElementRef) {
+export default function (message: 'init' | 'add' | 'focus', arg?: ElementRef) {
   switch (message) {
     case 'init':
       nodes = new Set();
@@ -42,7 +42,11 @@ export default function(message: 'init' | 'add' | 'focus', arg?: ElementRef) {
       try {
         if (size === 1) {
           const [firstRef] = nodes;
-          if (firstRef !== undefined && firstRef.current !== null && firstRef.current !== undefined) {
+          if (
+            firstRef !== undefined &&
+            firstRef.current !== null &&
+            firstRef.current !== undefined
+          ) {
             firstRef.current.scrollIntoView();
           }
         } else if (size > 1) {
@@ -72,7 +76,6 @@ export default function(message: 'init' | 'add' | 'focus', arg?: ElementRef) {
         const error = e instanceof Error ? e : new Error(String(e));
         console.error('Unable to scroll node into view:', error.message);
       }
-
     }
   }
 }

@@ -2,7 +2,7 @@
 import Editor from './Editor';
 import JSONEditor from './JSONEditor';
 import * as React from 'react';
-import type {TransformResult, SourceMapConsumer} from '../types';
+import type { TransformResult, SourceMapConsumer } from '../types';
 
 function safeStringify(value: unknown, space: number): string {
   try {
@@ -12,7 +12,10 @@ function safeStringify(value: unknown, space: number): string {
   }
 }
 
-function positionFromIndex(index: number, map: SourceMapConsumer | null | undefined): {line: number, ch: number} | undefined {
+function positionFromIndex(
+  index: number,
+  map: SourceMapConsumer | null | undefined,
+): { line: number; ch: number } | undefined {
   if (map === null || map === undefined) {
     return undefined;
   }
@@ -24,11 +27,11 @@ function positionFromIndex(index: number, map: SourceMapConsumer | null | undefi
   let column = index - lineStart - 1;
   let line = 1;
   while (lineStart > 0) {
-      lineStart = src.lastIndexOf('\n', lineStart - 1);
-        line++;
+    lineStart = src.lastIndexOf('\n', lineStart - 1);
+    line++;
   }
   if (lineStart === 0) {
-        line++;
+    line++;
   }
   const generated = map.generatedPositionFor({
     line,
@@ -41,9 +44,15 @@ function positionFromIndex(index: number, map: SourceMapConsumer | null | undefi
   return { line: generated.line - 1, ch: generated.column };
 }
 
-export default function TransformOutput({transformResult, mode}: {transformResult: TransformResult | null, mode: string}): React.ReactElement {
+export default function TransformOutput({
+  transformResult,
+  mode,
+}: {
+  transformResult: TransformResult | null;
+  mode: string;
+}): React.ReactElement {
   // This ensures that we are rendering an empty editor as "placeholder" if no transform result is available yet.
-  const result = transformResult ?? {result: ''};
+  const result = transformResult ?? { result: '' };
 
   const posFromIndex = React.useCallback(
     (index: number) => positionFromIndex(index, transformResult?.map),
@@ -52,28 +61,25 @@ export default function TransformOutput({transformResult, mode}: {transformResul
 
   return (
     <div className="output highlight">
-      {result.error !== undefined && result.error !== null ?
+      {result.error !== undefined && result.error !== null ? (
         <Editor
           highlight={false}
           key="error"
           lineNumbers={false}
           readOnly={true}
           value={result.error.message}
-        /> : (
-          typeof result.result === 'string' ?
-          <Editor
-            posFromIndex={posFromIndex}
-            mode={mode}
-            key="output"
-            readOnly={true}
-            value={result.result}
-          /> :
-          <JSONEditor
-            className="container no-toolbar"
-            value={safeStringify(result.result, 2)}
-          />
-        )
-      }
+        />
+      ) : typeof result.result === 'string' ? (
+        <Editor
+          posFromIndex={posFromIndex}
+          mode={mode}
+          key="output"
+          readOnly={true}
+          value={result.result}
+        />
+      ) : (
+        <JSONEditor className="container no-toolbar" value={safeStringify(result.result, 2)} />
+      )}
     </div>
   );
 }

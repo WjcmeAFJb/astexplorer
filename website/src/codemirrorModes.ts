@@ -28,7 +28,7 @@ const modeLoaders: Record<string, () => Promise<unknown>> = {
 
 const loaded = new Set<string>();
 
-export async function ensureCMMode(mode: string | {name: string} | undefined): Promise<void> {
+export async function ensureCMMode(mode: string | { name: string } | undefined): Promise<void> {
   if (mode === undefined) return;
   const name = typeof mode === 'string' ? mode : mode.name;
   if (loaded.has(name)) return;

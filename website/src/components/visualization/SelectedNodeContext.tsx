@@ -2,7 +2,9 @@ import React from 'react';
 
 type SetSelectedNodeFn = (node: unknown, cb?: () => void) => void;
 
-const SelectedNodeContext: React.Context<SetSelectedNodeFn | undefined> = React.createContext((undefined as SetSelectedNodeFn | undefined));
+const SelectedNodeContext: React.Context<SetSelectedNodeFn | undefined> = React.createContext(
+  undefined as SetSelectedNodeFn | undefined,
+);
 
 /**
  * @returns {SetSelectedNodeFn}
@@ -30,8 +32,8 @@ function setSelectedNode(node: unknown, cb?: () => void) {
   }
 }
 
-function SelectedNodeProvider(props: {children?: React.ReactNode}): React.ReactElement {
+function SelectedNodeProvider(props: { children?: React.ReactNode }): React.ReactElement {
   return <SelectedNodeContext.Provider value={setSelectedNode} {...props} />;
 }
 
-export {SelectedNodeProvider, useSelectedNode};
+export { SelectedNodeProvider, useSelectedNode };

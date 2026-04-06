@@ -97,7 +97,8 @@ describe('SplitPane', () => {
         <div>B</div>
       </SplitPane>,
     );
-    const firstPanel = container.querySelector('.splitpane-divider')!.previousElementSibling as HTMLElement;
+    const firstPanel = container.querySelector('.splitpane-divider')!
+      .previousElementSibling as HTMLElement;
     expect(firstPanel.style.minWidth).toBe('50%');
     expect(firstPanel.style.maxWidth).toBe('50%');
   });
@@ -109,7 +110,8 @@ describe('SplitPane', () => {
         <div>B</div>
       </SplitPane>,
     );
-    const firstPanel = container.querySelector('.splitpane-divider')!.previousElementSibling as HTMLElement;
+    const firstPanel = container.querySelector('.splitpane-divider')!
+      .previousElementSibling as HTMLElement;
     expect(firstPanel.style.minHeight).toBe('50%');
     expect(firstPanel.style.maxHeight).toBe('50%');
   });

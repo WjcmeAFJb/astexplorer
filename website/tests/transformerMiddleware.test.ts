@@ -99,7 +99,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
     expect(transformCalls[0][0].result.result).toBe('transformed code');
     expect(transformCalls[0][0].result.error).toBeNull();
@@ -113,7 +115,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'SELECT_TRANSFORMER' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
   });
 
@@ -126,7 +130,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'SET_CODE' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
   });
 
@@ -139,7 +145,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'SET_TRANSFORM' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
   });
 
@@ -150,7 +158,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'OPEN_SETTINGS_DIALOG' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(0);
   });
 
@@ -162,7 +172,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(0);
   });
 
@@ -174,7 +186,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(0);
   });
 
@@ -189,7 +203,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
     expect(transformCalls[0][0].result.error).toBeTruthy();
   });
@@ -208,7 +224,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
     expect(transformCalls[0][0].result.result).toBe('output code');
     expect(transformCalls[0][0].result.map).toBeTruthy();
@@ -227,7 +245,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
     expect(transformCalls[0][0].result.result).toBe('output code');
     expect(transformCalls[0][0].result.map).toBeNull();
@@ -262,9 +282,7 @@ describe('transformerMiddleware', () => {
     let resolveTransform: (v: any) => void;
     const { getTransformerByID } = await import('astexplorer-parsers');
     const transformer = getTransformerByID('jscodeshift') as any;
-    transformer.transform.mockReturnValueOnce(
-      new Promise(r => resolveTransform = r),
-    );
+    transformer.transform.mockReturnValueOnce(new Promise((r) => (resolveTransform = r)));
 
     const state1 = makeState();
     const state2 = makeState();
@@ -287,7 +305,9 @@ describe('transformerMiddleware', () => {
     await promise;
 
     // Should NOT dispatch SET_TRANSFORM_RESULT because code changed
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(0);
   });
 
@@ -295,7 +315,9 @@ describe('transformerMiddleware', () => {
     const { getTransformerByID } = await import('astexplorer-parsers');
     const transformer = getTransformerByID('jscodeshift') as any;
     const thrownError = new Error('Critical failure');
-    transformer.transform.mockImplementationOnce(() => { throw thrownError; });
+    transformer.transform.mockImplementationOnce(() => {
+      throw thrownError;
+    });
 
     const state = makeState();
     const store = { getState: () => state };
@@ -303,7 +325,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
     expect(transformCalls[0][0].result.error).toBeTruthy();
   });
@@ -320,7 +344,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'SELECT_TRANSFORMER' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
   });
 
@@ -424,9 +450,7 @@ describe('transformerMiddleware', () => {
     let resolveTransform: (v: any) => void;
     const { getTransformerByID } = await import('astexplorer-parsers');
     const transformer = getTransformerByID('jscodeshift') as any;
-    transformer.transform.mockReturnValueOnce(
-      new Promise(r => resolveTransform = r),
-    );
+    transformer.transform.mockReturnValueOnce(new Promise((r) => (resolveTransform = r)));
 
     const state1 = makeState();
     const state2 = makeState();
@@ -445,7 +469,9 @@ describe('transformerMiddleware', () => {
     resolveTransform!('result');
     await promise;
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(0);
   });
 
@@ -454,9 +480,7 @@ describe('transformerMiddleware', () => {
     let resolveTransform: (v: any) => void;
     const { getTransformerByID } = await import('astexplorer-parsers');
     const transformer = getTransformerByID('jscodeshift') as any;
-    transformer.transform.mockReturnValueOnce(
-      new Promise(r => resolveTransform = r),
-    );
+    transformer.transform.mockReturnValueOnce(new Promise((r) => (resolveTransform = r)));
 
     const state1 = makeState();
     const state2 = makeState();
@@ -475,7 +499,9 @@ describe('transformerMiddleware', () => {
     resolveTransform!('result');
     await promise;
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(0);
   });
 
@@ -503,7 +529,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
     const dispatched = transformCalls[0][0];
     expect(dispatched).toEqual({
@@ -529,7 +557,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
     const result = transformCalls[0][0].result;
     // The inner transform function catches the error and returns {error, version}
@@ -550,7 +580,9 @@ describe('transformerMiddleware', () => {
     // Should not throw even though console.clear is undefined
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
 
     // Restore
@@ -562,7 +594,8 @@ describe('transformerMiddleware', () => {
     const failingTransformerID = 'failing-load';
     transformerCache.set(failingTransformerID, {
       id: failingTransformerID,
-      loadTransformer: (_resolve: any, reject: (reason: Error) => void) => reject(new Error('load failed')),
+      loadTransformer: (_resolve: any, reject: (reason: Error) => void) =>
+        reject(new Error('load failed')),
       transform: vi.fn(),
     });
 
@@ -573,7 +606,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
     const result = transformCalls[0][0].result;
     expect(result.error).toBeTruthy();
@@ -601,7 +636,9 @@ describe('transformerMiddleware', () => {
 
     await middleware({ type: 'INIT' });
 
-    const transformCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT');
+    const transformCalls = next.mock.calls.filter(
+      (c: any[]) => c[0]?.type === 'SET_TRANSFORM_RESULT',
+    );
     expect(transformCalls.length).toBe(1);
     expect(transformCalls[0][0].result.error).toBeInstanceOf(TypeError);
   });

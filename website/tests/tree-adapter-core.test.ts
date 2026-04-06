@@ -18,27 +18,32 @@ import {
 // ---------------------------------------------------------------------------
 // Helper
 // ---------------------------------------------------------------------------
-function makeAdapter(opts: {
-  type?: string;
-  locationProps?: Set<string>;
-  filters?: Array<{ key?: string; label?: string; test: (...args: unknown[]) => boolean }>;
-  filterValues?: Record<string, boolean>;
-  nodeToRange?: (node: unknown) => [number, number] | null;
-  nodeToName?: (node: unknown) => string;
-  walkNode?: (node: unknown) => Iterable<any>;
-  openByDefault?: (node: unknown, key: string) => boolean;
-} = {}) {
+function makeAdapter(
+  opts: {
+    type?: string;
+    locationProps?: Set<string>;
+    filters?: Array<{ key?: string; label?: string; test: (...args: unknown[]) => boolean }>;
+    filterValues?: Record<string, boolean>;
+    nodeToRange?: (node: unknown) => [number, number] | null;
+    nodeToName?: (node: unknown) => string;
+    walkNode?: (node: unknown) => Iterable<any>;
+    openByDefault?: (node: unknown, key: string) => boolean;
+  } = {},
+) {
   return treeAdapterFromParseResult(
     {
       treeAdapter: {
         type: opts.type || 'default',
         options: {
-          nodeToRange: opts.nodeToRange || ((node: any) =>
-            node && typeof node === 'object' && typeof node.start === 'number'
-              ? [node.start, node.end]
-              : null),
-          nodeToName: opts.nodeToName || ((node: any) =>
-            node && typeof node.type === 'string' ? node.type : ''),
+          nodeToRange:
+            opts.nodeToRange ||
+            ((node: any) =>
+              node && typeof node === 'object' && typeof node.start === 'number'
+                ? [node.start, node.end]
+                : null),
+          nodeToName:
+            opts.nodeToName ||
+            ((node: any) => (node && typeof node.type === 'string' ? node.type : '')),
           openByDefault: opts.openByDefault || (() => false),
           *walkNode(node: any) {
             if (opts.walkNode) {
@@ -83,10 +88,7 @@ describe('treeAdapterFromParseResult', () => {
 
   test('throws for unknown adapter type', () => {
     expect(() =>
-      treeAdapterFromParseResult(
-        { treeAdapter: { type: 'xml', options: {} } } as any,
-        {},
-      ),
+      treeAdapterFromParseResult({ treeAdapter: { type: 'xml', options: {} } } as any, {}),
     ).toThrow('Unknown tree adapter type "xml"');
   });
 
@@ -355,7 +357,7 @@ describe('walkNode with multiple filters', () => {
       value: 42,
     };
 
-    const keys = [...adapter.walkNode(node)].map(r => r.key);
+    const keys = [...adapter.walkNode(node)].map((r) => r.key);
     expect(keys).toContain('type');
     expect(keys).toContain('value');
     expect(keys).not.toContain('fn');
@@ -371,7 +373,7 @@ describe('walkNode with multiple filters', () => {
     });
 
     const node = { fn: () => {}, val: 1 };
-    const keys = [...adapter.walkNode(node)].map(r => r.key);
+    const keys = [...adapter.walkNode(node)].map((r) => r.key);
     expect(keys).toContain('fn');
     expect(keys).toContain('val');
   });
@@ -387,7 +389,7 @@ describe('walkNode with multiple filters', () => {
     });
 
     const node = { visible: 1, hidden: 2 };
-    const keys = [...adapter.walkNode(node)].map(r => r.key);
+    const keys = [...adapter.walkNode(node)].map((r) => r.key);
     expect(keys).toContain('visible');
     expect(keys).not.toContain('hidden');
   });
@@ -415,10 +417,7 @@ describe('getConfigurableFilters', () => {
 
   test('returns empty array when no filters have keys', () => {
     const adapter = makeAdapter({
-      filters: [
-        { test: () => false },
-        { test: () => true },
-      ],
+      filters: [{ test: () => false }, { test: () => true }],
     });
 
     expect(adapter.getConfigurableFilters()).toHaveLength(0);

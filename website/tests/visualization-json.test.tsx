@@ -69,9 +69,7 @@ describe('JSON visualization', () => {
         body: [
           {
             type: 'VariableDeclaration',
-            declarations: [
-              { type: 'VariableDeclarator', id: { type: 'Identifier', name: 'x' } },
-            ],
+            declarations: [{ type: 'VariableDeclarator', id: { type: 'Identifier', name: 'x' } }],
           },
         ],
       },

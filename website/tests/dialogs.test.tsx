@@ -12,18 +12,20 @@ describe('SettingsDialog', () => {
     id: 'acorn',
     displayName: 'acorn',
     hasSettings: () => true,
-    renderSettings: vi.fn((settings: Record<string, unknown>, onChange: (s: Record<string, unknown>) => void) => (
-      <div data-testid="parser-settings">
-        <label>
-          JSX
-          <input
-            type="checkbox"
-            checked={!!settings?.jsx}
-            onChange={(e) => onChange({ ...settings, jsx: e.target.checked })}
-          />
-        </label>
-      </div>
-    )),
+    renderSettings: vi.fn(
+      (settings: Record<string, unknown>, onChange: (s: Record<string, unknown>) => void) => (
+        <div data-testid="parser-settings">
+          <label>
+            JSX
+            <input
+              type="checkbox"
+              checked={!!settings?.jsx}
+              onChange={(e) => onChange({ ...settings, jsx: e.target.checked })}
+            />
+          </label>
+        </div>
+      ),
+    ),
   };
 
   test('renders nothing when visible=false', () => {
@@ -96,10 +98,7 @@ describe('SettingsDialog', () => {
         onWantToClose={() => {}}
       />,
     );
-    expect(mockParser.renderSettings).toHaveBeenCalledWith(
-      settings,
-      expect.any(Function),
-    );
+    expect(mockParser.renderSettings).toHaveBeenCalledWith(settings, expect.any(Function));
   });
 
   test('has Reset and Close buttons in footer', () => {
@@ -220,7 +219,9 @@ describe('SettingsDialog', () => {
             expect(settings).toEqual({ jsx: true });
           }}
           onWantToClose={() => {}}
-          ref={(r: any) => { ref = r; }}
+          ref={(r: any) => {
+            ref = r;
+          }}
         />
       );
     };
@@ -326,8 +327,14 @@ describe('ShareDialog', () => {
     const onClose = vi.fn();
     let ref: any;
     render(
-      <ShareDialog visible={true} onWantToClose={onClose} snippet={mockSnippet as any}
-        ref={(r: any) => { ref = r; }} />,
+      <ShareDialog
+        visible={true}
+        onWantToClose={onClose}
+        snippet={mockSnippet as any}
+        ref={(r: any) => {
+          ref = r;
+        }}
+      />,
     );
     const dialogDiv = document.getElementById('ShareDialog')!;
     // Call _outerClick directly with a synthetic event whose target matches
@@ -343,5 +350,4 @@ describe('ShareDialog', () => {
     expect(inner.style.maxWidth).toBe('80%');
     expect(inner.style.width).toBe('600px');
   });
-
 });

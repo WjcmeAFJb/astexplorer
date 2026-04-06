@@ -2,7 +2,9 @@ import { describe, test, expect, vi, afterEach } from 'vitest';
 import { subscribe, publish, clear } from '../src/utils/pubsub';
 
 describe('pubsub', () => {
-  afterEach(() => { vi.useRealTimers(); });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
   test('delivers published data to subscriber', () => {
     vi.useFakeTimers();

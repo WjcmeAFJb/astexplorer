@@ -1,9 +1,9 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Transformer from '../components/Transformer';
-import {setTransformState, toggleFormatting} from '../store/actions';
+import { setTransformState, toggleFormatting } from '../store/actions';
 import * as selectors from '../store/selectors';
-import type {AppState} from '../types';
-import type {Dispatch} from 'redux';
+import type { AppState } from '../types';
+import type { Dispatch } from 'redux';
 
 function mapStateToProps(state: AppState) {
   const parser = selectors.getParser(state);
@@ -20,8 +20,8 @@ function mapStateToProps(state: AppState) {
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    onContentChange: ({value, cursor}: {value: string, cursor: number}) => {
-      dispatch(setTransformState({code: value, cursor}));
+    onContentChange: ({ value, cursor }: { value: string; cursor: number }) => {
+      dispatch(setTransformState({ code: value, cursor }));
     },
     toggleFormatting: () => {
       dispatch(toggleFormatting());

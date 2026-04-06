@@ -23,72 +23,81 @@ type SplitPaneProps = {
 
  * Creates a left-right split pane inside its container.
  */
-export default function SplitPane({vertical, className, children, onResize}: SplitPaneProps): React.ReactElement {
+export default function SplitPane({
+  vertical,
+  className,
+  children,
+  onResize,
+}: SplitPaneProps): React.ReactElement {
   // Position is really the size (width or height) of the first (left or top)
   // panel, as percentage of the parent containers size. The remaining elements
   // are sized and layed out through flexbox.
-  const [position, setPosition] = React.useState(50)
-  const container = React.useRef((null as HTMLDivElement | null))
+  const [position, setPosition] = React.useState(50);
+  const container = React.useRef(null as HTMLDivElement | null);
 
-  const onMouseDown = React.useCallback( function(event: React.MouseEvent<HTMLDivElement>) {
-    if (container.current === null) {
-      return;
-    }
-
-    // This is needed to prevent text selection in Safari
-    event.preventDefault();
-
-    const offset = vertical === true ? container.current.offsetTop : container.current.offsetLeft;
-    const size = vertical === true ? container.current.offsetHeight : container.current.offsetWidth;
-    document.body.style.cursor = vertical === true ? 'row-resize' : 'col-resize';
-    let moveHandler = (moveEvent: MouseEvent) => {
-      moveEvent.preventDefault();
-      const newPosition = ((vertical === true ? moveEvent.pageY : moveEvent.pageX) - offset) / size * 100;
-      // Using 99% as the max value prevents the divider from disappearing
-      setPosition(Math.min(Math.max(0, newPosition), 99));
-    };
-    let upHandler = () => {
-      document.removeEventListener('mousemove', moveHandler);
-      document.removeEventListener('mouseup', upHandler);
-      document.body.style.cursor = '';
-
-      if (onResize !== undefined) {
-        onResize();
+  const onMouseDown = React.useCallback(
+    function (event: React.MouseEvent<HTMLDivElement>) {
+      if (container.current === null) {
+        return;
       }
-    };
 
-    document.addEventListener('mousemove', moveHandler);
-    document.addEventListener('mouseup', upHandler);
-  }, [vertical, onResize, container])
+      // This is needed to prevent text selection in Safari
+      event.preventDefault();
 
-  const childArray = React.Children.toArray(children)
+      const offset = vertical === true ? container.current.offsetTop : container.current.offsetLeft;
+      const size =
+        vertical === true ? container.current.offsetHeight : container.current.offsetWidth;
+      document.body.style.cursor = vertical === true ? 'row-resize' : 'col-resize';
+      let moveHandler = (moveEvent: MouseEvent) => {
+        moveEvent.preventDefault();
+        const newPosition =
+          (((vertical === true ? moveEvent.pageY : moveEvent.pageX) - offset) / size) * 100;
+        // Using 99% as the max value prevents the divider from disappearing
+        setPosition(Math.min(Math.max(0, newPosition), 99));
+      };
+      let upHandler = () => {
+        document.removeEventListener('mousemove', moveHandler);
+        document.removeEventListener('mouseup', upHandler);
+        document.body.style.cursor = '';
+
+        if (onResize !== undefined) {
+          onResize();
+        }
+      };
+
+      document.addEventListener('mousemove', moveHandler);
+      document.addEventListener('mouseup', upHandler);
+    },
+    [vertical, onResize, container],
+  );
+
+  const childArray = React.Children.toArray(children);
 
   if (childArray.length < 2) {
     return (
-      <div className={className} style={{display: 'flex'}}>
+      <div className={className} style={{ display: 'flex' }}>
         {childArray}
       </div>
     );
   }
 
-  const styleA = {...baseStyle};
+  const styleA = { ...baseStyle };
 
   if (vertical === true) {
     // top
-    styleA.minHeight = styleA.maxHeight = position + '%'
+    styleA.minHeight = styleA.maxHeight = position + '%';
   } else {
     // left
-    styleA.minWidth = styleA.maxWidth = position + '%'
+    styleA.minWidth = styleA.maxWidth = position + '%';
   }
 
   return (
     <div
       ref={container}
       className={className}
-      style={{display: 'flex', flexDirection: vertical === true ? 'column' : 'row'}}>
-      <div style={styleA}>
-        {childArray[0]}
-      </div>
+      style={{ display: 'flex', flexDirection: vertical === true ? 'column' : 'row' }}
+    >
+      <div style={styleA}>{childArray[0]}</div>
       <div
         role="separator"
         className={cx({
@@ -98,10 +107,7 @@ export default function SplitPane({vertical, className, children, onResize}: Spl
         })}
         onMouseDown={onMouseDown}
       />
-      <div style={styleB}>
-        {childArray[1]}
-      </div>
+      <div style={styleB}>{childArray[1]}</div>
     </div>
   );
 }
-

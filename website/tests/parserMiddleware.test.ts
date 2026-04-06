@@ -14,12 +14,15 @@ function getOrCreateParser(id: string) {
       locationProps: new Set(['loc', 'start', 'end']),
       typeProps: new Set(['type']),
       showInMenu: true,
-      loadParser: (cb: (p: unknown) => void) => cb({ parse: (code: string) => ({ type: 'Program', body: [], code }) }),
+      loadParser: (cb: (p: unknown) => void) =>
+        cb({ parse: (code: string) => ({ type: 'Program', body: [], code }) }),
       parse: (realParser: any, code: string) => realParser.parse(code),
       opensByDefault: () => false,
       nodeToRange: () => null,
       getNodeName: (n: any) => n?.type,
-      *forEachProperty(n: any) { if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false }; },
+      *forEachProperty(n: any) {
+        if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false };
+      },
       getDefaultOptions: () => ({}),
       hasSettings: () => false,
     };
@@ -27,7 +30,7 @@ function getOrCreateParser(id: string) {
   return parserCache[id];
 }
 vi.mock('astexplorer-parsers', () => ({
-  getParserByID: (id: string) => id ? getOrCreateParser(id) : undefined,
+  getParserByID: (id: string) => (id ? getOrCreateParser(id) : undefined),
   getCategoryByID: (id: string) => ({ id, codeExample: '// example' }),
   getDefaultParser: () => getOrCreateParser('acorn'),
   getTransformerByID: () => undefined,
@@ -105,7 +108,9 @@ describe('parserMiddleware', () => {
       locationProps: new Set(),
       typeProps: new Set(['type']),
       loadParser: (cb: any) => cb({}),
-      parse: () => { throw new SyntaxError('bad syntax'); },
+      parse: () => {
+        throw new SyntaxError('bad syntax');
+      },
       opensByDefault: () => false,
       nodeToRange: () => null,
       getNodeName: () => '',
@@ -115,7 +120,7 @@ describe('parserMiddleware', () => {
 
     const { getParserByID } = await import('astexplorer-parsers');
     const orig = getParserByID;
-    (await import('astexplorer-parsers') as any).getParserByID = () => failingParser;
+    ((await import('astexplorer-parsers')) as any).getParserByID = () => failingParser;
 
     const state = makeState();
     const store = { getState: () => state };
@@ -131,7 +136,7 @@ describe('parserMiddleware', () => {
     expect(errorCalls[0][0].result.error.message).toBe('bad syntax');
 
     spy.mockRestore();
-    (await import('astexplorer-parsers') as any).getParserByID = orig;
+    ((await import('astexplorer-parsers')) as any).getParserByID = orig;
   });
 
   test('caches parser._promise across multiple parse calls', async () => {
@@ -143,12 +148,17 @@ describe('parserMiddleware', () => {
       _ignoredProperties: new Set(),
       locationProps: new Set(['loc']),
       typeProps: new Set(['type']),
-      loadParser: (cb: (p: unknown) => void) => { loadCount.value++; cb({ parse: (code: string) => ({ type: 'Program', code }) }); },
+      loadParser: (cb: (p: unknown) => void) => {
+        loadCount.value++;
+        cb({ parse: (code: string) => ({ type: 'Program', code }) });
+      },
       parse: (realParser: any, code: string) => realParser.parse(code),
       opensByDefault: () => false,
       nodeToRange: () => null,
       getNodeName: (n: any) => n?.type,
-      *forEachProperty(n: any) { if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false }; },
+      *forEachProperty(n: any) {
+        if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false };
+      },
       getDefaultOptions: () => ({}),
     };
     parserCache['caching-test'] = cachingParser;
@@ -190,7 +200,9 @@ describe('parserMiddleware', () => {
       opensByDefault: () => false,
       nodeToRange: () => null,
       getNodeName: (n: any) => n?.type,
-      *forEachProperty(n: any) { if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false }; },
+      *forEachProperty(n: any) {
+        if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false };
+      },
       getDefaultOptions: () => ({ default: true }),
     };
     parserCache['settings-test'] = settingsParser;
@@ -231,12 +243,15 @@ describe('parserMiddleware', () => {
       _ignoredProperties: new Set(),
       locationProps: new Set(['loc']),
       typeProps: new Set(['type']),
-      loadParser: (cb: (p: unknown) => void) => cb({ parse: (code: string) => ({ type: 'Program', code }) }),
+      loadParser: (cb: (p: unknown) => void) =>
+        cb({ parse: (code: string) => ({ type: 'Program', code }) }),
       parse: (realParser: any, code: string) => realParser.parse(code),
       opensByDefault: () => false,
       nodeToRange: () => null,
       getNodeName: (n: any) => n?.type,
-      *forEachProperty(n: any) { if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false }; },
+      *forEachProperty(n: any) {
+        if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false };
+      },
       getDefaultOptions: () => ({}),
     };
     oldState.workbench.parser = 'babel';
@@ -300,7 +315,9 @@ describe('parserMiddleware', () => {
   test('does not dispatch when parser changes during async parse', async () => {
     // Kills mutants on line 45: stale check for parser
     let resolveParse!: (v: any) => void;
-    const parsePromise = new Promise(r => { resolveParse = r; });
+    const parsePromise = new Promise((r) => {
+      resolveParse = r;
+    });
     const slowParser = {
       id: 'slow-parser',
       _ignoredProperties: new Set(),
@@ -311,7 +328,9 @@ describe('parserMiddleware', () => {
       opensByDefault: () => false,
       nodeToRange: () => null,
       getNodeName: (n: any) => n?.type,
-      *forEachProperty(n: any) { if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false }; },
+      *forEachProperty(n: any) {
+        if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false };
+      },
       getDefaultOptions: () => ({}),
     };
     parserCache['slow-parser'] = slowParser;
@@ -343,7 +362,9 @@ describe('parserMiddleware', () => {
   test('does not dispatch when parserSettings changes during async parse', async () => {
     // Kills stale check mutants for parserSettings (line 46)
     let resolveParse!: (v: any) => void;
-    const parsePromise = new Promise(r => { resolveParse = r; });
+    const parsePromise = new Promise((r) => {
+      resolveParse = r;
+    });
     const slowParser2 = {
       id: 'slow-parser-2',
       _ignoredProperties: new Set(),
@@ -354,7 +375,9 @@ describe('parserMiddleware', () => {
       opensByDefault: () => false,
       nodeToRange: () => null,
       getNodeName: (n: any) => n?.type,
-      *forEachProperty(n: any) { if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false }; },
+      *forEachProperty(n: any) {
+        if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false };
+      },
       getDefaultOptions: () => ({}),
     };
     parserCache['slow-parser-2'] = slowParser2;
@@ -388,7 +411,9 @@ describe('parserMiddleware', () => {
   test('does not dispatch when code changes during async parse', async () => {
     // Kills stale check mutants for code (line 47)
     let resolveParse!: (v: any) => void;
-    const parsePromise = new Promise(r => { resolveParse = r; });
+    const parsePromise = new Promise((r) => {
+      resolveParse = r;
+    });
     const slowParser3 = {
       id: 'slow-parser-3',
       _ignoredProperties: new Set(),
@@ -399,7 +424,9 @@ describe('parserMiddleware', () => {
       opensByDefault: () => false,
       nodeToRange: () => null,
       getNodeName: (n: any) => n?.type,
-      *forEachProperty(n: any) { if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false }; },
+      *forEachProperty(n: any) {
+        if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false };
+      },
       getDefaultOptions: () => ({}),
     };
     parserCache['slow-parser-3'] = slowParser3;
@@ -489,7 +516,9 @@ describe('parserMiddleware', () => {
       locationProps: new Set(),
       typeProps: new Set(['type']),
       loadParser: (cb: any) => cb({}),
-      parse: () => { throw new Error('parse error'); },
+      parse: () => {
+        throw new Error('parse error');
+      },
       opensByDefault: () => false,
       nodeToRange: () => null,
       getNodeName: () => '',
@@ -505,9 +534,7 @@ describe('parserMiddleware', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     await parserMiddleware(store)(next)({ type: 'INIT' });
 
-    const errorCalls = next.mock.calls.filter(
-      (c: any[]) => c[0]?.type === 'SET_PARSE_RESULT',
-    );
+    const errorCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_PARSE_RESULT');
     expect(errorCalls.length).toBe(1);
     const result = errorCalls[0][0].result;
     expect(result).toEqual({
@@ -539,11 +566,14 @@ describe('parserMiddleware', () => {
       locationProps: new Set(['loc']),
       typeProps: new Set(['type']),
       opensByDefault: undefined, // falsy — should fallback to () => false
-      loadParser: (cb: (p: unknown) => void) => cb({ parse: (code: string) => ({ type: 'Program', code }) }),
+      loadParser: (cb: (p: unknown) => void) =>
+        cb({ parse: (code: string) => ({ type: 'Program', code }) }),
       parse: (realParser: any, code: string) => realParser.parse(code),
       nodeToRange: () => null,
       getNodeName: (n: any) => n?.type,
-      *forEachProperty(n: any) { if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false }; },
+      *forEachProperty(n: any) {
+        if (n) for (const k of Object.keys(n)) yield { value: n[k], key: k, computed: false };
+      },
       getDefaultOptions: () => ({}),
     };
     parserCache['no-open'] = noOpenParser;

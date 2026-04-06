@@ -7,10 +7,14 @@ import { render, fireEvent, act } from '@testing-library/react';
 
 vi.mock('astexplorer-parsers', () => ({
   categories: [
-    { id: 'javascript', displayName: 'JavaScript', mimeTypes: ['text/javascript'],
-      parsers: [], transformers: [] },
-    { id: 'css', displayName: 'CSS', mimeTypes: ['text/css'],
-      parsers: [], transformers: [] },
+    {
+      id: 'javascript',
+      displayName: 'JavaScript',
+      mimeTypes: ['text/javascript'],
+      parsers: [],
+      transformers: [],
+    },
+    { id: 'css', displayName: 'CSS', mimeTypes: ['text/css'], parsers: [], transformers: [] },
   ],
   getCategoryByID: () => null,
   getParserByID: (id: string) => ({ id, displayName: id }),
@@ -170,7 +174,7 @@ describe('PasteDropTarget', () => {
 
     // FileReader.readAsText is async; wait for it
     await act(async () => {
-      await new Promise(r => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 50));
     });
 
     expect(onText).toHaveBeenCalledWith('drop', expect.anything(), fileContent, 'javascript');
@@ -198,7 +202,7 @@ describe('PasteDropTarget', () => {
     });
 
     await act(async () => {
-      await new Promise(r => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 50));
     });
 
     // Non-JSON text: _jsonToCode resolves with original text (JSON.parse fails)
@@ -227,7 +231,7 @@ describe('PasteDropTarget', () => {
     });
 
     await act(async () => {
-      await new Promise(r => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 50));
     });
 
     expect(onText).toHaveBeenCalledWith('drop', expect.anything(), fileContent, 'css');
@@ -282,7 +286,7 @@ describe('PasteDropTarget', () => {
     const pasteEvent = new Event('paste', { bubbles: true, cancelable: true });
     Object.defineProperty(pasteEvent, 'clipboardData', {
       value: {
-        types: { }, // no indexOf method
+        types: {}, // no indexOf method
         getData: () => 'text',
       },
     });
@@ -360,7 +364,11 @@ describe('PasteDropTarget', () => {
       (ref.current as any)._onASTError('paste', mockEvent, error);
     }).toThrow('AST processing failed');
 
-    expect(onError).toHaveBeenCalledWith('paste', mockEvent, 'Cannot process pasted AST: AST processing failed');
+    expect(onError).toHaveBeenCalledWith(
+      'paste',
+      mockEvent,
+      'Cannot process pasted AST: AST processing failed',
+    );
   });
 
   test('_jsonToCode returns original string when JSON.parse fails', async () => {

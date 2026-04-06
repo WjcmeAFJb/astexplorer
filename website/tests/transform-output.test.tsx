@@ -90,9 +90,7 @@ describe('TransformOutput', () => {
 
   test('renders string result via Editor', () => {
     const result = { result: 'const x = 1;' };
-    const { container } = render(
-      <TransformOutput transformResult={result} mode="javascript" />,
-    );
+    const { container } = render(<TransformOutput transformResult={result} mode="javascript" />);
     expect(container.querySelector('.output.highlight')).not.toBeNull();
     expect(capturedEditorProps.value).toBe('const x = 1;');
     expect(capturedEditorProps.readOnly).toBe(true);
@@ -136,7 +134,9 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
     };
     const result = { result: 'output', map: mockMap };
     render(<TransformOutput transformResult={result} mode="javascript" />);
-    const posFromIndex = capturedEditorProps.posFromIndex as (index: number) => { line: number; ch: number } | undefined;
+    const posFromIndex = capturedEditorProps.posFromIndex as (
+      index: number,
+    ) => { line: number; ch: number } | undefined;
     const pos = posFromIndex(0);
     expect(pos).toEqual({ line: 0, ch: 0 });
     // index=0 returns early, so generatedPositionFor is NOT called
@@ -152,7 +152,9 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
     };
     const result = { result: 'output', map: mockMap };
     render(<TransformOutput transformResult={result} mode="javascript" />);
-    const posFromIndex = capturedEditorProps.posFromIndex as (index: number) => { line: number; ch: number } | undefined;
+    const posFromIndex = capturedEditorProps.posFromIndex as (
+      index: number,
+    ) => { line: number; ch: number } | undefined;
     const pos = posFromIndex(7);
     expect(mockMap.generatedPositionFor).toHaveBeenCalledWith({
       line: 2,
@@ -171,7 +173,9 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
     };
     const result = { result: 'output', map: mockMap };
     render(<TransformOutput transformResult={result} mode="javascript" />);
-    const posFromIndex = capturedEditorProps.posFromIndex as (index: number) => { line: number; ch: number } | undefined;
+    const posFromIndex = capturedEditorProps.posFromIndex as (
+      index: number,
+    ) => { line: number; ch: number } | undefined;
     const pos = posFromIndex(3);
     expect(pos).toBeUndefined();
   });
@@ -187,7 +191,9 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
     };
     const result = { result: 'out', map: mockMap };
     render(<TransformOutput transformResult={result} mode="javascript" />);
-    const posFromIndex = capturedEditorProps.posFromIndex as (index: number) => { line: number; ch: number } | undefined;
+    const posFromIndex = capturedEditorProps.posFromIndex as (
+      index: number,
+    ) => { line: number; ch: number } | undefined;
     const pos = posFromIndex(3);
     expect(mockMap.generatedPositionFor).toHaveBeenCalledWith({
       line: 1,
@@ -213,7 +219,9 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
     };
     const result = { result: 'out', map: mockMap };
     render(<TransformOutput transformResult={result} mode="javascript" />);
-    const posFromIndex = capturedEditorProps.posFromIndex as (index: number) => { line: number; ch: number } | undefined;
+    const posFromIndex = capturedEditorProps.posFromIndex as (
+      index: number,
+    ) => { line: number; ch: number } | undefined;
     const pos = posFromIndex(9);
     expect(mockMap.generatedPositionFor).toHaveBeenCalledWith({
       line: 3,
@@ -235,7 +243,9 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
     };
     const result = { result: 'out', map: mockMap };
     render(<TransformOutput transformResult={result} mode="javascript" />);
-    const posFromIndex = capturedEditorProps.posFromIndex as (index: number) => { line: number; ch: number } | undefined;
+    const posFromIndex = capturedEditorProps.posFromIndex as (
+      index: number,
+    ) => { line: number; ch: number } | undefined;
     const pos = posFromIndex(2);
     expect(mockMap.generatedPositionFor).toHaveBeenCalledWith({
       line: 2,

@@ -1,7 +1,7 @@
 import React from 'react';
 import cx from '../../utils/classnames';
-import {getTransformerByID} from 'astexplorer-parsers';
-import type {Category, Transformer} from '../../types';
+import { getTransformerByID } from 'astexplorer-parsers';
+import type { Category, Transformer } from '../../types';
 
 type TransformButtonProps = {
   category?: Category;
@@ -43,18 +43,21 @@ export default class TransformButton extends React.Component<TransformButtonProp
       return null;
     }
     const transformers = category.transformers.filter(
-      t => t.showInMenu !== false || t === this.props.transformer,
+      (t) => t.showInMenu !== false || t === this.props.transformer,
     );
     return (
-      <div className={cx({
-        button: true,
-        menuButton: true,
-        disabled: category.transformers.length === 0,
-      })}>
+      <div
+        className={cx({
+          button: true,
+          menuButton: true,
+          disabled: category.transformers.length === 0,
+        })}
+      >
         <button
           type="button"
           onClick={this._onToggle}
-          disabled={category.transformers.length === 0}>
+          disabled={category.transformers.length === 0}
+        >
           <i
             className={cx({
               fa: true,
@@ -66,24 +69,26 @@ export default class TransformButton extends React.Component<TransformButtonProp
           />
           &nbsp;Transform
         </button>
-        {transformers.length > 0 && <ul>
-          {transformers.map(transformer => (
-            <li
-              key={transformer.id}
-              className={cx({
-                selected: this.props.showTransformer === true &&
-                  this.props.transformer === transformer,
-              })}
-              onClick={this._onClick}
-              onKeyDown={this._onClick}>
-              <button value={transformer.id} type="button" >
-                {transformer.displayName}
-              </button>
-            </li>
-          ))}
-        </ul>}
+        {transformers.length > 0 && (
+          <ul>
+            {transformers.map((transformer) => (
+              <li
+                key={transformer.id}
+                className={cx({
+                  selected:
+                    this.props.showTransformer === true && this.props.transformer === transformer,
+                })}
+                onClick={this._onClick}
+                onKeyDown={this._onClick}
+              >
+                <button value={transformer.id} type="button">
+                  {transformer.displayName}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   }
 }
-

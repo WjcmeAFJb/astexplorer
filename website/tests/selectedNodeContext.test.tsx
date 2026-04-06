@@ -5,7 +5,10 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import { SelectedNodeProvider, useSelectedNode } from '../src/components/visualization/SelectedNodeContext';
+import {
+  SelectedNodeProvider,
+  useSelectedNode,
+} from '../src/components/visualization/SelectedNodeContext';
 
 describe('SelectedNodeContext', () => {
   beforeEach(() => {

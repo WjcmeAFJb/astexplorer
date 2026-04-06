@@ -1,9 +1,9 @@
-import type {SnippetData, Revision, StorageBackend} from '../types';
+import type { SnippetData, Revision, StorageBackend } from '../types';
 
 export default class StorageHandler {
   _backends: StorageBackend[];
 
-    constructor(backends: StorageBackend[]) {
+  constructor(backends: StorageBackend[]) {
     this._backends = backends;
   }
 
@@ -14,7 +14,7 @@ export default class StorageHandler {
     return this._backends[0];
   }
 
-    _owns(revision: Revision): StorageBackend | null {
+  _owns(revision: Revision): StorageBackend | null {
     for (const backend of this._backends) {
       if (backend.owns(revision)) {
         return backend;
@@ -23,7 +23,7 @@ export default class StorageHandler {
     return null;
   }
 
-    updateHash(revision: Revision): void {
+  updateHash(revision: Revision): void {
     window.location.hash = revision.getPath();
   }
 

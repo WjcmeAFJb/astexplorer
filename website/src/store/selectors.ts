@@ -1,18 +1,37 @@
 import isEqual from 'lodash.isequal';
-import {getParserByID, getTransformerByID} from 'astexplorer-parsers';
-import type {TransformResult, ParseResult, Revision, Transformer, Parser, AppState} from '../types';
+import { getParserByID, getTransformerByID } from 'astexplorer-parsers';
+import type {
+  TransformResult,
+  ParseResult,
+  Revision,
+  Transformer,
+  Parser,
+  AppState,
+} from '../types';
 
 // Our selectors are not computationally expensive so we can just use this
 // implementation. Overloads preserve type safety at call sites.
 function createSelector<A, R>(deps: [(s: AppState) => A], f: (a: A) => R): (s: AppState) => R;
-function createSelector<A, B, R>(deps: [(s: AppState) => A, (s: AppState) => B], f: (a: A, b: B) => R): (s: AppState) => R;
-function createSelector<A, B, C, R>(deps: [(s: AppState) => A, (s: AppState) => B, (s: AppState) => C], f: (a: A, b: B, c: C) => R): (s: AppState) => R;
-function createSelector<A, B, C, D, R>(deps: [(s: AppState) => A, (s: AppState) => B, (s: AppState) => C, (s: AppState) => D], f: (a: A, b: B, c: C, d: D) => R): (s: AppState) => R;
-function createSelector(deps: Array<(s: AppState) => unknown>, f: (...args: unknown[]) => unknown): (s: AppState) => unknown {
-  return function(state) {
-    const args = deps.map(d => d(state));
+function createSelector<A, B, R>(
+  deps: [(s: AppState) => A, (s: AppState) => B],
+  f: (a: A, b: B) => R,
+): (s: AppState) => R;
+function createSelector<A, B, C, R>(
+  deps: [(s: AppState) => A, (s: AppState) => B, (s: AppState) => C],
+  f: (a: A, b: B, c: C) => R,
+): (s: AppState) => R;
+function createSelector<A, B, C, D, R>(
+  deps: [(s: AppState) => A, (s: AppState) => B, (s: AppState) => C, (s: AppState) => D],
+  f: (a: A, b: B, c: C, d: D) => R,
+): (s: AppState) => R;
+function createSelector(
+  deps: Array<(s: AppState) => unknown>,
+  f: (...args: unknown[]) => unknown,
+): (s: AppState) => unknown {
+  return function (state) {
+    const args = deps.map((d) => d(state));
     return f(...args);
-  }
+  };
 }
 
 // UI related
@@ -80,7 +99,7 @@ export function getInitialCode(state: AppState): string {
   return state.workbench.initialCode;
 }
 
-export function getKeyMap (state: AppState): string {
+export function getKeyMap(state: AppState): string {
   return state.workbench.keyMap;
 }
 
@@ -128,10 +147,8 @@ export const canFork: (state: AppState) => boolean = createSelector(
 const canSaveCode: (state: AppState) => boolean = createSelector(
   [getRevision, isCodeDirty],
   // can always save if there is no revision
-  (revision: unknown, dirty: unknown) => (
-    (revision === null || revision === undefined) ||
-    (dirty === true)
-  ),
+  (revision: unknown, dirty: unknown) =>
+    revision === null || revision === undefined || dirty === true,
 );
 
 export const canSaveTransform: (state: AppState) => boolean = createSelector(
@@ -140,7 +157,12 @@ export const canSaveTransform: (state: AppState) => boolean = createSelector(
 );
 
 function isRevision(value: unknown): value is Revision {
-  return value !== null && value !== undefined && typeof value === 'object' && 'getParserSettings' in value;
+  return (
+    value !== null &&
+    value !== undefined &&
+    typeof value === 'object' &&
+    'getParserSettings' in value
+  );
 }
 
 function isParser(value: unknown): value is Parser {

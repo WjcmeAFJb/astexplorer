@@ -26,7 +26,11 @@ declare global {
   interface WebpackRequire {
     // Generic signature: TypeScript infers callback param types from the call site.
     <T extends unknown[]>(deps: string[], callback: (...modules: T) => void): void;
-    context(directory: string, useSubdirectories: boolean, regExp: RegExp): {
+    context(
+      directory: string,
+      useSubdirectories: boolean,
+      regExp: RegExp,
+    ): {
       keys(): string[];
       <T>(id: string): T;
     };
@@ -60,7 +64,10 @@ declare module 'source-map/lib/source-map-consumer' {
     constructor(rawSourceMap: unknown);
     sources: string[];
     sourcesContent: string[];
-    generatedPositionFor(pos: {line: number; column: number; source: string}): {line: number | null; column: number | null};
+    generatedPositionFor(pos: { line: number; column: number; source: string }): {
+      line: number | null;
+      column: number | null;
+    };
   }
 }
 
@@ -115,7 +122,10 @@ declare module 'luaparse' {
 
 // babel-eslint — parseNoPatch
 declare module 'babel-eslint' {
-  export function parseNoPatch(code: string, options?: Record<string, unknown>): Record<string, unknown>;
+  export function parseNoPatch(
+    code: string,
+    options?: Record<string, unknown>,
+  ): Record<string, unknown>;
 }
 
 // halting-problem — loop detection

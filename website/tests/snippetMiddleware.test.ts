@@ -23,7 +23,12 @@ function makeState(overrides: Record<string, any> = {}) {
       initialCode: 'const x = 1;',
       keyMap: 'default',
       parseResult: undefined,
-      transform: { transformer: '', code: 'export default function(fileInfo) {}', initialCode: '', transformResult: null },
+      transform: {
+        transformer: '',
+        code: 'export default function(fileInfo) {}',
+        initialCode: '',
+        transformResult: null,
+      },
     },
     showTransformPanel: false,
     activeRevision: null,
@@ -165,7 +170,7 @@ describe('snippetMiddleware', () => {
   test('LOAD_SNIPPET cancels previous load when new load starts', async () => {
     // First load will be slow
     let resolveFirst: (v: any) => void;
-    const firstPromise = new Promise(r => resolveFirst = r);
+    const firstPromise = new Promise((r) => (resolveFirst = r));
     storageAdapter.fetchFromURL.mockReturnValueOnce(firstPromise);
 
     const middleware = snippetMiddleware(storageAdapter)(store)(next);
@@ -295,7 +300,9 @@ describe('snippetMiddleware', () => {
     middleware({ type: 'SAVE', fork: false });
 
     await vi.waitFor(() => {
-      const errorCalls = next.mock.calls.filter((c: any[]) => c[0]?.type === 'SET_ERROR' && c[0]?.error);
+      const errorCalls = next.mock.calls.filter(
+        (c: any[]) => c[0]?.type === 'SET_ERROR' && c[0]?.error,
+      );
       expect(errorCalls.length).toBe(1);
       expect(errorCalls[0][0].error).toBe(saveError);
     });

@@ -95,9 +95,7 @@ describe('Transformer', () => {
 
   test('passes transformResult to TransformOutput', () => {
     const result = { result: 'output code' };
-    const { container } = render(
-      <Transformer {...defaultProps} transformResult={result} />,
-    );
+    const { container } = render(<Transformer {...defaultProps} transformResult={result} />);
     expect(container.querySelector('.output.highlight')).not.toBeNull();
   });
 

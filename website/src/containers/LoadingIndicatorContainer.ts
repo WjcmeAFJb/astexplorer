@@ -1,7 +1,7 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import LoadingIndicator from '../components/LoadingIndicator';
-import {isLoadingSnippet} from '../store/selectors';
-import type {AppState} from '../types';
+import { isLoadingSnippet } from '../store/selectors';
+import type { AppState } from '../types';
 
 function mapStateToProps(state: AppState) {
   return {

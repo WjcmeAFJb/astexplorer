@@ -18,7 +18,4 @@ function mapDispatchToProps(dispatch: Dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SettingsDrawer);
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsDrawer);

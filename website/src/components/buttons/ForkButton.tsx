@@ -15,10 +15,9 @@ export default class ForkButton extends React.Component<ForkButtonProps> {
     return (
       <button
         type="button"
-        disabled={
-          canFork !== true || saving === true || forking === true
-        }
-        onClick={onFork}>
+        disabled={canFork !== true || saving === true || forking === true}
+        onClick={onFork}
+      >
         <i
           className={cx({
             fa: true,
@@ -27,9 +26,9 @@ export default class ForkButton extends React.Component<ForkButtonProps> {
             'fa-code-fork': forking !== true,
             'fa-fw': true,
           })}
-        />&nbsp;Fork
+        />
+        &nbsp;Fork
       </button>
     );
   }
 }
-

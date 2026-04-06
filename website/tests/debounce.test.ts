@@ -2,7 +2,9 @@ import { describe, test, expect, vi, afterEach } from 'vitest';
 import debounce from '../src/utils/debounce';
 
 describe('debounce', () => {
-  afterEach(() => { vi.useRealTimers(); });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
   test('does not call immediately', () => {
     vi.useFakeTimers();

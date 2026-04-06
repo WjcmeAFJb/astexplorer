@@ -1,7 +1,7 @@
 const subscribers: Record<string, Array<(data: unknown) => void>> = {};
 
 export function subscribe(topic: string, handler: (data: unknown) => void): () => void {
-  const handlers = subscribers[topic] ??= [];
+  const handlers = (subscribers[topic] ??= []);
   if (!handlers.includes(handler)) {
     handlers.push(handler);
   }

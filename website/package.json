@@ -56,10 +56,12 @@
     "exports-loader": "^0.7.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^9.1.7",
     "inline-manifest-webpack-plugin": "^4.0.1",
     "js-yaml": "^3.13.1",
     "jsdom": "^29.0.1",
     "json-loader": "^0.5.3",
+    "lint-staged": "^16.4.0",
     "lru-cache": "^6.0.0",
     "mini-css-extract-plugin": "^0.9.0",
     "msw": "1",
@@ -220,8 +222,16 @@
     "test:mutation": "npx stryker run",
     "build:webpack": "NODE_OPTIONS=--openssl-legacy-provider rimraf ../out/* && cross-env NODE_ENV=production webpack --mode=production",
     "build-dev:webpack": "NODE_OPTIONS=--openssl-legacy-provider rimraf ../out/* && cross-env NODE_ENV=development webpack -d --mode=development",
-    "lint": "oxlint --type-aware -c .oxlintrc.json src/ tests/",
+    "lint": "oxlint --type-aware -c .oxlintrc.json src/",
     "lint:fix": "oxlint --type-aware -c .oxlintrc.json --fix src/ tests/",
-    "fontcustom": "fontcustom compile ./fontcustom/input-svg/ --config=./fontcustom/config.yml"
+    "format": "oxfmt --write src/ tests/",
+    "format:check": "oxfmt --check src/ tests/",
+    "fontcustom": "fontcustom compile ./fontcustom/input-svg/ --config=./fontcustom/config.yml",
+    "prepare": "cd .. && husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "npx oxfmt --write"
+    ]
   }
 }

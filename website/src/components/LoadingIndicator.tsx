@@ -4,7 +4,9 @@ type LoadingIndicatorProps = {
   visible?: boolean;
 };
 
-export default function LoadingIndicator(props: LoadingIndicatorProps): React.ReactElement | undefined {
+export default function LoadingIndicator(
+  props: LoadingIndicatorProps,
+): React.ReactElement | undefined {
   if (props.visible === true) {
     return (
       <div className="loadingIndicator cover">
@@ -16,4 +18,3 @@ export default function LoadingIndicator(props: LoadingIndicatorProps): React.Re
   }
   return undefined;
 }
-

@@ -7,7 +7,9 @@ import { render, fireEvent } from '@testing-library/react';
 
 // Mock visualization components
 vi.mock('../src/components/visualization', () => {
-  const TreeViz = (props: any) => <div data-testid="tree-viz">Tree: {JSON.stringify(props.parseResult?.ast)}</div>;
+  const TreeViz = (props: any) => (
+    <div data-testid="tree-viz">Tree: {JSON.stringify(props.parseResult?.ast)}</div>
+  );
   TreeViz.displayName = 'Tree';
   Object.defineProperty(TreeViz, 'name', { value: 'Tree' });
 
@@ -108,9 +110,7 @@ describe('ASTOutput', () => {
   test('passes position prop to visualization', () => {
     const parseResult = { ast: { type: 'Program' }, time: 10 };
     // Just verify it renders without errors with position
-    const { container } = render(
-      <ASTOutput parseResult={parseResult} position={5} />,
-    );
+    const { container } = render(<ASTOutput parseResult={parseResult} position={5} />);
     expect(container.querySelector('[data-testid="tree-viz"]')).not.toBeNull();
   });
 
@@ -120,7 +120,9 @@ describe('ASTOutput', () => {
     // Import the mocked visualization module and replace it with a throwing component
     const vizModule = await import('../src/components/visualization');
     const origVizList = vizModule.default;
-    const ThrowingViz = () => { throw new Error('Render error'); };
+    const ThrowingViz = () => {
+      throw new Error('Render error');
+    };
     ThrowingViz.displayName = 'Tree';
     Object.defineProperty(ThrowingViz, 'name', { value: 'Tree' });
     (vizModule as any).default = [ThrowingViz];

@@ -34,7 +34,10 @@ describe('StorageHandler', () => {
 
   test('fetchFromURL delegates to matching backend', async () => {
     const rev = { getPath: () => '/abc' };
-    const backend = makeBackend({ matchesURL: () => true, fetchFromURL: () => Promise.resolve(rev) });
+    const backend = makeBackend({
+      matchesURL: () => true,
+      fetchFromURL: () => Promise.resolve(rev),
+    });
     global.location.hash = '#/abc/123';
     const handler = new StorageHandler([backend] as any);
     expect(await handler.fetchFromURL()).toBe(rev);
@@ -48,7 +51,10 @@ describe('StorageHandler', () => {
 
   test('fetchFromURL tries backends in order', async () => {
     const b1 = makeBackend({ matchesURL: () => false });
-    const b2 = makeBackend({ matchesURL: () => true, fetchFromURL: () => Promise.resolve({ id: 'found' }) });
+    const b2 = makeBackend({
+      matchesURL: () => true,
+      fetchFromURL: () => Promise.resolve({ id: 'found' }),
+    });
     global.location.hash = '#/something';
     const handler = new StorageHandler([b1, b2] as any);
     const result = await handler.fetchFromURL();
@@ -89,7 +95,7 @@ describe('StorageHandler', () => {
     const b1 = makeBackend({ owns: () => false });
     const b2 = makeBackend({ owns: () => true });
     const handler = new StorageHandler([b1, b2] as any);
-    expect((handler as any)._owns({}) ).toBe(b2);
+    expect((handler as any)._owns({})).toBe(b2);
   });
 
   test('_owns returns null when no backend owns revision', () => {

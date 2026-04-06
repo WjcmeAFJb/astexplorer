@@ -5,7 +5,9 @@ vi.mock('astexplorer-parsers', () => ({
     id,
     displayName: id,
     codeExample: `// ${id} example`,
-    parsers: [{ id: `${id}-parser`, showInMenu: true, category: { id, codeExample: `// ${id} example` } }],
+    parsers: [
+      { id: `${id}-parser`, showInMenu: true, category: { id, codeExample: `// ${id} example` } },
+    ],
     transformers: [],
   }),
   getDefaultParser: (cat: any) => ({
@@ -26,8 +28,10 @@ vi.mock('astexplorer-parsers', () => ({
     };
     // Some transformers have formatCodeExample for testing the reformat branch
     if (id === 'fmt-aware') {
-      base.formatCodeExample = (code: string, opts: { parser: string; parserSettings: Record<string, unknown> }) =>
-        `fmt(${code},${opts.parser})`;
+      base.formatCodeExample = (
+        code: string,
+        opts: { parser: string; parserSettings: Record<string, unknown> },
+      ) => `fmt(${code},${opts.parser})`;
     }
     return base;
   },
@@ -207,7 +211,13 @@ describe('reducers', () => {
 
     test('SELECT_CATEGORY changes parser and code', () => {
       let state = getInitialState();
-      const category = { id: 'css', displayName: 'CSS', codeExample: '/* css */', parsers: [{ id: 'cssom', showInMenu: true }], transformers: [] };
+      const category = {
+        id: 'css',
+        displayName: 'CSS',
+        codeExample: '/* css */',
+        parsers: [{ id: 'cssom', showInMenu: true }],
+        transformers: [],
+      };
       state = astexplorer(state, actions.selectCategory(category as any));
       expect(state.workbench.code).toContain('css');
     });
@@ -229,20 +239,41 @@ describe('reducers', () => {
   describe('showTransformPanel', () => {
     test('SELECT_TRANSFORMER shows panel', () => {
       let state = getInitialState();
-      state = astexplorer(state, actions.selectTransformer({ id: 'babel', defaultParserID: 'acorn', defaultTransform: '' } as any));
+      state = astexplorer(
+        state,
+        actions.selectTransformer({
+          id: 'babel',
+          defaultParserID: 'acorn',
+          defaultTransform: '',
+        } as any),
+      );
       expect(state.showTransformPanel).toBe(true);
     });
 
     test('HIDE_TRANSFORMER hides panel', () => {
       let state = getInitialState();
-      state = astexplorer(state, actions.selectTransformer({ id: 'babel', defaultParserID: 'acorn', defaultTransform: '' } as any));
+      state = astexplorer(
+        state,
+        actions.selectTransformer({
+          id: 'babel',
+          defaultParserID: 'acorn',
+          defaultTransform: '',
+        } as any),
+      );
       state = astexplorer(state, actions.hideTransformer());
       expect(state.showTransformPanel).toBe(false);
     });
 
     test('SELECT_CATEGORY hides panel', () => {
       let state = getInitialState();
-      state = astexplorer(state, actions.selectTransformer({ id: 'babel', defaultParserID: 'acorn', defaultTransform: '' } as any));
+      state = astexplorer(
+        state,
+        actions.selectTransformer({
+          id: 'babel',
+          defaultParserID: 'acorn',
+          defaultTransform: '',
+        } as any),
+      );
       state = astexplorer(state, actions.selectCategory({ id: 'css' } as any));
       expect(state.showTransformPanel).toBe(false);
     });
@@ -264,10 +295,16 @@ describe('reducers', () => {
 
     test('RESET clears revision', () => {
       let state = getInitialState();
-      state = astexplorer(state, actions.setSnippet({
-        getTransformerID: () => null, getParserID: () => 'acorn',
-        getParserSettings: () => null, getCode: () => 'x', getTransformCode: () => '',
-      } as any));
+      state = astexplorer(
+        state,
+        actions.setSnippet({
+          getTransformerID: () => null,
+          getParserID: () => 'acorn',
+          getParserSettings: () => null,
+          getCode: () => 'x',
+          getTransformCode: () => '',
+        } as any),
+      );
       state = astexplorer(state, actions.reset());
       expect(state.activeRevision).toBeNull();
     });
@@ -291,10 +328,16 @@ describe('reducers', () => {
 
     test('SET_PARSER_SETTINGS does NOT store when revision is loaded', () => {
       let state = getInitialState();
-      state = astexplorer(state, actions.setSnippet({
-        getTransformerID: () => null, getParserID: () => 'acorn',
-        getParserSettings: () => null, getCode: () => 'x', getTransformCode: () => '',
-      } as any));
+      state = astexplorer(
+        state,
+        actions.setSnippet({
+          getTransformerID: () => null,
+          getParserID: () => 'acorn',
+          getParserSettings: () => null,
+          getCode: () => 'x',
+          getTransformCode: () => '',
+        } as any),
+      );
       const before = { ...state.parserSettings };
       state = astexplorer(state, actions.setParserSettings({ jsx: true }));
       expect(state.parserSettings).toEqual(before);
@@ -500,19 +543,25 @@ describe('SET_PARSER — detailed state verification', () => {
   test('SET_PARSER updates parserSettings from global store', () => {
     let state = getInitialState();
     state.parserSettings['esprima'] = { range: true };
-    state = astexplorer(state, actions.setParser({
-      id: 'esprima',
-      category: { id: 'javascript' },
-    } as any));
+    state = astexplorer(
+      state,
+      actions.setParser({
+        id: 'esprima',
+        category: { id: 'javascript' },
+      } as any),
+    );
     expect(state.workbench.parserSettings).toEqual({ range: true });
   });
 
   test('SET_PARSER sets parserSettings to null when not in global store', () => {
     let state = getInitialState();
-    state = astexplorer(state, actions.setParser({
-      id: 'new-parser',
-      category: { id: 'javascript' },
-    } as any));
+    state = astexplorer(
+      state,
+      actions.setParser({
+        id: 'new-parser',
+        category: { id: 'javascript' },
+      } as any),
+    );
     expect(state.workbench.parserSettings).toBeNull();
   });
 
@@ -546,7 +595,13 @@ describe('SELECT_CATEGORY — detailed state verification', () => {
       id: 'css',
       displayName: 'CSS',
       codeExample: '/* css example */',
-      parsers: [{ id: 'cssom', showInMenu: true, category: { id: 'css', codeExample: '/* css example */' } }],
+      parsers: [
+        {
+          id: 'cssom',
+          showInMenu: true,
+          category: { id: 'css', codeExample: '/* css example */' },
+        },
+      ],
       transformers: [],
     } as any;
     state = astexplorer(state, actions.selectCategory(category));
@@ -561,7 +616,9 @@ describe('SELECT_CATEGORY — detailed state verification', () => {
       id: 'css',
       displayName: 'CSS',
       codeExample: '/* css */',
-      parsers: [{ id: 'cssom', showInMenu: true, category: { id: 'css', codeExample: '/* css */' } }],
+      parsers: [
+        { id: 'cssom', showInMenu: true, category: { id: 'css', codeExample: '/* css */' } },
+      ],
       transformers: [],
     } as any;
     state = astexplorer(state, actions.selectCategory(category));
@@ -576,7 +633,9 @@ describe('SELECT_CATEGORY — detailed state verification', () => {
       id: 'css',
       displayName: 'CSS',
       codeExample: '/* css */',
-      parsers: [{ id: 'cssom', showInMenu: true, category: { id: 'css', codeExample: '/* css */' } }],
+      parsers: [
+        { id: 'cssom', showInMenu: true, category: { id: 'css', codeExample: '/* css */' } },
+      ],
       transformers: [],
     } as any;
     state = astexplorer(state, actions.selectCategory(category));
@@ -585,40 +644,56 @@ describe('SELECT_CATEGORY — detailed state verification', () => {
 
   test('SELECT_CATEGORY hides transform panel', () => {
     let state = getInitialState();
-    state = astexplorer(state, actions.selectTransformer({
-      id: 'babel',
-      defaultParserID: 'javascript-parser',
-      defaultTransform: '',
-      compatibleParserIDs: new Set(['javascript-parser']),
-    } as any));
+    state = astexplorer(
+      state,
+      actions.selectTransformer({
+        id: 'babel',
+        defaultParserID: 'javascript-parser',
+        defaultTransform: '',
+        compatibleParserIDs: new Set(['javascript-parser']),
+      } as any),
+    );
     expect(state.showTransformPanel).toBe(true);
-    state = astexplorer(state, actions.selectCategory({
-      id: 'css',
-      displayName: 'CSS',
-      codeExample: '/* css */',
-      parsers: [{ id: 'cssom', showInMenu: true, category: { id: 'css', codeExample: '/* css */' } }],
-      transformers: [],
-    } as any));
+    state = astexplorer(
+      state,
+      actions.selectCategory({
+        id: 'css',
+        displayName: 'CSS',
+        codeExample: '/* css */',
+        parsers: [
+          { id: 'cssom', showInMenu: true, category: { id: 'css', codeExample: '/* css */' } },
+        ],
+        transformers: [],
+      } as any),
+    );
     expect(state.showTransformPanel).toBe(false);
   });
 
   test('SELECT_CATEGORY clears activeRevision', () => {
     let state = getInitialState();
-    state = astexplorer(state, actions.setSnippet({
-      getTransformerID: () => null,
-      getParserID: () => 'acorn',
-      getParserSettings: () => null,
-      getCode: () => 'code',
-      getTransformCode: () => '',
-    } as any));
+    state = astexplorer(
+      state,
+      actions.setSnippet({
+        getTransformerID: () => null,
+        getParserID: () => 'acorn',
+        getParserSettings: () => null,
+        getCode: () => 'code',
+        getTransformCode: () => '',
+      } as any),
+    );
     expect(state.activeRevision).not.toBeNull();
-    state = astexplorer(state, actions.selectCategory({
-      id: 'css',
-      displayName: 'CSS',
-      codeExample: '/* css */',
-      parsers: [{ id: 'cssom', showInMenu: true, category: { id: 'css', codeExample: '/* css */' } }],
-      transformers: [],
-    } as any));
+    state = astexplorer(
+      state,
+      actions.selectCategory({
+        id: 'css',
+        displayName: 'CSS',
+        codeExample: '/* css */',
+        parsers: [
+          { id: 'cssom', showInMenu: true, category: { id: 'css', codeExample: '/* css */' } },
+        ],
+        transformers: [],
+      } as any),
+    );
     expect(state.activeRevision).toBeNull();
   });
 });
@@ -788,12 +863,15 @@ describe('CLEAR_SNIPPET — detailed verification', () => {
 
   test('CLEAR_SNIPPET hides transform panel', () => {
     let state = getInitialState();
-    state = astexplorer(state, actions.selectTransformer({
-      id: 'babel',
-      defaultParserID: 'javascript-parser',
-      defaultTransform: '',
-      compatibleParserIDs: new Set(['javascript-parser']),
-    } as any));
+    state = astexplorer(
+      state,
+      actions.selectTransformer({
+        id: 'babel',
+        defaultParserID: 'javascript-parser',
+        defaultTransform: '',
+        compatibleParserIDs: new Set(['javascript-parser']),
+      } as any),
+    );
     expect(state.showTransformPanel).toBe(true);
     state = astexplorer(state, actions.clearSnippet());
     expect(state.showTransformPanel).toBe(false);
@@ -801,13 +879,16 @@ describe('CLEAR_SNIPPET — detailed verification', () => {
 
   test('CLEAR_SNIPPET clears activeRevision', () => {
     let state = getInitialState();
-    state = astexplorer(state, actions.setSnippet({
-      getTransformerID: () => null,
-      getParserID: () => 'acorn',
-      getParserSettings: () => null,
-      getCode: () => 'x',
-      getTransformCode: () => '',
-    } as any));
+    state = astexplorer(
+      state,
+      actions.setSnippet({
+        getTransformerID: () => null,
+        getParserID: () => 'acorn',
+        getParserSettings: () => null,
+        getCode: () => 'x',
+        getTransformCode: () => '',
+      } as any),
+    );
     expect(state.activeRevision).not.toBeNull();
     state = astexplorer(state, actions.clearSnippet());
     expect(state.activeRevision).toBeNull();
@@ -910,13 +991,16 @@ describe('RESET — detailed verification', () => {
 
   test('RESET clears activeRevision', () => {
     let state = getInitialState();
-    state = astexplorer(state, actions.setSnippet({
-      getTransformerID: () => null,
-      getParserID: () => 'acorn',
-      getParserSettings: () => null,
-      getCode: () => 'x',
-      getTransformCode: () => '',
-    } as any));
+    state = astexplorer(
+      state,
+      actions.setSnippet({
+        getTransformerID: () => null,
+        getParserID: () => 'acorn',
+        getParserSettings: () => null,
+        getCode: () => 'x',
+        getTransformCode: () => '',
+      } as any),
+    );
     state = astexplorer(state, actions.reset());
     expect(state.activeRevision).toBeNull();
   });
@@ -1023,10 +1107,10 @@ describe('getDefaultTransform — formatCodeExample receives correct args (lines
     state = astexplorer(state, actions.selectTransformer(transformer));
 
     // Verify formatCodeExample was called with the right second argument
-    expect(formatCodeExample).toHaveBeenCalledWith(
-      '// base',
-      { parser: 'javascript-parser', parserSettings: { jsx: true } },
-    );
+    expect(formatCodeExample).toHaveBeenCalledWith('// base', {
+      parser: 'javascript-parser',
+      parserSettings: { jsx: true },
+    });
   });
 
   test('formatCodeExample receives empty object when parserSettings is null', () => {
@@ -1044,10 +1128,10 @@ describe('getDefaultTransform — formatCodeExample receives correct args (lines
     state.workbench.parserSettings = null;
     state = astexplorer(state, actions.selectTransformer(transformer));
 
-    expect(formatCodeExample).toHaveBeenCalledWith(
-      '// default',
-      { parser: 'javascript-parser', parserSettings: {} },
-    );
+    expect(formatCodeExample).toHaveBeenCalledWith('// default', {
+      parser: 'javascript-parser',
+      parserSettings: {},
+    });
   });
 
   test('formatCodeExample return value is used as transform code', () => {

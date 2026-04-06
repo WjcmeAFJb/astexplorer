@@ -11,11 +11,13 @@ import {
 // -----------------------------------------------------------------------
 // Helper: create a TreeAdapter with sensible defaults
 // -----------------------------------------------------------------------
-function makeAdapter(opts: {
-  locationProps?: Set<string>;
-  filters?: Array<{ key?: string; label?: string; test: (...args: unknown[]) => boolean }>;
-  filterValues?: Record<string, boolean>;
-} = {}) {
+function makeAdapter(
+  opts: {
+    locationProps?: Set<string>;
+    filters?: Array<{ key?: string; label?: string; test: (...args: unknown[]) => boolean }>;
+    filterValues?: Record<string, boolean>;
+  } = {},
+) {
   return treeAdapterFromParseResult(
     {
       treeAdapter: {
@@ -79,7 +81,7 @@ describe('filter factories', () => {
     test('returns true only for functions', () => {
       const f = functionFilter();
       expect(f.test(() => {}, 'k')).toBe(true);
-      expect(f.test(function() {}, 'k')).toBe(true);
+      expect(f.test(function () {}, 'k')).toBe(true);
       expect(f.test('str', 'k')).toBe(false);
       expect(f.test(42, 'k')).toBe(false);
       expect(f.test(null, 'k')).toBe(false);
@@ -327,8 +329,8 @@ describe('TreeAdapter', () => {
     test('yields properties of a node', () => {
       const a = makeAdapter();
       const results = [...a.walkNode({ type: 'X', value: 42 })];
-      expect(results.map(r => r.key)).toContain('type');
-      expect(results.map(r => r.key)).toContain('value');
+      expect(results.map((r) => r.key)).toContain('type');
+      expect(results.map((r) => r.key)).toContain('value');
     });
 
     test('yields nothing for null/undefined', () => {
@@ -344,7 +346,7 @@ describe('TreeAdapter', () => {
         filterValues: { hideFunctions: true },
       });
       const node = { type: 'T', fn: () => {}, val: 1 };
-      const keys = [...a.walkNode(node)].map(r => r.key);
+      const keys = [...a.walkNode(node)].map((r) => r.key);
       expect(keys).toContain('type');
       expect(keys).toContain('val');
       expect(keys).not.toContain('fn');
@@ -357,21 +359,26 @@ describe('TreeAdapter', () => {
         filterValues: { hideFunctions: false },
       });
       const node = { fn: () => {} };
-      const keys = [...a.walkNode(node)].map(r => r.key);
+      const keys = [...a.walkNode(node)].map((r) => r.key);
       expect(keys).toContain('fn');
     });
 
     test('filter without key is always active', () => {
       const alwaysFilter = { test: (_v: unknown, k: string) => k === 'secret' };
       const a = makeAdapter({ filters: [alwaysFilter], filterValues: {} });
-      const keys = [...a.walkNode({ visible: 1, secret: 2 })].map(r => r.key);
+      const keys = [...a.walkNode({ visible: 1, secret: 2 })].map((r) => r.key);
       expect(keys).toContain('visible');
       expect(keys).not.toContain('secret');
     });
 
     test('passes fromArray=true for array nodes', () => {
       let capturedFromArray: boolean | undefined;
-      const spy = { test: (_v: unknown, _k: string, fromArray?: boolean) => { capturedFromArray = fromArray; return false; } };
+      const spy = {
+        test: (_v: unknown, _k: string, fromArray?: boolean) => {
+          capturedFromArray = fromArray;
+          return false;
+        },
+      };
       const a = makeAdapter({ filters: [spy as any], filterValues: {} });
       Array.from(a.walkNode([1, 2, 3])); // consume generator for array node
       expect(capturedFromArray).toBe(true);
@@ -395,10 +402,7 @@ describe('TreeAdapter', () => {
   // -- treeAdapterFromParseResult with unknown type --
   test('treeAdapterFromParseResult throws for unknown adapter type', () => {
     expect(() =>
-      treeAdapterFromParseResult(
-        { treeAdapter: { type: 'nonexistent', options: {} } } as any,
-        {},
-      ),
+      treeAdapterFromParseResult({ treeAdapter: { type: 'nonexistent', options: {} } } as any, {}),
     ).toThrow('Unknown tree adapter type "nonexistent"');
   });
 
@@ -414,7 +418,8 @@ describe('TreeAdapter', () => {
             openByDefault: () => false,
             *walkNode(node: Record<string, unknown>) {
               if (node && typeof node === 'object') {
-                for (const key of Object.keys(node)) yield { value: node[key], key, computed: false };
+                for (const key of Object.keys(node))
+                  yield { value: node[key], key, computed: false };
               }
             },
             // No filters property at all
@@ -488,8 +493,8 @@ describe('ESTree adapter', () => {
   test('walkNode yields object properties', () => {
     const a = makeEstreeAdapter();
     const results = [...a.walkNode({ type: 'X', value: 42 })];
-    expect(results.map(r => r.key)).toContain('type');
-    expect(results.map(r => r.key)).toContain('value');
+    expect(results.map((r) => r.key)).toContain('type');
+    expect(results.map((r) => r.key)).toContain('value');
   });
 
   test('walkNode yields nothing for non-objects', () => {
@@ -511,21 +516,21 @@ describe('ESTree adapter', () => {
   test('function filter hides functions when enabled', () => {
     const a = makeEstreeAdapter({ hideFunctions: true });
     const results = [...a.walkNode({ type: 'X', fn: () => {}, val: 1 })];
-    expect(results.map(r => r.key)).not.toContain('fn');
-    expect(results.map(r => r.key)).toContain('val');
+    expect(results.map((r) => r.key)).not.toContain('fn');
+    expect(results.map((r) => r.key)).toContain('val');
   });
 
   test('empty keys filter hides null values when enabled', () => {
     const a = makeEstreeAdapter({ hideEmptyKeys: true });
     const results = [...a.walkNode({ type: 'X', empty: null, val: 1 })];
-    expect(results.map(r => r.key)).not.toContain('empty');
-    expect(results.map(r => r.key)).toContain('val');
+    expect(results.map((r) => r.key)).not.toContain('empty');
+    expect(results.map((r) => r.key)).toContain('val');
   });
 
   test('location filter hides range/loc/start/end when enabled', () => {
     const a = makeEstreeAdapter({ hideLocationData: true });
     const results = [...a.walkNode({ type: 'X', start: 0, end: 10, loc: {}, range: [] })];
-    const keys = results.map(r => r.key);
+    const keys = results.map((r) => r.key);
     expect(keys).toContain('type');
     expect(keys).not.toContain('start');
     expect(keys).not.toContain('end');
@@ -569,11 +574,16 @@ describe('ESTree adapter', () => {
 
   test('default adapter opensByDefault returns false', () => {
     const a = treeAdapterFromParseResult(
-      { treeAdapter: { type: 'default', options: {
-        nodeToRange: () => null,
-        nodeToName: () => '',
-        *walkNode() {},
-      } } } as any,
+      {
+        treeAdapter: {
+          type: 'default',
+          options: {
+            nodeToRange: () => null,
+            nodeToName: () => '',
+            *walkNode() {},
+          },
+        },
+      } as any,
       {},
     );
     expect(a.opensByDefault({}, 'body')).toBe(false);
@@ -583,11 +593,16 @@ describe('ESTree adapter', () => {
 
   test('default adapter nodeToRange returns null', () => {
     const a = treeAdapterFromParseResult(
-      { treeAdapter: { type: 'default', options: {
-        nodeToName: () => '',
-        openByDefault: () => false,
-        *walkNode() {},
-      } } } as any,
+      {
+        treeAdapter: {
+          type: 'default',
+          options: {
+            nodeToName: () => '',
+            openByDefault: () => false,
+            *walkNode() {},
+          },
+        },
+      } as any,
       {},
     );
     expect(a.getRange({ start: 0, end: 10 })).toBeNull();
@@ -595,4 +610,3 @@ describe('ESTree adapter', () => {
     expect(a.getRange({ start: 0, end: 10 })).toStrictEqual(null);
   });
 });
-

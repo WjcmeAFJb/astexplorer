@@ -2,9 +2,9 @@ import CodeMirror from 'codemirror';
 import 'codemirror/keymap/vim';
 import 'codemirror/keymap/emacs';
 import 'codemirror/keymap/sublime';
-import {subscribe, clear} from '../utils/pubsub';
+import { subscribe, clear } from '../utils/pubsub';
 import React from 'react';
-import {ensureCMMode} from '../codemirrorModes';
+import { ensureCMMode } from '../codemirrorModes';
 
 const defaultPrettierOptions: Record<string, unknown> = {
   printWidth: 80,
@@ -21,16 +21,16 @@ export type EditorProps = {
   highlight?: boolean;
   lineNumbers?: boolean;
   readOnly?: boolean;
-  onContentChange?: (args: {value: string, cursor: number}) => void;
+  onContentChange?: (args: { value: string; cursor: number }) => void;
   onActivity?: (cursor: number) => void;
-  posFromIndex?: (index: number) => {line: number, ch: number} | undefined;
-  error?: {message: string, loc?: {line: number}, lineNumber?: number, line?: number};
+  posFromIndex?: (index: number) => { line: number; ch: number } | undefined;
+  error?: { message: string; loc?: { line: number }; lineNumber?: number; line?: number };
   mode?: string;
   enableFormatting?: boolean;
   keyMap?: string;
 };
 
-export default class Editor extends React.Component<EditorProps, {value: string}> {
+export default class Editor extends React.Component<EditorProps, { value: string }> {
   static displayName = 'Editor';
   static defaultProps: Partial<EditorProps>;
   codeMirror: CodeMirror.Editor | null = null;
@@ -41,26 +41,26 @@ export default class Editor extends React.Component<EditorProps, {value: string}
   _markerRange: [number, number] | null = null;
   _mark: CodeMirror.TextMarker | null = null;
 
-    constructor(props: EditorProps) {
+  constructor(props: EditorProps) {
     super(props);
     this.state = {
       value: props.value ?? '',
     };
   }
 
-  static getDerivedStateFromProps(props: EditorProps, state: {value: string}) {
+  static getDerivedStateFromProps(props: EditorProps, state: { value: string }) {
     if (props.value !== state.value) {
       return { value: props.value };
     }
     return null;
   }
 
-  componentDidUpdate(prevProps: EditorProps, prevState: {value: string}) {
+  componentDidUpdate(prevProps: EditorProps, prevState: { value: string }) {
     if (this.props.value !== prevState.value && this.codeMirror) {
       this.codeMirror.setValue(this.props.value ?? '');
     }
     if (this.props.mode !== prevProps.mode) {
-        void ensureCMMode(this.props.mode).then(() => {
+      void ensureCMMode(this.props.mode).then(() => {
         this.codeMirror?.setOption('mode', this.props.mode);
         return null;
       });
@@ -72,52 +72,57 @@ export default class Editor extends React.Component<EditorProps, {value: string}
   }
 
   shouldComponentUpdate(nextProps: EditorProps) {
-    return nextProps.value !== this.state.value ||
+    return (
+      nextProps.value !== this.state.value ||
       nextProps.mode !== this.props.mode ||
       nextProps.keyMap !== this.props.keyMap ||
-      nextProps.error !== this.props.error;
+      nextProps.error !== this.props.error
+    );
   }
 
   getValue(): string | undefined {
     return this.codeMirror ? this.codeMirror.getValue() : undefined;
   }
 
-    _getErrorLine(error: EditorProps['error']): number | undefined {
+  _getErrorLine(error: EditorProps['error']): number | undefined {
     if (!error) return undefined;
     return error.loc ? error.loc.line : (error.lineNumber ?? error.line);
   }
 
-    _setError(error?: EditorProps['error']) {
+  _setError(error?: EditorProps['error']) {
     if (this.codeMirror) {
       let oldError = this.props.error;
       if (oldError) {
         let lineNumber = this._getErrorLine(oldError);
         if (lineNumber !== undefined && lineNumber !== 0) {
-          this.codeMirror.removeLineClass(lineNumber-1, 'text', 'errorMarker');
+          this.codeMirror.removeLineClass(lineNumber - 1, 'text', 'errorMarker');
         }
       }
 
       if (error) {
         let lineNumber = this._getErrorLine(error);
         if (lineNumber !== undefined && lineNumber !== 0) {
-          this.codeMirror.addLineClass(lineNumber-1, 'text', 'errorMarker');
+          this.codeMirror.addLineClass(lineNumber - 1, 'text', 'errorMarker');
         }
       }
     }
   }
 
-    _posFromIndex(doc: CodeMirror.Doc, index: number): {line: number, ch: number} {
+  _posFromIndex(doc: CodeMirror.Doc, index: number): { line: number; ch: number } {
     if (this.props.posFromIndex) {
-      return this.props.posFromIndex(index) ?? doc.posFromIndex(index) as {line: number, ch: number};
+      return (
+        this.props.posFromIndex(index) ?? (doc.posFromIndex(index) as { line: number; ch: number })
+      );
     }
-    return doc.posFromIndex(index) as {line: number, ch: number};
+    return doc.posFromIndex(index) as { line: number; ch: number };
   }
 
   componentDidMount() {
-        this._CMHandlers = [];
-        this._subscriptions = [];
+    this._CMHandlers = [];
+    this._subscriptions = [];
     if (!this.container) return;
-    this.codeMirror = CodeMirror( // eslint-disable-line new-cap
+    this.codeMirror = CodeMirror(
+      // eslint-disable-line new-cap
       this.container,
       {
         keyMap: this.props.keyMap,
@@ -138,16 +143,17 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       const cm = this.codeMirror;
       if (cm === null || cm === undefined) return;
 
-      require(['prettier/standalone', 'prettier/parser-babel'], (prettier: {format: (code: string, options: Record<string, unknown>) => string}, babel: unknown) => {
+      require(['prettier/standalone', 'prettier/parser-babel'], (
+        prettier: { format: (code: string, options: Record<string, unknown>) => string },
+        babel: unknown,
+      ) => {
         const currValue = cm.getDoc().getValue();
         const cmEl = cm.getWrapperElement();
         const maxLineLength = cmEl.clientWidth;
-        const options = Object.assign({},
-          defaultPrettierOptions,
-          {
-            printWidth: maxLineLength,
-            plugins: [babel],
-          });
+        const options = Object.assign({}, defaultPrettierOptions, {
+          printWidth: maxLineLength,
+          plugins: [babel],
+        });
         cm.getDoc().setValue(prettier.format(currValue, options));
       });
     });
@@ -170,11 +176,11 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     );
 
     if (this.props.highlight === true) {
-            this._markerRange = null;
-            this._mark = null;
+      this._markerRange = null;
+      this._mark = null;
       this._subscriptions.push(
         subscribe('HIGHLIGHT', (data: unknown) => {
-          const {range} = (data ?? {}) as {range?: [number, number]};
+          const { range } = (data ?? {}) as { range?: [number, number] };
           if (!range) {
             return;
           }
@@ -192,19 +198,16 @@ export default class Editor extends React.Component<EditorProps, {value: string}
             this._mark = null;
             return;
           }
-          this._mark = cm.markText(
-            start,
-            end,
-            {className: 'marked'},
-          );
+          this._mark = cm.markText(start, end, { className: 'marked' });
         }),
 
         subscribe('CLEAR_HIGHLIGHT', (data: unknown) => {
-          const {range} = (data ?? {}) as {range?: [number, number]};
-          if (!range ||
-            this._markerRange &&
-            range[0] === this._markerRange[0] &&
-            range[1] === this._markerRange[1]
+          const { range } = (data ?? {}) as { range?: [number, number] };
+          if (
+            !range ||
+            (this._markerRange &&
+              range[0] === this._markerRange[0] &&
+              range[1] === this._markerRange[1])
           ) {
             this._markerRange = null;
             if (this._mark) {
@@ -233,7 +236,10 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     this.codeMirror = null;
   }
 
-    _bindCMHandler<T extends keyof CodeMirror.EditorEventMap>(event: T, handler: CodeMirror.EditorEventMap[T]) {
+  _bindCMHandler<T extends keyof CodeMirror.EditorEventMap>(
+    event: T,
+    handler: CodeMirror.EditorEventMap[T],
+  ) {
     this.codeMirror?.on(event, handler);
     this._CMHandlers.push(() => this.codeMirror?.off(event, handler));
   }
@@ -252,24 +258,25 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       value: doc.getValue(),
       cursor: doc.indexFromPos(doc.getCursor()),
     };
-    this.setState(
-      {value: args.value},
-      () => { if (this.props.onContentChange) this.props.onContentChange(args); },
-    );
+    this.setState({ value: args.value }, () => {
+      if (this.props.onContentChange) this.props.onContentChange(args);
+    });
   }
 
   _onActivity() {
     if (!this.props.onActivity) return;
     if (!this.codeMirror) return;
-    this.props.onActivity(
-      this.codeMirror.getDoc().indexFromPos(this.codeMirror.getCursor()),
-    );
+    this.props.onActivity(this.codeMirror.getDoc().indexFromPos(this.codeMirror.getCursor()));
   }
 
   render() {
     return (
-      <div className="editor"
-        ref={c => { this.container = c; }}/>
+      <div
+        className="editor"
+        ref={(c) => {
+          this.container = c;
+        }}
+      />
     );
   }
 }

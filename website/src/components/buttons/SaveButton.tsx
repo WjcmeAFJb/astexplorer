@@ -8,14 +8,18 @@ type SaveButtonProps = {
   onSave?: () => void;
 };
 
-export default function SaveButton({canSave, saving, forking, onSave}: SaveButtonProps): React.ReactElement {
+export default function SaveButton({
+  canSave,
+  saving,
+  forking,
+  onSave,
+}: SaveButtonProps): React.ReactElement {
   return (
     <button
       type="button"
-      disabled={
-        canSave !== true || saving === true || forking === true
-      }
-      onClick={onSave}>
+      disabled={canSave !== true || saving === true || forking === true}
+      onClick={onSave}
+    >
       <i
         className={cx({
           fa: true,
@@ -24,8 +28,8 @@ export default function SaveButton({canSave, saving, forking, onSave}: SaveButto
           'fa-floppy-o': saving !== true,
           'fa-fw': true,
         })}
-      />&nbsp;Save
+      />
+      &nbsp;Save
     </button>
   );
 }
-

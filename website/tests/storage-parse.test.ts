@@ -6,14 +6,24 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 vi.mock('astexplorer-parsers', () => ({
-  getTransformerByID: (id: string) => ({ id, defaultTransform: `// ${id} default`, defaultParserID: 'babel' }),
-  getParserByID: (id: string) => ({ id, category: { id: 'javascript', codeExample: '// example', fileExtension: 'js' } }),
+  getTransformerByID: (id: string) => ({
+    id,
+    defaultTransform: `// ${id} default`,
+    defaultParserID: 'babel',
+  }),
+  getParserByID: (id: string) => ({
+    id,
+    category: { id: 'javascript', codeExample: '// example', fileExtension: 'js' },
+  }),
 }));
 
 const server = setupServer();
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
-afterEach(() => { server.resetHandlers(); global.location.hash = ''; });
+afterEach(() => {
+  server.resetHandlers();
+  global.location.hash = '';
+});
 afterAll(() => server.close());
 
 // Must import AFTER vi.mock
@@ -75,7 +85,7 @@ describe('storage/parse', () => {
     test('fetches snippet from API', async () => {
       server.use(
         rest.get('*/api/v1/parse/abc/0', (req, res, ctx) =>
-          res(ctx.json({ snippetID: 'abc', revisionID: 0, code: 'var x;', parserID: 'esprima' }))
+          res(ctx.json({ snippetID: 'abc', revisionID: 0, code: 'var x;', parserID: 'esprima' })),
         ),
       );
       global.location.hash = '#/abc';
@@ -89,7 +99,7 @@ describe('storage/parse', () => {
     test('fetches with specific revision', async () => {
       server.use(
         rest.get('*/api/v1/parse/abc/5', (req, res, ctx) =>
-          res(ctx.json({ snippetID: 'abc', revisionID: 5, code: 'let y;', parserID: 'acorn' }))
+          res(ctx.json({ snippetID: 'abc', revisionID: 5, code: 'let y;', parserID: 'acorn' })),
         ),
       );
       global.location.hash = '#/abc/5';
@@ -98,17 +108,13 @@ describe('storage/parse', () => {
     });
 
     test('throws on 404', async () => {
-      server.use(
-        rest.get('*/api/v1/parse/missing/0', (req, res, ctx) => res(ctx.status(404))),
-      );
+      server.use(rest.get('*/api/v1/parse/missing/0', (req, res, ctx) => res(ctx.status(404))));
       global.location.hash = '#/missing';
       await expect(parse.fetchFromURL()).rejects.toThrow("doesn't exist");
     });
 
     test('throws on server error', async () => {
-      server.use(
-        rest.get('*/api/v1/parse/err/0', (req, res, ctx) => res(ctx.status(500))),
-      );
+      server.use(rest.get('*/api/v1/parse/err/0', (req, res, ctx) => res(ctx.status(500))));
       global.location.hash = '#/err';
       await expect(parse.fetchFromURL()).rejects.toThrow('Unknown error');
     });
@@ -119,7 +125,7 @@ describe('storage/parse', () => {
       // Simulate fetching and constructing Revision via fetchFromURL
       server.use(
         rest.get('*/api/v1/parse/test/0', (req, res, ctx) =>
-          res(ctx.json({ snippetID: 'test', revisionID: 0, parserID: 'esprima', ...data }))
+          res(ctx.json({ snippetID: 'test', revisionID: 0, parserID: 'esprima', ...data })),
         ),
       );
       global.location.hash = '#/test';
@@ -207,7 +213,7 @@ describe('storage/parse', () => {
       const rev = (await (async () => {
         server.use(
           rest.get('*/api/v1/parse/xyz/0', (req, res, ctx) =>
-            res(ctx.json({ snippetID: 'xyz', revisionID: 3, parserID: 'acorn' }))
+            res(ctx.json({ snippetID: 'xyz', revisionID: 3, parserID: 'acorn' })),
           ),
         );
         global.location.hash = '#/xyz';
@@ -220,7 +226,7 @@ describe('storage/parse', () => {
     test('sets hash without revision when rev is 0', async () => {
       server.use(
         rest.get('*/api/v1/parse/abc/0', (req, res, ctx) =>
-          res(ctx.json({ snippetID: 'abc', revisionID: 0, parserID: 'acorn' }))
+          res(ctx.json({ snippetID: 'abc', revisionID: 0, parserID: 'acorn' })),
         ),
       );
       global.location.hash = '#/abc';
@@ -235,7 +241,7 @@ describe('storage/parse', () => {
     test('getShareInfo returns React element with share links', async () => {
       server.use(
         rest.get('*/api/v1/parse/test/0', (req, res, ctx) =>
-          res(ctx.json({ snippetID: 'test', revisionID: 5, parserID: 'esprima' }))
+          res(ctx.json({ snippetID: 'test', revisionID: 5, parserID: 'esprima' })),
         ),
       );
       global.location.hash = '#/test';
@@ -261,7 +267,7 @@ describe('storage/parse', () => {
     test('fetches with latest as revision', async () => {
       server.use(
         rest.get('*/api/v1/parse/abc/latest', (req, res, ctx) =>
-          res(ctx.json({ snippetID: 'abc', revisionID: 'latest', parserID: 'acorn' }))
+          res(ctx.json({ snippetID: 'abc', revisionID: 'latest', parserID: 'acorn' })),
         ),
       );
       global.location.hash = '#/abc/latest';

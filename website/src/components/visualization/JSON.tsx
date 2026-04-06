@@ -15,11 +15,6 @@ type JSONViewProps = {
   parseResult: { ast: unknown };
 };
 
-export default function JSON({parseResult}: JSONViewProps): React.ReactElement {
-  return (
-    <JSONEditor
-      className="container"
-      value={safeStringify(parseResult.ast, 2)}
-    />
-  );
+export default function JSON({ parseResult }: JSONViewProps): React.ReactElement {
+  return <JSONEditor className="container" value={safeStringify(parseResult.ast, 2)} />;
 }

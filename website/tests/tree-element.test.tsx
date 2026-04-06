@@ -50,11 +50,7 @@ function makeTreeAdapter(overrides: Record<string, any> = {}) {
 }
 
 function renderWithProvider(element: React.ReactElement) {
-  return render(
-    <SelectedNodeProvider>
-      {element}
-    </SelectedNodeProvider>,
-  );
+  return render(<SelectedNodeProvider>{element}</SelectedNodeProvider>);
 }
 
 describe('ElementContainer', () => {
@@ -117,7 +113,9 @@ describe('ElementContainer', () => {
   test('renders array values with CompactArrayView when closed', () => {
     const value = [1, 2, 3];
     treeAdapter.isArray = vi.fn((v: any) => Array.isArray(v));
-    treeAdapter.isObject = vi.fn((v: any) => v != null && typeof v === 'object' && !Array.isArray(v));
+    treeAdapter.isObject = vi.fn(
+      (v: any) => v != null && typeof v === 'object' && !Array.isArray(v),
+    );
 
     const { container } = renderWithProvider(
       <ElementContainer
@@ -350,7 +348,9 @@ describe('ElementContainer', () => {
   test('renders function values with invokeable button', () => {
     const parentObj = {
       type: 'Node',
-      method: function testMethod() { return 42; },
+      method: function testMethod() {
+        return 42;
+      },
     };
 
     treeAdapter.walkNode = function* (node: any) {
@@ -380,7 +380,9 @@ describe('ElementContainer', () => {
   test('clicking function invokeable computes and displays result', () => {
     const parentObj = {
       type: 'Node',
-      compute: function() { return 'computed value'; },
+      compute: function () {
+        return 'computed value';
+      },
     };
 
     treeAdapter.walkNode = function* (node: any) {
@@ -414,7 +416,9 @@ describe('ElementContainer', () => {
   test('clicking function invokeable shows error icon on failure', () => {
     const parentObj = {
       type: 'Node',
-      badMethod: function() { throw new Error('method failed'); },
+      badMethod: function () {
+        throw new Error('method failed');
+      },
     };
 
     treeAdapter.walkNode = function* (node: any) {
@@ -720,7 +724,9 @@ describe('ElementContainer', () => {
   test('function invokeable returns object result', () => {
     const parentObj = {
       type: 'Node',
-      getInfo: function() { return { a: 1, b: 2 }; },
+      getInfo: function () {
+        return { a: 1, b: 2 };
+      },
     };
 
     treeAdapter.walkNode = function* (node: any) {
@@ -756,7 +762,9 @@ describe('ElementContainer', () => {
   test('function invokeable returns array result', () => {
     const parentObj = {
       type: 'Node',
-      getItems: function() { return [1, 2, 3]; },
+      getItems: function () {
+        return [1, 2, 3];
+      },
     };
 
     treeAdapter.walkNode = function* (node: any) {
@@ -948,8 +956,10 @@ describe('Element FOCUS_OPEN state and click handler coverage', () => {
 
   beforeEach(() => {
     ta = makeTreeAdapter({
-      getRange: vi.fn((node: any) => node?.start != null ? [node.start, node.end] : null),
-      isInRange: vi.fn((_: any, __: any, pos: any) => typeof pos === 'number' && pos >= 0 && pos <= 100),
+      getRange: vi.fn((node: any) => (node?.start != null ? [node.start, node.end] : null)),
+      isInRange: vi.fn(
+        (_: any, __: any, pos: any) => typeof pos === 'number' && pos >= 0 && pos <= 100,
+      ),
       hasChildrenInRange: vi.fn(() => false),
     });
   });

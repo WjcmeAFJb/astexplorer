@@ -1,7 +1,7 @@
 import React from 'react';
 import api from './api';
-import {getTransformerByID, getParserByID} from 'astexplorer-parsers';
-import type {Revision as RevisionType, SnippetData} from '../types';
+import { getTransformerByID, getParserByID } from 'astexplorer-parsers';
+import type { Revision as RevisionType, SnippetData } from '../types';
 
 /**
  * @returns {{id: string, rev: string | number} | null}
@@ -28,7 +28,7 @@ function isParseSnippetData(value: unknown): value is ParseSnippetData {
 
 function fetchSnippet(snippetID: string, revisionID?: string | number): Promise<Revision> {
   return api(`/parse/${snippetID}/${revisionID}`)
-    .then(async response => {
+    .then(async (response) => {
       if (response.ok) {
         const data: unknown = await response.json();
         if (!isParseSnippetData(data)) {
@@ -80,9 +80,7 @@ export function fetchFromURL() {
  * @returns {Promise<never>}
  */
 export function create(_data: SnippetData): Promise<Revision> {
-  return Promise.reject(
-    new Error('Saving Parse snippets is not supported anymore.'),
-  );
+  return Promise.reject(new Error('Saving Parse snippets is not supported anymore.'));
 }
 
 /**
@@ -90,9 +88,7 @@ export function create(_data: SnippetData): Promise<Revision> {
  * @returns {Promise<never>}
  */
 export function update(_revision: RevisionType, _data: SnippetData): Promise<Revision> {
-  return Promise.reject(
-    new Error('Saving Parse snippets is not supported anymore.'),
-  );
+  return Promise.reject(new Error('Saving Parse snippets is not supported anymore.'));
 }
 
 /**
@@ -100,9 +96,7 @@ export function update(_revision: RevisionType, _data: SnippetData): Promise<Rev
  * @returns {Promise<never>}
  */
 export function fork(_revision: RevisionType, _data: SnippetData): Promise<Revision> {
-  return Promise.reject(
-    new Error('Saving Parse snippets is not supported anymore.'),
-  );
+  return Promise.reject(new Error('Saving Parse snippets is not supported anymore.'));
 }
 
 type ParseSnippetData = {
@@ -118,9 +112,9 @@ type ParseSnippetData = {
 class Revision {
   _data: ParseSnippetData;
 
-  	constructor(data: ParseSnippetData) {
+  constructor(data: ParseSnippetData) {
     this._data = data;
-	}
+  }
 
   canSave(): boolean {
     return false;
@@ -202,7 +196,7 @@ class Revision {
           <dd>
             <input
               readOnly={true}
-              onFocus={e => e.target.select()}
+              onFocus={(e) => e.target.select()}
               value={`https://astexplorer.net/#/gist/${snippetID}/${revisionID}`}
             />
           </dd>
@@ -210,7 +204,7 @@ class Revision {
           <dd>
             <input
               readOnly={true}
-              onFocus={e => e.target.select()}
+              onFocus={(e) => e.target.select()}
               value={`https://astexplorer.net/#/gist/${snippetID}/latest`}
             />
           </dd>

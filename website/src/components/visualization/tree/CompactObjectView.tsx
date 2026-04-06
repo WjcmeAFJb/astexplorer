@@ -5,7 +5,10 @@ type CompactObjectViewProps = {
   onClick?: (event: React.MouseEvent | React.KeyboardEvent) => void;
 };
 
-export default function CompactObjectView({keys, onClick}: CompactObjectViewProps): React.ReactElement {
+export default function CompactObjectView({
+  keys,
+  onClick,
+}: CompactObjectViewProps): React.ReactElement {
   if (keys.length === 0) {
     return <span className="p">{'{ }'}</span>;
   }
@@ -15,11 +18,17 @@ export default function CompactObjectView({keys, onClick}: CompactObjectViewProp
   return (
     <span>
       <span className="p">{'{'}</span>
-      <button className="compact placeholder ge" tabIndex={0} onClick={onClick} onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e); }}>
+      <button
+        className="compact placeholder ge"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyDown={(e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(e);
+        }}
+      >
         {keys.join(', ')}
       </button>
       <span className="p">{'}'}</span>
     </span>
   );
 }
-

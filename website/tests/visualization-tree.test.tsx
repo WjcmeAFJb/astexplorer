@@ -54,9 +54,7 @@ import { treeAdapterFromParseResult } from '../src/core/TreeAdapter';
 describe('Tree component', () => {
   beforeEach(() => {
     window.localStorage.clear();
-    (treeAdapterFromParseResult as any).mockImplementation(
-      () => makeTreeAdapter(),
-    );
+    (treeAdapterFromParseResult as any).mockImplementation(() => makeTreeAdapter());
   });
 
   test('renders tree-visualization container', () => {
@@ -76,7 +74,9 @@ describe('Tree component', () => {
     };
 
     const { container } = render(<Tree parseResult={parseResult} position={0} />);
-    const autofocusCheckbox = container.querySelector('input[name="autofocus"]') as HTMLInputElement;
+    const autofocusCheckbox = container.querySelector(
+      'input[name="autofocus"]',
+    ) as HTMLInputElement;
     expect(autofocusCheckbox).toBeTruthy();
     expect(autofocusCheckbox.type).toBe('checkbox');
   });
@@ -88,7 +88,9 @@ describe('Tree component', () => {
     };
 
     const { container } = render(<Tree parseResult={parseResult} position={0} />);
-    const autofocusCheckbox = container.querySelector('input[name="autofocus"]') as HTMLInputElement;
+    const autofocusCheckbox = container.querySelector(
+      'input[name="autofocus"]',
+    ) as HTMLInputElement;
     expect(autofocusCheckbox.checked).toBe(true);
   });
 
@@ -99,7 +101,9 @@ describe('Tree component', () => {
     };
 
     const { container } = render(<Tree parseResult={parseResult} position={0} />);
-    const autofocusCheckbox = container.querySelector('input[name="autofocus"]') as HTMLInputElement;
+    const autofocusCheckbox = container.querySelector(
+      'input[name="autofocus"]',
+    ) as HTMLInputElement;
 
     fireEvent.click(autofocusCheckbox);
 
@@ -108,13 +112,16 @@ describe('Tree component', () => {
   });
 
   test('loads settings from localStorage on init', () => {
-    window.localStorage.setItem('tree_settings', JSON.stringify({
-      autofocus: false,
-      hideFunctions: false,
-      hideEmptyKeys: true,
-      hideLocationData: true,
-      hideTypeKeys: true,
-    }));
+    window.localStorage.setItem(
+      'tree_settings',
+      JSON.stringify({
+        autofocus: false,
+        hideFunctions: false,
+        hideEmptyKeys: true,
+        hideLocationData: true,
+        hideTypeKeys: true,
+      }),
+    );
 
     const parseResult = {
       ast: { type: 'Program', body: [] },
@@ -122,7 +129,9 @@ describe('Tree component', () => {
     };
 
     const { container } = render(<Tree parseResult={parseResult} position={0} />);
-    const autofocusCheckbox = container.querySelector('input[name="autofocus"]') as HTMLInputElement;
+    const autofocusCheckbox = container.querySelector(
+      'input[name="autofocus"]',
+    ) as HTMLInputElement;
     expect(autofocusCheckbox.checked).toBe(false);
   });
 

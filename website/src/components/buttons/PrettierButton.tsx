@@ -7,19 +7,18 @@ type PrettierButtonProps = {
 };
 
 export default function PrettierButton(props: PrettierButtonProps): React.ReactElement {
-  return (<button type="button"
-            className="toggleBtn"
-            onClick={props.toggleFormatting}>
-          <i
-            className={cx({
-              fa: true,
-              'fa-lg': true,
-              'fa-toggle-off': props.enableFormatting !== true,
-              'fa-toggle-on': props.enableFormatting === true,
-              'fa-fw': true,
-            })}
-          />
-          <span className="btnText">Prettier</span>
-      </button>);
+  return (
+    <button type="button" className="toggleBtn" onClick={props.toggleFormatting}>
+      <i
+        className={cx({
+          fa: true,
+          'fa-lg': true,
+          'fa-toggle-off': props.enableFormatting !== true,
+          'fa-toggle-on': props.enableFormatting === true,
+          'fa-fw': true,
+        })}
+      />
+      <span className="btnText">Prettier</span>
+    </button>
+  );
 }
-

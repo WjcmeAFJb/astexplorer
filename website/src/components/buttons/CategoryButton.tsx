@@ -1,7 +1,7 @@
 import React from 'react';
 import cx from '../../utils/classnames';
-import {getCategoryByID, categories} from 'astexplorer-parsers';
-import type {Category} from '../../types';
+import { getCategoryByID, categories } from 'astexplorer-parsers';
+import type { Category } from '../../types';
 
 const categoryIcon: Record<string, string> = {
   'text/x-scala': 'icon-scala',
@@ -27,7 +27,7 @@ type CategoryButtonProps = {
 
 export default class CategoryButton extends React.Component<CategoryButtonProps> {
   static displayName = 'CategoryButton';
-  _onClick = ({currentTarget}: {currentTarget: HTMLElement}) => {
+  _onClick = ({ currentTarget }: { currentTarget: HTMLElement }) => {
     const categoryID = currentTarget.dataset.id;
     if (categoryID !== undefined && categoryID !== '' && this.props.onCategoryChange) {
       this.props.onCategoryChange(getCategoryByID(categoryID));
@@ -35,7 +35,7 @@ export default class CategoryButton extends React.Component<CategoryButtonProps>
   };
 
   render() {
-    const {category} = this.props;
+    const { category } = this.props;
     return (
       <div className="button menuButton categoryButton">
         <span>
@@ -49,7 +49,7 @@ export default class CategoryButton extends React.Component<CategoryButtonProps>
           &nbsp;{category ? category.displayName : ''}
         </span>
         <ul>
-          {categories.map(cat => (
+          {categories.map((cat) => (
             <li key={cat.id} onClick={this._onClick} onKeyDown={this._onClick} data-id={cat.id}>
               <button type="button">
                 <i
@@ -67,4 +67,3 @@ export default class CategoryButton extends React.Component<CategoryButtonProps>
     );
   }
 }
-

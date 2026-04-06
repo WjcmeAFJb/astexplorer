@@ -1,37 +1,44 @@
 import * as selectors from './selectors';
 import * as actions from './actions';
-import type {AppState, Action, SnippetData} from '../types';
-import type {Dispatch, MiddlewareAPI} from 'redux';
+import type { AppState, Action, SnippetData } from '../types';
+import type { Dispatch, MiddlewareAPI } from 'redux';
 import type StorageAdapter from '../storage/index';
 
 let clearURLOnClearError = false;
-let cancelLoad: () => void = () => {}
+let cancelLoad: () => void = () => {};
 
-export default (storageAdapter: StorageAdapter) => (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
-  switch (action.type) {
-    case actions.CLEAR_ERROR:
-      // If CLEAR_ERROR action happens after a URL was loaded, clear the URL
-      if (clearURLOnClearError) {
-        clearURLOnClearError = false;
-        window.location.hash = '';
-      }
-      return next(action);
-    case actions.LOAD_SNIPPET:
-      return loadSnippet(store.getState(), next, storageAdapter);
-    case actions.SAVE:
-      next(actions.startSave(action.fork === true));
-      void (async () => {
-        await saveSnippet(action, store.getState(), next, storageAdapter);
-        next(actions.endSave(action.fork === true));
-      })();
-      break;
-    default:
-      // Pass on
-      return next(action);
-  }
-}
+export default (storageAdapter: StorageAdapter) =>
+  (store: MiddlewareAPI<Dispatch, AppState>) =>
+  (next: Dispatch) =>
+  (action: Action) => {
+    switch (action.type) {
+      case actions.CLEAR_ERROR:
+        // If CLEAR_ERROR action happens after a URL was loaded, clear the URL
+        if (clearURLOnClearError) {
+          clearURLOnClearError = false;
+          window.location.hash = '';
+        }
+        return next(action);
+      case actions.LOAD_SNIPPET:
+        return loadSnippet(store.getState(), next, storageAdapter);
+      case actions.SAVE:
+        next(actions.startSave(action.fork === true));
+        void (async () => {
+          await saveSnippet(action, store.getState(), next, storageAdapter);
+          next(actions.endSave(action.fork === true));
+        })();
+        break;
+      default:
+        // Pass on
+        return next(action);
+    }
+  };
 
-async function loadSnippet(state: AppState, next: Dispatch, storageAdapter: StorageAdapter): Promise<void> {
+async function loadSnippet(
+  state: AppState,
+  next: Dispatch,
+  storageAdapter: StorageAdapter,
+): Promise<void> {
   // Ignore changes to the URL while a snippet is being saved (that process will
   // update the URL.
   if (selectors.isSaving(state) || selectors.isForking(state)) {
@@ -48,7 +55,7 @@ async function loadSnippet(state: AppState, next: Dispatch, storageAdapter: Stor
 
   try {
     let cancelled = false;
-    cancelLoad = () => cancelled = true;
+    cancelLoad = () => (cancelled = true);
     const revision = await storageAdapter.fetchFromURL();
     // revision can be null if the URL is "empty"
     if (!cancelled) {
@@ -58,8 +65,9 @@ async function loadSnippet(state: AppState, next: Dispatch, storageAdapter: Stor
         next(actions.clearSnippet());
       }
     }
-  } catch(err) {
-    const errorMessage = 'Failed to fetch revision: ' + (err instanceof Error ? err.message : String(err));
+  } catch (err) {
+    const errorMessage =
+      'Failed to fetch revision: ' + (err instanceof Error ? err.message : String(err));
 
     clearURLOnClearError = true;
     next(actions.setError(new Error(errorMessage)));
@@ -68,7 +76,12 @@ async function loadSnippet(state: AppState, next: Dispatch, storageAdapter: Stor
   }
 }
 
-async function saveSnippet({fork}: Action, state: AppState, next: Dispatch, storageAdapter: StorageAdapter): Promise<void> {
+async function saveSnippet(
+  { fork }: Action,
+  state: AppState,
+  next: Dispatch,
+  storageAdapter: StorageAdapter,
+): Promise<void> {
   const revision = selectors.getRevision(state);
   const parser = selectors.getParser(state);
   const parserSettings = selectors.getParserSettings(state);
@@ -77,7 +90,7 @@ async function saveSnippet({fork}: Action, state: AppState, next: Dispatch, stor
   const transformer = selectors.getTransformer(state);
   const showTransformPanel = selectors.showTransformer(state);
 
-    const data: SnippetData = {
+  const data: SnippetData = {
     parserID: parser.id,
     settings: {
       [parser.id]: parserSettings,

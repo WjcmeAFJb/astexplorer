@@ -7,10 +7,27 @@ import { describe, test, expect, vi } from 'vitest';
 import { createStore } from 'redux';
 
 vi.mock('astexplorer-parsers', () => ({
-  categories: [{ id: 'javascript', displayName: 'JavaScript', parsers: [{ id: 'acorn', showInMenu: true }], transformers: [] }],
+  categories: [
+    {
+      id: 'javascript',
+      displayName: 'JavaScript',
+      parsers: [{ id: 'acorn', showInMenu: true }],
+      transformers: [],
+    },
+  ],
   getCategoryByID: (id: string) => ({
-    id, displayName: id, codeExample: '// code',
-    parsers: [{ id: 'acorn', showInMenu: true, displayName: 'acorn', category: { id: 'javascript', codeExample: '// js' }, hasSettings: () => false }],
+    id,
+    displayName: id,
+    codeExample: '// code',
+    parsers: [
+      {
+        id: 'acorn',
+        showInMenu: true,
+        displayName: 'acorn',
+        category: { id: 'javascript', codeExample: '// js' },
+        hasSettings: () => false,
+      },
+    ],
     transformers: [],
   }),
   getDefaultParser: (cat: any) => ({
@@ -19,11 +36,13 @@ vi.mock('astexplorer-parsers', () => ({
     hasSettings: () => false,
   }),
   getParserByID: (id: string) => ({
-    id, displayName: id,
+    id,
+    displayName: id,
     category: { id: 'javascript', codeExample: '// js', editorMode: 'javascript' },
     hasSettings: () => false,
   }),
-  getTransformerByID: (id: string) => (id ? { id, displayName: id, defaultTransform: '' } : undefined),
+  getTransformerByID: (id: string) =>
+    id ? { id, displayName: id, defaultTransform: '' } : undefined,
 }));
 
 import { astexplorer } from '../src/store/reducers';
@@ -120,16 +139,26 @@ describe('containers integration with store', () => {
 
   test('SELECT_TRANSFORMER shows panel', () => {
     const store = makeStore();
-    store.dispatch(actions.selectTransformer({
-      id: 'babel', defaultParserID: 'acorn', defaultTransform: '// t',
-    } as any));
+    store.dispatch(
+      actions.selectTransformer({
+        id: 'babel',
+        defaultParserID: 'acorn',
+        defaultTransform: '// t',
+      } as any),
+    );
     expect(store.getState().showTransformPanel).toBe(true);
     expect(store.getState().workbench.transform.transformer).toBe('babel');
   });
 
   test('HIDE_TRANSFORMER hides panel', () => {
     const store = makeStore();
-    store.dispatch(actions.selectTransformer({ id: 'babel', defaultParserID: 'acorn', defaultTransform: '' } as any));
+    store.dispatch(
+      actions.selectTransformer({
+        id: 'babel',
+        defaultParserID: 'acorn',
+        defaultTransform: '',
+      } as any),
+    );
     store.dispatch(actions.hideTransformer());
     expect(store.getState().showTransformPanel).toBe(false);
   });
@@ -172,7 +201,13 @@ describe('containers integration with store', () => {
 
   test('CLEAR_SNIPPET resets code and hides transform', () => {
     const store = makeStore();
-    store.dispatch(actions.selectTransformer({ id: 'babel', defaultParserID: 'acorn', defaultTransform: '' } as any));
+    store.dispatch(
+      actions.selectTransformer({
+        id: 'babel',
+        defaultParserID: 'acorn',
+        defaultTransform: '',
+      } as any),
+    );
     store.dispatch(actions.clearSnippet());
     expect(store.getState().showTransformPanel).toBe(false);
     expect(store.getState().activeRevision).toBeNull();

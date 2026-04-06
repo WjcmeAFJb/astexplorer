@@ -39,7 +39,9 @@ describe('LocalStorage', () => {
     const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     // Make JSON.stringify throw to trigger the catch block
     const origStringify = JSON.stringify;
-    JSON.stringify = () => { throw new Error('circular ref'); };
+    JSON.stringify = () => {
+      throw new Error('circular ref');
+    };
     expect(() => writeState({ x: 1 })).not.toThrow();
     expect(spy).toHaveBeenCalledWith('Unable to write to local storage.');
     JSON.stringify = origStringify;

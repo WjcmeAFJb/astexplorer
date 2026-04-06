@@ -25,10 +25,22 @@ vi.mock('astexplorer-parsers', () => ({
       editorMode: 'javascript',
       parsers: [
         { id: 'acorn', showInMenu: true, displayName: 'acorn', hasSettings: () => false },
-        { id: 'esprima', showInMenu: true, displayName: 'esprima', hasSettings: () => true, renderSettings: () => null },
+        {
+          id: 'esprima',
+          showInMenu: true,
+          displayName: 'esprima',
+          hasSettings: () => true,
+          renderSettings: () => null,
+        },
       ],
       transformers: [
-        { id: 'babel', showInMenu: true, displayName: 'babel', defaultParserID: 'acorn', defaultTransform: '// transform' },
+        {
+          id: 'babel',
+          showInMenu: true,
+          displayName: 'babel',
+          defaultParserID: 'acorn',
+          defaultTransform: '// transform',
+        },
       ],
     },
     {
@@ -47,14 +59,18 @@ vi.mock('astexplorer-parsers', () => ({
         displayName: 'JavaScript',
         codeExample: '// js code',
         editorMode: 'javascript',
-        parsers: [{ id: 'acorn', showInMenu: true, displayName: 'acorn', hasSettings: () => false }],
+        parsers: [
+          { id: 'acorn', showInMenu: true, displayName: 'acorn', hasSettings: () => false },
+        ],
         transformers: [],
       },
       css: {
         id: 'css',
         displayName: 'CSS',
         codeExample: '/* css */',
-        parsers: [{ id: 'cssom', showInMenu: true, displayName: 'cssom', hasSettings: () => false }],
+        parsers: [
+          { id: 'cssom', showInMenu: true, displayName: 'cssom', hasSettings: () => false },
+        ],
         transformers: [],
       },
     };
@@ -75,10 +91,22 @@ vi.mock('astexplorer-parsers', () => ({
       editorMode: 'javascript',
       parsers: [
         { id: 'acorn', showInMenu: true, displayName: 'acorn', hasSettings: () => false },
-        { id: 'esprima', showInMenu: true, displayName: 'esprima', hasSettings: () => true, renderSettings: () => null },
+        {
+          id: 'esprima',
+          showInMenu: true,
+          displayName: 'esprima',
+          hasSettings: () => true,
+          renderSettings: () => null,
+        },
       ],
       transformers: [
-        { id: 'babel', showInMenu: true, displayName: 'babel', defaultParserID: 'acorn', defaultTransform: '// transform' },
+        {
+          id: 'babel',
+          showInMenu: true,
+          displayName: 'babel',
+          defaultParserID: 'acorn',
+          defaultTransform: '// transform',
+        },
       ],
     },
     hasSettings: () => id === 'esprima',
@@ -91,12 +119,24 @@ vi.mock('astexplorer-parsers', () => ({
 // Mock codemirror and related modules that Editor/Transformer try to import
 vi.mock('codemirror', () => {
   const CM = function () {
-    return { on: vi.fn(), setValue: vi.fn(), setOption: vi.fn(), getValue: vi.fn(() => ''), swapDoc: vi.fn(), getDoc: vi.fn(() => ({})) };
+    return {
+      on: vi.fn(),
+      setValue: vi.fn(),
+      setOption: vi.fn(),
+      getValue: vi.fn(() => ''),
+      swapDoc: vi.fn(),
+      getDoc: vi.fn(() => ({})),
+    };
   };
   CM.fromTextArea = vi.fn(() => ({
-    on: vi.fn(), setValue: vi.fn(), setOption: vi.fn(), getValue: vi.fn(() => ''),
+    on: vi.fn(),
+    setValue: vi.fn(),
+    setOption: vi.fn(),
+    getValue: vi.fn(() => ''),
     getWrapperElement: vi.fn(() => document.createElement('div')),
-    swapDoc: vi.fn(), getDoc: vi.fn(() => ({})), refresh: vi.fn(),
+    swapDoc: vi.fn(),
+    getDoc: vi.fn(() => ({})),
+    refresh: vi.fn(),
   }));
   return { default: CM };
 });
@@ -125,9 +165,8 @@ function renderWithStore(ui: React.ReactElement, store: ReturnType<typeof makeSt
 // =========================================================================
 describe('ErrorMessageContainer', () => {
   test('renders nothing when no error in state', async () => {
-    const { default: ErrorMessageContainer } = await import(
-      '../src/containers/ErrorMessageContainer'
-    );
+    const { default: ErrorMessageContainer } =
+      await import('../src/containers/ErrorMessageContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ErrorMessageContainer />, store);
     // ErrorMessage renders null when error is null
@@ -135,9 +174,8 @@ describe('ErrorMessageContainer', () => {
   });
 
   test('renders error message when error is set', async () => {
-    const { default: ErrorMessageContainer } = await import(
-      '../src/containers/ErrorMessageContainer'
-    );
+    const { default: ErrorMessageContainer } =
+      await import('../src/containers/ErrorMessageContainer');
     const store = makeStore();
     store.dispatch(actions.setError(new Error('Something went wrong')));
     const { container } = renderWithStore(<ErrorMessageContainer />, store);
@@ -146,9 +184,8 @@ describe('ErrorMessageContainer', () => {
   });
 
   test('dispatches clearError when OK button is clicked', async () => {
-    const { default: ErrorMessageContainer } = await import(
-      '../src/containers/ErrorMessageContainer'
-    );
+    const { default: ErrorMessageContainer } =
+      await import('../src/containers/ErrorMessageContainer');
     const store = makeStore();
     store.dispatch(actions.setError(new Error('oops')));
     const { container } = renderWithStore(<ErrorMessageContainer />, store);
@@ -164,18 +201,16 @@ describe('ErrorMessageContainer', () => {
 // =========================================================================
 describe('LoadingIndicatorContainer', () => {
   test('renders nothing when not loading', async () => {
-    const { default: LoadingIndicatorContainer } = await import(
-      '../src/containers/LoadingIndicatorContainer'
-    );
+    const { default: LoadingIndicatorContainer } =
+      await import('../src/containers/LoadingIndicatorContainer');
     const store = makeStore();
     const { container } = renderWithStore(<LoadingIndicatorContainer />, store);
     expect(container.querySelector('.loadingIndicator')).toBeNull();
   });
 
   test('renders loading indicator when loading snippet', async () => {
-    const { default: LoadingIndicatorContainer } = await import(
-      '../src/containers/LoadingIndicatorContainer'
-    );
+    const { default: LoadingIndicatorContainer } =
+      await import('../src/containers/LoadingIndicatorContainer');
     const store = makeStore();
     store.dispatch(actions.startLoadingSnippet());
     const { container } = renderWithStore(<LoadingIndicatorContainer />, store);
@@ -184,9 +219,8 @@ describe('LoadingIndicatorContainer', () => {
   });
 
   test('hides after loading is done', async () => {
-    const { default: LoadingIndicatorContainer } = await import(
-      '../src/containers/LoadingIndicatorContainer'
-    );
+    const { default: LoadingIndicatorContainer } =
+      await import('../src/containers/LoadingIndicatorContainer');
     const store = makeStore();
     store.dispatch(actions.startLoadingSnippet());
     store.dispatch(actions.doneLoadingSnippet());
@@ -200,18 +234,16 @@ describe('LoadingIndicatorContainer', () => {
 // =========================================================================
 describe('ShareDialogContainer', () => {
   test('renders nothing when showShareDialog is false', async () => {
-    const { default: ShareDialogContainer } = await import(
-      '../src/containers/ShareDialogContainer'
-    );
+    const { default: ShareDialogContainer } =
+      await import('../src/containers/ShareDialogContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ShareDialogContainer />, store);
     expect(container.querySelector('#ShareDialog')).toBeNull();
   });
 
   test('renders dialog when showShareDialog is true and snippet is set', async () => {
-    const { default: ShareDialogContainer } = await import(
-      '../src/containers/ShareDialogContainer'
-    );
+    const { default: ShareDialogContainer } =
+      await import('../src/containers/ShareDialogContainer');
     const store = makeStore();
     const mockRevision = {
       canSave: () => true,
@@ -233,9 +265,8 @@ describe('ShareDialogContainer', () => {
   });
 
   test('dispatches closeShareDialog when Close button is clicked', async () => {
-    const { default: ShareDialogContainer } = await import(
-      '../src/containers/ShareDialogContainer'
-    );
+    const { default: ShareDialogContainer } =
+      await import('../src/containers/ShareDialogContainer');
     const store = makeStore();
     const mockRevision = {
       canSave: () => true,
@@ -264,9 +295,8 @@ describe('ShareDialogContainer', () => {
 // =========================================================================
 describe('SettingsDrawerContainer', () => {
   test('renders collapsed state initially', async () => {
-    const { default: SettingsDrawerContainer } = await import(
-      '../src/containers/SettingsDrawerContainer'
-    );
+    const { default: SettingsDrawerContainer } =
+      await import('../src/containers/SettingsDrawerContainer');
     const store = makeStore();
     const { container } = renderWithStore(<SettingsDrawerContainer />, store);
     // When not open, renders collapsed div
@@ -275,9 +305,8 @@ describe('SettingsDrawerContainer', () => {
   });
 
   test('renders expanded state when settings drawer is open', async () => {
-    const { default: SettingsDrawerContainer } = await import(
-      '../src/containers/SettingsDrawerContainer'
-    );
+    const { default: SettingsDrawerContainer } =
+      await import('../src/containers/SettingsDrawerContainer');
     const store = makeStore();
     store.dispatch(actions.expandSettingsDrawer());
     const { container } = renderWithStore(<SettingsDrawerContainer />, store);
@@ -286,9 +315,8 @@ describe('SettingsDrawerContainer', () => {
   });
 
   test('dispatches expandSettingsDrawer when collapsed div is clicked', async () => {
-    const { default: SettingsDrawerContainer } = await import(
-      '../src/containers/SettingsDrawerContainer'
-    );
+    const { default: SettingsDrawerContainer } =
+      await import('../src/containers/SettingsDrawerContainer');
     const store = makeStore();
     const { container } = renderWithStore(<SettingsDrawerContainer />, store);
     fireEvent.click(container.querySelector('.settings-drawer__collapsed')!);
@@ -296,9 +324,8 @@ describe('SettingsDrawerContainer', () => {
   });
 
   test('dispatches collapseSettingsDrawer when Close button is clicked', async () => {
-    const { default: SettingsDrawerContainer } = await import(
-      '../src/containers/SettingsDrawerContainer'
-    );
+    const { default: SettingsDrawerContainer } =
+      await import('../src/containers/SettingsDrawerContainer');
     const store = makeStore();
     store.dispatch(actions.expandSettingsDrawer());
     const { container } = renderWithStore(<SettingsDrawerContainer />, store);
@@ -546,9 +573,13 @@ describe('ToolbarContainer integration', () => {
 
   test('onTransformChange with null dispatches hideTransformer', () => {
     const store = makeStore();
-    store.dispatch(actions.selectTransformer({
-      id: 'babel', defaultParserID: 'acorn', defaultTransform: '// t',
-    } as any));
+    store.dispatch(
+      actions.selectTransformer({
+        id: 'babel',
+        defaultParserID: 'acorn',
+        defaultTransform: '// t',
+      } as any),
+    );
     expect(store.getState().showTransformPanel).toBe(true);
     store.dispatch(actions.hideTransformer());
     expect(store.getState().showTransformPanel).toBe(false);
@@ -560,18 +591,14 @@ describe('ToolbarContainer integration', () => {
 // =========================================================================
 describe('ASTOutputContainer', () => {
   test('renders connected component without error', async () => {
-    const { default: ASTOutputContainer } = await import(
-      '../src/containers/ASTOutputContainer'
-    );
+    const { default: ASTOutputContainer } = await import('../src/containers/ASTOutputContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ASTOutputContainer />, store);
     expect(container).toBeTruthy();
   });
 
   test('maps parseResult and position from state', async () => {
-    const { default: ASTOutputContainer } = await import(
-      '../src/containers/ASTOutputContainer'
-    );
+    const { default: ASTOutputContainer } = await import('../src/containers/ASTOutputContainer');
     const store = makeStore();
     const state = store.getState();
     expect(selectors.getParseResult(state)).toBeUndefined();
@@ -585,9 +612,7 @@ describe('ASTOutputContainer', () => {
 // =========================================================================
 describe('CodeEditorContainer', () => {
   test('renders connected component without error', async () => {
-    const { default: CodeEditorContainer } = await import(
-      '../src/containers/CodeEditorContainer'
-    );
+    const { default: CodeEditorContainer } = await import('../src/containers/CodeEditorContainer');
     const store = makeStore();
     const { container } = renderWithStore(<CodeEditorContainer />, store);
     expect(container).toBeTruthy();
@@ -595,9 +620,7 @@ describe('CodeEditorContainer', () => {
   });
 
   test('maps correct state to props', async () => {
-    const { default: CodeEditorContainer } = await import(
-      '../src/containers/CodeEditorContainer'
-    );
+    const { default: CodeEditorContainer } = await import('../src/containers/CodeEditorContainer');
     const store = makeStore();
     const state = store.getState();
     expect(selectors.getCode(state)).toBeTruthy();
@@ -614,12 +637,13 @@ describe('CodeEditorContainer', () => {
 // =========================================================================
 describe('PasteDropTargetContainer', () => {
   test('renders connected component without error', async () => {
-    const { default: PasteDropTargetContainer } = await import(
-      '../src/containers/PasteDropTargetContainer'
-    );
+    const { default: PasteDropTargetContainer } =
+      await import('../src/containers/PasteDropTargetContainer');
     const store = makeStore();
     const { container } = renderWithStore(
-      <PasteDropTargetContainer><div>child</div></PasteDropTargetContainer>,
+      <PasteDropTargetContainer>
+        <div>child</div>
+      </PasteDropTargetContainer>,
       store,
     );
     expect(container).toBeTruthy();
@@ -627,12 +651,13 @@ describe('PasteDropTargetContainer', () => {
   });
 
   test('dispatches dropText and setError', async () => {
-    const { default: PasteDropTargetContainer } = await import(
-      '../src/containers/PasteDropTargetContainer'
-    );
+    const { default: PasteDropTargetContainer } =
+      await import('../src/containers/PasteDropTargetContainer');
     const store = makeStore();
     renderWithStore(
-      <PasteDropTargetContainer><span>x</span></PasteDropTargetContainer>,
+      <PasteDropTargetContainer>
+        <span>x</span>
+      </PasteDropTargetContainer>,
       store,
     );
     // Verify the dispatch functions work
@@ -649,18 +674,16 @@ describe('PasteDropTargetContainer', () => {
 // =========================================================================
 describe('SettingsDialogContainer', () => {
   test('renders nothing when not visible', async () => {
-    const { default: SettingsDialogContainer } = await import(
-      '../src/containers/SettingsDialogContainer'
-    );
+    const { default: SettingsDialogContainer } =
+      await import('../src/containers/SettingsDialogContainer');
     const store = makeStore();
     const { container } = renderWithStore(<SettingsDialogContainer />, store);
     expect(container.querySelector('#SettingsDialog')).toBeNull();
   });
 
   test('maps visible, parser, and parserSettings from state', async () => {
-    const { default: SettingsDialogContainer } = await import(
-      '../src/containers/SettingsDialogContainer'
-    );
+    const { default: SettingsDialogContainer } =
+      await import('../src/containers/SettingsDialogContainer');
     const store = makeStore();
     const state = store.getState();
     expect(selectors.showSettingsDialog(state)).toBe(false);
@@ -675,22 +698,24 @@ describe('SettingsDialogContainer', () => {
 // =========================================================================
 describe('TransformerContainer', () => {
   test('renders connected component without error', async () => {
-    const { default: TransformerContainer } = await import(
-      '../src/containers/TransformerContainer'
-    );
+    const { default: TransformerContainer } =
+      await import('../src/containers/TransformerContainer');
     const store = makeStore();
     // TransformerContainer requires a transformer to render editor
-    store.dispatch(actions.selectTransformer({
-      id: 'babel', defaultParserID: 'acorn', defaultTransform: '// transform',
-    } as any));
+    store.dispatch(
+      actions.selectTransformer({
+        id: 'babel',
+        defaultParserID: 'acorn',
+        defaultTransform: '// transform',
+      } as any),
+    );
     const { container } = renderWithStore(<TransformerContainer />, store);
     expect(container).toBeTruthy();
   });
 
   test('maps correct state including mode with editorMode fallback', async () => {
-    const { default: TransformerContainer } = await import(
-      '../src/containers/TransformerContainer'
-    );
+    const { default: TransformerContainer } =
+      await import('../src/containers/TransformerContainer');
     const store = makeStore();
     const state = store.getState();
     const parser = selectors.getParser(state);
@@ -709,9 +734,7 @@ describe('TransformerContainer', () => {
 // =========================================================================
 describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
   test('ToolbarContainer renders with proper category data in store', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const origHash = window.location.hash;
     window.location.hash = '';
@@ -724,9 +747,7 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
   });
 
   test('ToolbarContainer dispatch: clicking save button dispatches save', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     const { container } = renderWithStore(<ToolbarContainer />, store);
@@ -735,15 +756,15 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
     const saveBtn = container.querySelector('button[title="Save"]') as HTMLButtonElement;
     if (saveBtn && !saveBtn.disabled) {
       fireEvent.click(saveBtn);
-      expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'SAVE', fork: false }));
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'SAVE', fork: false }),
+      );
     }
     dispatchSpy.mockRestore();
   });
 
   test('ToolbarContainer dispatch: clicking New button (no hash)', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
@@ -755,9 +776,7 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
   });
 
   test('ToolbarContainer dispatch: clicking New button (with hash)', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     window.location.hash = '#/gist/abc';
     const { container } = renderWithStore(<ToolbarContainer />, store);
@@ -772,9 +791,7 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
   });
 
   test('ToolbarContainer dispatch: clicking settings button opens dialog', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     // Switch to esprima which hasSettings=true (our mock returns hasSettings based on id)
     store.dispatch(actions.setParser({ id: 'esprima', category: { id: 'javascript' } } as any));
@@ -790,9 +807,7 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
   });
 
   test('ToolbarContainer dispatch: clicking share button opens share', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const revision = {
       canSave: () => true,
@@ -809,7 +824,9 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
     store.dispatch(actions.setSnippet(revision as any));
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
-    const shareBtn = container.querySelector('.fa-share-alt')?.closest('button') as HTMLButtonElement;
+    const shareBtn = container
+      .querySelector('.fa-share-alt')
+      ?.closest('button') as HTMLButtonElement;
     if (shareBtn && !shareBtn.disabled) {
       fireEvent.click(shareBtn);
       expect(store.getState().showShareDialog).toBe(true);
@@ -817,9 +834,7 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
   });
 
   test('ToolbarContainer dispatch: clicking parser in dropdown changes parser', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
@@ -832,9 +847,7 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
   });
 
   test('ToolbarContainer dispatch: clicking category in dropdown changes category', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
@@ -848,9 +861,7 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
   });
 
   test('ToolbarContainer dispatch: selecting transformer shows panel', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
@@ -862,9 +873,7 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
   });
 
   test('ToolbarContainer dispatch: clicking keymap changes keymap', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
@@ -922,7 +931,13 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
     store.dispatch(actions.closeShareDialog());
 
     // selectTransformer / hideTransformer
-    store.dispatch(actions.selectTransformer({ id: 'babel', defaultParserID: 'acorn', defaultTransform: '// t' } as any));
+    store.dispatch(
+      actions.selectTransformer({
+        id: 'babel',
+        defaultParserID: 'acorn',
+        defaultTransform: '// t',
+      } as any),
+    );
     expect(store.getState().showTransformPanel).toBe(true);
     store.dispatch(actions.hideTransformer());
     expect(store.getState().showTransformPanel).toBe(false);
@@ -946,9 +961,7 @@ describe('ToolbarContainer mapStateToProps and mapDispatchToProps', () => {
 // =========================================================================
 describe('ToolbarContainer mapDispatchToProps coverage', () => {
   test('onShareButtonClick dispatches openShareDialog through UI click', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     // Set a snippet so the share button is enabled
     const revision = {
@@ -975,9 +988,7 @@ describe('ToolbarContainer mapDispatchToProps coverage', () => {
   });
 
   test('onTransformChange with transformer dispatches selectTransformer through UI click', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
@@ -991,43 +1002,45 @@ describe('ToolbarContainer mapDispatchToProps coverage', () => {
   });
 
   test('onTransformChange with null dispatches hideTransformer through toggle click', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     // First select a transformer
-    store.dispatch(actions.selectTransformer({ id: 'babel', defaultParserID: 'acorn', defaultTransform: '// t' } as any));
+    store.dispatch(
+      actions.selectTransformer({
+        id: 'babel',
+        defaultParserID: 'acorn',
+        defaultTransform: '// t',
+      } as any),
+    );
     expect(store.getState().showTransformPanel).toBe(true);
 
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
     // Click the toggle-on button to hide transformer
-    const toggleBtn = container.querySelector('.fa-toggle-on')?.closest('button') as HTMLButtonElement;
+    const toggleBtn = container
+      .querySelector('.fa-toggle-on')
+      ?.closest('button') as HTMLButtonElement;
     expect(toggleBtn).toBeTruthy();
     fireEvent.click(toggleBtn);
     expect(store.getState().showTransformPanel).toBe(false);
   });
 
   test('onKeyMapChange dispatches setKeyMap through UI click', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const { container } = renderWithStore(<ToolbarContainer />, store);
 
     // Find the vim li by looking for button text content.
     // KeyMapButton renders <li onClick><button>vim</button></li>
     const allLis = Array.from(container.querySelectorAll('li'));
-    const vimLi = allLis.find(li => li.textContent?.trim() === 'vim');
+    const vimLi = allLis.find((li) => li.textContent?.trim() === 'vim');
     expect(vimLi).toBeTruthy();
     fireEvent.click(vimLi!);
     expect(store.getState().workbench.keyMap).toBe('vim');
   });
 
   test('onNew dispatches reset when hash is empty', async () => {
-    const { default: ToolbarContainer } = await import(
-      '../src/containers/ToolbarContainer'
-    );
+    const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     const origHash = window.location.hash;
     window.location.hash = '';
@@ -1048,35 +1061,37 @@ describe('ToolbarContainer mapDispatchToProps coverage', () => {
 // =========================================================================
 describe('TransformerContainer mapDispatchToProps coverage', () => {
   test('renders TransformerContainer with transformer in state', async () => {
-    const { default: TransformerContainer } = await import(
-      '../src/containers/TransformerContainer'
-    );
+    const { default: TransformerContainer } =
+      await import('../src/containers/TransformerContainer');
     const store = makeStore();
-    store.dispatch(actions.selectTransformer({
-      id: 'babel',
-      displayName: 'babel',
-      defaultTransform: '// transform code',
-      defaultParserID: 'acorn',
-    } as any));
+    store.dispatch(
+      actions.selectTransformer({
+        id: 'babel',
+        displayName: 'babel',
+        defaultTransform: '// transform code',
+        defaultParserID: 'acorn',
+      } as any),
+    );
 
     const { container } = renderWithStore(<TransformerContainer />, store);
     expect(container.querySelector('.splitpane')).toBeTruthy();
   });
 
   test('TransformerContainer mapStateToProps uses category.id fallback for mode', async () => {
-    const { default: TransformerContainer } = await import(
-      '../src/containers/TransformerContainer'
-    );
+    const { default: TransformerContainer } =
+      await import('../src/containers/TransformerContainer');
     const store = makeStore();
     // The default parser has category.editorMode='javascript'
     // To test the fallback to category.id, we would need a parser without editorMode
     // But since we can exercise the code path by just rendering, let's verify it works
-    store.dispatch(actions.selectTransformer({
-      id: 'babel',
-      displayName: 'babel',
-      defaultTransform: '// code',
-      defaultParserID: 'acorn',
-    } as any));
+    store.dispatch(
+      actions.selectTransformer({
+        id: 'babel',
+        displayName: 'babel',
+        defaultTransform: '// code',
+        defaultParserID: 'acorn',
+      } as any),
+    );
 
     const { container } = renderWithStore(<TransformerContainer />, store);
     expect(container).toBeTruthy();
@@ -1098,10 +1113,16 @@ describe('ToolbarContainer mapStateToProps coverage (lines 16,26-30)', () => {
 
 describe('PasteDropTargetContainer mapDispatchToProps (lines 8-9)', () => {
   test('onText dispatches dropText action', async () => {
-    const { default: PasteDropTargetContainer } = await import('../src/containers/PasteDropTargetContainer');
+    const { default: PasteDropTargetContainer } =
+      await import('../src/containers/PasteDropTargetContainer');
     const store = makeStore();
     const spy = vi.spyOn(store, 'dispatch');
-    renderWithStore(<PasteDropTargetContainer id="test"><div /></PasteDropTargetContainer>, store);
+    renderWithStore(
+      <PasteDropTargetContainer id="test">
+        <div />
+      </PasteDropTargetContainer>,
+      store,
+    );
     // The container is connected — verify dispatch is wired
     expect(spy).toBeDefined();
     spy.mockRestore();

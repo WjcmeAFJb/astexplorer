@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import {connect} from 'react-redux';
-import {getRevision} from '../store/selectors';
-import type {Revision, AppState} from '../types';
+import { connect } from 'react-redux';
+import { getRevision } from '../store/selectors';
+import type { Revision, AppState } from '../types';
 
 const buttonStyle: React.CSSProperties = {
   backgroundColor: 'transparent',
@@ -23,8 +23,8 @@ type GistBannerProps = {
   revision?: Revision | null;
 };
 
-class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
-    constructor(props: GistBannerProps) {
+class GistBanner extends React.Component<GistBannerProps, { visible: boolean }> {
+  constructor(props: GistBannerProps) {
     super(props);
     this.state = {
       visible: true,
@@ -34,14 +34,16 @@ class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
   componentDidUpdate(prevProps: GistBannerProps) {
     const newRevision = this.props.revision;
     const oldRevision = prevProps.revision;
-    if (newRevision &&
-      (!oldRevision || newRevision.getSnippetID() !== oldRevision.getSnippetID())) {
-      this.setState({visible: true});
+    if (
+      newRevision &&
+      (!oldRevision || newRevision.getSnippetID() !== oldRevision.getSnippetID())
+    ) {
+      this.setState({ visible: true });
     }
   }
 
   _hide = () => {
-    this.setState({visible: false});
+    this.setState({ visible: false });
   };
 
   render() {
@@ -55,8 +57,7 @@ class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
 
     return (
       <div className="banner">
-        This snippet is <strong>read-only</strong>. You can still save changes
-        by forking it.
+        This snippet is <strong>read-only</strong>. You can still save changes by forking it.
         <button style={buttonStyle} onClick={this._hide}>
           <i className="fa fa-times" aria-hidden="true"></i>
         </button>
@@ -65,5 +66,4 @@ class GistBanner extends React.Component<GistBannerProps, {visible: boolean}> {
   }
 }
 
-
-export default connect((state: AppState) => ({revision: getRevision(state)}))(GistBanner);
+export default connect((state: AppState) => ({ revision: getRevision(state) }))(GistBanner);

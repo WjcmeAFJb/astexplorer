@@ -58,7 +58,7 @@ describe('JSONEditor', () => {
   });
 
   test('initializes CodeMirror with JSON mode', () => {
-    render(<JSONEditor value='{}' />);
+    render(<JSONEditor value="{}" />);
     const calls = mockCodeMirror.mock.calls;
     expect(calls.length).toBeGreaterThan(0);
     const lastOpts = calls[calls.length - 1][1];
@@ -66,37 +66,35 @@ describe('JSONEditor', () => {
   });
 
   test('initializes CodeMirror as readOnly', () => {
-    render(<JSONEditor value='{}' />);
+    render(<JSONEditor value="{}" />);
     const calls = mockCodeMirror.mock.calls;
     const lastOpts = calls[calls.length - 1][1];
     expect(lastOpts.readOnly).toBe(true);
   });
 
   test('initializes CodeMirror with lineNumbers', () => {
-    render(<JSONEditor value='{}' />);
+    render(<JSONEditor value="{}" />);
     const calls = mockCodeMirror.mock.calls;
     const lastOpts = calls[calls.length - 1][1];
     expect(lastOpts.lineNumbers).toBe(true);
   });
 
   test('initializes CodeMirror with foldGutter', () => {
-    render(<JSONEditor value='{}' />);
+    render(<JSONEditor value="{}" />);
     const calls = mockCodeMirror.mock.calls;
     const lastOpts = calls[calls.length - 1][1];
     expect(lastOpts.foldGutter).toBe(true);
   });
 
   test('initializes CodeMirror with correct gutters', () => {
-    render(<JSONEditor value='{}' />);
+    render(<JSONEditor value="{}" />);
     const calls = mockCodeMirror.mock.calls;
     const lastOpts = calls[calls.length - 1][1];
     expect(lastOpts.gutters).toEqual(['CodeMirror-linenumbers', 'CodeMirror-foldgutter']);
   });
 
   test('applies className prop to wrapper', () => {
-    const { container } = render(
-      <JSONEditor value='{}' className="container no-toolbar" />,
-    );
+    const { container } = render(<JSONEditor value="{}" className="container no-toolbar" />);
     const el = container.querySelector('#JSONEditor')!;
     expect(el.className).toContain('container');
     expect(el.className).toContain('no-toolbar');
@@ -129,13 +127,13 @@ describe('JSONEditor', () => {
   test('restores scroll position after value update', () => {
     mockCmInstance.getValue.mockReturnValue('old');
     mockCmInstance.getScrollInfo.mockReturnValue({ left: 10, top: 20 });
-    const { rerender } = render(<JSONEditor value='old' />);
-    rerender(<JSONEditor value='new' />);
+    const { rerender } = render(<JSONEditor value="old" />);
+    rerender(<JSONEditor value="new" />);
     expect(mockCmInstance.scrollTo).toHaveBeenCalledWith(10, 20);
   });
 
   test('unmounts cleanly', () => {
-    const { unmount } = render(<JSONEditor value='{}' />);
+    const { unmount } = render(<JSONEditor value="{}" />);
     expect(() => unmount()).not.toThrow();
   });
 
@@ -144,11 +142,11 @@ describe('JSONEditor', () => {
     const { act } = await import('@testing-library/react');
 
     mockCmInstance.refresh.mockClear();
-    render(<JSONEditor value='{}' />);
+    render(<JSONEditor value="{}" />);
 
     await act(async () => {
       publish('PANEL_RESIZE', undefined);
-      await new Promise(r => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 10));
     });
 
     expect(mockCmInstance.refresh).toHaveBeenCalled();

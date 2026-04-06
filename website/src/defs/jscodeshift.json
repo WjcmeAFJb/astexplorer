@@ -789,23 +789,17 @@
         "filter": {
           "!type": "fn(callback: fn(path: +NodePath) -> bool) -> +Collection",
           "!doc": "Returns a new collection containing the nodes for which the callback returns true.",
-          "!effects": [
-            "call !0 this=+NodePath +NodePath"
-          ]
+          "!effects": ["call !0 this=+NodePath +NodePath"]
         },
         "forEach": {
           "!type": "fn(callback: fn(path: +NodePath)) -> !this",
           "!doc": "Executes callback for each NodePath in the collection.",
-          "!effects": [
-            "call !0 this=+NodePath +NodePath"
-          ]
+          "!effects": ["call !0 this=+NodePath +NodePath"]
         },
         "map": {
           "!type": "fn(callback: fn(path: +NodePath) -> +NodePath|[+NodePath]) -> +Collection",
           "!doc": "Executes the callback for every path in the collection and returns a\nnew collection from the return values (which must be paths).\n\nThe callback can return null to remove the element from the new collection.\n\nIf an array is returned, it will be flattened into the result colletion.\n",
-          "!effects": [
-            "call !0 this=+NodePath +NodePath"
-          ]
+          "!effects": ["call !0 this=+NodePath +NodePath"]
         },
         "size": {
           "!type": "fn() -> number",
@@ -846,23 +840,17 @@
         "replaceWith": {
           "!type": "fn(nodes: ASTNode|fn(path: +NodePath, index: number) -> ASTNode|[ASTNode]) -> !this",
           "!doc": "Replaces the selected nodes with the provided node(s). If a function is\nprovided, it is executed for every node and the node is replaced with\nthe return value of the function.\n",
-          "!effects": [
-            "call !0 this=+NodePath +NodePath number"
-          ]
+          "!effects": ["call !0 this=+NodePath +NodePath number"]
         },
         "insertBefore": {
           "!type": "fn(nodes: ASTNode|[ASTNode]|fn(path: +NodePath, index: number) -> ASTNode|[ASTNode]) -> !this",
           "!doc": "Inserts the new node(s) before each of the selected nodes. If a function\nis provided, it is executed for every node and return value is inserted\nbefore that node.\n",
-          "!effects": [
-            "call !0 this=+NodePath +NodePath"
-          ]
+          "!effects": ["call !0 this=+NodePath +NodePath"]
         },
         "insertAfter": {
           "!type": "fn(nodes: ASTNode|[ASTNode]|fn(path: +NodePath, index: number) -> ASTNode|[ASTNode]) -> !this",
           "!doc": "Inserts the new node(s) after each of the selected nodes. If a function\nis provided, it is executed for every node and return value is inserted\nafter that node.\n",
-          "!effects": [
-            "call !0 this=+NodePath +NodePath"
-          ]
+          "!effects": ["call !0 this=+NodePath +NodePath"]
         },
         "remove": {
           "!type": "fn() -> !this",
@@ -872,9 +860,7 @@
     },
     "NodePath": {
       "!type": "fn(value: ASTNode|[ASTNode], parentPath: +NodePath, name: string)",
-      "!effects": [
-        "propagate !0 !this.value"
-      ],
+      "!effects": ["propagate !0 !this.value"],
       "prototype": {
         "parentPath": "+NodePath",
         "name": "string",
@@ -905,23 +891,17 @@
         "each": {
           "!type": "fn(callback: fn(childPath: +NodePath), context?: ?)",
           "!doc": "If the Path represents an array of nodes, applies the provided function to each\nNode in the array.\n",
-          "!effects": [
-            "call !0 this=!1 !this.value.<i> !this"
-          ]
+          "!effects": ["call !0 this=!1 !this.value.<i> !this"]
         },
         "map": {
           "!type": "fn(callback: fn(childPath: +NodePath) -> ?, context?: ?) -> [?]",
           "!doc": "If the Path represents an array of nodes, applies the provided function to each\nNode in the array and returns an array of the results.\n",
-          "!effects": [
-            "call !0 this=!1 !this.value.<i> !this"
-          ]
+          "!effects": ["call !0 this=!1 !this.value.<i> !this"]
         },
         "filter": {
           "!type": "fn(callback: fn(childPath: +NodePath) -> bool, context?: ?) -> [+NodePath]",
           "!doc": "If the Path represents an array of nodes, applies the provided function to each\nNode in the array and returns an array of Paths for which the callback returned true.\n",
-          "!effects": [
-            "call !0 this=!1 !this.value.<i> !this"
-          ]
+          "!effects": ["call !0 this=!1 !this.value.<i> !this"]
         },
         "shift": {
           "!type": "fn() -> +NodePath",

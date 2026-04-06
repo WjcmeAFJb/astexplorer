@@ -1,9 +1,13 @@
 import React from 'react';
 import { categories } from 'astexplorer-parsers';
 
-type EscodegenModule = {generate: (ast: unknown, options: unknown) => string};
+type EscodegenModule = { generate: (ast: unknown, options: unknown) => string };
 function importEscodegen(): Promise<EscodegenModule> {
-  return new Promise(resolve => { require(['escodegen'], (escodegen: EscodegenModule) => { resolve(escodegen); }); });
+  return new Promise((resolve) => {
+    require(['escodegen'], (escodegen: EscodegenModule) => {
+      resolve(escodegen);
+    });
+  });
 }
 
 const acceptedFileTypes = new Map([
@@ -25,113 +29,137 @@ type PasteDropTargetOwnProps = {
 
 type PasteDropTargetProps = PasteDropTargetOwnProps & Record<string, unknown>;
 
-export default class PasteDropTarget extends React.Component<PasteDropTargetProps, {dragging: boolean}> {
+export default class PasteDropTarget extends React.Component<
+  PasteDropTargetProps,
+  { dragging: boolean }
+> {
   static displayName = 'PasteDropTarget';
   _listeners: Array<() => void> | null = [];
   container: HTMLElement | null = null;
 
-    constructor(props: PasteDropTargetProps) {
+  constructor(props: PasteDropTargetProps) {
     super(props);
     this.state = {
       dragging: false,
     };
   }
 
-    _onASTError(type: string, event: Event, ex: Error) {
-    this.props.onError?.(
-      type,
-      event,
-      `Cannot process pasted AST: ${ex.message}`,
-    );
+  _onASTError(type: string, event: Event, ex: Error) {
+    this.props.onError?.(type, event, `Cannot process pasted AST: ${ex.message}`);
     throw ex;
   }
 
   componentDidMount() {
-        this._listeners = [];
+    this._listeners = [];
     const target = this.container;
 
     // Handle pastes
-    this._bindListener(document, 'paste', (event) => {
-      if (event.clipboardData === null || event.clipboardData === undefined) {
-        // No browser support? :(
-        return;
-      }
-      const cbdata = event.clipboardData;
-      // Plain text
-      if (!Array.isArray(cbdata.types) || !cbdata.types.includes('text/plain')) {
-        return;
-      }
-      event.stopPropagation();
-      event.preventDefault();
-      this._jsonToCode(cbdata.getData('text/plain')).then(
-        code => this.props.onText?.('paste', event, code),
-        (ex: Error) => {
-          if (event.target instanceof Element && event.target.nodeName !== 'TEXTAREA') {
-            this._onASTError('paste', event, ex);
-          }
-        },
-      );
-    }, true);
+    this._bindListener(
+      document,
+      'paste',
+      (event) => {
+        if (event.clipboardData === null || event.clipboardData === undefined) {
+          // No browser support? :(
+          return;
+        }
+        const cbdata = event.clipboardData;
+        // Plain text
+        if (!Array.isArray(cbdata.types) || !cbdata.types.includes('text/plain')) {
+          return;
+        }
+        event.stopPropagation();
+        event.preventDefault();
+        this._jsonToCode(cbdata.getData('text/plain')).then(
+          (code) => this.props.onText?.('paste', event, code),
+          (ex: Error) => {
+            if (event.target instanceof Element && event.target.nodeName !== 'TEXTAREA') {
+              this._onASTError('paste', event, ex);
+            }
+          },
+        );
+      },
+      true,
+    );
 
-        let timer: ReturnType<typeof setTimeout> | undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
     // Handle file drops
     if (target !== null) {
-      this._bindListener(target, 'dragenter', (event) => {
-        clearTimeout(timer);
-        event.preventDefault();
-        this.setState({dragging: true});
-      }, true);
+      this._bindListener(
+        target,
+        'dragenter',
+        (event) => {
+          clearTimeout(timer);
+          event.preventDefault();
+          this.setState({ dragging: true });
+        },
+        true,
+      );
 
-      this._bindListener(target, 'dragover', (event) => {
-        clearTimeout(timer);
-        event.preventDefault();
-        if (event.dataTransfer !== null) {
-          event.dataTransfer.dropEffect = 'copy';
-        }
-      }, true);
-
-      this._bindListener(target, 'drop', (event) => {
-        this.setState({dragging: false});
-        if (event.dataTransfer === null) {
-          return;
-        }
-        const file = event.dataTransfer.files[0];
-        let categoryId: string | undefined = acceptedFileTypes.get(file.type);
-        if (categoryId === undefined || this.props.onText === undefined) {
-          return;
-        }
-        event.preventDefault();
-        event.stopPropagation();
-        const dropEvent = event;
-        void file.text().then((fileText: string) => {
-          let text: string | Promise<string> = fileText;
-          if (categoryId === 'JSON' || categoryId === 'TEXT') {
-            text = this._jsonToCode(fileText).then(
-              (codeText: string) => {
-                categoryId = 'javascript';
-                return codeText;
-              },
-              (ex: Error) => {
-                if (categoryId === 'JSON') {
-                  this._onASTError('drop', dropEvent, ex);
-                }
-                categoryId = undefined;
-                return fileText;
-              },
-            );
+      this._bindListener(
+        target,
+        'dragover',
+        (event) => {
+          clearTimeout(timer);
+          event.preventDefault();
+          if (event.dataTransfer !== null) {
+            event.dataTransfer.dropEffect = 'copy';
           }
-          return Promise.resolve(text).then((resolvedText: string) => {
-            this.props.onText?.('drop', dropEvent, resolvedText, categoryId);
-            return null;
-          });
-        });
-      }, true);
+        },
+        true,
+      );
 
-      this._bindListener(target, 'dragleave', () => {
-        clearTimeout(timer);
-        timer = setTimeout(() => this.setState({dragging: false}), 50);
-      }, true);
+      this._bindListener(
+        target,
+        'drop',
+        (event) => {
+          this.setState({ dragging: false });
+          if (event.dataTransfer === null) {
+            return;
+          }
+          const file = event.dataTransfer.files[0];
+          let categoryId: string | undefined = acceptedFileTypes.get(file.type);
+          if (categoryId === undefined || this.props.onText === undefined) {
+            return;
+          }
+          event.preventDefault();
+          event.stopPropagation();
+          const dropEvent = event;
+          void file.text().then((fileText: string) => {
+            let text: string | Promise<string> = fileText;
+            if (categoryId === 'JSON' || categoryId === 'TEXT') {
+              text = this._jsonToCode(fileText).then(
+                (codeText: string) => {
+                  categoryId = 'javascript';
+                  return codeText;
+                },
+                (ex: Error) => {
+                  if (categoryId === 'JSON') {
+                    this._onASTError('drop', dropEvent, ex);
+                  }
+                  categoryId = undefined;
+                  return fileText;
+                },
+              );
+            }
+            return Promise.resolve(text).then((resolvedText: string) => {
+              this.props.onText?.('drop', dropEvent, resolvedText, categoryId);
+              return null;
+            });
+          });
+        },
+        true,
+      );
+
+      this._bindListener(
+        target,
+        'dragleave',
+        () => {
+          clearTimeout(timer);
+          timer = setTimeout(() => this.setState({ dragging: false }), 50);
+        },
+        true,
+      );
     }
   }
 
@@ -144,49 +172,63 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
     this._listeners = null;
   }
 
-    _jsonToCode(json: string): Promise<string> {
+  _jsonToCode(json: string): Promise<string> {
     let ast: unknown;
     try {
       ast = JSON.parse(json) as unknown;
-    }
-    catch {
+    } catch {
       return Promise.resolve(json);
     }
     return importEscodegen().then((escodegen) => {
-      return escodegen.generate(ast, {format: {indent: {style: '  '}}});
+      return escodegen.generate(ast, { format: { indent: { style: '  ' } } });
     });
   }
 
-    _bindListener<K extends keyof DocumentEventMap>(elem: EventTarget, event: K, listener: (event: DocumentEventMap[K]) => void, capture?: boolean): void;
-    _bindListener(elem: EventTarget, event: string, listener: (event: Event) => void, capture?: boolean): void;
-    _bindListener(elem: EventTarget, event: string, listener: (event: Event) => void, capture?: boolean) {
+  _bindListener<K extends keyof DocumentEventMap>(
+    elem: EventTarget,
+    event: K,
+    listener: (event: DocumentEventMap[K]) => void,
+    capture?: boolean,
+  ): void;
+  _bindListener(
+    elem: EventTarget,
+    event: string,
+    listener: (event: Event) => void,
+    capture?: boolean,
+  ): void;
+  _bindListener(
+    elem: EventTarget,
+    event: string,
+    listener: (event: Event) => void,
+    capture?: boolean,
+  ) {
     if (this._listeners === null) {
       return;
     }
     for (const e of event.split(/\s+/)) {
       elem.addEventListener(e, listener, capture);
-      this._listeners.push(
-        () => elem.removeEventListener(e, listener, capture),
-      );
+      this._listeners.push(() => elem.removeEventListener(e, listener, capture));
     }
   }
 
   render() {
-    const {children, onText: _onText, ...props} = this.props;
-    const dropindicator = this.state.dragging ?
+    const { children, onText: _onText, ...props } = this.props;
+    const dropindicator = this.state.dragging ? (
       <div className="dropIndicator">
         <div>Drop the code or (JSON-encoded) AST file here</div>
-      </div> :
-      null;
+      </div>
+    ) : null;
 
     return (
       <div
-        ref={c => { this.container = c; }}
-        {...props}>
+        ref={(c) => {
+          this.container = c;
+        }}
+        {...props}
+      >
         {dropindicator}
         {children}
       </div>
     );
   }
 }
-

@@ -3,7 +3,7 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/brace-fold';
-import {subscribe, clear} from '../utils/pubsub';
+import { subscribe, clear } from '../utils/pubsub';
 import React from 'react';
 
 type JSONEditorProps = {
@@ -18,7 +18,11 @@ export default class Editor extends React.Component<JSONEditorProps> {
   _subscriptions: Array<() => void> = [];
 
   componentDidUpdate(prevProps: JSONEditorProps) {
-    if (this.codeMirror && this.props.value !== prevProps.value && this.props.value !== this.codeMirror.getValue()) {
+    if (
+      this.codeMirror &&
+      this.props.value !== prevProps.value &&
+      this.props.value !== this.codeMirror.getValue()
+    ) {
       let info = this.codeMirror.getScrollInfo();
       this.codeMirror.setValue(this.props.value ?? '');
       this.codeMirror.scrollTo(info.left, info.top);
@@ -30,15 +34,16 @@ export default class Editor extends React.Component<JSONEditorProps> {
   }
 
   componentDidMount() {
-        this._subscriptions = [];
+    this._subscriptions = [];
     if (!this.container) {
       return;
     }
-    this.codeMirror = CodeMirror( // eslint-disable-line new-cap
+    this.codeMirror = CodeMirror(
+      // eslint-disable-line new-cap
       this.container,
       {
         value: this.props.value,
-        mode: {name: 'javascript', json: true},
+        mode: { name: 'javascript', json: true },
         readOnly: true,
         lineNumbers: true,
         foldGutter: true,
@@ -70,9 +75,13 @@ export default class Editor extends React.Component<JSONEditorProps> {
 
   render() {
     return (
-      <div id="JSONEditor" className={this.props.className}
-        ref={c => { this.container = c; }}/>
+      <div
+        id="JSONEditor"
+        className={this.props.className}
+        ref={(c) => {
+          this.container = c;
+        }}
+      />
     );
   }
 }
-

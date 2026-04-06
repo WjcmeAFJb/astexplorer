@@ -6,13 +6,18 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 vi.mock('astexplorer-parsers', () => ({
-  getParserByID: (id: string) => ({ id, category: { id: 'javascript', codeExample: '// js', fileExtension: 'js' } }),
+  getParserByID: (id: string) => ({
+    id,
+    category: { id: 'javascript', codeExample: '// js', fileExtension: 'js' },
+  }),
 }));
 
 const GIST_DATA = {
   id: 'gist123',
   files: {
-    'astexplorer.json': { content: JSON.stringify({ v: 2, parserID: 'acorn', settings: { acorn: { jsx: true } } }) },
+    'astexplorer.json': {
+      content: JSON.stringify({ v: 2, parserID: 'acorn', settings: { acorn: { jsx: true } } }),
+    },
     'source.js': { content: 'const x = 1;' },
     'transform.js': { content: 'export default function(file) {}' },
   },
@@ -22,7 +27,10 @@ const GIST_DATA = {
 const server = setupServer();
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
-afterEach(() => { server.resetHandlers(); global.location.hash = ''; });
+afterEach(() => {
+  server.resetHandlers();
+  global.location.hash = '';
+});
 afterAll(() => server.close());
 
 import * as gist from '../src/storage/gist';
@@ -63,9 +71,7 @@ describe('storage/gist', () => {
     });
 
     test('fetches gist from API', async () => {
-      server.use(
-        rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.json(GIST_DATA))),
-      );
+      server.use(rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.json(GIST_DATA))));
       global.location.hash = '#/gist/gist123';
       const rev = await gist.fetchFromURL();
       expect(rev).toBeTruthy();
@@ -74,18 +80,14 @@ describe('storage/gist', () => {
     });
 
     test('fetches with specific revision', async () => {
-      server.use(
-        rest.get('*/api/v1/gist/gist123/v2', (req, res, ctx) => res(ctx.json(GIST_DATA))),
-      );
+      server.use(rest.get('*/api/v1/gist/gist123/v2', (req, res, ctx) => res(ctx.json(GIST_DATA))));
       global.location.hash = '#/gist/gist123/v2';
       const rev = await gist.fetchFromURL();
       expect(rev!.getRevisionID()).toBe('v1abc');
     });
 
     test('throws on 404', async () => {
-      server.use(
-        rest.get('*/api/v1/gist/missing', (req, res, ctx) => res(ctx.status(404))),
-      );
+      server.use(rest.get('*/api/v1/gist/missing', (req, res, ctx) => res(ctx.status(404))));
       global.location.hash = '#/gist/missing';
       await expect(gist.fetchFromURL()).rejects.toThrow("doesn't exist");
     });
@@ -105,9 +107,7 @@ describe('storage/gist', () => {
     });
 
     test('throws on error response', async () => {
-      server.use(
-        rest.post('*/api/v1/gist', (req, res, ctx) => res(ctx.status(500))),
-      );
+      server.use(rest.post('*/api/v1/gist', (req, res, ctx) => res(ctx.status(500))));
       await expect(gist.create({} as any)).rejects.toThrow('Unable to create');
     });
   });
@@ -144,7 +144,14 @@ describe('storage/gist', () => {
         ...GIST_DATA,
         files: {
           ...GIST_DATA.files,
-          'astexplorer.json': { content: JSON.stringify({ v: 2, parserID: 'acorn', toolID: 'jscodeshift', settings: {} }) },
+          'astexplorer.json': {
+            content: JSON.stringify({
+              v: 2,
+              parserID: 'acorn',
+              toolID: 'jscodeshift',
+              settings: {},
+            }),
+          },
         },
       };
       let patchBody: any;
@@ -171,9 +178,7 @@ describe('storage/gist', () => {
         ...overrides,
       };
       if (overrides.files) data.files = { ...GIST_DATA.files, ...overrides.files };
-      server.use(
-        rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.json(data))),
-      );
+      server.use(rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.json(data))));
       global.location.hash = '#/gist/gist123';
       return (await gist.fetchFromURL())!;
     }
@@ -202,9 +207,7 @@ describe('storage/gist', () => {
           // no transform.js
         },
       };
-      server.use(
-        rest.get('*/api/v1/gist/notx', (req, res, ctx) => res(ctx.json(noTransformGist))),
-      );
+      server.use(rest.get('*/api/v1/gist/notx', (req, res, ctx) => res(ctx.json(noTransformGist))));
       global.location.hash = '#/gist/notx';
       const rev = (await gist.fetchFromURL())!;
       expect(rev.getTransformCode()).toBe('');
@@ -239,7 +242,12 @@ describe('storage/gist', () => {
     });
 
     test('getTransformerID returns toolID from config', async () => {
-      const configWithTool = JSON.stringify({ v: 2, parserID: 'acorn', toolID: 'jscodeshift', settings: {} });
+      const configWithTool = JSON.stringify({
+        v: 2,
+        parserID: 'acorn',
+        toolID: 'jscodeshift',
+        settings: {},
+      });
       const rev = await makeGistRevision({
         files: { ...GIST_DATA.files, 'astexplorer.json': { content: configWithTool } },
       });
@@ -269,7 +277,9 @@ describe('storage/gist', () => {
       );
       global.location.hash = '#/gist/gist123';
       const existing = (await gist.fetchFromURL())!;
-      await expect(gist.fork(existing, { code: 'forked' } as any)).rejects.toThrow('Unable to fork');
+      await expect(gist.fork(existing, { code: 'forked' } as any)).rejects.toThrow(
+        'Unable to fork',
+      );
     });
   });
 
@@ -281,15 +291,15 @@ describe('storage/gist', () => {
       );
       global.location.hash = '#/gist/gist123';
       const existing = (await gist.fetchFromURL())!;
-      await expect(gist.update(existing, { code: 'updated' } as any)).rejects.toThrow('Unable to update');
+      await expect(gist.update(existing, { code: 'updated' } as any)).rejects.toThrow(
+        'Unable to update',
+      );
     });
   });
 
   describe('Revision getShareInfo rendering', () => {
     test('getShareInfo contains current revision URL', async () => {
-      server.use(
-        rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.json(GIST_DATA))),
-      );
+      server.use(rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.json(GIST_DATA))));
       global.location.hash = '#/gist/gist123';
       const rev = (await gist.fetchFromURL())!;
       const shareInfo = rev.getShareInfo();
@@ -306,9 +316,7 @@ describe('storage/gist', () => {
 
   describe('fetchFromURL with unknown error', () => {
     test('throws unknown error for non-404 status', async () => {
-      server.use(
-        rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.status(500))),
-      );
+      server.use(rest.get('*/api/v1/gist/gist123', (req, res, ctx) => res(ctx.status(500))));
       global.location.hash = '#/gist/gist123';
       await expect(gist.fetchFromURL()).rejects.toThrow('Unknown error');
     });
@@ -319,13 +327,15 @@ describe('storage/gist', () => {
       const unknownVersionConfig = JSON.stringify({ v: 99, parserID: 'acorn', settings: {} });
       server.use(
         rest.get('*/api/v1/gist/gist123', (req, res, ctx) =>
-          res(ctx.json({
-            ...GIST_DATA,
-            files: {
-              ...GIST_DATA.files,
-              'astexplorer.json': { content: unknownVersionConfig },
-            },
-          })),
+          res(
+            ctx.json({
+              ...GIST_DATA,
+              files: {
+                ...GIST_DATA.files,
+                'astexplorer.json': { content: unknownVersionConfig },
+              },
+            }),
+          ),
         ),
       );
       global.location.hash = '#/gist/gist123';

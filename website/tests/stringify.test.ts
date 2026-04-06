@@ -44,14 +44,16 @@ describe('stringify', () => {
   });
 
   test('stringifies functions showing signature only', () => {
-    const result = stringify(function foo(a: unknown, b: unknown) { return a; });
+    const result = stringify(function foo(a: unknown, b: unknown) {
+      return a;
+    });
     expect(result).toMatch(/^function foo\(/);
     // Should NOT include body
     expect(result).not.toContain('return');
   });
 
   test('stringifies anonymous functions', () => {
-    expect(stringify(function() {})).toMatch(/^function\s*\(/);
+    expect(stringify(function () {})).toMatch(/^function\s*\(/);
   });
 
   test('stringifies objects via JSON.stringify', () => {
