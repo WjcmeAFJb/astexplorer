@@ -3,12 +3,15 @@ import {getParserByID, getTransformerByID} from 'astexplorer-parsers';
 import type {TransformResult, ParseResult, Revision, Transformer, Parser, AppState} from '../types';
 
 // Our selectors are not computationally expensive so we can just use this
-// implementation.
-// createSelector uses Function.apply which loses type information.
-function createSelector<R = unknown>(deps: Array<(state: AppState) => unknown>, f: (...args: never[]) => R): (state: AppState) => R {
+// implementation. Overloads preserve type safety at call sites.
+function createSelector<A, R>(deps: [(s: AppState) => A], f: (a: A) => R): (s: AppState) => R;
+function createSelector<A, B, R>(deps: [(s: AppState) => A, (s: AppState) => B], f: (a: A, b: B) => R): (s: AppState) => R;
+function createSelector<A, B, C, R>(deps: [(s: AppState) => A, (s: AppState) => B, (s: AppState) => C], f: (a: A, b: B, c: C) => R): (s: AppState) => R;
+function createSelector<A, B, C, D, R>(deps: [(s: AppState) => A, (s: AppState) => B, (s: AppState) => C, (s: AppState) => D], f: (a: A, b: B, c: C, d: D) => R): (s: AppState) => R;
+function createSelector(deps: Array<(s: AppState) => unknown>, f: (...args: unknown[]) => unknown): (s: AppState) => unknown {
   return function(state) {
     const args = deps.map(d => d(state));
-    return (f as (...args: unknown[]) => R)(...args);
+    return f(...args);
   }
 }
 

@@ -152,7 +152,7 @@ export type Action = {
   text?: string;
   categoryId?: string;
   keyMap?: string;
-  result?: ParseResult;
+  result?: ParseResult | TransformResult;
 };
 
 // ---------------------------------------------------------------------------

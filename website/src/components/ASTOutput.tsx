@@ -1,6 +1,7 @@
 import React from 'react';
 import cx from '../utils/classnames';
 import visualizations from './visualization';
+import type {ParseResult} from '../types';
 
 const {useState} = React;
 
@@ -15,16 +16,16 @@ function formatTime(time: number | null | undefined): string | undefined {
 }
 
 type ASTOutputProps = {
-  parseResult?: { error?: { message: string }; time?: number; ast?: unknown; treeAdapter?: unknown };
+  parseResult?: ParseResult;
   position?: number;
 };
 
-export default function ASTOutput({parseResult={}, position}: ASTOutputProps): React.ReactElement {
+export default function ASTOutput({parseResult, position}: ASTOutputProps): React.ReactElement {
   const [selectedOutput, setSelectedOutput] = useState(0);
-  const {ast} = parseResult;
+  const ast = parseResult?.ast;
   let output;
 
-  if (parseResult.error !== undefined) {
+  if (parseResult !== undefined && parseResult.error !== null && parseResult.error !== undefined) {
     output =
       <div style={{
         padding: 20,
@@ -33,14 +34,11 @@ export default function ASTOutput({parseResult={}, position}: ASTOutputProps): R
       }}>
         {parseResult.error.message}
       </div>;
-  } else if (ast !== undefined && ast !== null) {
+  } else if (ast !== undefined && ast !== null && parseResult !== undefined) {
     output = (
       <ErrorBoundary>
         {
-          React.createElement(
-            visualizations[selectedOutput],
-            {parseResult, position},
-          )
+          React.createElement(visualizations[selectedOutput], {parseResult, position})
         }
       </ErrorBoundary>
     )
@@ -69,7 +67,7 @@ export default function ASTOutput({parseResult={}, position}: ASTOutputProps): R
       <div className="toolbar">
         {buttons}
         <span className="time">
-          {formatTime(parseResult.time)}
+          {formatTime(parseResult?.time)}
         </span>
       </div>
     {output}

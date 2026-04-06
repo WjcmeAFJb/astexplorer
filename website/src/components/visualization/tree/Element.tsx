@@ -283,7 +283,7 @@ const Element = React.memo( function Element({
           <span>
             {valueOutput}
             <CompactArrayView
-              array={value as unknown[]}
+              array={Array.isArray(value) ? value : undefined}
               onClick={onToggleClick}
             />
           </span>;

@@ -35,7 +35,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
   static defaultProps: Partial<EditorProps>;
   codeMirror: CodeMirror.Editor | null = null;
   container: HTMLElement | null = null;
-  _CMHandlers: Array<string | ((...args: unknown[]) => void)> = [];
+  _CMHandlers: Array<() => void> = [];
   _subscriptions: Array<() => void> = [];
   _updateTimer: ReturnType<typeof setTimeout> | undefined;
   _markerRange: [number, number] | null = null;
@@ -138,9 +138,7 @@ export default class Editor extends React.Component<EditorProps, {value: string}
       const cm = this.codeMirror;
       if (cm === null || cm === undefined) return;
 
-      require(['prettier/standalone', 'prettier/parser-babel'], (...modules: unknown[]) => {
-        const prettier = modules[0] as {format: (code: string, options: Record<string, unknown>) => string};
-        const babel = modules[1] as unknown;
+      require(['prettier/standalone', 'prettier/parser-babel'], (prettier: {format: (code: string, options: Record<string, unknown>) => string}, babel: unknown) => {
         const currValue = cm.getDoc().getValue();
         const cmEl = cm.getWrapperElement();
         const maxLineLength = cmEl.clientWidth;
@@ -235,19 +233,14 @@ export default class Editor extends React.Component<EditorProps, {value: string}
     this.codeMirror = null;
   }
 
-    _bindCMHandler(event: string, handler: (...args: unknown[]) => void) {
-    this._CMHandlers.push(event, handler);
-    if (this.codeMirror) {
-      (this.codeMirror.on as (event: string, handler: (...args: unknown[]) => void) => void)(event, handler);
-    }
+    _bindCMHandler<T extends keyof CodeMirror.EditorEventMap>(event: T, handler: CodeMirror.EditorEventMap[T]) {
+    this.codeMirror?.on(event, handler);
+    this._CMHandlers.push(() => this.codeMirror?.off(event, handler));
   }
 
   _unbindHandlers() {
-    const cmHandlers = this._CMHandlers;
-    for (let i = 0; i < cmHandlers.length; i += 2) {
-      if (this.codeMirror) {
-        (this.codeMirror.off as (event: string, handler: (...args: unknown[]) => void) => void)(cmHandlers[i] as string, cmHandlers[i+1] as (...args: unknown[]) => void);
-      }
+    for (const teardown of this._CMHandlers) {
+      teardown();
     }
     clear(this._subscriptions);
   }

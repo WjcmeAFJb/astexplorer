@@ -24,8 +24,7 @@ export default class JSCodeshiftEditor extends Editor {
       'Ctrl-O': (cm: CodeMirror.Editor) => { if (server !== undefined) server.showDocs(cm); },
     });
 
-    this._bindCMHandler('cursorActivity', (...args: unknown[]) => {
-      const cm = args[0] as CodeMirror.Editor;
+    this._bindCMHandler('cursorActivity', (cm: CodeMirror.Editor) => {
       if (server !== undefined) server.updateArgHints(cm);
     });
   }
@@ -62,8 +61,7 @@ function loadTern(): void {
       'codemirror/addon/tern/tern',
       'acorn',
     ],
-    (...modules: unknown[]) => {
-      const acorn = modules[2] as { [key: string]: unknown };
+    (_showHint: unknown, _ternAddon: unknown, acorn: Record<string, unknown>) => {
       globalThis.acorn = acorn;
       require(
         [
@@ -73,11 +71,7 @@ function loadTern(): void {
           '../defs/jscodeshift.json',
           'tern/defs/ecmascript.json',
         ],
-        (...innerModules: unknown[]) => {
-          const tern = innerModules[0] as TernModule;
-          const infer = innerModules[2] as InferModule;
-          const jscs_def = innerModules[3];
-          const ecmascript = innerModules[4];
+        (tern: TernModule, _docComment: unknown, infer: InferModule, jscs_def: unknown, ecmascript: unknown) => {
           globalThis.tern = tern;
           tern.registerPlugin('transformer', (ternServer: TernServerInstance) => {
             ternServer.on('afterLoad', (file: TernServerFile) => {

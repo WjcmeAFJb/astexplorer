@@ -1,6 +1,11 @@
 import * as actions from './actions';
 import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from 'astexplorer-parsers';
-import type {Revision, Category, Transformer, TransformResult, Action, WorkbenchState, AppState} from '../types';
+import type {Revision, Category, Transformer, TransformResult, ParseResult, Action, WorkbenchState, AppState} from '../types';
+
+function isTransformResult(value: ParseResult | TransformResult | undefined): value is TransformResult {
+  if (value === undefined || value === null) return false;
+  return !('ast' in value);
+}
 
 const defaultParser = getDefaultParser(getCategoryByID('javascript'));
 
@@ -155,7 +160,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         };
       }
     case actions.SET_PARSE_RESULT:
-      return {...state, parseResult: action.result};
+      return {...state, parseResult: isTransformResult(action.result) ? undefined : action.result};
     case actions.SET_PARSER_SETTINGS:
       return {...state, parserSettings: action.settings ?? null};
     case actions.SET_PARSER:
@@ -235,7 +240,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         ...state,
         transform: {
           ...state.transform,
-          transformResult: ((action.result ?? null) as unknown) as TransformResult | null,
+          transformResult: isTransformResult(action.result) ? action.result : null,
         },
       };
     case actions.SET_SNIPPET:

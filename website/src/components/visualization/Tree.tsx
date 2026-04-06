@@ -70,7 +70,7 @@ export default function Tree({parseResult, position}: TreeProps): React.ReactEle
 
   focusNodes('init');
   useLayoutEffect(() => {
-    focusNodes('focus', rootElement as React.RefObject<HTMLElement>);
+    focusNodes('focus', rootElement);
   });
 
   return (

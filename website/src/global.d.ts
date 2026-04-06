@@ -13,13 +13,19 @@ declare global {
   var __filename: string;
 
   interface Window {
-    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: (...args: unknown[]) => unknown;
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: ReduxDevToolsCompose;
+  }
+  // Matches Redux compose() — function composition with overloads
+  interface ReduxDevToolsCompose {
+    (): <R>(a: R) => R;
+    <F extends (...args: unknown[]) => unknown>(f: F): F;
+    (...funcs: Array<(...args: unknown[]) => unknown>): (...args: unknown[]) => unknown;
   }
 
   // Webpack AMD-style require used by the project.
   interface WebpackRequire {
-    // Each call site casts params to specific types via JSDoc @type annotations.
-    (deps: string[], callback: (...modules: unknown[]) => void): void;
+    // Generic signature: TypeScript infers callback param types from the call site.
+    <T extends unknown[]>(deps: string[], callback: (...modules: T) => void): void;
     context(directory: string, useSubdirectories: boolean, regExp: RegExp): {
       keys(): string[];
       <T>(id: string): T;

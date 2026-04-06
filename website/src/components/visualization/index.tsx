@@ -1,7 +1,4 @@
-import JSON from './JSON';
+import JSONView from './JSON';
 import Tree from './Tree';
 
-export default [
-  Tree,
-  JSON,
-] as Array<React.FunctionComponent<Record<string, unknown>> & {name: string}>;
+export default [Tree, JSONView];
