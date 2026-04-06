@@ -8,12 +8,12 @@ type CompactArrayViewProps = {
 export default class CompactArrayView extends React.Component<CompactArrayViewProps> {
   static displayName = 'CompactArrayView';
     shouldComponentUpdate(nextProps: CompactArrayViewProps) {
-    return nextProps.array.length !== this.props.array.length;
+    return (nextProps.array?.length ?? 0) !== (this.props.array?.length ?? 0);
   }
 
   render() {
     let {array} = this.props;
-    let count = array.length;
+    let count = array?.length ?? 0;
 
     if (count === 0) {
       return <span className="p">{'[ ]'}</span>;

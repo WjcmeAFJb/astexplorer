@@ -4,6 +4,7 @@ import {publish} from '../../utils/pubsub';
 import {treeAdapterFromParseResult} from '../../core/TreeAdapter';
 import {SelectedNodeProvider} from './SelectedNodeContext';
 import focusNodes from './focusNodes'
+import type {ParseResult} from '../../types';
 
 import './css/tree.css'
 
@@ -55,7 +56,7 @@ function makeCheckbox(name: string, settings: Record<string, boolean>, updateSet
 }
 
 type TreeProps = {
-  parseResult: { ast: unknown; treeAdapter: unknown };
+  parseResult: ParseResult;
   position?: number;
 };
 
@@ -69,7 +70,7 @@ export default function Tree({parseResult, position}: TreeProps): React.ReactEle
 
   focusNodes('init');
   useLayoutEffect(() => {
-    focusNodes('focus', rootElement);
+    focusNodes('focus', rootElement as React.RefObject<HTMLElement>);
   });
 
   return (
@@ -80,15 +81,19 @@ export default function Tree({parseResult, position}: TreeProps): React.ReactEle
           Autofocus
         </label>
         &#8203;
-        {treeAdapter.getConfigurableFilters().map(filter => (
-          <span key={filter.key}>
-            <label>
-              {makeCheckbox(filter.key, settings, updateSettings)}
-              {filter.label}
-            </label>
-            &#8203;
-          </span>
-        ))}
+        {treeAdapter.getConfigurableFilters().map(filter => {
+          const key = filter.key;
+          if (key === undefined) return null;
+          return (
+            <span key={key}>
+              <label>
+                {makeCheckbox(key, settings, updateSettings)}
+                {filter.label}
+              </label>
+              &#8203;
+            </span>
+          );
+        })}
       </div>
       <ul ref={rootElement} onMouseLeave={() => {publish('CLEAR_HIGHLIGHT');}}>
         <SelectedNodeProvider>

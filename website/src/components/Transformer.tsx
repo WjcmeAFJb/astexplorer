@@ -12,7 +12,7 @@ function resize() {
 }
 
 type TransformerProps = {
-  transformer: TransformerType;
+  transformer?: TransformerType;
   transformCode: string;
   onContentChange: (args: {value: string, cursor: number}) => void;
   enableFormatting: boolean;
@@ -24,7 +24,7 @@ type TransformerProps = {
 
 export default function Transformer(props: TransformerProps): React.ReactElement {
   const plainEditor = React.createElement(
-    props.transformer.id === 'jscodeshift' ? JSCodeshiftEditor : Editor,
+    props.transformer?.id === 'jscodeshift' ? JSCodeshiftEditor : Editor,
     {
       highlight: false,
       value: props.transformCode,

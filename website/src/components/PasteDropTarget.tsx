@@ -2,7 +2,7 @@ import React from 'react';
 import { categories } from 'astexplorer-parsers';
 
 function importEscodegen(): Promise<{generate: (ast: unknown, options: unknown) => string}> {
-  return new Promise(resolve => { require(['escodegen'], resolve); });
+  return new Promise(resolve => { require(['escodegen'], (...modules: unknown[]) => { resolve(modules[0] as {generate: (ast: unknown, options: unknown) => string}); }); });
 }
 
 const acceptedFileTypes = new Map([
@@ -50,12 +50,13 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
     const target = this.container;
 
     // Handle pastes
-    this._bindListener(document, 'paste', (event: ClipboardEvent) => {
-      if (event.clipboardData === null || event.clipboardData === undefined) {
+    this._bindListener(document, 'paste', (event: Event) => {
+      const clipboardEvent = event as ClipboardEvent;
+      if (clipboardEvent.clipboardData === null || clipboardEvent.clipboardData === undefined) {
         // No browser support? :(
         return;
       }
-      const cbdata = event.clipboardData;
+      const cbdata = clipboardEvent.clipboardData;
       // Plain text
       if (!Array.isArray(cbdata.types) || !cbdata.types.includes('text/plain')) {
         return;
@@ -76,26 +77,28 @@ export default class PasteDropTarget extends React.Component<PasteDropTargetProp
 
     // Handle file drops
     if (target !== null) {
-      this._bindListener(target, 'dragenter', (event: DragEvent) => {
+      this._bindListener(target, 'dragenter', (event: Event) => {
         clearTimeout(timer);
         event.preventDefault();
         this.setState({dragging: true});
       }, true);
 
-      this._bindListener(target, 'dragover', (event: DragEvent) => {
+      this._bindListener(target, 'dragover', (event: Event) => {
+        const dragEvent = event as DragEvent;
         clearTimeout(timer);
         event.preventDefault();
-        if (event.dataTransfer !== null) {
-          event.dataTransfer.dropEffect = 'copy';
+        if (dragEvent.dataTransfer !== null) {
+          dragEvent.dataTransfer.dropEffect = 'copy';
         }
       }, true);
 
-      this._bindListener(target, 'drop', (event: DragEvent) => {
+      this._bindListener(target, 'drop', (event: Event) => {
+        const dragEvent = event as DragEvent;
         this.setState({dragging: false});
-        if (event.dataTransfer === null) {
+        if (dragEvent.dataTransfer === null) {
           return;
         }
-        const file = event.dataTransfer.files[0];
+        const file = dragEvent.dataTransfer.files[0];
         let categoryId: string | undefined = acceptedFileTypes.get(file.type);
         if (categoryId === undefined || this.props.onText === undefined) {
           return;

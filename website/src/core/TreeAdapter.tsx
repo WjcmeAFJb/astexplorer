@@ -168,33 +168,39 @@ const TreeAdapterConfigs: Record<string, AdapterOptions & Record<string, unknown
       // expression statements
       'expression',
     ]),
-    openByDefault(this: {openByDefaultNodes: Set<unknown>, openByDefaultKeys: Set<string>}, node: Record<string, unknown>, key: string) {
-      return (node !== null && node !== undefined && this.openByDefaultNodes.has(node.type)) ||
-        this.openByDefaultKeys.has(key);
+    openByDefault(this: {openByDefaultNodes: Set<unknown>, openByDefaultKeys: Set<string>}, node: unknown, key: string) {
+      if (node !== null && node !== undefined && typeof node === 'object' && 'type' in node) {
+        return this.openByDefaultNodes.has(node.type) ||
+          this.openByDefaultKeys.has(key);
+      }
+      return this.openByDefaultKeys.has(key);
     },
-        nodeToRange(node: Record<string, unknown>): [number, number] | null {
+        nodeToRange(node: unknown): [number, number] | null {
       if (node === null || node === undefined || typeof node !== 'object') {
         return null;
       }
-      if (node.range !== undefined && node.range !== null) {
+      if ('range' in node && node.range !== undefined && node.range !== null) {
         const range = node.range;
         if (Array.isArray(range) && typeof range[0] === 'number' && typeof range[1] === 'number') {
           return [range[0], range[1]];
         }
       }
-      if (typeof node.start === 'number' && typeof node.end === 'number') {
+      if ('start' in node && 'end' in node && typeof node.start === 'number' && typeof node.end === 'number') {
         return [node.start, node.end];
       }
       return null;
     },
-        nodeToName(node: Record<string, unknown>): string {
-      return String(node.type);
+        nodeToName(node: unknown): string {
+      if (node !== null && node !== undefined && typeof node === 'object' && 'type' in node) {
+        return String(node.type);
+      }
+      return '';
     },
-        *walkNode(node: Record<string, unknown>) {
-      if (typeof node === 'object') {
-        for (let prop in node) {
+        *walkNode(node: unknown) {
+      if (typeof node === 'object' && node !== null) {
+        for (const [prop, value] of Object.entries(node)) {
           yield {
-            value: node[prop],
+            value,
             key: prop,
             computed: false,
           }
@@ -212,7 +218,7 @@ export function ignoreKeysFilter(keys?: Set<string>, key?: string, label?: strin
   return {
     key,
     label,
-    test(_: unknown, nodeKey: string) { return  keys.has(nodeKey); },
+    test(_: unknown, nodeKey: string) { return keys !== null && keys !== undefined && keys.has(nodeKey); },
   };
 }
 
@@ -265,6 +271,9 @@ function createTreeAdapter(type: string, adapterOptions: Partial<AdapterOptions>
 }
 
 export function treeAdapterFromParseResult({treeAdapter}: ParseResult, filterValues: Record<string, boolean>): TreeAdapter {
+  if (treeAdapter === null || treeAdapter === undefined) {
+    throw new Error('treeAdapter is null in ParseResult');
+  }
   return createTreeAdapter(
     treeAdapter.type,
     treeAdapter.options,

@@ -8,7 +8,7 @@ import type {Dispatch} from 'redux';
 function mapStateToProps(state: AppState) {
   return {
     visible: showShareDialog(state),
-    snippet: getRevision(state),
+    snippet: getRevision(state) ?? undefined,
   };
 }
 

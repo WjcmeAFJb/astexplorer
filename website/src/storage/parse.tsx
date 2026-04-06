@@ -1,6 +1,7 @@
 import React from 'react';
 import api from './api';
 import {getTransformerByID, getParserByID} from 'astexplorer-parsers';
+import type {Revision as RevisionType, SnippetData} from '../types';
 
 /**
  * @returns {{id: string, rev: string | number} | null}
@@ -45,7 +46,7 @@ function fetchSnippet(snippetID: string, revisionID?: string | number): Promise<
     .then((response: ParseSnippetData) => new Revision(response));
 }
 
-export function owns(snippet: unknown): boolean {
+export function owns(snippet: RevisionType): boolean {
   return snippet instanceof Revision;
 }
 
@@ -56,7 +57,7 @@ export function matchesURL() {
   return getIDAndRevisionFromHash() !== null;
 }
 
-export function updateHash(revision: Revision): void {
+export function updateHash(revision: RevisionType): void {
   const rev = revision.getRevisionID();
   const hasRev = rev !== undefined && rev !== '' && rev !== 0;
   const newHash = '/' + revision.getSnippetID() + (hasRev ? '/' + String(rev) : '');
@@ -78,7 +79,7 @@ export function fetchFromURL() {
  * Create a new snippet.
  * @returns {Promise<never>}
  */
-export function create() {
+export function create(_data: SnippetData): Promise<Revision> {
   return Promise.reject(
     new Error('Saving Parse snippets is not supported anymore.'),
   );
@@ -88,7 +89,7 @@ export function create() {
  * Update an existing snippet.
  * @returns {Promise<never>}
  */
-export function update() {
+export function update(_revision: RevisionType, _data: SnippetData): Promise<Revision> {
   return Promise.reject(
     new Error('Saving Parse snippets is not supported anymore.'),
   );
@@ -98,7 +99,7 @@ export function update() {
  * Fork existing snippet.
  * @returns {Promise<never>}
  */
-export function fork() {
+export function fork(_revision: RevisionType, _data: SnippetData): Promise<Revision> {
   return Promise.reject(
     new Error('Saving Parse snippets is not supported anymore.'),
   );
@@ -166,7 +167,7 @@ class Revision {
     if (transformerID !== undefined && transformerID !== '') {
       return getTransformerByID(transformerID).defaultParserID;
     }
-    return this._data.parserID;
+    return this._data.parserID ?? '';
   }
 
   getCode(): string {
@@ -175,7 +176,7 @@ class Revision {
     return this._data.code ?? getParserByID(parserID).category.codeExample;
   }
 
-  getParserSettings(): Record<string, unknown> | false | null {
+  getParserSettings(): Record<string, unknown> | null | false {
     const settings = this._data.settings;
     if (settings === undefined) {
       return null;

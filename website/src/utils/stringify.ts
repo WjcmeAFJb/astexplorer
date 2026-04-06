@@ -5,7 +5,7 @@
 export default function stringify(value: unknown): string {
   switch (typeof value) {
     case 'function':
-      return value.toString().match(/function[^(]*\([^)]*\)/)[0];
+      return value.toString().match(/function[^(]*\([^)]*\)/)?.[0] ?? value.toString();
     case 'object':
       return value ? JSON.stringify(value, stringify) : 'null';
     case 'undefined':

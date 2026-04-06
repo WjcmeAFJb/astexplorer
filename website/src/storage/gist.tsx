@@ -1,7 +1,7 @@
 import React from 'react';
 import api from './api';
 import {getParserByID} from 'astexplorer-parsers';
-import type {SnippetData} from '../types';
+import type {SnippetData, Revision as RevisionType} from '../types';
 
 function getIDAndRevisionFromHash(): {id: string, rev: string | undefined} | null {
   const match = window.location.hash.match(/^#\/gist\/([^/]+)(?:\/([^/]+))?/);
@@ -51,7 +51,7 @@ function fetchSnippet(snippetID: string, revisionID?: string): Promise<Revision>
   .then((response: GistData) => new Revision(response));
 }
 
-export function owns(snippet: unknown): boolean {
+export function owns(snippet: RevisionType): boolean {
   return snippet instanceof Revision;
 }
 
@@ -96,7 +96,7 @@ export function create(snippetData: SnippetData): Promise<Revision> {
 
  * Update an existing snippet.
  */
-export function update(revision: Revision, snippetData: SnippetData): Promise<Revision> {
+export function update(revision: RevisionType, snippetData: SnippetData): Promise<Revision> {
   // Fetch latest version of snippet
   return fetchSnippet(revision.getSnippetID())
     .then(latestRevision => {
@@ -130,7 +130,7 @@ export function update(revision: Revision, snippetData: SnippetData): Promise<Re
 
  * Fork existing snippet.
  */
-export function fork(revision: Revision, snippetData: SnippetData): Promise<Revision> {
+export function fork(revision: RevisionType, snippetData: SnippetData): Promise<Revision> {
   return api(
     `/gist/${revision.getSnippetID()}/${revision.getRevisionID()}`,
     {
@@ -223,8 +223,8 @@ class Revision {
     return this._code;
   }
 
-  getParserSettings(): Record<string, unknown> | undefined {
-    return this._config.settings[this._config.parserID];
+  getParserSettings(): Record<string, unknown> | null {
+    return this._config.settings[this._config.parserID] ?? null;
   }
 
   getShareInfo(): React.ReactElement {

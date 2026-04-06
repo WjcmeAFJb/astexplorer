@@ -12,17 +12,17 @@ type ParserButtonProps = {
 export default class ParserButton extends React.Component<ParserButtonProps> {
   static displayName = 'ParserButton';
   _onClick = ({currentTarget}: {currentTarget: HTMLElement}) => {
-    const parserID = currentTarget.dataset.id;
-    this.props.onParserChange(getParserByID(parserID));
+    const parserID = currentTarget.dataset.id ?? '';
+    if (this.props.onParserChange) this.props.onParserChange(getParserByID(parserID));
   };
 
   render() {
-    const parsers = this.props.category.parsers.filter(p => p.showInMenu);
+    const parsers = this.props.category ? this.props.category.parsers.filter(p => p.showInMenu) : [];
     return (
       <div className="button menuButton">
         <span>
           <i className='fa fa-lg fa-code fa-fw' />
-          &nbsp;{this.props.parser.displayName}
+          &nbsp;{this.props.parser ? this.props.parser.displayName : ''}
         </span>
         <ul>
           {parsers.map(parser => (
@@ -37,7 +37,7 @@ export default class ParserButton extends React.Component<ParserButtonProps> {
           type="button"
           title="Parser Settings"
           style={{minWidth: 0}}
-          disabled={!this.props.parser.hasSettings()}
+          disabled={!this.props.parser || !this.props.parser.hasSettings()}
           onClick={this.props.onParserSettingsButtonClick}>
           <i className="fa fa-cog fa-fw" />
         </button>

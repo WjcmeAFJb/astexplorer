@@ -23,7 +23,7 @@ function setSelectedNode(node: unknown, cb?: () => void) {
   }
   if (node !== null && node !== undefined) {
     globalThis.$node = node;
-    unselectCallback = cb;
+    unselectCallback = cb ?? null;
   } else {
     unselectCallback = null;
     delete globalThis.$node;

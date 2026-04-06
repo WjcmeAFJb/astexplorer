@@ -83,20 +83,20 @@ async function saveSnippet({fork}: Action, state: AppState, next: Dispatch, stor
       [parser.id]: parserSettings,
     },
     versions: {
-      [parser.id]: parser.version,
+      [parser.id]: parser.version ?? '',
     },
     filename: `source.${parser.category.fileExtension}`,
     code,
   };
   if (showTransformPanel && transformer) {
     data.toolID = transformer.id;
-    data.versions[transformer.id] = transformer.version;
+    data.versions[transformer.id] = transformer.version ?? '';
     data.transform = transformCode;
   }
 
   try {
     let newRevision;
-    if (fork === true) {
+    if (fork === true && revision !== null && revision !== undefined) {
       newRevision = await storageAdapter.fork(revision, data);
     } else if (revision !== null && revision !== undefined) {
       newRevision = await storageAdapter.update(revision, data);

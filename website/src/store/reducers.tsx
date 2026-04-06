@@ -1,6 +1,6 @@
 import * as actions from './actions';
 import {getCategoryByID, getDefaultParser, getParserByID, getTransformerByID} from 'astexplorer-parsers';
-import type {Revision, Category, Transformer, Action, WorkbenchState, AppState} from '../types';
+import type {Revision, Category, Transformer, TransformResult, Action, WorkbenchState, AppState} from '../types';
 
 const defaultParser = getDefaultParser(getCategoryByID('javascript'));
 
@@ -138,31 +138,37 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
 
   switch (action.type) {
     case actions.SELECT_CATEGORY:
+      if (!action.category) return state;
       return {
         ...state,
         ...parserFromCategory(action.category),
       };
     case actions.DROP_TEXT:
-      return {
-        ...state,
-        ...parserFromCategory(getCategoryByID(action.categoryId)),
-        code: action.text,
-        initialCode: action.text,
-      };
+      {
+        const categoryId = action.categoryId ?? '';
+        const text = action.text ?? '';
+        return {
+          ...state,
+          ...parserFromCategory(getCategoryByID(categoryId)),
+          code: text,
+          initialCode: text,
+        };
+      }
     case actions.SET_PARSE_RESULT:
       return {...state, parseResult: action.result};
     case actions.SET_PARSER_SETTINGS:
-      return {...state, parserSettings: action.settings};
+      return {...state, parserSettings: action.settings ?? null};
     case actions.SET_PARSER:
       {
-        const newState = {...state, parser: action.parser.id};
-        // @ts-expect-error — intentional cross-type comparison: action.parser is Parser, state.parser is string (ID). Always truthy, used as "parser changed" guard.
-        if (action.parser !== state.parser) {
-          // Update parser settings
-          newState.parserSettings =
-            fullState.parserSettings[action.parser.id] ?? null;
+        if (!action.parser) return state;
+        const newState = {
+          ...state,
+          parser: action.parser.id,
+          parserSettings: fullState.parserSettings[action.parser.id] ?? null,
+        };
 
-          // Check if we might want to reformat the code example
+        // Check if we might want to reformat the code example
+        if (state.transform.transformer !== null) {
           const transformer = getTransformerByID(state.transform.transformer)
           if (transformer !== undefined && state.transform.code === getDefaultTransform(transformer, state)) {
             newState.transform = {
@@ -174,15 +180,17 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         return newState;
       }
     case actions.SET_CODE:
-      return {...state, code: action.code};
+      return {...state, code: action.code ?? ''};
     case actions.SELECT_TRANSFORMER:
       {
+        if (!action.transformer) return state;
+        const transformer = action.transformer;
         const parserIsCompatible =
-          action.transformer.compatibleParserIDs !== undefined && action.transformer.compatibleParserIDs !== null && action.transformer.compatibleParserIDs.has(state.parser)
+          transformer.compatibleParserIDs !== undefined && transformer.compatibleParserIDs !== null && transformer.compatibleParserIDs.has(state.parser)
         const differentParser =
-          action.transformer.defaultParserID !== state.parser && !parserIsCompatible;
+          transformer.defaultParserID !== state.parser && !parserIsCompatible;
         const differentTransformer =
-          action.transformer.id !== state.transform.transformer ;
+          transformer.id !== state.transform.transformer ;
 
         if (!(differentParser || differentTransformer)) {
           return state;
@@ -191,25 +199,24 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         const newState = {...state};
 
         if (differentParser) {
-          newState.parser = action.transformer.defaultParserID;
+          newState.parser = transformer.defaultParserID;
           newState.parserSettings =
-            fullState.parserSettings[action.transformer.defaultParserID] ?? null;
+            fullState.parserSettings[transformer.defaultParserID] ?? null;
         }
 
         if (differentTransformer) {
-          const snippetHasDifferentTransform = fullState.activeRevision !== undefined &&
-            fullState.activeRevision !== null &&
-            fullState.activeRevision.getTransformerID() === action.transformer.id;
+          const snippetHasDifferentTransform = fullState.activeRevision !== null && fullState.activeRevision !== undefined &&
+            fullState.activeRevision.getTransformerID() === transformer.id;
           newState.transform = {
             ...state.transform,
-            transformer: action.transformer.id,
+            transformer: transformer.id,
             transformResult: null,
             code: snippetHasDifferentTransform ?
               state.transform.code :
-              getDefaultTransform(action.transformer, state),
+              getDefaultTransform(transformer, state),
             initialCode: snippetHasDifferentTransform ?
-              fullState.activeRevision.getTransformCode() :
-              getDefaultTransform(action.transformer, state),
+              fullState.activeRevision!.getTransformCode() :
+              getDefaultTransform(transformer, state),
           };
         }
 
@@ -220,7 +227,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         ...state,
         transform: {
           ...state.transform,
-          code: action.code,
+          code: action.code ?? '',
         },
       };
     case actions.SET_TRANSFORM_RESULT:
@@ -228,20 +235,21 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         ...state,
         transform: {
           ...state.transform,
-          transformResult: action.result,
+          transformResult: ((action.result ?? null) as unknown) as TransformResult | null,
         },
       };
     case actions.SET_SNIPPET:
       {
-        const {revision} = action;
+        if (!action.revision) return state;
+        const revision = action.revision;
 
-        const transformerID = revision.getTransformerID();
+        const transformerID = revision.getTransformerID() ?? null;
         const parserID = revision.getParserID();
 
         return {
           ...state,
           parser: parserID,
-          parserSettings: revision.getParserSettings() ?? fullState.parserSettings[parserID] ?? null,
+          parserSettings: ((): Record<string, unknown> | null => { const ps = revision.getParserSettings(); return (ps !== null && ps !== false) ? ps : (fullState.parserSettings[parserID] ?? null); })(),
           code: revision.getCode(),
           initialCode: revision.getCode(),
           transform: {
@@ -267,7 +275,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
           : undefined;
         if ((activeTransformerID !== undefined && activeTransformerID !== null && activeTransformerID !== '') || (reset && state.transform.transformer !== null && state.transform.transformer !== '')) {
           // Clear transform as well
-          const transformer = getTransformerByID(state.transform.transformer);
+          const transformer = getTransformerByID(state.transform.transformer!);
           newState.transform = {
             ...state.transform,
             code: getDefaultTransform(transformer, state),
@@ -277,7 +285,7 @@ function workbench(state: WorkbenchState =initialState.workbench, action: Action
         return newState;
       }
     case actions.SET_KEY_MAP:
-      return {...state, keyMap: action.keyMap};
+      return {...state, keyMap: action.keyMap ?? 'default'};
     default:
       return state;
   }
@@ -291,6 +299,7 @@ function parserSettings(state: Record<string, Record<string, unknown>> =initialS
         // settings in our local copy
         return state;
       }
+      if (!action.settings) return state;
       return {
         ...state,
         [fullState.workbench.parser]: action.settings,
@@ -303,6 +312,7 @@ function parserSettings(state: Record<string, Record<string, unknown>> =initialS
 function parserPerCategory(state: Record<string, string> =initialState.parserPerCategory, action: Action): Record<string, string> {
   switch (action.type) {
     case actions.SET_PARSER:
+      if (!action.parser) return state;
       return {...state, [action.parser.category.id]: action.parser.id};
     default:
       return state;
@@ -378,7 +388,7 @@ function forking(state: boolean =initialState.forking, action: Action): boolean 
 function cursor(state: number | null =initialState.cursor, action: Action): number | null {
   switch(action.type) {
     case actions.SET_CURSOR:
-      return action.cursor;
+      return action.cursor ?? null;
     case actions.SET_CODE:
       // If this action is triggered and the cursor = 0, then the code must be
       // loaded
@@ -398,7 +408,7 @@ function cursor(state: number | null =initialState.cursor, action: Action): numb
 function error(state: Error | null =initialState.error, action: Action): Error | null {
   switch (action.type) {
     case actions.SET_ERROR:
-      return action.error;
+      return action.error ?? null;
     case actions.CLEAR_ERROR:
       return null;
     default:
@@ -415,16 +425,16 @@ function showTransformPanel(state: boolean =initialState.showTransformPanel, act
     case actions.CLEAR_SNIPPET:
       return false;
     case actions.SET_SNIPPET:
-      return Boolean(action.revision.getTransformerID());
+      return Boolean(action.revision?.getTransformerID());
     default:
       return state;
   }
 }
 
-function activeRevision(state: Revision | null =initialState.selectedRevision, action: Action): Revision | null {
+function activeRevision(state: Revision | null =initialState.selectedRevision ?? null, action: Action): Revision | null {
   switch (action.type) {
     case actions.SET_SNIPPET:
-      return action.revision;
+      return action.revision ?? null;
     case actions.SELECT_CATEGORY:
     case actions.CLEAR_SNIPPET:
     case actions.RESET:

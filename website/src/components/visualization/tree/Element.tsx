@@ -46,7 +46,7 @@ const EVENTS = {
   DEEP_OPEN: 4,
 };
 
-function transition(currentState: number, event: number): number | undefined {
+function transition(currentState: number, event: number): number {
   switch (currentState) {
     case OPEN_STATES.DEFAULT:
     case OPEN_STATES.CLOSED:
@@ -84,6 +84,7 @@ function transition(currentState: number, event: number): number | undefined {
       }
       break;
   }
+  return currentState;
 }
 
 function useOpenState(openFromParent: boolean, isInRange: boolean): [number, React.Dispatch<React.SetStateAction<number>>] {
@@ -135,11 +136,11 @@ type ElementProps = {
 };
 
 const Element = React.memo( function Element({
-  name,
+  name = '',
   value,
   computed,
-  open,
-  level,
+  open = false,
+  level = 0,
   treeAdapter,
   autofocus,
   isInRange,
@@ -148,6 +149,9 @@ const Element = React.memo( function Element({
   onClick,
   position,
 }: ElementProps) {
+  if (!treeAdapter) {
+    throw new Error('Element requires a treeAdapter prop');
+  }
   const opensByDefault = useMemo(
     () => treeAdapter.opensByDefault(value, name),
     [treeAdapter, value, name],
@@ -156,7 +160,7 @@ const Element = React.memo( function Element({
     open,
     autofocus === true && (isInRange === true || hasChildrenInRange === true),
   );
-  const element = useRef((null as HTMLLIElement | null));
+  const element = useRef<HTMLLIElement | null>(null);
   if (autofocus === true && isInRange === true && hasChildrenInRange !== true) {
     focusNodes('add', element);
   }
@@ -166,7 +170,7 @@ const Element = React.memo( function Element({
     openState !== OPEN_STATES.CLOSED;
 
   const onToggleClick = useCallback(
-    (event: React.MouseEvent) => {
+    (event: React.MouseEvent | React.KeyboardEvent) => {
       const shiftKey = event.shiftKey;
       const newOpenState = shiftKey ? OPEN_STATES.DEEP_OPEN : (isOpen ? OPEN_STATES.CLOSED : OPEN_STATES.OPEN);
       if (onClick) {
@@ -178,12 +182,12 @@ const Element = React.memo( function Element({
   );
 
   const range = treeAdapter.getRange(value);
-  let onMouseOver;
-  let onMouseLeave;
+  let onMouseOver: ((event: React.SyntheticEvent) => void) | undefined;
+  let onMouseLeave: ((event: React.MouseEvent) => void) | undefined;
 
   // enable highlight on hover if node has a range
   if (range && level !== 0) {
-    onMouseOver = (event: React.MouseEvent) => {
+    onMouseOver = (event: React.SyntheticEvent) => {
       event.stopPropagation();
       publish('HIGHLIGHT', {node: value, range});
     };
@@ -204,7 +208,7 @@ const Element = React.memo( function Element({
     [onClick, setOpenState],
   );
 
-    function renderChild(childKey: string, childValue: unknown, childParent: unknown, childName: string | undefined, childComputed: boolean) {
+    const renderChild = (childKey: string, childValue: unknown, childParent: unknown, childName: string | undefined, childComputed: boolean) => {
     if (treeAdapter.isArray(childValue) || treeAdapter.isObject(childValue) || typeof childValue === 'function') {
       const ElementType = typeof childValue === 'function' ? FunctionElement : ElementContainer;
       return (
@@ -279,8 +283,7 @@ const Element = React.memo( function Element({
           <span>
             {valueOutput}
             <CompactArrayView
-              // @ts-expect-error — value confirmed array-like by typeof value.length === 'number' guard above
-              array={value}
+              array={value as unknown[]}
               onClick={onToggleClick}
             />
           </span>;
@@ -358,9 +361,14 @@ const Element = React.memo( function Element({
 const NOT_COMPUTED = {};
 
 const FunctionElement = React.memo( function FunctionElement(props: ElementProps) {
-  const [computedValue, setComputedValue] = useState(NOT_COMPUTED);
+  const [computedValue, setComputedValue] = useState<unknown>(NOT_COMPUTED);
   const [error, setError] = useState((null as Error | null));
   const {name, value, parent, computed, treeAdapter} = props;
+  const level = props.level ?? 0;
+
+  if (!treeAdapter) {
+    throw new Error('FunctionElement requires a treeAdapter prop');
+  }
 
   if (computedValue !== NOT_COMPUTED) {
     if (treeAdapter.isArray(computedValue) || treeAdapter.isObject(computedValue)) {
@@ -368,7 +376,7 @@ const FunctionElement = React.memo( function FunctionElement(props: ElementProps
         <ElementContainer
           {...props}
           value={computedValue}
-          level={props.level + 1}
+          level={level + 1}
         />
       );
     }
@@ -444,7 +452,7 @@ const PrimitiveElement = React.memo( function PrimitiveElement({
 type PropertyNameProps = {
   name?: string;
   computed?: boolean;
-  onClick?: (event: React.MouseEvent) => void;
+  onClick?: (event: React.MouseEvent | React.KeyboardEvent) => void;
 };
 
 const PropertyName = React.memo( function PropertyName({name, computed, onClick}: PropertyNameProps) {
@@ -461,7 +469,13 @@ const PropertyName = React.memo( function PropertyName({name, computed, onClick}
 export default function ElementContainer(props: ElementProps): React.ReactElement {
   const [selected, setSelected] = useState(false);
   const setSelectedNode = useSelectedNode();
-  const isInRange = props.treeAdapter.isInRange(props.value, props.name, props.position);
+  const {treeAdapter} = props;
+  if (!treeAdapter) {
+    throw new Error('ElementContainer requires a treeAdapter prop');
+  }
+  const name = props.name ?? '';
+  const position = props.position ?? 0;
+  const isInRange = treeAdapter.isInRange(props.value, name, position);
   const propValue = props.value;
   const propOnClick = props.onClick;
   const onClick = useCallback(
@@ -487,7 +501,7 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
       {...props}
       selected={selected}
       hasChildrenInRange={
-        props.treeAdapter.hasChildrenInRange(props.value, props.name, props.position)
+        treeAdapter.hasChildrenInRange(props.value, name, position)
       }
       isInRange={isInRange}
       onClick={onClick}

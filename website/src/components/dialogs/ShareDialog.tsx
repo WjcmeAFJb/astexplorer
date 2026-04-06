@@ -22,7 +22,7 @@ export default class ShareDialog extends React.Component<ShareDialogProps> {
         <div id="ShareDialog" className="dialog" role="dialog" onClick={this._outerClick} onKeyDown={(e) => { if (e.key === 'Escape') this.props.onWantToClose(); }}>
           <div className="inner" style={{maxWidth: '80%', width: 600}}>
             <div className="body">
-              {this.props.snippet.getShareInfo()}
+              {this.props.snippet !== undefined && this.props.snippet.getShareInfo()}
             </div>
             <div className="footer">
               <button onClick={this.props.onWantToClose}>Close</button>

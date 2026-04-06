@@ -14,13 +14,13 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
     constructor(props: SettingsDialogProps) {
     super(props);
     this.state = {
-      parserSettings: this.props.parserSettings,
+      parserSettings: this.props.parserSettings ?? null,
     };
   }
 
   componentDidUpdate(prevProps: SettingsDialogProps) {
     if (this.props.parserSettings !== prevProps.parserSettings) {
-      this.setState({parserSettings: this.props.parserSettings});
+      this.setState({parserSettings: this.props.parserSettings ?? null});
     }
   }
 
@@ -35,8 +35,12 @@ export default class SettingsDialog extends React.Component<SettingsDialogProps,
   };
 
   _saveAndClose = () => {
-    this.props.onSave(this.props.parser, this.state.parserSettings);
-    this.props.onWantToClose();
+    if (this.props.onSave && this.state.parserSettings) {
+      this.props.onSave(this.props.parser, this.state.parserSettings);
+    }
+    if (this.props.onWantToClose) {
+      this.props.onWantToClose();
+    }
   };
 
   _reset = () => {

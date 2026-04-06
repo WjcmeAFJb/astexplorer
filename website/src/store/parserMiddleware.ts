@@ -45,8 +45,8 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
       }
       // Temporary adapter for parsers that haven't been migrated yet.
       const openByDefault: (node: unknown, key: string) => boolean = (node: unknown, key: string) => (newParser.opensByDefault ?? (() => false))(node, key);
-      const nodeToRange: (node: unknown) => [number, number] | null = (node: unknown) => newParser.nodeToRange(node);
-      const nodeToName: (node: unknown) => string = (node: unknown) => newParser.getNodeName(node);
+      const nodeToRange: (node: unknown) => [number, number] | null = (node: unknown) => newParser.nodeToRange(node) ?? null;
+      const nodeToName: (node: unknown) => string = (node: unknown) => newParser.getNodeName(node) ?? '';
       const walkNode: (node: unknown) => Iterable<WalkResult> = (node: unknown) => newParser.forEachProperty(node);
       const treeAdapter = {
         type: 'default',

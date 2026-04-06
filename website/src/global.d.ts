@@ -91,23 +91,9 @@ declare module 'worker-loader!./hermes-worker.ts' {
   export default HermesWorker;
 }
 
-// WASM binaries exported from astexplorer-parsers
-declare module 'astexplorer-parsers/swc.wasm' {
-  const url: string;
-  export default url;
-}
-declare module 'astexplorer-parsers/syn.wasm' {
-  const url: string;
-  export default url;
-}
-declare module 'astexplorer-parsers/go.wasm' {
-  const url: string;
-  export default url;
-}
-declare module 'astexplorer-parsers/monkey.wasm' {
-  const url: string;
-  export default url;
-}
+// WASM binaries exported from astexplorer-parsers — declared in
+// src/wasm-modules.d.ts (a script file, so they work as true ambient
+// declarations rather than module augmentations).
 
 // astexplorer-refmt esy.json
 declare module 'astexplorer-refmt/esy.json' {
@@ -140,11 +126,7 @@ declare module 'babel-plugin-macros/package' {
   export default value;
 }
 
-// lodash.isequal — deep equality comparison
-declare module 'lodash.isequal' {
-  function isEqual(a: unknown, b: unknown): boolean;
-  export default isEqual;
-}
+// lodash.isequal — see src/lodash-isequal.d.ts (must be a script file)
 
 // prop-types — runtime prop validation library (not type-checked)
 declare module 'prop-types' {

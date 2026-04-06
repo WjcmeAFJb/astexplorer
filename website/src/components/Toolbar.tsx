@@ -4,12 +4,33 @@ import ParserButton from './buttons/ParserButton';
 import SnippetButton from './buttons/SnippetButton';
 import TransformButton from './buttons/TransformButton';
 import KeyMapButton from './buttons/KeyMapButton';
-import type {Parser, Transformer} from '../types';
+import type {Category, Parser, Transformer} from '../types';
 
-type ToolbarProps = Record<string, unknown> & {
+type ToolbarProps = {
   parser: Parser;
-  transformer?: Transformer;
+  transformer?: Transformer | null;
   showTransformer?: boolean;
+  // CategoryButton props
+  category?: Category;
+  onCategoryChange?: (category: Category) => void;
+  // ParserButton props
+  onParserChange?: (parser: Parser) => void;
+  onParserSettingsButtonClick?: () => void;
+  // TransformButton props
+  onTransformChange?: (transformer: Transformer | null) => void;
+  // SnippetButton props
+  canFork?: boolean;
+  canSave?: boolean;
+  forking?: boolean;
+  saving?: boolean;
+  onFork?: () => void;
+  onSave?: () => void;
+  onNew?: () => void;
+  onShareButtonClick?: () => void;
+  snippet?: unknown;
+  // KeyMapButton props
+  onKeyMapChange?: (keyMap: string) => void;
+  keyMap?: string;
 };
 
 export default function Toolbar(props: ToolbarProps): React.ReactElement {
@@ -23,7 +44,7 @@ export default function Toolbar(props: ToolbarProps): React.ReactElement {
     parserInfo =
       <a href={parser.homepage} target="_blank" rel="noopener noreferrer">{parserInfo}</a>;
   }
-  if (showTransformer === true && transformer !== undefined) {
+  if (showTransformer === true && transformer !== null && transformer !== undefined) {
     transformerInfo = String(transformer.displayName);
     if (transformer.version !== undefined && transformer.version !== '') {
       transformerInfo = String(transformerInfo) + '-' + String(transformer.version);
@@ -38,11 +59,37 @@ export default function Toolbar(props: ToolbarProps): React.ReactElement {
   return (
     <div id="Toolbar">
       <h1>AST Explorer</h1>
-      <SnippetButton {...props} />
-      <CategoryButton {...props} />
-      <ParserButton {...props} />
-      <TransformButton {...props} />
-      <KeyMapButton {...props} />
+      <SnippetButton
+        canFork={props.canFork}
+        canSave={props.canSave}
+        forking={props.forking}
+        saving={props.saving}
+        onFork={props.onFork}
+        onSave={props.onSave}
+        onNew={props.onNew}
+        onShareButtonClick={props.onShareButtonClick}
+        snippet={props.snippet}
+      />
+      <CategoryButton
+        category={props.category}
+        onCategoryChange={props.onCategoryChange}
+      />
+      <ParserButton
+        parser={props.parser}
+        category={props.category}
+        onParserChange={props.onParserChange}
+        onParserSettingsButtonClick={props.onParserSettingsButtonClick}
+      />
+      <TransformButton
+        category={props.category}
+        transformer={transformer ?? undefined}
+        showTransformer={props.showTransformer}
+        onTransformChange={props.onTransformChange}
+      />
+      <KeyMapButton
+        keyMap={props.keyMap}
+        onKeyMapChange={props.onKeyMapChange}
+      />
       <a
         style={{minWidth: 0}}
         target="_blank" rel="noopener noreferrer"

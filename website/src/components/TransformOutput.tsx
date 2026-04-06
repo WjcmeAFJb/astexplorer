@@ -30,15 +30,15 @@ function positionFromIndex(index: number, map: SourceMapConsumer | null | undefi
   if (lineStart === 0) {
         line++;
   }
-  ({ line, column } = map.generatedPositionFor({
+  const generated = map.generatedPositionFor({
     line,
     column,
     source: map.sources[0],
-  }));
-  if (line === null || column === null) {
+  });
+  if (generated.line === null || generated.column === null) {
     return undefined;
   }
-  return { line: line - 1, ch: column };
+  return { line: generated.line - 1, ch: generated.column };
 }
 
 export default function TransformOutput({transformResult, mode}: {transformResult: TransformResult | null, mode: string}): React.ReactElement {

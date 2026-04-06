@@ -10,10 +10,6 @@ function mapStateToProps(state: AppState) {
   const editorMode = parser.category.editorMode;
   return {
     transformer: selectors.getTransformer(state),
-    // Either the transform example or the transform code from the current
-    // revision. This is what we compare against to determine whether something
-    // changed and we can save.
-    defaultTransformCode: selectors.getInitialTransformCode(state),
     transformCode: selectors.getTransformCode(state),
     mode: editorMode !== undefined && editorMode !== '' ? editorMode : parser.category.id,
     enableFormatting: selectors.getFormattingState(state),

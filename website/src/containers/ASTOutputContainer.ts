@@ -4,9 +4,18 @@ import * as selectors from '../store/selectors';
 import type {AppState} from '../types';
 
 function mapStateToProps(state: AppState) {
+  const parseResult = selectors.getParseResult(state);
+  const cursor = selectors.getCursor(state);
   return {
-    parseResult: selectors.getParseResult(state),
-    position: selectors.getCursor(state),
+    parseResult: parseResult
+      ? {
+          ast: parseResult.ast,
+          error: parseResult.error ?? undefined,
+          time: parseResult.time ?? undefined,
+          treeAdapter: parseResult.treeAdapter ?? undefined,
+        }
+      : undefined,
+    position: cursor ?? undefined,
   };
 }
 

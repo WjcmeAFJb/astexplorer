@@ -29,33 +29,36 @@ export default class CategoryButton extends React.Component<CategoryButtonProps>
   static displayName = 'CategoryButton';
   _onClick = ({currentTarget}: {currentTarget: HTMLElement}) => {
     const categoryID = currentTarget.dataset.id;
-    this.props.onCategoryChange(getCategoryByID(categoryID));
+    if (categoryID !== undefined && categoryID !== '' && this.props.onCategoryChange) {
+      this.props.onCategoryChange(getCategoryByID(categoryID));
+    }
   };
 
   render() {
+    const {category} = this.props;
     return (
       <div className="button menuButton categoryButton">
         <span>
           <i
-            className={cx(categoryIcon[this.props.category.id] || 'fa-file-o', {
+            className={cx(category ? categoryIcon[category.id] || 'fa-file-o' : 'fa-file-o', {
               fa: true,
               'fa-lg': true,
               'fa-fw': true,
             })}
           />
-          &nbsp;{this.props.category.displayName}
+          &nbsp;{category ? category.displayName : ''}
         </span>
         <ul>
-          {categories.map(category => (
-            <li key={category.id} onClick={this._onClick} onKeyDown={this._onClick} data-id={category.id}>
+          {categories.map(cat => (
+            <li key={cat.id} onClick={this._onClick} onKeyDown={this._onClick} data-id={cat.id}>
               <button type="button">
                 <i
-                  className={cx(categoryIcon[category.id] || 'fa-file-o', {
+                  className={cx(categoryIcon[cat.id] || 'fa-file-o', {
                     fa: true,
                     'fa-fw': true,
                   })}
                 />
-                &nbsp;{category.displayName}
+                &nbsp;{cat.displayName}
               </button>
             </li>
           ))}

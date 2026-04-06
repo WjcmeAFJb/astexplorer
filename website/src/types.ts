@@ -48,7 +48,7 @@ export type Revision = {
   getTransformCode: () => string;
   getParserID: () => string;
   getCode: () => string;
-  getParserSettings: () => Record<string, unknown> | null;
+  getParserSettings: () => Record<string, unknown> | null | false;
   getShareInfo: () => React.ReactElement;
 };
 
@@ -100,7 +100,7 @@ export type TransformState = {
 
 export type TransformResult = {
   result?: string;
-  error?: Error;
+  error?: Error | null;
   map?: SourceMapConsumer | null;
   version?: string;
 };

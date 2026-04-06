@@ -32,8 +32,8 @@ class KeyMapButton extends React.Component<KeyMapButtonProps> {
               key={keyMap}
               // @ts-expect-error — disabled is not standard on <li> but used for styling
               disabled={this.props.keyMap === keyMap}
-              onClick={() => this.props.onKeyMapChange(keyMap)}
-              onKeyDown={() => this.props.onKeyMapChange(keyMap)}>
+              onClick={() => { if (this.props.onKeyMapChange) this.props.onKeyMapChange(keyMap); }}
+              onKeyDown={() => { if (this.props.onKeyMapChange) this.props.onKeyMapChange(keyMap); }}>
               <button type="button" >
                 {keyMap}
               </button>

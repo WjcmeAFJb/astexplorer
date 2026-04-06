@@ -10,7 +10,7 @@ import {storageAdapter} from './storage/backends';
 
 initWasm();
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?? compose;
+const composeEnhancers: typeof compose = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose | undefined) ?? compose;
 export const store = createStore(
   astexplorer,
   revive(LocalStorage.readState()),

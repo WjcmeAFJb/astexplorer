@@ -18,9 +18,9 @@ export default class Editor extends React.Component<JSONEditorProps> {
   _subscriptions: Array<() => void> = [];
 
   componentDidUpdate(prevProps: JSONEditorProps) {
-    if (this.props.value !== prevProps.value && this.props.value !== this.codeMirror.getValue()) {
+    if (this.codeMirror && this.props.value !== prevProps.value && this.props.value !== this.codeMirror.getValue()) {
       let info = this.codeMirror.getScrollInfo();
-      this.codeMirror.setValue(this.props.value);
+      this.codeMirror.setValue(this.props.value ?? '');
       this.codeMirror.scrollTo(info.left, info.top);
     }
   }
@@ -31,6 +31,9 @@ export default class Editor extends React.Component<JSONEditorProps> {
 
   componentDidMount() {
         this._subscriptions = [];
+    if (!this.container) {
+      return;
+    }
     this.codeMirror = CodeMirror( // eslint-disable-line new-cap
       this.container,
       {
@@ -55,7 +58,9 @@ export default class Editor extends React.Component<JSONEditorProps> {
   componentWillUnmount() {
     this._unbindHandlers();
     let container = this.container;
-    container.children[0].remove();
+    if (container) {
+      container.children[0].remove();
+    }
     this.codeMirror = null;
   }
 
@@ -65,9 +70,8 @@ export default class Editor extends React.Component<JSONEditorProps> {
 
   render() {
     return (
-      // @ts-expect-error — ref callback returns assignment value instead of void
       <div id="JSONEditor" className={this.props.className}
-        ref={c => this.container = c}/>
+        ref={c => { this.container = c; }}/>
     );
   }
 }

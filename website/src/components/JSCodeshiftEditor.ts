@@ -17,13 +17,15 @@ export default class JSCodeshiftEditor extends Editor {
   componentDidMount() {
     super.componentDidMount();
 
+    if (this.codeMirror === null) return;
     this.codeMirror.setOption('extraKeys', {
       'Ctrl-Space': (cm: CodeMirror.Editor) => { if (server !== undefined) server.complete(cm); },
       'Ctrl-I': (cm: CodeMirror.Editor) => { if (server !== undefined) server.showType(cm); },
       'Ctrl-O': (cm: CodeMirror.Editor) => { if (server !== undefined) server.showDocs(cm); },
     });
 
-    this._bindCMHandler('cursorActivity', (cm: CodeMirror.Editor) => {
+    this._bindCMHandler('cursorActivity', (...args: unknown[]) => {
+      const cm = args[0] as CodeMirror.Editor;
       if (server !== undefined) server.updateArgHints(cm);
     });
   }
@@ -60,7 +62,8 @@ function loadTern(): void {
       'codemirror/addon/tern/tern',
       'acorn',
     ],
-    (_1: unknown, _2: unknown, acorn: { [key: string]: unknown }) => {
+    (...modules: unknown[]) => {
+      const acorn = modules[2] as { [key: string]: unknown };
       globalThis.acorn = acorn;
       require(
         [
@@ -70,7 +73,11 @@ function loadTern(): void {
           '../defs/jscodeshift.json',
           'tern/defs/ecmascript.json',
         ],
-        (tern: TernModule, _: unknown, infer: InferModule, jscs_def: unknown, ecmascript: unknown) => {
+        (...innerModules: unknown[]) => {
+          const tern = innerModules[0] as TernModule;
+          const infer = innerModules[2] as InferModule;
+          const jscs_def = innerModules[3];
+          const ecmascript = innerModules[4];
           globalThis.tern = tern;
           tern.registerPlugin('transformer', (ternServer: TernServerInstance) => {
             ternServer.on('afterLoad', (file: TernServerFile) => {

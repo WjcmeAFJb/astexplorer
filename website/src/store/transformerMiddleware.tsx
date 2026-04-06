@@ -1,5 +1,5 @@
 import {getTransformer, getTransformCode, getCode, showTransformer} from './selectors';
-import type {TransformResult, Transformer, AppState, Action, SourceMapConsumer} from '../types';
+import type {TransformResult, Transformer, AppState, Action, SourceMapConsumer, ParseResult} from '../types';
 import type {MiddlewareAPI, Dispatch} from 'redux';
 
 async function transform(transformer: Transformer, transformCode: string, code: string): Promise<TransformResult> {
@@ -17,7 +17,7 @@ async function transform(transformer: Transformer, transformCode: string, code: 
     let map: SourceMapConsumer | null = null;
     if (typeof result !== 'string') {
       if (result.map !== undefined && result.map !== null && typeof result.map === 'object') {
-        map = result.map;
+        map = result.map as SourceMapConsumer;
       }
       result = result.code;
     }
@@ -83,7 +83,7 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     }
     next({
       type: 'SET_TRANSFORM_RESULT',
-      result,
+      result: result as unknown as ParseResult,
     });
   }
 };

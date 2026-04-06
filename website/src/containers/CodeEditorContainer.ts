@@ -12,7 +12,7 @@ function mapStateToProps(state: AppState) {
     keyMap: getKeyMap(state),
     value: getCode(state),
     mode: editorMode !== undefined && editorMode !== '' ? editorMode : parser.category.id,
-    error: (getParseResult(state) ?? {}).error,
+    error: getParseResult(state)?.error ?? undefined,
   };
 }
 

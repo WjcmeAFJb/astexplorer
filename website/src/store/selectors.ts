@@ -1,18 +1,14 @@
-// lodash.isequal has no type declarations; wrap to provide a typed interface
-function isEqual(a: unknown, b: unknown): boolean {
-  const _isEqual: (a: unknown, b: unknown) => boolean = require('lodash.isequal');
-  return _isEqual(a, b);
-}
+import isEqual from 'lodash.isequal';
 import {getParserByID, getTransformerByID} from 'astexplorer-parsers';
 import type {TransformResult, ParseResult, Revision, Transformer, Parser, AppState} from '../types';
 
 // Our selectors are not computationally expensive so we can just use this
 // implementation.
 // createSelector uses Function.apply which loses type information.
-function createSelector<R = unknown>(deps: Array<(state: AppState) => unknown>, f: (...args: unknown[]) => R): (state: AppState) => R {
+function createSelector<R = unknown>(deps: Array<(state: AppState) => unknown>, f: (...args: never[]) => R): (state: AppState) => R {
   return function(state) {
     const args = deps.map(d => d(state));
-    return f(...args);
+    return (f as (...args: unknown[]) => R)(...args);
   }
 }
 
@@ -101,7 +97,11 @@ export function getInitialTransformCode(state: AppState): string {
 }
 
 export function getTransformer(state: AppState): Transformer | undefined {
-  return getTransformerByID(state.workbench.transform.transformer);
+  const transformer = state.workbench.transform.transformer;
+  if (transformer === null) {
+    return undefined;
+  }
+  return getTransformerByID(transformer);
 }
 
 export function getTransformResult(state: AppState): TransformResult | null {
