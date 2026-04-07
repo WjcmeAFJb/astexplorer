@@ -18,9 +18,14 @@ function formatTime(time: number | null | undefined): string | undefined {
 type ASTOutputProps = {
   parseResult?: ParseResult;
   position?: number;
+  parsing?: boolean;
 };
 
-export default function ASTOutput({ parseResult, position }: ASTOutputProps): React.ReactElement {
+export default function ASTOutput({
+  parseResult,
+  position,
+  parsing,
+}: ASTOutputProps): React.ReactElement {
   const [selectedOutput, setSelectedOutput] = useState(0);
   const ast = parseResult?.ast;
   let output;
@@ -64,11 +69,16 @@ export default function ASTOutput({ parseResult, position }: ASTOutputProps): Re
   ));
 
   return (
-    <div className="output highlight">
+    <div className={cx('output', 'highlight', { loading: parsing })}>
       <div className="toolbar">
         {buttons}
         <span className="time">{formatTime(parseResult?.time)}</span>
       </div>
+      {parsing === true && (
+        <div className="parsing-indicator">
+          <i className="fa fa-lg fa-spinner fa-pulse" />
+        </div>
+      )}
       {output}
     </div>
   );

@@ -33,6 +33,8 @@ const initialState: AppState = {
   loadingSnippet: false,
   forking: false,
   saving: false,
+  parsing: false,
+  transforming: false,
   cursor: null,
   error: null,
   showTransformPanel: false,
@@ -119,6 +121,8 @@ export function astexplorer(state: AppState = initialState, action: Action): App
     loadingSnippet: loadSnippet(state.loadingSnippet, action),
     saving: saving(state.saving, action),
     forking: forking(state.forking, action),
+    parsing: parsing(state.parsing, action),
+    transforming: transforming(state.transforming, action),
     cursor: cursor(state.cursor, action),
     error: error(state.error, action),
     showTransformPanel: showTransformPanel(state.showTransformPanel, action),
@@ -435,6 +439,28 @@ function forking(state: boolean = initialState.forking, action: Action): boolean
     case actions.START_SAVE:
       return action.fork === true;
     case actions.END_SAVE:
+      return false;
+    default:
+      return state;
+  }
+}
+
+function parsing(state: boolean = initialState.parsing, action: Action): boolean {
+  switch (action.type) {
+    case actions.START_PARSING:
+      return true;
+    case actions.SET_PARSE_RESULT:
+      return false;
+    default:
+      return state;
+  }
+}
+
+function transforming(state: boolean = initialState.transforming, action: Action): boolean {
+  switch (action.type) {
+    case actions.START_TRANSFORMING:
+      return true;
+    case actions.SET_TRANSFORM_RESULT:
       return false;
     default:
       return state;

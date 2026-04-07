@@ -47,9 +47,11 @@ function positionFromIndex(
 export default function TransformOutput({
   transformResult,
   mode,
+  transforming,
 }: {
   transformResult: TransformResult | null;
   mode: string;
+  transforming?: boolean;
 }): React.ReactElement {
   // This ensures that we are rendering an empty editor as "placeholder" if no transform result is available yet.
   const result = transformResult ?? { result: '' };
@@ -60,7 +62,12 @@ export default function TransformOutput({
   );
 
   return (
-    <div className="output highlight">
+    <div className={`output highlight${transforming === true ? ' loading' : ''}`}>
+      {transforming === true && (
+        <div className="parsing-indicator">
+          <i className="fa fa-lg fa-spinner fa-pulse" />
+        </div>
+      )}
       {result.error !== undefined && result.error !== null ? (
         <Editor
           highlight={false}

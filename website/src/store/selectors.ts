@@ -52,6 +52,14 @@ export function isLoadingSnippet(state: AppState): boolean {
   return state.loadingSnippet;
 }
 
+export function isParsing(state: AppState): boolean {
+  return state.parsing;
+}
+
+export function isTransforming(state: AppState): boolean {
+  return state.transforming;
+}
+
 export function showSettingsDialog(state: AppState): boolean {
   return state.showSettingsDialog;
 }

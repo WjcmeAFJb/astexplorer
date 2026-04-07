@@ -30,6 +30,8 @@ export const END_SAVE = 'END_SAVE';
 export const RESET = 'RESET';
 export const TOGGLE_FORMATTING = 'TOGGLE_FORMATTING';
 export const SET_KEY_MAP = 'SET_KEY_MAP';
+export const START_PARSING = 'START_PARSING';
+export const START_TRANSFORMING = 'START_TRANSFORMING';
 
 export function setParser(parser: Parser): { type: typeof SET_PARSER; parser: Parser } {
   return { type: SET_PARSER, parser };

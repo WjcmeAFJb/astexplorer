@@ -60,6 +60,7 @@ vi.mock('monaco-editor', () => mockMonaco);
 
 vi.mock('../src/monacoLanguages', () => ({
   getMonacoLanguage: vi.fn((mode: string) => mode || 'plaintext'),
+  ensureLanguageRegistered: vi.fn(),
 }));
 
 import Editor from '../src/components/Editor';

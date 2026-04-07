@@ -1,3 +1,4 @@
+import './monacoWorkers';
 import type { AppState } from './types';
 import {
   ASTOutputContainer,
@@ -5,10 +6,7 @@ import {
   ErrorMessageContainer,
   LoadingIndicatorContainer,
   PasteDropTargetContainer,
-  SettingsDialogContainer,
-  ShareDialogContainer,
   ToolbarContainer,
-  TransformerContainer,
 } from './containers';
 import GistBanner from './components/GistBanner';
 import { publish } from './utils/pubsub';
@@ -19,6 +17,13 @@ import { createRoot } from 'react-dom/client';
 import { store } from './storeSetup';
 import '../css/style.css';
 import cx from './utils/classnames';
+
+const { lazy, Suspense } = React;
+
+// Lazy-load components that are conditionally rendered or rarely used
+const SettingsDialogContainer = lazy(() => import('./containers/SettingsDialogContainer'));
+const ShareDialogContainer = lazy(() => import('./containers/ShareDialogContainer'));
+const TransformerContainer = lazy(() => import('./containers/TransformerContainer'));
 
 function resize() {
   publish('PANEL_RESIZE');
@@ -36,8 +41,12 @@ function App({
       <ErrorMessageContainer />
       <PasteDropTargetContainer id="main" className={cx({ hasError })}>
         <LoadingIndicatorContainer />
-        <SettingsDialogContainer />
-        <ShareDialogContainer />
+        <Suspense fallback={null}>
+          <SettingsDialogContainer />
+        </Suspense>
+        <Suspense fallback={null}>
+          <ShareDialogContainer />
+        </Suspense>
         <ToolbarContainer />
         <GistBanner />
         <SplitPane className="splitpane-content" vertical={true} onResize={resize}>
@@ -45,7 +54,11 @@ function App({
             <CodeEditorContainer />
             <ASTOutputContainer />
           </SplitPane>
-          {showTransformer ? <TransformerContainer /> : null}
+          {showTransformer ? (
+            <Suspense fallback={null}>
+              <TransformerContainer />
+            </Suspense>
+          ) : null}
         </SplitPane>
       </PasteDropTargetContainer>
     </>

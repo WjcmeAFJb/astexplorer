@@ -547,3 +547,21 @@ body .monaco-editor .suggest-widget {
   width: 20px;
   background-color: #ddd;
 }
+
+/* Loading indicators for parser/transformer */
+.parsing-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  font-size: 200%;
+  color: #555;
+  pointer-events: none;
+}
+
+.output.loading {
+  opacity: 0.5;
+  pointer-events: none;
+  position: relative;
+}

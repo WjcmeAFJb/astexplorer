@@ -1,7 +1,7 @@
 import * as monaco from 'monaco-editor';
 import { subscribe, clear } from '../utils/pubsub';
 import React from 'react';
-import { getMonacoLanguage } from '../monacoLanguages';
+import { getMonacoLanguage, ensureLanguageRegistered } from '../monacoLanguages';
 
 const defaultPrettierOptions: Record<string, unknown> = {
   printWidth: 80,
@@ -60,9 +60,11 @@ export default class Editor extends React.Component<EditorProps, { value: string
       this._ignoreChange = false;
     }
     if (this.props.mode !== prevProps.mode && this.monacoEditor) {
+      const newLangId = getMonacoLanguage(this.props.mode);
+      ensureLanguageRegistered(newLangId);
       const model = this.monacoEditor.getModel();
       if (model) {
-        monaco.editor.setModelLanguage(model, getMonacoLanguage(this.props.mode));
+        monaco.editor.setModelLanguage(model, newLangId);
       }
     }
     if (this.props.keyMap !== prevProps.keyMap) {
@@ -132,9 +134,11 @@ export default class Editor extends React.Component<EditorProps, { value: string
     this._subscriptions = [];
     if (!this.container) return;
 
+    const langId = getMonacoLanguage(this.props.mode);
+    ensureLanguageRegistered(langId);
     this.monacoEditor = monaco.editor.create(this.container, {
       value: this.state.value,
-      language: getMonacoLanguage(this.props.mode),
+      language: langId,
       lineNumbers: this.props.lineNumbers !== false ? 'on' : 'off',
       readOnly: this.props.readOnly === true,
       minimap: { enabled: false },

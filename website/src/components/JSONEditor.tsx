@@ -1,5 +1,6 @@
 import * as monaco from 'monaco-editor';
 import { subscribe, clear } from '../utils/pubsub';
+import { ensureLanguageRegistered } from '../monacoLanguages';
 import React from 'react';
 
 type JSONEditorProps = {
@@ -35,6 +36,7 @@ export default class Editor extends React.Component<JSONEditorProps> {
     if (!this.container) {
       return;
     }
+    ensureLanguageRegistered('json');
     this.monacoEditor = monaco.editor.create(this.container, {
       value: this.props.value,
       language: 'json',

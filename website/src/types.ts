@@ -127,6 +127,8 @@ export type AppState = {
   loadingSnippet: boolean;
   forking: boolean;
   saving: boolean;
+  parsing: boolean;
+  transforming: boolean;
   cursor: number | null;
   error: Error | null;
   showTransformPanel: boolean;

@@ -3,7 +3,6 @@ export { default as CodeEditorContainer } from './CodeEditorContainer';
 export { default as ErrorMessageContainer } from './ErrorMessageContainer';
 export { default as LoadingIndicatorContainer } from './LoadingIndicatorContainer';
 export { default as PasteDropTargetContainer } from './PasteDropTargetContainer';
-export { default as SettingsDialogContainer } from './SettingsDialogContainer';
-export { default as ShareDialogContainer } from './ShareDialogContainer';
 export { default as ToolbarContainer } from './ToolbarContainer';
-export { default as TransformerContainer } from './TransformerContainer';
+// SettingsDialogContainer, ShareDialogContainer, and TransformerContainer
+// are lazy-loaded via React.lazy() in app.tsx — not exported here.

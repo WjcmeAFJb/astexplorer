@@ -19,6 +19,7 @@ type TransformerProps = {
   keyMap: string;
   toggleFormatting: () => void;
   transformResult: TransformResult | null;
+  transforming?: boolean;
   mode: string;
 };
 
@@ -47,7 +48,11 @@ export default function Transformer(props: TransformerProps): React.ReactElement
   return (
     <SplitPane className="splitpane" onResize={resize}>
       {formattingEditor}
-      <TransformOutput transformResult={props.transformResult} mode={props.mode} />
+      <TransformOutput
+        transformResult={props.transformResult}
+        mode={props.mode}
+        transforming={props.transforming}
+      />
     </SplitPane>
   );
 }

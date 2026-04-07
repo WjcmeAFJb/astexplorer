@@ -81,6 +81,7 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) =>
         console.clear();
       }
 
+      next({ type: 'START_TRANSFORMING' });
       let result: TransformResult;
       try {
         result = await transform(newTransformer, newTransformCode, newCode);

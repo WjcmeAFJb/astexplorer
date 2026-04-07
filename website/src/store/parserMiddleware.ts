@@ -45,6 +45,7 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) =>
       ) {
         return;
       }
+      next({ type: 'START_PARSING' });
       const start = Date.now();
       try {
         const ast = await parse(newParser, newCode, newParserSettings);

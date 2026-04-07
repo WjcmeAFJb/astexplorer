@@ -3,38 +3,6 @@ import react from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
 
-// Configure Monaco Editor workers for Vite
-function monacoEditorPlugin() {
-  return {
-    name: 'monaco-editor-workers',
-    transformIndexHtml() {
-      return [
-        {
-          tag: 'script',
-          attrs: { type: 'module' },
-          children: `
-            import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
-            import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
-            import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
-            import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
-            import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
-            self.MonacoEnvironment = {
-              getWorker(_, label) {
-                if (label === 'json') return new jsonWorker();
-                if (label === 'css' || label === 'scss' || label === 'less') return new cssWorker();
-                if (label === 'html' || label === 'handlebars' || label === 'razor') return new htmlWorker();
-                if (label === 'typescript' || label === 'javascript') return new tsWorker();
-                return new editorWorker();
-              }
-            };
-          `,
-          injectTo: 'head-prepend' as const,
-        },
-      ];
-    },
-  };
-}
-
 // Copy webpack async chunks from parsers dist to build output
 function copyParsersChunks() {
   return {
@@ -56,7 +24,7 @@ function copyParsersChunks() {
 }
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), monacoEditorPlugin(), copyParsersChunks()],
+  plugins: [react(), copyParsersChunks()],
 
   // Treat .wasm imports as static assets (URL strings) rather than ESM WASM modules
   assetsInclude: ['**/*.wasm'],
@@ -70,6 +38,13 @@ export default defineConfig(({ mode }) => ({
     emptyOutDir: true,
     sourcemap: mode === 'development',
     target: 'es2022',
+    modulePreload: {
+      // Don't add <link rel="modulepreload"> for large chunks —
+      // they're loaded on-demand and not needed for initial render.
+      resolveDependencies: (_filename: string, deps: string[]) => {
+        return deps.filter((dep) => !dep.includes('parsers/') && !dep.includes('monaco'));
+      },
+    },
     commonjsOptions: {
       transformMixedEsModules: true,
     },
@@ -80,12 +55,24 @@ export default defineConfig(({ mode }) => ({
           if (info.names?.[0]?.endsWith('.wasm')) return 'assets/[name][extname]';
           return 'assets/[name]-[hash][extname]';
         },
-        // Place parsers main module inside assets/parsers/ so chunk paths resolve
+        // Place parsers and Monaco into separate chunks for parallel loading & caching
         manualChunks(id) {
           if (id.includes('astexplorer-parsers')) return 'parsers/index';
+          if (id.includes('monaco-editor')) return 'monaco';
         },
       },
     },
+  },
+
+  resolve: {
+    alias: [
+      {
+        // Only alias the bare 'monaco-editor' import (exact match),
+        // not subpath imports like 'monaco-editor/esm/vs/...'.
+        find: /^monaco-editor$/,
+        replacement: 'monaco-editor/esm/vs/editor/edcore.main.js',
+      },
+    ],
   },
 
   optimizeDeps: {

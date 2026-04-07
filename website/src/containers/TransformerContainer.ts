@@ -15,6 +15,7 @@ function mapStateToProps(state: AppState) {
     enableFormatting: selectors.getFormattingState(state),
     keyMap: selectors.getKeyMap(state),
     transformResult: selectors.getTransformResult(state),
+    transforming: selectors.isTransforming(state),
   };
 }
 
