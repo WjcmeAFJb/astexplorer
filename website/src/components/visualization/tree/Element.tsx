@@ -295,7 +295,8 @@ const Element = React.memo(
             <span>
               {valueOutput}
               <CompactArrayView
-                array={Array.isArray(value) ? value : undefined}
+                // @ts-expect-error — value is array-like (has .length) but may not be a true Array
+                array={value}
                 onClick={onToggleClick}
               />
             </span>
@@ -482,8 +483,8 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
     throw new Error('ElementContainer requires a treeAdapter prop');
   }
   const name = props.name ?? '';
-  const position = props.position ?? 0;
-  const isInRange = treeAdapter.isInRange(props.value, name, position);
+  const position = props.position;
+  const isInRange = position != null ? treeAdapter.isInRange(props.value, name, position) : false;
   const propValue = props.value;
   const propOnClick = props.onClick;
   const onClick = useCallback(
@@ -508,7 +509,9 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
     <Element
       {...props}
       selected={selected}
-      hasChildrenInRange={treeAdapter.hasChildrenInRange(props.value, name, position)}
+      hasChildrenInRange={
+        position != null ? treeAdapter.hasChildrenInRange(props.value, name, position) : false
+      }
       isInRange={isInRange}
       onClick={onClick}
     />

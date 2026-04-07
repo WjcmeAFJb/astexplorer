@@ -1,12 +1,22 @@
 const path = require('path');
 
 // Resolve webpack and build tools from the website's node_modules (the host project).
-// This avoids duplicating heavy devDependencies in this package.
+// With yarn workspaces, dependencies may be hoisted to the root node_modules.
 const websiteNodeModules = path.resolve(__dirname, '..', '..', 'website', 'node_modules');
-const webpack = require(path.join(websiteNodeModules, 'webpack'));
+const rootNodeModules = path.resolve(__dirname, '..', '..', 'node_modules');
+const fs = require('fs');
+
+/** Resolve a path under node_modules, checking website then root (hoisted). */
+function nm(...segments) {
+  const ws = path.join(websiteNodeModules, ...segments);
+  if (fs.existsSync(ws)) return ws;
+  return path.join(rootNodeModules, ...segments);
+}
+
+const webpack = require(nm('webpack'));
 
 function resolveFromWebsite(mod) {
-  return require.resolve(mod, { paths: [websiteNodeModules] });
+  return require.resolve(mod, { paths: [websiteNodeModules, rootNodeModules] });
 }
 
 // ---------------------------------------------------------------------------
@@ -72,17 +82,27 @@ module.exports = {
     modules: [
       path.resolve(__dirname, 'node_modules'),
       websiteNodeModules,
+      rootNodeModules,
       'node_modules',
     ],
     alias: {
       // webpack 4 can't resolve "exports" field in package.json for these packages
-      'chevrotain$': path.join(websiteNodeModules, 'chevrotain', 'lib_esm', 'src', 'api.js'),
-      'chevrotain-allstar$': path.join(websiteNodeModules, 'chevrotain-allstar', 'lib', 'index.js'),
-      'meriyah$': path.join(websiteNodeModules, 'meriyah', 'dist', 'meriyah.esm.js'),
-      'meriyah/package.json': path.join(websiteNodeModules, 'meriyah', 'package.json'),
-      'java-parser/package.json': path.join(websiteNodeModules, 'java-parser', 'package.json'),
+      // Only java-parser uses chevrotain; use its nested v11 globally
+      // (hoisted v12 is incompatible with chevrotain-allstar's peerDep ^11)
+      'chevrotain$': nm( 'java-parser', 'node_modules', 'chevrotain', 'lib', 'src', 'api.js'),
+      '@chevrotain/cst-dts-gen': nm( 'java-parser', 'node_modules', '@chevrotain', 'cst-dts-gen', 'lib', 'src', 'api.js'),
+      '@chevrotain/gast': nm( 'java-parser', 'node_modules', '@chevrotain', 'gast', 'lib', 'src', 'api.js'),
+      '@chevrotain/regexp-to-ast': nm( 'java-parser', 'node_modules', '@chevrotain', 'regexp-to-ast', 'lib', 'src', 'api.js'),
+      '@chevrotain/utils': nm( 'java-parser', 'node_modules', '@chevrotain', 'utils', 'lib', 'src', 'api.js'),
+      'chevrotain-allstar$': nm( 'chevrotain-allstar', 'lib', 'index.js'),
+      'meriyah$': nm( 'meriyah', 'dist', 'meriyah.esm.js'),
+      'meriyah/package.json': nm( 'meriyah', 'package.json'),
+      'java-parser$': nm( 'java-parser', 'src', 'index.js'),
+      'java-parser/package.json': nm( 'java-parser', 'package.json'),
+      // chalk v5 uses Node.js subpath imports (#imports) unsupported by webpack 4
+      'chalk': nm( 'babel5', 'node_modules', 'chalk'),
       // Go WASM runtime
-      'gojs': path.join(websiteNodeModules, 'astexplorer-go', 'go.js'),
+      'gojs': nm( 'astexplorer-go', 'go.js'),
       // Browser-safe fs shim with realpathSync.native etc.
       'fs': path.resolve(__dirname, 'src', 'shims', 'fs-browser.js'),
     },
@@ -92,6 +112,7 @@ module.exports = {
     modules: [
       path.resolve(__dirname, 'node_modules'),
       websiteNodeModules,
+      rootNodeModules,
       'node_modules',
     ],
   },
@@ -113,8 +134,8 @@ module.exports = {
       {
         test: /\.js$/,
         include: [
-          path.join(websiteNodeModules, '@swc', 'wasm-web'),
-          path.join(websiteNodeModules, 'astexplorer-syn'),
+          nm( '@swc', 'wasm-web'),
+          nm( 'astexplorer-syn'),
         ],
         loader: resolveFromWebsite('@open-wc/webpack-import-meta-loader'),
       },
@@ -122,10 +143,10 @@ module.exports = {
         test: /\.wasm$/,
         type: 'javascript/auto',
         include: [
-          path.join(websiteNodeModules, '@swc', 'wasm-web'),
-          path.join(websiteNodeModules, 'astexplorer-syn'),
-          path.join(websiteNodeModules, 'astexplorer-go'),
-          path.join(websiteNodeModules, '@gengjiawen', 'monkey-wasm'),
+          nm( '@swc', 'wasm-web'),
+          nm( 'astexplorer-syn'),
+          nm( 'astexplorer-go'),
+          nm( '@gengjiawen', 'monkey-wasm'),
         ],
         loader: 'file-loader',
         options: {
@@ -138,20 +159,35 @@ module.exports = {
           },
         },
       },
-      // eslint4's esquery import needs the CJS build
+      // (java-parser chevrotain aliases are handled globally above)
+      // eslint4's esquery and ajv imports need nested versions
       {
         issuer: /eslint4/,
         resolve: {
           alias: {
-            'esquery': path.join(websiteNodeModules, 'esquery', 'dist', 'esquery.min.js'),
+            'esquery': nm( 'esquery', 'dist', 'esquery.min.js'),
+            'ajv': nm( 'eslint4', 'node_modules', 'ajv'),
           },
         },
       },
-      // eslint8 needs browser-first field resolution
+      // eslint8 needs browser-first field resolution and its nested deps
       {
         issuer: /eslint8/,
         resolve: {
           mainFields: ['browser', 'main', 'module'],
+          alias: {
+            'ajv': nm( 'eslint8', 'node_modules', 'ajv'),
+          },
+        },
+      },
+      // @eslint/eslintrc needs eslint8's nested deps (globals v13, ajv v6)
+      {
+        issuer: /@eslint[\\/]eslintrc/,
+        resolve: {
+          alias: {
+            'globals': nm( 'eslint8', 'node_modules', 'globals'),
+            'ajv': nm( 'eslint8', 'node_modules', 'ajv'),
+          },
         },
       },
       // Null out Node-only modules pulled in by @typescript-eslint
@@ -176,43 +212,46 @@ module.exports = {
           /\/acorn\.es\.js$/,
           /\/acorn\.mjs$/,
           /\/acorn-loose\.mjs$/,
-          path.join(websiteNodeModules, '@glimmer', 'compiler', 'dist'),
-          path.join(websiteNodeModules, '@glimmer', 'syntax', 'dist'),
-          path.join(websiteNodeModules, '@glimmer', 'util', 'dist'),
-          path.join(websiteNodeModules, '@glimmer', 'wire-format', 'dist'),
-          path.join(websiteNodeModules, 'ast-types'),
-          path.join(websiteNodeModules, '@babel', 'eslint-parser'),
-          path.join(websiteNodeModules, 'babel-eslint'),
-          path.join(websiteNodeModules, 'babel-eslint8'),
-          path.join(websiteNodeModules, 'jsesc'),
-          path.join(websiteNodeModules, 'eslint-visitor-keys'),
-          path.join(websiteNodeModules, 'babel7'),
-          path.join(websiteNodeModules, 'babel-plugin-macros'),
-          path.join(websiteNodeModules, 'json-parse-better-errors'),
-          path.join(websiteNodeModules, 'babylon7'),
-          path.join(websiteNodeModules, 'eslint', 'lib'),
-          path.join(websiteNodeModules, 'eslint-scope'),
-          path.join(websiteNodeModules, 'eslint3'),
-          path.join(websiteNodeModules, 'eslint4'),
-          path.join(websiteNodeModules, 'jscodeshift', 'src'),
-          path.join(websiteNodeModules, 'lodash-es'),
-          path.join(websiteNodeModules, 'prettier'),
-          path.join(websiteNodeModules, 'recast'),
-          path.join(websiteNodeModules, 'regexp-tree'),
-          path.join(websiteNodeModules, 'regjsparser'),
-          path.join(websiteNodeModules, 'regexpp'),
-          path.join(websiteNodeModules, 'simple-html-tokenizer'),
-          path.join(websiteNodeModules, '@swc', 'wasm-web'),
-          path.join(websiteNodeModules, 'typescript-eslint-parser'),
-          path.join(websiteNodeModules, 'webidl2'),
-          path.join(websiteNodeModules, 'tslint'),
-          path.join(websiteNodeModules, 'tslib'),
-          path.join(websiteNodeModules, 'svelte'),
-          path.join(websiteNodeModules, 'css-tree'),
-          path.join(websiteNodeModules, 'astexplorer-syn'),
-          path.join(websiteNodeModules, 'java-parser'),
-          path.join(websiteNodeModules, 'chevrotain'),
-          path.join(websiteNodeModules, 'chevrotain-allstar'),
+          nm( '@glimmer', 'compiler', 'dist'),
+          nm( '@glimmer', 'syntax', 'dist'),
+          nm( '@glimmer', 'util', 'dist'),
+          nm( '@glimmer', 'wire-format', 'dist'),
+          nm( 'ast-types'),
+          nm( '@babel', 'eslint-parser'),
+          nm( 'babel-eslint'),
+          nm( 'babel-eslint8'),
+          nm( 'jsesc'),
+          nm( 'eslint-visitor-keys'),
+          nm( 'babel7'),
+          nm( 'babel-plugin-macros'),
+          nm( 'json-parse-better-errors'),
+          nm( 'babylon7'),
+          nm( 'eslint', 'lib'),
+          nm( 'eslint-scope'),
+          nm( 'eslint3'),
+          nm( 'eslint4'),
+          nm( 'jscodeshift', 'src'),
+          nm( 'lodash-es'),
+          nm( 'prettier'),
+          nm( 'recast'),
+          nm( 'regexp-tree'),
+          nm( 'regjsparser'),
+          nm( 'regexpp'),
+          nm( 'simple-html-tokenizer'),
+          nm( '@swc', 'wasm-web'),
+          nm( 'typescript-eslint-parser'),
+          nm( 'webidl2'),
+          nm( 'tslint'),
+          nm( 'tslib'),
+          nm( 'svelte'),
+          nm( 'css-tree'),
+          nm( 'astexplorer-syn'),
+          nm( 'java-parser'),
+          nm( 'chevrotain'),
+          nm( '@chevrotain'),
+          nm( 'chevrotain-allstar'),
+          nm( 'meriyah'),
+          nm( 'minimatch'),
         ],
         loader: 'babel-loader',
         options: {
@@ -231,6 +270,7 @@ module.exports = {
           plugins: [
             resolveFromWebsite('@babel/plugin-proposal-class-properties'),
             resolveFromWebsite('@babel/plugin-proposal-optional-chaining'),
+            resolveFromWebsite('@babel/plugin-proposal-nullish-coalescing-operator'),
             resolveFromWebsite('@babel/plugin-transform-runtime'),
           ],
         },
@@ -262,7 +302,7 @@ module.exports = {
     // that differ from the hoisted ESM versions. Redirect all imports from mdx context.
     {
       apply(compiler) {
-        const mdxNm = path.join(websiteNodeModules, '@mdx-js', 'mdx', 'node_modules');
+        const mdxNm = nm( '@mdx-js', 'mdx', 'node_modules');
         const mdxNestedDeps = new Set(require('fs').readdirSync(mdxNm));
         compiler.hooks.normalModuleFactory.tap('MdxNestedDepsPlugin', (nmf) => {
           nmf.hooks.beforeResolve.tap('MdxNestedDepsPlugin', (result) => {
@@ -299,31 +339,36 @@ module.exports = {
     new webpack.NormalModuleReplacementPlugin(/^unified$/, function(resource) {
       const ctx = resource.context || '';
       if (/\/redot$|\/redot\//.test(ctx))
-        resource.request = path.join(websiteNodeModules, 'redot', 'node_modules', 'unified');
+        resource.request = nm( 'redot', 'node_modules', 'unified');
+      else if (/\/remark$|\/remark\//.test(ctx))
+        resource.request = nm( 'remark', 'node_modules', 'unified');
     }),
     new webpack.NormalModuleReplacementPlugin(/^trough$/, function(resource) {
       const ctx = resource.context || '';
-      // Only unified@10 (at websiteNodeModules/unified/) needs trough@2.
-      // Nested unified copies (redot/node_modules/unified@7, @mdx-js/mdx/node_modules/unified@8) use trough@1.
-      const unifiedV10 = path.join(websiteNodeModules, 'unified');
-      if (ctx.startsWith(unifiedV10 + path.sep) || ctx === unifiedV10)
-        resource.request = path.join(unifiedV10, 'node_modules', 'trough');
+      // remark's unified@10 needs trough@2 (ESM, named exports).
+      // Other unified copies (hoisted v9, redot's v7, @mdx-js's v8) use trough@1 (CJS, default export).
+      const remarkUnified = nm( 'remark', 'node_modules', 'unified');
+      if (ctx.startsWith(remarkUnified + path.sep) || ctx === remarkUnified) {
+        resource.request = nm('remark', 'node_modules', 'trough');
+      }
     }),
     new webpack.NormalModuleReplacementPlugin(/^vfile$/, function(resource) {
       const ctx = resource.context || '';
       if (/\/redot$|\/redot\//.test(ctx))
-        resource.request = path.join(websiteNodeModules, 'redot', 'node_modules', 'vfile');
+        resource.request = nm( 'redot', 'node_modules', 'vfile');
       else if (/\/@mdx-js\/|\/remark-mdx/.test(ctx))
-        resource.request = path.join(websiteNodeModules, '@mdx-js', 'mdx', 'node_modules', 'vfile');
+        resource.request = nm( '@mdx-js', 'mdx', 'node_modules', 'vfile');
+      else if (/\/remark$|\/remark\//.test(ctx))
+        resource.request = nm( 'remark', 'node_modules', 'vfile');
     }),
     new webpack.NormalModuleReplacementPlugin(/^remark-parse$/, function(resource) {
       const ctx = resource.context || '';
       if (/\/remark$|\/remark\//.test(ctx))
-        resource.request = path.join(websiteNodeModules, 'remark', 'node_modules', 'remark-parse');
+        resource.request = nm( 'remark', 'node_modules', 'remark-parse');
     }),
     new webpack.NormalModuleReplacementPlugin(/^parse-entities$/, function(resource) {
       const ctx = resource.context || '';
-      const rp7 = path.join(websiteNodeModules, 'remark-parse');
+      const rp7 = nm( 'remark-parse');
       if (ctx.startsWith(rp7 + path.sep) || ctx === rp7)
         resource.request = path.join(rp7, 'node_modules', 'parse-entities');
     }),
@@ -332,8 +377,8 @@ module.exports = {
       /^(character-entities-legacy|character-entities|character-reference-invalid|is-alphanumerical|is-hexadecimal)$/,
       function(resource) {
         const ctx = resource.context || '';
-        const rpNm = path.join(websiteNodeModules, 'remark-parse', 'node_modules');
-        if (ctx.startsWith(rpNm) || ctx.startsWith(path.join(websiteNodeModules, 'remark-parse', 'lib'))) {
+        const rpNm = nm( 'remark-parse', 'node_modules');
+        if (ctx.startsWith(rpNm) || ctx.startsWith(nm( 'remark-parse', 'lib'))) {
           const nested = path.join(rpNm, resource.request);
           try { require.resolve(nested); resource.request = nested; } catch(e) {}
         }
@@ -352,6 +397,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.API_HOST': JSON.stringify(''),
       'process.version': JSON.stringify(process.version),
+      'process.versions': JSON.stringify({ node: process.version.replace(/^v/, '') }),
     }),
     new webpack.IgnorePlugin(/\.md$/),
     new webpack.IgnorePlugin(/node\/nodeLoader.js/),
@@ -372,7 +418,7 @@ module.exports = {
     // Go: resolve bare 'go' import to the astexplorer-go runtime
     new webpack.NormalModuleReplacementPlugin(
       /^go$/,
-      path.join(websiteNodeModules, 'astexplorer-go', 'go'),
+      nm( 'astexplorer-go', 'go'),
     ),
 
     // ESLint: shim cli-engine (Node-only) and load-rules (bundles all rules)

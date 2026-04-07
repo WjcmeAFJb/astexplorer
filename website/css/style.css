@@ -1,3 +1,4 @@
+@import "modern-normalize/modern-normalize.css";
 @import "codemirror/lib/codemirror.css";
 @import "codemirror/addon/fold/foldgutter.css";
 @import "./highlight.css";
@@ -8,6 +9,50 @@ html {
   font-size: 14px;
   box-sizing: border-box;
   font-family: Verdana, sans-serif;
+  line-height: normal;
+}
+
+/*
+ * modern-normalize sets border-box on all elements, but the original code only
+ * set it on <html>. Restore content-box everywhere else so existing layout
+ * calculations are preserved; components that need border-box already set it
+ * themselves (e.g. #page).
+ */
+*,
+::before,
+::after {
+  box-sizing: content-box;
+}
+
+/*
+ * modern-normalize overrides form-element fonts and monospace stacks.
+ * Revert to browser defaults so existing rendering is preserved.
+ */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: revert;
+  font-size: revert;
+  line-height: revert;
+  margin: revert;
+}
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: revert;
+  appearance: revert;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: revert;
+  font-size: revert;
 }
 
 body {

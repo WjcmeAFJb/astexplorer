@@ -40,12 +40,12 @@ export default function ASTOutput({ parseResult, position }: ASTOutputProps): Re
   } else if (ast !== undefined && ast !== null && parseResult !== undefined) {
     output = (
       <ErrorBoundary>
-        {React.createElement(visualizations[selectedOutput], { parseResult, position })}
+        {React.createElement(visualizations[selectedOutput].component, { parseResult, position })}
       </ErrorBoundary>
     );
   }
 
-  const buttons = visualizations.map((cls, index) => (
+  const buttons = visualizations.map((entry, index) => (
     <button
       key={index}
       value={index}
@@ -59,7 +59,7 @@ export default function ASTOutput({ parseResult, position }: ASTOutputProps): Re
         active: selectedOutput === index,
       })}
     >
-      {cls.name}
+      {entry.name}
     </button>
   ));
 

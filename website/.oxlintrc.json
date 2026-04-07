@@ -109,6 +109,7 @@
     "out",
     "coverage",
     ".stryker-tmp",
-    "reports"
+    "reports",
+    "tests"
   ]
 }

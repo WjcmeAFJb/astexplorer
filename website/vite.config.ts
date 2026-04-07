@@ -61,9 +61,9 @@ export default defineConfig(({ mode }) => ({
   },
 
   server: {
-    port: 8080,
-    allowedHosts: ['8080.code.internal.local'],
-    host: "0.0.0.0",
+    port: 8085,
+    allowedHosts: ['.code.internal.local'],
+    host: '0.0.0.0',
   },
 
   preview: {

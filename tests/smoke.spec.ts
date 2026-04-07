@@ -111,6 +111,29 @@ test.describe('AST Explorer smoke tests', () => {
     }
   });
 
+  test('tree buttons have no browser-default borders', async ({ page }) => {
+    await page.goto('/');
+    await waitForTree(page);
+
+    const borders = await page.evaluate(() => {
+      const buttons = document.querySelectorAll('.tree-visualization button');
+      return Array.from(buttons).slice(0, 10).map((btn) => {
+        const style = getComputedStyle(btn);
+        return {
+          border: style.border,
+          borderStyle: style.borderStyle,
+          outline: style.outlineStyle,
+        };
+      });
+    });
+
+    for (const b of borders) {
+      // Buttons in the tree must not have visible borders — they should
+      // look like plain text, not OS-native buttons.
+      expect(b.borderStyle, 'tree button has a visible border').toBe('none');
+    }
+  });
+
   test.describe('screenshots', () => {
     test('initial load', async ({ page }) => {
       await page.goto('/');

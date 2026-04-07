@@ -5,6 +5,7 @@
     "configFile": "vitest.config.ts",
     "related": false
   },
+  "ignoreStatic": true,
   "mutate": [
     "src/**/*.ts",
     "src/**/*.tsx",

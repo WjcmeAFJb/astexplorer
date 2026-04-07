@@ -17,35 +17,11 @@ export default {
   locationProps: new Set(['span']),
 
   loadParser(callback: (realParser: typeof import('astexplorer-syn')) => void) {
-    require(['astexplorer-syn', 'astexplorer-syn/astexplorer_syn_bg.wasm'], async (syn: Record<string, unknown>, wasmModule: Record<string, unknown>) => {
-      // astexplorer-syn is built for wasm-bindgen's "bundler" target, which expects
-      // the bundler to handle WASM natively. But webpack 4 + file-loader gives the
-      // _bg.js glue code a URL string instead of real WASM exports. We fix this by
-      // manually fetching/instantiating the WASM binary and patching the module
-      // exports object that _bg.js holds a reference to.
-      const wasmBytes = await (await fetch(getWasmUrl('syn'))).arrayBuffer();
-
-      // Collect the __wbg_*/__wbindgen_* glue functions that the WASM imports
-      const importFuncs: Record<string, unknown> = {};
-      for (const key of Object.keys(syn)) {
-        if (key.startsWith('__wbg_') || key.startsWith('__wbindgen_')) {
-          importFuncs[key] = syn[key];
-        }
-      }
-
-      const { instance } = await WebAssembly.instantiate(
-        wasmBytes,
-        { './astexplorer_syn_bg.js': importFuncs },
-      );
-
-      // Patch the WASM module's exports object in-place. The _bg.js glue code
-      // holds a reference to this same object (via webpack's module cache), so
-      // its functions (parseFile, etc.) will now see real WASM exports.
-      if (typeof wasmModule === 'object') {
-        Object.assign(wasmModule, instance.exports);
-      }
-
-      callback(syn as unknown as typeof import('astexplorer-syn'));
+    require(['astexplorer-syn'], async (syn: {default: (input: string) => Promise<unknown>} & typeof import('astexplorer-syn')) => {
+      // Use the module's built-in init() (default export) which handles
+      // WASM instantiation with the correct wasm-bindgen import bindings.
+      await syn.default(getWasmUrl('syn'));
+      callback(syn);
     });
   },
 

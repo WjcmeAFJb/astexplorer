@@ -3,7 +3,16 @@ const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 const websiteNodeModules = path.resolve(__dirname, '..', '..', 'website', 'node_modules');
-const webpack = require(path.join(websiteNodeModules, 'webpack'));
+const rootNodeModules = path.resolve(__dirname, '..', '..', 'node_modules');
+
+/** Resolve a path under node_modules, checking website then root (hoisted). */
+function nm(...segments) {
+  const ws = path.join(websiteNodeModules, ...segments);
+  if (fs.existsSync(ws)) return ws;
+  return path.join(rootNodeModules, ...segments);
+}
+
+const webpack = require(nm('webpack'));
 const config = require('./webpack.config.js');
 
 const mode = process.argv.includes('--production') ? 'production' : 'development';
@@ -20,7 +29,7 @@ compiler.run((err, stats) => {
 
   // Step 2: emit .d.ts declarations
   console.log('\nGenerating declaration files...');
-  const tsc = path.join(websiteNodeModules, '.bin', 'tsc');
+  const tsc = nm('.bin', 'tsc');
   try {
     execSync(`${tsc} -p tsconfig.build.json`, { cwd: __dirname, stdio: 'inherit' });
     console.log('Declarations generated successfully.');
@@ -36,15 +45,17 @@ compiler.run((err, stats) => {
   // Step 3: Copy WASM files with stable names
   console.log('\nCopying WASM files...');
   const wasmSources = {
-    'swc.wasm': path.join(websiteNodeModules, '@swc', 'wasm-web', 'wasm_bg.wasm'),
-    'syn.wasm': path.join(websiteNodeModules, 'astexplorer-syn', 'astexplorer_syn_bg.wasm'),
-    'go.wasm': path.join(websiteNodeModules, 'astexplorer-go', 'parser.wasm'),
-    'monkey.wasm': path.join(websiteNodeModules, '@gengjiawen', 'monkey-wasm', 'monkey_wasm_bg.wasm'),
+    'swc.wasm': nm('@swc', 'wasm-web', 'wasm_bg.wasm'),
+    'syn.wasm': nm('astexplorer-syn', 'astexplorer_syn_bg.wasm'),
+    'go.wasm': nm('astexplorer-go', 'parser.wasm'),
+    'monkey.wasm': nm('@gengjiawen', 'monkey-wasm', 'monkey_wasm_bg.wasm'),
   };
   for (const [name, src] of Object.entries(wasmSources)) {
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, path.join(distDir, name));
-      console.log(`  ${name}`);
+      console.log(`  ${name} (from ${src})`);
+    } else {
+      console.warn(`  ${name} SKIPPED — source not found: ${src}`);
     }
   }
 
@@ -93,12 +104,16 @@ compiler.run((err, stats) => {
   //    These map bare names (fs, os, path) to their polyfill module IDs.
   // 2. Module definition headers: /***/ "...node_modules/pkg-name/..."
   //    These map npm package names to their entry module IDs.
+  //
+  // Scan ALL code (main + chunks) so that polyfills in async chunks
+  // (e.g. os-browserify loaded by typescript) are discoverable.
+  const allCode = mainWithoutMap + '\n' + allChunks.join('\n');
   const bareNameToId = {};
 
   // Source 1: Extract from webpack's /*! name */ comments
   const wpReqPattern = /__webpack_require__\(\/\*! (\S+?) \*\/ "([^"]+)"\)/g;
   let match;
-  while ((match = wpReqPattern.exec(cjsCode)) !== null) {
+  while ((match = wpReqPattern.exec(allCode)) !== null) {
     const [, name, id] = match;
     if (!bareNameToId[name]) bareNameToId[name] = id;
   }
@@ -106,7 +121,7 @@ compiler.run((err, stats) => {
   // Source 2: Extract from module definition headers
   const moduleIdPattern = /\/node_modules\/([@\w][\w.\-]*(?:\/[\w.\-]+)?)\//;
   const moduleIdRegex = /\n\/\*\*\*\/ "([^"]+)":/g;
-  while ((match = moduleIdRegex.exec(cjsCode)) !== null) {
+  while ((match = moduleIdRegex.exec(allCode)) !== null) {
     const id = match[1];
     const m = id.match(moduleIdPattern);
     if (m) {
@@ -139,6 +154,10 @@ compiler.run((err, stats) => {
     '  }',
     '  return {};',
     '};',
+    // Expose require globally so async chunks loaded via <script> tags can use it.
+    // noParse'd libraries (typescript, traceur, etc.) contain bare require() calls
+    // that must resolve at runtime in the global scope.
+    'globalThis.require = require;',
     '',
     cjsCode,
     '',

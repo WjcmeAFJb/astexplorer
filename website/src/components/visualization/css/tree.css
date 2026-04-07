@@ -31,6 +31,15 @@
   flex: 1;
 }
 
+.tree-visualization button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+}
+
 .tree-visualization .value-body {
   min-width: 300px;
   width: fit-content;
