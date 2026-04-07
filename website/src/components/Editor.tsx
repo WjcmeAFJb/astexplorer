@@ -1,10 +1,7 @@
-import CodeMirror from 'codemirror';
-import 'codemirror/keymap/vim';
-import 'codemirror/keymap/emacs';
-import 'codemirror/keymap/sublime';
+import * as monaco from 'monaco-editor';
 import { subscribe, clear } from '../utils/pubsub';
 import React from 'react';
-import { ensureCMMode } from '../codemirrorModes';
+import { getMonacoLanguage } from '../monacoLanguages';
 
 const defaultPrettierOptions: Record<string, unknown> = {
   printWidth: 80,
@@ -33,13 +30,14 @@ export type EditorProps = {
 export default class Editor extends React.Component<EditorProps, { value: string }> {
   static displayName = 'Editor';
   static defaultProps: Partial<EditorProps>;
-  codeMirror: CodeMirror.Editor | null = null;
+  monacoEditor: monaco.editor.IStandaloneCodeEditor | null = null;
   container: HTMLElement | null = null;
-  _CMHandlers: Array<() => void> = [];
   _subscriptions: Array<() => void> = [];
   _updateTimer: ReturnType<typeof setTimeout> | undefined;
   _markerRange: [number, number] | null = null;
-  _mark: CodeMirror.TextMarker | null = null;
+  _decorationIds: string[] = [];
+  _errorDecorationIds: string[] = [];
+  _ignoreChange = false;
 
   constructor(props: EditorProps) {
     super(props);
@@ -56,17 +54,19 @@ export default class Editor extends React.Component<EditorProps, { value: string
   }
 
   componentDidUpdate(prevProps: EditorProps, prevState: { value: string }) {
-    if (this.props.value !== prevState.value && this.codeMirror) {
-      this.codeMirror.setValue(this.props.value ?? '');
+    if (this.props.value !== prevState.value && this.monacoEditor) {
+      this._ignoreChange = true;
+      this.monacoEditor.setValue(this.props.value ?? '');
+      this._ignoreChange = false;
     }
-    if (this.props.mode !== prevProps.mode) {
-      void ensureCMMode(this.props.mode).then(() => {
-        this.codeMirror?.setOption('mode', this.props.mode);
-        return null;
-      });
+    if (this.props.mode !== prevProps.mode && this.monacoEditor) {
+      const model = this.monacoEditor.getModel();
+      if (model) {
+        monaco.editor.setModelLanguage(model, getMonacoLanguage(this.props.mode));
+      }
     }
-    if (this.props.keyMap !== prevProps.keyMap && this.codeMirror) {
-      this.codeMirror.setOption('keyMap', this.props.keyMap);
+    if (this.props.keyMap !== prevProps.keyMap) {
+      this._applyKeyMap();
     }
     this._setError(this.props.error);
   }
@@ -81,7 +81,7 @@ export default class Editor extends React.Component<EditorProps, { value: string
   }
 
   getValue(): string | undefined {
-    return this.codeMirror ? this.codeMirror.getValue() : undefined;
+    return this.monacoEditor ? this.monacoEditor.getValue() : undefined;
   }
 
   _getErrorLine(error: EditorProps['error']): number | undefined {
@@ -90,115 +90,142 @@ export default class Editor extends React.Component<EditorProps, { value: string
   }
 
   _setError(error?: EditorProps['error']) {
-    if (this.codeMirror) {
-      let oldError = this.props.error;
-      if (oldError) {
-        let lineNumber = this._getErrorLine(oldError);
-        if (lineNumber !== undefined && lineNumber !== 0) {
-          this.codeMirror.removeLineClass(lineNumber - 1, 'text', 'errorMarker');
-        }
-      }
+    if (!this.monacoEditor) return;
 
-      if (error) {
-        let lineNumber = this._getErrorLine(error);
-        if (lineNumber !== undefined && lineNumber !== 0) {
-          this.codeMirror.addLineClass(lineNumber - 1, 'text', 'errorMarker');
-        }
+    // Clear old error decorations
+    this._errorDecorationIds = this.monacoEditor.deltaDecorations(this._errorDecorationIds, []);
+
+    if (error) {
+      const lineNumber = this._getErrorLine(error);
+      if (lineNumber !== undefined && lineNumber !== 0) {
+        this._errorDecorationIds = this.monacoEditor.deltaDecorations(
+          [],
+          [
+            {
+              range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+              options: {
+                isWholeLine: true,
+                className: 'errorMarker',
+              },
+            },
+          ],
+        );
       }
     }
   }
 
-  _posFromIndex(doc: CodeMirror.Doc, index: number): { line: number; ch: number } {
+  _posFromIndex(model: monaco.editor.ITextModel, index: number): { line: number; ch: number } {
     if (this.props.posFromIndex) {
-      return (
-        this.props.posFromIndex(index) ?? (doc.posFromIndex(index) as { line: number; ch: number })
-      );
+      const pos = this.props.posFromIndex(index);
+      if (pos) return pos;
     }
-    return doc.posFromIndex(index) as { line: number; ch: number };
+    const position = model.getPositionAt(index);
+    return { line: position.lineNumber - 1, ch: position.column - 1 };
+  }
+
+  _applyKeyMap() {
+    // Monaco doesn't support vim/emacs natively. We just accept the keyMap prop
+    // for API compatibility but do nothing with it - Monaco uses its own keybinding system.
   }
 
   componentDidMount() {
-    this._CMHandlers = [];
     this._subscriptions = [];
     if (!this.container) return;
-    this.codeMirror = CodeMirror(
-      // eslint-disable-line new-cap
-      this.container,
-      {
-        keyMap: this.props.keyMap,
-        value: this.state.value,
-        lineNumbers: this.props.lineNumbers,
-        readOnly: this.props.readOnly,
+
+    this.monacoEditor = monaco.editor.create(this.container, {
+      value: this.state.value,
+      language: getMonacoLanguage(this.props.mode),
+      lineNumbers: this.props.lineNumbers !== false ? 'on' : 'off',
+      readOnly: this.props.readOnly === true,
+      minimap: { enabled: false },
+      scrollBeyondLastLine: false,
+      automaticLayout: true,
+      fontSize: 13,
+      folding: true,
+      wordWrap: 'off',
+      renderWhitespace: 'none',
+      overviewRulerLanes: 0,
+      hideCursorInOverviewRuler: true,
+      overviewRulerBorder: false,
+      scrollbar: {
+        useShadows: false,
       },
-    );
-    // Load the CodeMirror mode asynchronously, then apply it
-    void ensureCMMode(this.props.mode).then(() => {
-      this.codeMirror?.setOption('mode', this.props.mode);
-      return null;
     });
 
-    this._bindCMHandler('blur', () => {
+    this.monacoEditor.onDidBlurEditorWidget(() => {
       if (this.props.enableFormatting !== true) return;
 
-      const cm = this.codeMirror;
-      if (cm === null || cm === undefined) return;
+      const editor = this.monacoEditor;
+      if (!editor) return;
 
       require(['prettier/standalone', 'prettier/parser-babel'], (
         prettier: { format: (code: string, options: Record<string, unknown>) => string },
         babel: unknown,
       ) => {
-        const currValue = cm.getDoc().getValue();
-        const cmEl = cm.getWrapperElement();
-        const maxLineLength = cmEl.clientWidth;
+        const currValue = editor.getValue();
+        const domNode = editor.getDomNode();
+        const maxLineLength = domNode ? domNode.clientWidth : 80;
         const options = Object.assign({}, defaultPrettierOptions, {
           printWidth: maxLineLength,
           plugins: [babel],
         });
-        cm.getDoc().setValue(prettier.format(currValue, options));
+        editor.setValue(prettier.format(currValue, options));
       });
     });
 
-    this._bindCMHandler('changes', () => {
+    this.monacoEditor.onDidChangeModelContent(() => {
+      if (this._ignoreChange) return;
       clearTimeout(this._updateTimer);
       this._updateTimer = setTimeout(() => this._onContentChange(), 200);
     });
-    this._bindCMHandler('cursorActivity', () => {
+
+    this.monacoEditor.onDidChangeCursorPosition(() => {
       clearTimeout(this._updateTimer);
       this._updateTimer = setTimeout(() => this._onActivity(), 100);
     });
 
     this._subscriptions.push(
       subscribe('PANEL_RESIZE', () => {
-        if (this.codeMirror) {
-          this.codeMirror.refresh();
+        if (this.monacoEditor) {
+          this.monacoEditor.layout();
         }
       }),
     );
 
     if (this.props.highlight === true) {
       this._markerRange = null;
-      this._mark = null;
+      this._decorationIds = [];
       this._subscriptions.push(
         subscribe('HIGHLIGHT', (data: unknown) => {
           const { range } = (data ?? {}) as { range?: [number, number] };
           if (!range) {
             return;
           }
-          const cm = this.codeMirror;
-          if (!cm) return;
-          let doc = cm.getDoc();
+          const editor = this.monacoEditor;
+          if (!editor) return;
+          const model = editor.getModel();
+          if (!model) return;
           this._markerRange = range;
-          // We only want one mark at a time.
-          if (this._mark) {
-            this._mark.clear();
-          }
-          let [start, end] = range.map((index: number) => this._posFromIndex(doc, index));
-          if (start === undefined || start === null || end === undefined || end === null) {
+          const startPos = model.getPositionAt(range[0]);
+          const endPos = model.getPositionAt(range[1]);
+          if (!startPos || !endPos) {
             this._markerRange = null;
-            this._mark = null;
+            this._decorationIds = editor.deltaDecorations(this._decorationIds, []);
             return;
           }
-          this._mark = cm.markText(start, end, { className: 'marked' });
+          this._decorationIds = editor.deltaDecorations(this._decorationIds, [
+            {
+              range: new monaco.Range(
+                startPos.lineNumber,
+                startPos.column,
+                endPos.lineNumber,
+                endPos.column,
+              ),
+              options: {
+                className: 'marked',
+              },
+            },
+          ]);
         }),
 
         subscribe('CLEAR_HIGHLIGHT', (data: unknown) => {
@@ -210,9 +237,8 @@ export default class Editor extends React.Component<EditorProps, { value: string
               range[1] === this._markerRange[1])
           ) {
             this._markerRange = null;
-            if (this._mark) {
-              this._mark.clear();
-              this._mark = null;
+            if (this.monacoEditor) {
+              this._decorationIds = this.monacoEditor.deltaDecorations(this._decorationIds, []);
             }
           }
         }),
@@ -228,36 +254,26 @@ export default class Editor extends React.Component<EditorProps, { value: string
     clearTimeout(this._updateTimer);
     this._unbindHandlers();
     this._markerRange = null;
-    this._mark = null;
-    let container = this.container;
-    if (container) {
-      container.children[0].remove();
+    this._decorationIds = [];
+    this._errorDecorationIds = [];
+    if (this.monacoEditor) {
+      this.monacoEditor.dispose();
+      this.monacoEditor = null;
     }
-    this.codeMirror = null;
-  }
-
-  _bindCMHandler<T extends keyof CodeMirror.EditorEventMap>(
-    event: T,
-    handler: CodeMirror.EditorEventMap[T],
-  ) {
-    this.codeMirror?.on(event, handler);
-    this._CMHandlers.push(() => this.codeMirror?.off(event, handler));
   }
 
   _unbindHandlers() {
-    for (const teardown of this._CMHandlers) {
-      teardown();
-    }
     clear(this._subscriptions);
   }
 
   _onContentChange() {
-    if (!this.codeMirror) return;
-    const doc = this.codeMirror.getDoc();
-    const args = {
-      value: doc.getValue(),
-      cursor: doc.indexFromPos(doc.getCursor()),
-    };
+    if (!this.monacoEditor) return;
+    const model = this.monacoEditor.getModel();
+    if (!model) return;
+    const value = model.getValue();
+    const position = this.monacoEditor.getPosition();
+    const cursor = position ? model.getOffsetAt(position) : 0;
+    const args = { value, cursor };
     this.setState({ value: args.value }, () => {
       if (this.props.onContentChange) this.props.onContentChange(args);
     });
@@ -265,8 +281,11 @@ export default class Editor extends React.Component<EditorProps, { value: string
 
   _onActivity() {
     if (!this.props.onActivity) return;
-    if (!this.codeMirror) return;
-    this.props.onActivity(this.codeMirror.getDoc().indexFromPos(this.codeMirror.getCursor()));
+    if (!this.monacoEditor) return;
+    const model = this.monacoEditor.getModel();
+    const position = this.monacoEditor.getPosition();
+    if (!model || !position) return;
+    this.props.onActivity(model.getOffsetAt(position));
   }
 
   render() {

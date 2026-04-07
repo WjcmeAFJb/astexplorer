@@ -25,15 +25,18 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: [
-      'react', 'react-dom', 'react-redux', 'redux', 'prop-types',
-      'codemirror', 'codemirror/keymap/vim', 'codemirror/keymap/emacs',
-      'codemirror/keymap/sublime', 'codemirror/mode/javascript/javascript',
-    ],
+    include: ['react', 'react-dom', 'react-redux', 'redux', 'prop-types', 'monaco-editor'],
   },
   resolve: {
     alias: {
-      'astexplorer-parsers': path.resolve(__dirname, '..', 'packages', 'astexplorer-parsers', 'dist', 'index.mjs'),
+      'astexplorer-parsers': path.resolve(
+        __dirname,
+        '..',
+        'packages',
+        'astexplorer-parsers',
+        'dist',
+        'index.mjs',
+      ),
     },
   },
 });

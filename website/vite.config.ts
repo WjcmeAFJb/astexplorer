@@ -3,6 +3,38 @@ import react from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
 
+// Configure Monaco Editor workers for Vite
+function monacoEditorPlugin() {
+  return {
+    name: 'monaco-editor-workers',
+    transformIndexHtml() {
+      return [
+        {
+          tag: 'script',
+          attrs: { type: 'module' },
+          children: `
+            import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+            import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
+            import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
+            import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
+            import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+            self.MonacoEnvironment = {
+              getWorker(_, label) {
+                if (label === 'json') return new jsonWorker();
+                if (label === 'css' || label === 'scss' || label === 'less') return new cssWorker();
+                if (label === 'html' || label === 'handlebars' || label === 'razor') return new htmlWorker();
+                if (label === 'typescript' || label === 'javascript') return new tsWorker();
+                return new editorWorker();
+              }
+            };
+          `,
+          injectTo: 'head-prepend' as const,
+        },
+      ];
+    },
+  };
+}
+
 // Copy webpack async chunks from parsers dist to build output
 function copyParsersChunks() {
   return {
@@ -24,7 +56,7 @@ function copyParsersChunks() {
 }
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), copyParsersChunks()],
+  plugins: [react(), monacoEditorPlugin(), copyParsersChunks()],
 
   // Treat .wasm imports as static assets (URL strings) rather than ESM WASM modules
   assetsInclude: ['**/*.wasm'],

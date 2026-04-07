@@ -56,7 +56,7 @@ test.describe('AST Explorer smoke tests', () => {
     });
     expect(errors).toEqual([]);
     await expect(page.locator('.categoryButton')).toBeVisible();
-    await expect(page.locator('.CodeMirror')).toBeVisible();
+    await expect(page.locator('.monaco-editor')).toBeVisible();
   });
 
   test('default parser (JavaScript/acorn) produces an AST', async ({ page }) => {
@@ -157,7 +157,7 @@ test.describe('AST Explorer smoke tests', () => {
       await expect(page).toHaveScreenshot('category-dropdown.png', { maxDiffPixelRatio: 0.01 });
     });
 
-    // Syntax highlighting screenshots — verify CodeMirror modes load correctly
+    // Syntax highlighting screenshots — verify Monaco languages load correctly
     const highlightCategories = [
       'css', 'go', 'handlebars', 'htmlmixed', 'java', 'json',
       'lua', 'markdown', 'php', 'python', 'rust', 'sql', 'yaml',
@@ -168,7 +168,7 @@ test.describe('AST Explorer smoke tests', () => {
         await waitForTree(page);
         await selectCategory(page, id);
         await waitForTree(page);
-        // Wait for CodeMirror mode to load and apply
+        // Wait for Monaco to apply syntax highlighting
         await page.waitForTimeout(500);
         await expect(page).toHaveScreenshot(`highlight-${id}.png`, { maxDiffPixelRatio: 0.01 });
       });

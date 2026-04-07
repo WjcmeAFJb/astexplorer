@@ -19,9 +19,11 @@ describe('visualization index', () => {
     expect(visualizations[1].name).toBe('JSON');
   });
 
-  test('all visualizations are functions', () => {
+  test('all visualizations have a component function', () => {
     for (const viz of visualizations) {
-      expect(typeof viz).toBe('function');
+      expect(typeof viz).toBe('object');
+      expect(typeof viz.component).toBe('function');
+      expect(typeof viz.name).toBe('string');
     }
   });
 });

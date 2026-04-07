@@ -10,15 +10,14 @@ vi.mock('../src/components/visualization', () => {
   const TreeViz = (props: any) => (
     <div data-testid="tree-viz">Tree: {JSON.stringify(props.parseResult?.ast)}</div>
   );
-  TreeViz.displayName = 'Tree';
-  Object.defineProperty(TreeViz, 'name', { value: 'Tree' });
 
   const JSONViz = (props: any) => <div data-testid="json-viz">JSON</div>;
-  JSONViz.displayName = 'JSON';
-  Object.defineProperty(JSONViz, 'name', { value: 'JSON' });
 
   return {
-    default: [TreeViz, JSONViz],
+    default: [
+      { name: 'Tree', component: TreeViz },
+      { name: 'JSON', component: JSONViz },
+    ],
   };
 });
 
@@ -123,9 +122,7 @@ describe('ASTOutput', () => {
     const ThrowingViz = () => {
       throw new Error('Render error');
     };
-    ThrowingViz.displayName = 'Tree';
-    Object.defineProperty(ThrowingViz, 'name', { value: 'Tree' });
-    (vizModule as any).default = [ThrowingViz];
+    (vizModule as any).default = [{ name: 'Tree', component: ThrowingViz }];
 
     const parseResult = { ast: { type: 'Program' }, time: 10 };
     const { container } = render(<ASTOutput parseResult={parseResult} />);

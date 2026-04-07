@@ -93,7 +93,7 @@ export function persist(state: AppState): {
 /**
 
  * When read from persistent storage, set the last stored code as initial version.
- * This is necessary because we use CodeMirror as an uncontrolled component.
+ * This is necessary because we use the editor as an uncontrolled component.
  */
 export function revive(state: AppState = initialState): AppState {
   return {

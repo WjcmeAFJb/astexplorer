@@ -5,30 +5,37 @@ import { describe, test, expect, vi } from 'vitest';
 import React from 'react';
 import { render } from '@testing-library/react';
 
-// Mock CodeMirror since JSONEditor uses it
-vi.mock('codemirror', () => {
+// Mock Monaco editor since JSONEditor uses it
+vi.mock('monaco-editor', () => {
   const mockEditor = {
     setValue: vi.fn(),
     getValue: vi.fn(() => ''),
-    getScrollInfo: vi.fn(() => ({ left: 0, top: 0 })),
-    scrollTo: vi.fn(),
-    refresh: vi.fn(),
-    on: vi.fn(),
-    off: vi.fn(),
+    getScrollTop: vi.fn(() => 0),
+    getScrollLeft: vi.fn(() => 0),
+    setScrollPosition: vi.fn(),
+    layout: vi.fn(),
+    dispose: vi.fn(),
+    onDidBlurEditorWidget: vi.fn(() => ({ dispose: vi.fn() })),
+    onDidChangeModelContent: vi.fn(() => ({ dispose: vi.fn() })),
+    onDidChangeCursorPosition: vi.fn(() => ({ dispose: vi.fn() })),
+    deltaDecorations: vi.fn(() => []),
+    getModel: vi.fn(() => null),
+    getPosition: vi.fn(() => ({ lineNumber: 1, column: 1 })),
+    getDomNode: vi.fn(() => document.createElement('div')),
   };
-  const CodeMirror = vi.fn((container: HTMLElement) => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'CodeMirror';
-    container.appendChild(wrapper);
-    return mockEditor;
-  });
-  return { default: CodeMirror };
+  return {
+    editor: {
+      create: vi.fn((container: HTMLElement) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'monaco-editor';
+        container.appendChild(wrapper);
+        return mockEditor;
+      }),
+      setModelLanguage: vi.fn(),
+    },
+    Range: vi.fn(),
+  };
 });
-
-vi.mock('codemirror/mode/javascript/javascript', () => ({}));
-vi.mock('codemirror/addon/fold/foldgutter', () => ({}));
-vi.mock('codemirror/addon/fold/foldcode', () => ({}));
-vi.mock('codemirror/addon/fold/brace-fold', () => ({}));
 
 import JSON_Viz from '../src/components/visualization/JSON';
 
@@ -39,16 +46,14 @@ describe('JSON visualization', () => {
 
     const { container } = render(<JSON_Viz parseResult={parseResult} />);
 
-    // Should render a container div for the JSONEditor
     expect(container.querySelector('#JSONEditor')).toBeTruthy();
   });
 
   test('handles circular references in AST via json-stringify-safe', () => {
     const ast: any = { type: 'Program' };
-    ast.self = ast; // circular reference
+    ast.self = ast;
     const parseResult = { ast };
 
-    // Should not throw
     expect(() => render(<JSON_Viz parseResult={parseResult} />)).not.toThrow();
   });
 

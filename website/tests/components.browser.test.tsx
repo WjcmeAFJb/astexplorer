@@ -1,7 +1,7 @@
 /**
  * Browser-mode tests for components that require a real browser environment.
  * These cover code paths impossible to test in happy-dom:
- * - CodeMirror integration (real DOM manipulation)
+ * - Monaco Editor integration (real DOM manipulation)
  * - Dialog click-outside handling (real event.target)
  * - SplitPane mouse interactions (real mouse events)
  * - PasteDropTarget paste/drop (real clipboard/drag events)
@@ -55,12 +55,9 @@ describe('SettingsDialog _outerClick in real browser', () => {
       />,
     );
 
-    // Click the outer dialog div (the backdrop)
     const dialog = document.getElementById('SettingsDialog')!;
     expect(dialog).toBeTruthy();
 
-    // In a real browser, clicking the backdrop element directly means
-    // event.target IS the backdrop element, which triggers _outerClick
     dialog.click();
 
     expect(onSave).toHaveBeenCalledWith(mockParser, { a: 1 });
@@ -88,7 +85,6 @@ describe('SettingsDialog _outerClick in real browser', () => {
       />,
     );
 
-    // Click inner content — should NOT trigger close
     const inner = document.querySelector('#SettingsDialog .inner')!;
     inner.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
@@ -135,10 +131,8 @@ describe('SplitPane mouse interaction in real browser', () => {
     const divider = container.querySelector('.splitpane-divider');
     expect(divider).toBeTruthy();
 
-    // Trigger mousedown — should set cursor style
     fireEvent.mouseDown(divider!, { clientX: 100, clientY: 50 });
 
-    // Trigger mousemove and mouseup
     document.dispatchEvent(new MouseEvent('mousemove', { clientX: 150, clientY: 50 }));
     document.dispatchEvent(new MouseEvent('mouseup'));
 
@@ -165,17 +159,17 @@ describe('SplitPane mouse interaction in real browser', () => {
 });
 
 // ===========================================================================
-// Editor: prettier formatting on blur (lines 131-139)
+// Editor: Monaco integration in real browser
 // ===========================================================================
-describe('Editor with real CodeMirror in browser', () => {
-  test('renders with CodeMirror and sets mode', async () => {
+describe('Editor with real Monaco in browser', () => {
+  test('renders with Monaco editor and sets language', async () => {
     const { default: Editor } = await import('../src/components/Editor');
 
     const { container } = render(<Editor value="const x = 1;" mode="javascript" />);
 
-    // Real CodeMirror should render
-    const cm = container.querySelector('.CodeMirror');
-    expect(cm).toBeTruthy();
+    // Real Monaco should render
+    const monacoEl = container.querySelector('.monaco-editor');
+    expect(monacoEl).toBeTruthy();
   });
 });
 
@@ -183,7 +177,7 @@ describe('Editor with real CodeMirror in browser', () => {
 // Containers: mapStateToProps / mapDispatchToProps in real browser
 // ===========================================================================
 describe('Containers with real Redux store in browser', () => {
-  test('ToolbarContainer maps all state props including transformer, keyMap, snippet (lines 16-30)', async () => {
+  test('ToolbarContainer maps all state props including transformer, keyMap, snippet', async () => {
     const { default: ToolbarContainer } = await import('../src/containers/ToolbarContainer');
     const store = makeStore();
     store.dispatch({ type: 'SET_KEY_MAP', keyMap: 'vim' } as any);
@@ -191,30 +185,22 @@ describe('Containers with real Redux store in browser', () => {
     const { container } = renderWithStore(<ToolbarContainer />, store);
     expect(container.querySelector('#Toolbar')).toBeTruthy();
 
-    // Verify all mapped props are exercised by checking rendered elements
     const state = store.getState();
     expect(state.workbench.keyMap).toBe('vim');
   });
 
-  test('CodeEditorContainer renders with mapped state and has dispatch wiring (lines 21-22)', async () => {
+  test('CodeEditorContainer renders with mapped state and has dispatch wiring', async () => {
     const { default: CodeEditorContainer } = await import('../src/containers/CodeEditorContainer');
     const store = makeStore();
 
     const { container } = renderWithStore(<CodeEditorContainer />, store);
 
-    // Real CodeMirror renders — means mapStateToProps provided value, mode, keyMap
-    const cmElement = container.querySelector('.CodeMirror');
-    expect(cmElement).toBeTruthy();
-
-    // Verify the editor received code from the store
-    const cm = (cmElement as any)?.CodeMirror;
-    if (cm) {
-      const value = cm.getValue();
-      expect(typeof value).toBe('string');
-    }
+    // Real Monaco renders
+    const monacoEl = container.querySelector('.monaco-editor');
+    expect(monacoEl).toBeTruthy();
   });
 
-  test('PasteDropTargetContainer onError dispatches SET_ERROR (lines 8-9)', async () => {
+  test('PasteDropTargetContainer onError dispatches SET_ERROR', async () => {
     const { default: PasteDropTargetContainer } =
       await import('../src/containers/PasteDropTargetContainer');
     const store = makeStore();
@@ -230,7 +216,7 @@ describe('Containers with real Redux store in browser', () => {
     spy.mockRestore();
   });
 
-  test('TransformerContainer maps transformer state and dispatch (lines 49-60)', async () => {
+  test('TransformerContainer maps transformer state and dispatch', async () => {
     const { default: TransformerContainer } =
       await import('../src/containers/TransformerContainer');
     const store = makeStore();
@@ -246,15 +232,14 @@ describe('Containers with real Redux store in browser', () => {
 
     const { container } = renderWithStore(<TransformerContainer />, store);
 
-    // Verify the transformer panel renders with CodeMirror
-    const editors = container.querySelectorAll('.CodeMirror');
+    // Verify the transformer panel renders with Monaco
+    const editors = container.querySelectorAll('.monaco-editor');
     expect(editors.length).toBeGreaterThan(0);
   });
 });
 
 // ===========================================================================
-// Visual snapshot tests: verify components render with correct styles.
-// Screenshots are saved to __screenshots__/ and tracked in git.
+// Visual snapshot tests
 // ===========================================================================
 describe('Styled component screenshots', () => {
   test('SettingsDialog', async () => {
@@ -322,16 +307,16 @@ describe('Styled component screenshots', () => {
     await page.screenshot({ element: toolbar, path: '__screenshots__/toolbar.png' });
   });
 
-  test('CodeMirror editor', async () => {
+  test('Monaco editor', async () => {
     const { default: Editor } = await import('../src/components/Editor');
 
     const { container } = render(
       <Editor value={'function hello() {\n  return "world";\n}'} mode="javascript" />,
     );
 
-    const cm = container.querySelector('.CodeMirror') as HTMLElement;
-    expect(cm).toBeTruthy();
-    expect(cm.getBoundingClientRect().height).toBeGreaterThan(0);
-    await page.screenshot({ element: cm, path: '__screenshots__/codemirror-editor.png' });
+    const monacoEl = container.querySelector('.monaco-editor') as HTMLElement;
+    expect(monacoEl).toBeTruthy();
+    expect(monacoEl.getBoundingClientRect().height).toBeGreaterThan(0);
+    await page.screenshot({ element: monacoEl, path: '__screenshots__/monaco-editor.png' });
   });
 });

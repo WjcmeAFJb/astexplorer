@@ -1,6 +1,4 @@
 @import "modern-normalize/modern-normalize.css";
-@import "codemirror/lib/codemirror.css";
-@import "codemirror/addon/fold/foldgutter.css";
 @import "./highlight.css";
 @import "font-awesome/css/font-awesome.css";
 @import "../fontcustom/fontcustom.css";
@@ -362,12 +360,12 @@ body {
   top: 0;
 }
 
-#JSONEditor .CodeMirror {
+#JSONEditor .monaco-editor {
   font-size: 0.9em;
 }
 
-#JSONEditor .CodeMirror,
-#JSONEditor .CodeMirror-gutters {
+#JSONEditor .monaco-editor,
+#JSONEditor .monaco-editor .margin {
   background-color: #efefef;
 }
 
@@ -386,7 +384,7 @@ li.entry {
   position: relative;
 }
 
-.CodeMirror .marked,
+.monaco-editor .marked,
 .entry.highlighted {
   border-radius: 2px;
   background-color: rgba(255,240,6,0.4);
@@ -441,25 +439,16 @@ li.entry {
   text-decoration: underline;
 }
 
-.CodeMirror {
-  height: auto;
+.editor .monaco-editor {
   flex: 1;
 }
 
-.CodeMirror-scroll {
-  overflow: auto;
-}
-
-.editor .CodeMirror-gutters {
+.editor .monaco-editor .margin {
   background-color: white;
   border: none;
 }
 
-.CodeMirror .ErrorGutter {
-  width: .7em;
-}
-
-.CodeMirror pre.errorMarker {
+.monaco-editor .errorMarker {
   background-color: #EB949433;
 }
 
@@ -520,8 +509,7 @@ li.entry {
 }
 
 
-body .CodeMirror-hints,
-body .CodeMirror-Tern-tooltip {
+body .monaco-editor .suggest-widget {
   z-index: 1000;
 }
 

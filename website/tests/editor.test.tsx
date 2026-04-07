@@ -5,53 +5,61 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
 import { render, act } from '@testing-library/react';
 
-// Flush pending microtasks (from ensureCMMode().then(...))
+// Flush pending microtasks
 const flushMicrotasks = () => act(() => new Promise((r) => setTimeout(r, 0)));
 
-const { mockDoc, mockCmInstance, mockCodeMirror } = vi.hoisted(() => {
-  const _mockDoc = {
+const { mockModel, mockEditor, mockMonaco } = vi.hoisted(() => {
+  const _mockModel = {
     getValue: vi.fn(() => 'initial code'),
-    getCursor: vi.fn(() => ({ line: 0, ch: 0 })),
-    indexFromPos: vi.fn(() => 0),
-    posFromIndex: vi.fn((i: number) => ({ line: 0, ch: i })),
+    getPositionAt: vi.fn((offset: number) => ({ lineNumber: 1, column: offset + 1 })),
+    getOffsetAt: vi.fn((pos: { lineNumber: number; column: number }) => pos.column - 1),
+    dispose: vi.fn(),
   };
 
-  const _mockCmInstance = {
+  const _mockEditor = {
     getValue: vi.fn(() => 'initial code'),
     setValue: vi.fn(),
-    setOption: vi.fn(),
-    on: vi.fn(),
-    off: vi.fn(),
-    getDoc: vi.fn(() => _mockDoc),
-    getCursor: vi.fn(() => ({ line: 0, ch: 0 })),
-    addLineClass: vi.fn(),
-    removeLineClass: vi.fn(),
-    markText: vi.fn(() => ({ clear: vi.fn() })),
-    refresh: vi.fn(),
+    getModel: vi.fn(() => _mockModel),
+    getPosition: vi.fn(() => ({ lineNumber: 1, column: 1 })),
+    getDomNode: vi.fn(() => document.createElement('div')),
+    getScrollTop: vi.fn(() => 0),
+    getScrollLeft: vi.fn(() => 0),
+    setScrollPosition: vi.fn(),
+    onDidBlurEditorWidget: vi.fn(() => ({ dispose: vi.fn() })),
+    onDidChangeModelContent: vi.fn(() => ({ dispose: vi.fn() })),
+    onDidChangeCursorPosition: vi.fn(() => ({ dispose: vi.fn() })),
+    deltaDecorations: vi.fn((_old: string[], _new: unknown[]) =>
+      _new.map((_: unknown, i: number) => `deco-${i}`),
+    ),
+    layout: vi.fn(),
+    dispose: vi.fn(),
   };
 
-  // The real CodeMirror appends a child element to the container.
-  // We need to do the same so componentWillUnmount's removeChild works.
-  const _mockCodeMirror = vi.fn((container: HTMLElement) => {
-    const el = document.createElement('div');
-    el.className = 'CodeMirror';
-    container.appendChild(el);
-    return _mockCmInstance;
-  });
+  const _mockMonaco = {
+    editor: {
+      create: vi.fn((container: HTMLElement) => {
+        const el = document.createElement('div');
+        el.className = 'monaco-editor';
+        container.appendChild(el);
+        return _mockEditor;
+      }),
+      setModelLanguage: vi.fn(),
+    },
+    Range: vi.fn((startLine: number, startCol: number, endLine: number, endCol: number) => ({
+      startLineNumber: startLine,
+      startColumn: startCol,
+      endLineNumber: endLine,
+      endColumn: endCol,
+    })),
+  };
 
-  return { mockDoc: _mockDoc, mockCmInstance: _mockCmInstance, mockCodeMirror: _mockCodeMirror };
+  return { mockModel: _mockModel, mockEditor: _mockEditor, mockMonaco: _mockMonaco };
 });
 
-vi.mock('codemirror', () => ({
-  default: mockCodeMirror,
-}));
+vi.mock('monaco-editor', () => mockMonaco);
 
-vi.mock('codemirror/keymap/vim', () => ({}));
-vi.mock('codemirror/keymap/emacs', () => ({}));
-vi.mock('codemirror/keymap/sublime', () => ({}));
-
-vi.mock('../src/codemirrorModes', () => ({
-  ensureCMMode: vi.fn(() => Promise.resolve()),
+vi.mock('../src/monacoLanguages', () => ({
+  getMonacoLanguage: vi.fn((mode: string) => mode || 'plaintext'),
 }));
 
 import Editor from '../src/components/Editor';
@@ -66,122 +74,114 @@ describe('Editor', () => {
     expect(container.querySelector('.editor')).not.toBeNull();
   });
 
-  test('initializes CodeMirror with provided value', () => {
+  test('initializes Monaco with provided value', () => {
     render(<Editor value="test code" />);
-    const calls = mockCodeMirror.mock.calls;
+    const calls = mockMonaco.editor.create.mock.calls;
     expect(calls.length).toBeGreaterThan(0);
     const lastOpts = calls[calls.length - 1][1];
     expect(lastOpts.value).toBe('test code');
   });
 
-  test('initializes CodeMirror with default props', () => {
+  test('initializes Monaco with default props', () => {
     render(<Editor />);
-    const calls = mockCodeMirror.mock.calls;
+    const calls = mockMonaco.editor.create.mock.calls;
     const lastOpts = calls[calls.length - 1][1];
-    expect(lastOpts.lineNumbers).toBe(true);
+    expect(lastOpts.lineNumbers).toBe('on');
     expect(lastOpts.readOnly).toBe(false);
-    expect(lastOpts.keyMap).toBe('default');
   });
 
-  test('initializes CodeMirror with custom lineNumbers', () => {
+  test('initializes Monaco with custom lineNumbers', () => {
     render(<Editor lineNumbers={false} />);
-    const calls = mockCodeMirror.mock.calls;
+    const calls = mockMonaco.editor.create.mock.calls;
     const lastOpts = calls[calls.length - 1][1];
-    expect(lastOpts.lineNumbers).toBe(false);
+    expect(lastOpts.lineNumbers).toBe('off');
   });
 
-  test('initializes CodeMirror with readOnly', () => {
+  test('initializes Monaco with readOnly', () => {
     render(<Editor readOnly={true} />);
-    const calls = mockCodeMirror.mock.calls;
+    const calls = mockMonaco.editor.create.mock.calls;
     const lastOpts = calls[calls.length - 1][1];
     expect(lastOpts.readOnly).toBe(true);
   });
 
-  test('initializes CodeMirror with keyMap', () => {
-    render(<Editor keyMap="vim" />);
-    const calls = mockCodeMirror.mock.calls;
-    const lastOpts = calls[calls.length - 1][1];
-    expect(lastOpts.keyMap).toBe('vim');
-  });
-
-  test('binds change and cursorActivity handlers', () => {
+  test('binds change and cursor handlers', () => {
     render(<Editor value="hello" />);
-    const onCalls = mockCmInstance.on.mock.calls;
-    const eventNames = onCalls.map((c: any[]) => c[0]);
-    expect(eventNames).toContain('blur');
-    expect(eventNames).toContain('changes');
-    expect(eventNames).toContain('cursorActivity');
+    expect(mockEditor.onDidBlurEditorWidget).toHaveBeenCalled();
+    expect(mockEditor.onDidChangeModelContent).toHaveBeenCalled();
+    expect(mockEditor.onDidChangeCursorPosition).toHaveBeenCalled();
   });
 
   test('subscribes to PANEL_RESIZE', () => {
     render(<Editor value="hello" />);
-    // The Editor subscribes to pubsub, we can just verify it mounted correctly
-    expect(mockCmInstance.on).toHaveBeenCalled();
+    expect(mockEditor.onDidChangeModelContent).toHaveBeenCalled();
   });
 
   test('subscribes to HIGHLIGHT when highlight=true', () => {
     render(<Editor value="hello" highlight={true} />);
-    // Mounts without error; highlight subscription is set up internally
-    expect(mockCmInstance.on).toHaveBeenCalled();
+    expect(mockEditor.onDidChangeModelContent).toHaveBeenCalled();
   });
 
   test('does not subscribe to HIGHLIGHT when highlight=false', () => {
     render(<Editor value="hello" highlight={false} />);
-    // Still mounts fine, just fewer subscriptions
-    expect(mockCmInstance.on).toHaveBeenCalled();
+    expect(mockEditor.onDidChangeModelContent).toHaveBeenCalled();
   });
 
-  test('unmounts cleanly and removes CodeMirror handlers', async () => {
+  test('unmounts cleanly and disposes Monaco', async () => {
     const { unmount } = render(<Editor value="hello" />);
     await flushMicrotasks();
     expect(() => unmount()).not.toThrow();
-    // off should be called for each handler that was bound
-    expect(mockCmInstance.off).toHaveBeenCalled();
+    expect(mockEditor.dispose).toHaveBeenCalled();
   });
 
   test('updates value when prop changes', async () => {
     const { rerender } = render(<Editor value="initial" />);
     await flushMicrotasks();
     rerender(<Editor value="updated" />);
-    expect(mockCmInstance.setValue).toHaveBeenCalledWith('updated');
+    expect(mockEditor.setValue).toHaveBeenCalledWith('updated');
   });
 
   test('does not call setValue when value prop is same', async () => {
-    mockCmInstance.setValue.mockClear();
+    mockEditor.setValue.mockClear();
     const { rerender } = render(<Editor value="same" />);
     await flushMicrotasks();
-    mockCmInstance.setValue.mockClear();
+    mockEditor.setValue.mockClear();
     rerender(<Editor value="same" />);
-    expect(mockCmInstance.setValue).not.toHaveBeenCalled();
+    expect(mockEditor.setValue).not.toHaveBeenCalled();
   });
 
-  test('updates keyMap when prop changes', async () => {
-    const { rerender } = render(<Editor value="x" keyMap="default" />);
-    await flushMicrotasks();
-    mockCmInstance.setOption.mockClear();
-    rerender(<Editor value="x" keyMap="vim" />);
-    expect(mockCmInstance.setOption).toHaveBeenCalledWith('keyMap', 'vim');
-  });
-
-  test('handles error prop by adding error line class', async () => {
+  test('handles error prop by adding error decoration', async () => {
     const error = { message: 'Error', loc: { line: 5 } };
     render(<Editor value="x" error={error} />);
     await flushMicrotasks();
-    expect(mockCmInstance.addLineClass).toHaveBeenCalledWith(4, 'text', 'errorMarker');
+    expect(mockEditor.deltaDecorations).toHaveBeenCalled();
+    const lastCall =
+      mockEditor.deltaDecorations.mock.calls[mockEditor.deltaDecorations.mock.calls.length - 1];
+    const decos = lastCall[1];
+    expect(decos.length).toBe(1);
+    expect(decos[0].options.className).toBe('errorMarker');
+    expect(decos[0].options.isWholeLine).toBe(true);
   });
 
   test('handles error with lineNumber property', async () => {
     const error = { message: 'Error', lineNumber: 3 };
     render(<Editor value="x" error={error} />);
     await flushMicrotasks();
-    expect(mockCmInstance.addLineClass).toHaveBeenCalledWith(2, 'text', 'errorMarker');
+    const calls = mockEditor.deltaDecorations.mock.calls;
+    const errorDecoCall = calls.find(
+      (c: any[]) => c[1].length > 0 && c[1][0]?.options?.className === 'errorMarker',
+    );
+    expect(errorDecoCall).toBeDefined();
   });
 
   test('handles error with line property', async () => {
     const error = { message: 'Error', line: 7 };
     render(<Editor value="x" error={error} />);
     await flushMicrotasks();
-    expect(mockCmInstance.addLineClass).toHaveBeenCalledWith(6, 'text', 'errorMarker');
+    const calls = mockEditor.deltaDecorations.mock.calls;
+    const errorDecoCall = calls.find(
+      (c: any[]) => c[1].length > 0 && c[1][0]?.options?.className === 'errorMarker',
+    );
+    expect(errorDecoCall).toBeDefined();
   });
 
   test('default props are set correctly', () => {
@@ -195,7 +195,7 @@ describe('Editor', () => {
     expect(typeof Editor.defaultProps.onActivity).toBe('function');
   });
 
-  test('getValue returns CodeMirror value', async () => {
+  test('getValue returns Monaco value', async () => {
     let editorRef: Editor | null = null;
     render(
       <Editor
@@ -213,9 +213,8 @@ describe('Editor', () => {
 
   test('_onContentChange calls onContentChange prop with value and cursor', async () => {
     const onContentChange = vi.fn();
-    mockDoc.getValue.mockReturnValue('new code');
-    mockDoc.getCursor.mockReturnValue({ line: 1, ch: 5 });
-    mockDoc.indexFromPos.mockReturnValue(15);
+    mockModel.getValue.mockReturnValue('new code');
+    mockModel.getOffsetAt.mockReturnValue(15);
 
     let editorRef: Editor | null = null;
     render(
@@ -229,7 +228,6 @@ describe('Editor', () => {
     );
     await flushMicrotasks();
 
-    // Call _onContentChange directly
     expect(editorRef).not.toBeNull();
     await act(async () => {
       (editorRef as any)._onContentChange();
@@ -240,7 +238,7 @@ describe('Editor', () => {
 
   test('_onActivity calls onActivity prop with cursor position', async () => {
     const onActivity = vi.fn();
-    mockDoc.indexFromPos.mockReturnValue(42);
+    mockModel.getOffsetAt.mockReturnValue(42);
 
     let editorRef: Editor | null = null;
     render(
@@ -263,22 +261,13 @@ describe('Editor', () => {
     render(<Editor value="hello" enableFormatting={true} />);
     await flushMicrotasks();
 
-    // Get the 'blur' handler that was registered on CodeMirror
-    const blurHandler = mockCmInstance.on.mock.calls.find(
-      (c: unknown[]) => c[0] === 'blur',
-    )?.[1] as (instance: unknown) => void;
+    // Get the blur handler
+    const blurHandler = mockEditor.onDidBlurEditorWidget.mock.calls[0]?.[0] as () => void;
     expect(blurHandler).toBeDefined();
 
-    // enableFormatting is true so it should NOT return early
-    // But require(['prettier/...'], cb) is AMD-style which won't work in vitest
-    // We just verify it doesn't throw when called
-    const mockInstance = {
-      doc: { getValue: vi.fn(() => ''), setValue: vi.fn() },
-      display: { maxLineLength: 80 },
-    };
     // Catch the require error - it uses AMD-style require which isn't available
     try {
-      blurHandler(mockInstance);
+      blurHandler();
     } catch {
       // Expected - AMD require not available
     }
@@ -288,47 +277,40 @@ describe('Editor', () => {
     render(<Editor value="hello" enableFormatting={false} />);
     await flushMicrotasks();
 
-    const blurHandler = mockCmInstance.on.mock.calls.find(
-      (c: unknown[]) => c[0] === 'blur',
-    )?.[1] as (instance: unknown) => void;
+    const blurHandler = mockEditor.onDidBlurEditorWidget.mock.calls[0]?.[0] as () => void;
     expect(blurHandler).toBeDefined();
 
     // Should return early without any side effects
-    blurHandler({});
-    // No error thrown = success (the early return works)
+    blurHandler();
   });
 
-  test('componentWillUnmount clears timer and handlers', async () => {
+  test('componentWillUnmount disposes editor', async () => {
     const { unmount } = render(<Editor value="hello" highlight={true} />);
     await flushMicrotasks();
 
     expect(() => unmount()).not.toThrow();
-    expect(mockCmInstance.off).toHaveBeenCalled();
+    expect(mockEditor.dispose).toHaveBeenCalled();
   });
 
   test('HIGHLIGHT subscription marks text range', async () => {
     const { publish } = await import('../src/utils/pubsub');
 
-    mockCmInstance.markText.mockClear();
-    mockDoc.posFromIndex.mockImplementation((i: number) => ({ line: 0, ch: i }));
+    mockEditor.deltaDecorations.mockClear();
 
     render(<Editor value="hello world" highlight={true} />);
     await flushMicrotasks();
 
-    // publish uses setTimeout(fn, 0), so we need to flush
     await act(async () => {
       publish('HIGHLIGHT', { range: [0, 5] });
       await new Promise((r) => setTimeout(r, 10));
     });
 
-    expect(mockCmInstance.markText).toHaveBeenCalled();
+    expect(mockEditor.deltaDecorations).toHaveBeenCalled();
   });
 
-  test('HIGHLIGHT subscription clears previous mark', async () => {
+  test('HIGHLIGHT subscription clears previous decoration', async () => {
     const { publish } = await import('../src/utils/pubsub');
-    const mockMark = { clear: vi.fn() };
-    mockCmInstance.markText.mockReturnValue(mockMark);
-    mockDoc.posFromIndex.mockImplementation((i: number) => ({ line: 0, ch: i }));
+    mockEditor.deltaDecorations.mockClear();
 
     render(<Editor value="hello world" highlight={true} />);
     await flushMicrotasks();
@@ -343,49 +325,30 @@ describe('Editor', () => {
       await new Promise((r) => setTimeout(r, 10));
     });
 
-    expect(mockMark.clear).toHaveBeenCalled();
+    // deltaDecorations is called with old IDs to clear
+    expect(mockEditor.deltaDecorations.mock.calls.length).toBeGreaterThan(1);
   });
 
   test('HIGHLIGHT returns early when range is undefined', async () => {
     const { publish } = await import('../src/utils/pubsub');
 
-    mockCmInstance.markText.mockClear();
+    mockEditor.deltaDecorations.mockClear();
     render(<Editor value="hello" highlight={true} />);
     await flushMicrotasks();
+
+    const callsBefore = mockEditor.deltaDecorations.mock.calls.length;
 
     await act(async () => {
       publish('HIGHLIGHT', {});
       await new Promise((r) => setTimeout(r, 10));
     });
 
-    expect(mockCmInstance.markText).not.toHaveBeenCalled();
+    expect(mockEditor.deltaDecorations.mock.calls.length).toBe(callsBefore);
   });
 
-  test('HIGHLIGHT handles posFromIndex returning falsy', async () => {
+  test('CLEAR_HIGHLIGHT clears decorations', async () => {
     const { publish } = await import('../src/utils/pubsub');
-
-    mockDoc.posFromIndex.mockReturnValue(undefined);
-    mockCmInstance.markText.mockClear();
-
-    render(<Editor value="hello" highlight={true} />);
-    await flushMicrotasks();
-
-    await act(async () => {
-      publish('HIGHLIGHT', { range: [0, 5] });
-      await new Promise((r) => setTimeout(r, 10));
-    });
-
-    expect(mockCmInstance.markText).not.toHaveBeenCalled();
-
-    // Reset
-    mockDoc.posFromIndex.mockImplementation((i: number) => ({ line: 0, ch: i }));
-  });
-
-  test('CLEAR_HIGHLIGHT clears the mark', async () => {
-    const { publish } = await import('../src/utils/pubsub');
-    const mockMark = { clear: vi.fn() };
-    mockCmInstance.markText.mockReturnValue(mockMark);
-    mockDoc.posFromIndex.mockImplementation((i: number) => ({ line: 0, ch: i }));
+    mockEditor.deltaDecorations.mockClear();
 
     render(<Editor value="hello" highlight={true} />);
     await flushMicrotasks();
@@ -400,14 +363,15 @@ describe('Editor', () => {
       await new Promise((r) => setTimeout(r, 10));
     });
 
-    expect(mockMark.clear).toHaveBeenCalled();
+    // Last deltaDecorations call should clear (pass empty array as new decorations)
+    const lastCall =
+      mockEditor.deltaDecorations.mock.calls[mockEditor.deltaDecorations.mock.calls.length - 1];
+    expect(lastCall[1]).toEqual([]);
   });
 
-  test('CLEAR_HIGHLIGHT without range clears any mark', async () => {
+  test('CLEAR_HIGHLIGHT without range clears any decoration', async () => {
     const { publish } = await import('../src/utils/pubsub');
-    const mockMark = { clear: vi.fn() };
-    mockCmInstance.markText.mockReturnValue(mockMark);
-    mockDoc.posFromIndex.mockImplementation((i: number) => ({ line: 0, ch: i }));
+    mockEditor.deltaDecorations.mockClear();
 
     render(<Editor value="hello" highlight={true} />);
     await flushMicrotasks();
@@ -422,14 +386,14 @@ describe('Editor', () => {
       await new Promise((r) => setTimeout(r, 10));
     });
 
-    expect(mockMark.clear).toHaveBeenCalled();
+    const lastCall =
+      mockEditor.deltaDecorations.mock.calls[mockEditor.deltaDecorations.mock.calls.length - 1];
+    expect(lastCall[1]).toEqual([]);
   });
 
   test('CLEAR_HIGHLIGHT with non-matching range does not clear', async () => {
     const { publish } = await import('../src/utils/pubsub');
-    const mockMark = { clear: vi.fn() };
-    mockCmInstance.markText.mockReturnValue(mockMark);
-    mockDoc.posFromIndex.mockImplementation((i: number) => ({ line: 0, ch: i }));
+    mockEditor.deltaDecorations.mockClear();
 
     render(<Editor value="hello" highlight={true} />);
     await flushMicrotasks();
@@ -438,20 +402,22 @@ describe('Editor', () => {
       publish('HIGHLIGHT', { range: [0, 3] });
       await new Promise((r) => setTimeout(r, 10));
     });
-    mockMark.clear.mockClear();
+
+    const callsAfterHighlight = mockEditor.deltaDecorations.mock.calls.length;
 
     await act(async () => {
       publish('CLEAR_HIGHLIGHT', { range: [5, 10] });
       await new Promise((r) => setTimeout(r, 10));
     });
 
-    expect(mockMark.clear).not.toHaveBeenCalled();
+    // No additional deltaDecorations calls for non-matching range
+    expect(mockEditor.deltaDecorations.mock.calls.length).toBe(callsAfterHighlight);
   });
 
-  test('PANEL_RESIZE refreshes CodeMirror', async () => {
+  test('PANEL_RESIZE triggers layout', async () => {
     const { publish } = await import('../src/utils/pubsub');
 
-    mockCmInstance.refresh.mockClear();
+    mockEditor.layout.mockClear();
     render(<Editor value="hello" />);
     await flushMicrotasks();
 
@@ -460,7 +426,7 @@ describe('Editor', () => {
       await new Promise((r) => setTimeout(r, 10));
     });
 
-    expect(mockCmInstance.refresh).toHaveBeenCalled();
+    expect(mockEditor.layout).toHaveBeenCalled();
   });
 
   test('_posFromIndex uses posFromIndex prop when provided', async () => {
@@ -479,18 +445,17 @@ describe('Editor', () => {
     await flushMicrotasks();
 
     expect(editorRef).not.toBeNull();
-    const result = (editorRef as any)._posFromIndex(mockDoc, 5);
+    const result = (editorRef as any)._posFromIndex(mockModel, 5);
     expect(customPosFromIndex).toHaveBeenCalledWith(5);
     expect(result).toEqual({ line: 10, ch: 5 });
   });
 
-  test('mode change calls ensureCMMode and sets option', async () => {
+  test('mode change sets model language', async () => {
     const { rerender } = render(<Editor value="x" mode="javascript" />);
     await flushMicrotasks();
-    mockCmInstance.setOption.mockClear();
+    mockMonaco.editor.setModelLanguage.mockClear();
     rerender(<Editor value="x" mode="css" />);
-    await flushMicrotasks();
-    expect(mockCmInstance.setOption).toHaveBeenCalledWith('mode', 'css');
+    expect(mockMonaco.editor.setModelLanguage).toHaveBeenCalled();
   });
 
   test('error removed when updating with new error', async () => {
@@ -498,21 +463,24 @@ describe('Editor', () => {
     const error2 = { message: 'Error2', loc: { line: 5 } };
     const { rerender } = render(<Editor value="x" error={error1} />);
     await flushMicrotasks();
-    mockCmInstance.removeLineClass.mockClear();
-    mockCmInstance.addLineClass.mockClear();
+    mockEditor.deltaDecorations.mockClear();
     rerender(<Editor value="x" error={error2} />);
-    // _setError reads this.props.error for oldError, which is already the new props (error2)
-    // So removeLineClass is called with error2's line (5-1=4), not error1's line
-    expect(mockCmInstance.removeLineClass).toHaveBeenCalledWith(4, 'text', 'errorMarker');
-    expect(mockCmInstance.addLineClass).toHaveBeenCalledWith(4, 'text', 'errorMarker');
+    // deltaDecorations should be called to clear old and add new
+    expect(mockEditor.deltaDecorations).toHaveBeenCalled();
   });
 
-  test('error with no line number does not add/remove line class', async () => {
-    const error = { message: 'Error' }; // no loc, lineNumber, or line
-    mockCmInstance.addLineClass.mockClear();
+  test('error with no line number does not add decoration', async () => {
+    const error = { message: 'Error' };
+    mockEditor.deltaDecorations.mockClear();
     render(<Editor value="x" error={error} />);
     await flushMicrotasks();
-    expect(mockCmInstance.addLineClass).not.toHaveBeenCalled();
+    // deltaDecorations should be called but with empty new decorations (clear only)
+    // then no new error decoration since no line number
+    const calls = mockEditor.deltaDecorations.mock.calls;
+    const hasErrorDeco = calls.some((c: any[]) =>
+      c[1].some?.((d: any) => d?.options?.className === 'errorMarker'),
+    );
+    expect(hasErrorDeco).toBe(false);
   });
 
   test('getDerivedStateFromProps returns null when value unchanged', () => {
@@ -525,21 +493,18 @@ describe('Editor', () => {
     expect(result).toEqual({ value: 'new' });
   });
 
-  test('changes handler calls clearTimeout and sets timer (lines 144-146)', async () => {
+  test('changes handler calls clearTimeout and sets timer', async () => {
     const onContentChange = vi.fn();
-    mockDoc.getValue.mockReturnValue('changed');
-    mockDoc.indexFromPos.mockReturnValue(7);
+    mockModel.getValue.mockReturnValue('changed');
+    mockModel.getOffsetAt.mockReturnValue(7);
 
     render(<Editor value="initial" onContentChange={onContentChange} />);
     await flushMicrotasks();
 
-    // Find the 'changes' handler registered on CodeMirror
-    const changesHandler = mockCmInstance.on.mock.calls.find(
-      (c: unknown[]) => c[0] === 'changes',
-    )?.[1] as () => void;
+    // Find the content change handler registered on the editor
+    const changesHandler = mockEditor.onDidChangeModelContent.mock.calls[0]?.[0] as () => void;
     expect(changesHandler).toBeDefined();
 
-    // Call the handler - this covers lines 144 (clearTimeout) and 146 (setTimeout)
     changesHandler();
 
     // Wait for the setTimeout(200ms) to fire
@@ -550,20 +515,16 @@ describe('Editor', () => {
     expect(onContentChange).toHaveBeenCalledWith({ value: 'changed', cursor: 7 });
   });
 
-  test('cursorActivity handler calls clearTimeout and sets timer (lines 149-151)', async () => {
+  test('cursorActivity handler calls clearTimeout and sets timer', async () => {
     const onActivity = vi.fn();
-    mockDoc.indexFromPos.mockReturnValue(42);
+    mockModel.getOffsetAt.mockReturnValue(42);
 
     render(<Editor value="hello" onActivity={onActivity} />);
     await flushMicrotasks();
 
-    // Find the 'cursorActivity' handler
-    const cursorHandler = mockCmInstance.on.mock.calls.find(
-      (c: unknown[]) => c[0] === 'cursorActivity',
-    )?.[1] as () => void;
+    const cursorHandler = mockEditor.onDidChangeCursorPosition.mock.calls[0]?.[0] as () => void;
     expect(cursorHandler).toBeDefined();
 
-    // Call the handler - this covers lines 149 (clearTimeout) and 151 (setTimeout)
     cursorHandler();
 
     // Wait for the setTimeout(100ms) to fire

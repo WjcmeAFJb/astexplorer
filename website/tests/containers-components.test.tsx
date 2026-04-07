@@ -116,34 +116,44 @@ vi.mock('astexplorer-parsers', () => ({
     id ? { id, displayName: id, defaultTransform: '' } : undefined,
 }));
 
-// Mock codemirror and related modules that Editor/Transformer try to import
-vi.mock('codemirror', () => {
-  const CM = function () {
-    return {
-      on: vi.fn(),
-      setValue: vi.fn(),
-      setOption: vi.fn(),
-      getValue: vi.fn(() => ''),
-      swapDoc: vi.fn(),
-      getDoc: vi.fn(() => ({})),
-    };
-  };
-  CM.fromTextArea = vi.fn(() => ({
-    on: vi.fn(),
-    setValue: vi.fn(),
-    setOption: vi.fn(),
+// Mock monaco-editor which Editor/Transformer/JSONEditor use
+vi.mock('monaco-editor', () => {
+  const mockEditor = {
     getValue: vi.fn(() => ''),
-    getWrapperElement: vi.fn(() => document.createElement('div')),
-    swapDoc: vi.fn(),
-    getDoc: vi.fn(() => ({})),
-    refresh: vi.fn(),
-  }));
-  return { default: CM };
+    setValue: vi.fn(),
+    getModel: vi.fn(() => ({
+      getValue: vi.fn(() => ''),
+      getPositionAt: vi.fn(() => ({ lineNumber: 1, column: 1 })),
+      getOffsetAt: vi.fn(() => 0),
+    })),
+    getPosition: vi.fn(() => ({ lineNumber: 1, column: 1 })),
+    getDomNode: vi.fn(() => document.createElement('div')),
+    getScrollTop: vi.fn(() => 0),
+    getScrollLeft: vi.fn(() => 0),
+    setScrollPosition: vi.fn(),
+    onDidBlurEditorWidget: vi.fn(() => ({ dispose: vi.fn() })),
+    onDidChangeModelContent: vi.fn(() => ({ dispose: vi.fn() })),
+    onDidChangeCursorPosition: vi.fn(() => ({ dispose: vi.fn() })),
+    deltaDecorations: vi.fn(() => []),
+    layout: vi.fn(),
+    dispose: vi.fn(),
+  };
+  return {
+    editor: {
+      create: vi.fn((container: HTMLElement) => {
+        const el = document.createElement('div');
+        el.className = 'monaco-editor';
+        container.appendChild(el);
+        return mockEditor;
+      }),
+      setModelLanguage: vi.fn(),
+    },
+    Range: vi.fn(),
+  };
 });
-vi.mock('codemirror/keymap/vim', () => ({}));
-vi.mock('codemirror/keymap/emacs', () => ({}));
-vi.mock('codemirror/keymap/sublime', () => ({}));
-vi.mock('../src/codemirrorModes', () => ({ ensureCMMode: vi.fn(() => Promise.resolve()) }));
+vi.mock('../src/monacoLanguages', () => ({
+  getMonacoLanguage: vi.fn((m: string) => m || 'plaintext'),
+}));
 
 import { astexplorer } from '../src/store/reducers';
 import * as actions from '../src/store/actions';
@@ -1135,7 +1145,7 @@ describe('CodeEditorContainer mapDispatchToProps (lines 21-22)', () => {
     const store = makeStore();
     const spy = vi.spyOn(store, 'dispatch');
     renderWithStore(<CodeEditorContainer />, store);
-    // Trigger the onContentChange by simulating CodeMirror change
+    // Trigger the onContentChange by simulating editor change
     // The container connects Editor with dispatch functions
     expect(spy).toBeDefined();
     spy.mockRestore();

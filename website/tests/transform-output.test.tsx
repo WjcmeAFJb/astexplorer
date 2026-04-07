@@ -8,50 +8,48 @@ import { render } from '@testing-library/react';
 // We capture the posFromIndex prop passed to Editor so we can call positionFromIndex directly.
 let capturedEditorProps: Record<string, unknown> = {};
 
-const { mockCmInstance, mockCodeMirror } = vi.hoisted(() => {
-  const _mockCmInstance = {
+const { mockEditor, mockMonaco } = vi.hoisted(() => {
+  const _mockEditor = {
     getValue: vi.fn(() => ''),
     setValue: vi.fn(),
-    setOption: vi.fn(),
-    on: vi.fn(),
-    off: vi.fn(),
-    getDoc: vi.fn(() => ({
+    getModel: vi.fn(() => ({
       getValue: vi.fn(() => ''),
-      getCursor: vi.fn(() => ({ line: 0, ch: 0 })),
-      indexFromPos: vi.fn(() => 0),
-      posFromIndex: vi.fn((i: number) => ({ line: 0, ch: i })),
+      getPositionAt: vi.fn(() => ({ lineNumber: 1, column: 1 })),
+      getOffsetAt: vi.fn(() => 0),
     })),
-    getCursor: vi.fn(() => ({ line: 0, ch: 0 })),
-    addLineClass: vi.fn(),
-    removeLineClass: vi.fn(),
-    markText: vi.fn(() => ({ clear: vi.fn() })),
-    refresh: vi.fn(),
-    getScrollInfo: vi.fn(() => ({ left: 0, top: 0 })),
-    scrollTo: vi.fn(),
+    getPosition: vi.fn(() => ({ lineNumber: 1, column: 1 })),
+    getDomNode: vi.fn(() => document.createElement('div')),
+    getScrollTop: vi.fn(() => 0),
+    getScrollLeft: vi.fn(() => 0),
+    setScrollPosition: vi.fn(),
+    onDidBlurEditorWidget: vi.fn(() => ({ dispose: vi.fn() })),
+    onDidChangeModelContent: vi.fn(() => ({ dispose: vi.fn() })),
+    onDidChangeCursorPosition: vi.fn(() => ({ dispose: vi.fn() })),
+    deltaDecorations: vi.fn(() => []),
+    layout: vi.fn(),
+    dispose: vi.fn(),
   };
-  const _mockCodeMirror = vi.fn((container: HTMLElement) => {
-    const el = document.createElement('div');
-    el.className = 'CodeMirror';
-    container.appendChild(el);
-    return _mockCmInstance;
-  });
-  return { mockCmInstance: _mockCmInstance, mockCodeMirror: _mockCodeMirror };
+
+  const _mockMonaco = {
+    editor: {
+      create: vi.fn((container: HTMLElement) => {
+        const el = document.createElement('div');
+        el.className = 'monaco-editor';
+        container.appendChild(el);
+        return _mockEditor;
+      }),
+      setModelLanguage: vi.fn(),
+    },
+    Range: vi.fn(),
+  };
+
+  return { mockEditor: _mockEditor, mockMonaco: _mockMonaco };
 });
 
-vi.mock('codemirror', () => ({
-  default: mockCodeMirror,
-}));
+vi.mock('monaco-editor', () => mockMonaco);
 
-vi.mock('codemirror/keymap/vim', () => ({}));
-vi.mock('codemirror/keymap/emacs', () => ({}));
-vi.mock('codemirror/keymap/sublime', () => ({}));
-vi.mock('codemirror/mode/javascript/javascript', () => ({}));
-vi.mock('codemirror/addon/fold/foldgutter', () => ({}));
-vi.mock('codemirror/addon/fold/foldcode', () => ({}));
-vi.mock('codemirror/addon/fold/brace-fold', () => ({}));
-
-vi.mock('../src/codemirrorModes', () => ({
-  ensureCMMode: vi.fn(() => Promise.resolve()),
+vi.mock('../src/monacoLanguages', () => ({
+  getMonacoLanguage: vi.fn((mode: string) => mode || 'plaintext'),
 }));
 
 // Mock Editor to capture its props so we can test posFromIndex
@@ -121,7 +119,6 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
     render(<TransformOutput transformResult={result} mode="javascript" />);
     const posFromIndex = capturedEditorProps.posFromIndex as (index: number) => unknown;
     expect(posFromIndex).toBeDefined();
-    // map is undefined, so positionFromIndex returns undefined
     expect(posFromIndex(0)).toBeUndefined();
     expect(posFromIndex(5)).toBeUndefined();
   });
@@ -139,12 +136,10 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
     ) => { line: number; ch: number } | undefined;
     const pos = posFromIndex(0);
     expect(pos).toEqual({ line: 0, ch: 0 });
-    // index=0 returns early, so generatedPositionFor is NOT called
     expect(mockMap.generatedPositionFor).not.toHaveBeenCalled();
   });
 
   test('maps non-zero index through source map', () => {
-    // Source content: "hello\nworld" (index 7 = 'o' in 'world', line 2 col 1)
     const mockMap = {
       sourcesContent: ['hello\nworld'],
       sources: ['source.js'],
@@ -161,7 +156,6 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
       column: 1,
       source: 'source.js',
     });
-    // generatedPositionFor returns {line:3, column:5} => {line: 2, ch: 5}
     expect(pos).toEqual({ line: 2, ch: 5 });
   });
 
@@ -181,9 +175,6 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
   });
 
   test('handles single-line source (no newlines, lineStart is -1)', () => {
-    // Source: "abcdef" (no newlines)
-    // index 3 => lastIndexOf('\n', 2) = -1, column = 3 - (-1) - 1 = 3, line = 1
-    // lineStart <= 0, so no while loop, and lineStart is -1 (not 0) so no extra line++
     const mockMap = {
       sourcesContent: ['abcdef'],
       sources: ['s.js'],
@@ -204,14 +195,6 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
   });
 
   test('handles multi-line source with index on third line', () => {
-    // Source: "aaa\nbbb\nccc" => index 9 = 'c' on line 3
-    // lastIndexOf('\n', 8) = 7, column = 9 - 7 - 1 = 1, line = 1
-    // while: lastIndexOf('\n', 6) = 3, line=2
-    // while: lastIndexOf('\n', 2) = -1 (<=0, exit), line stays 2
-    // lineStart is -1 (not 0), so no extra line++
-    // Actually let's recount: line starts at 1. lastIndexOf('\n', 8)=7.
-    // while(7>0): lastIndexOf('\n',6)=3, line=2. while(3>0): lastIndexOf('\n',2)=-1, line=3. -1<=0 exit.
-    // lineStart=-1 !== 0, so no extra line++. Final line=3
     const mockMap = {
       sourcesContent: ['aaa\nbbb\nccc'],
       sources: ['s.js'],
@@ -232,10 +215,6 @@ describe('positionFromIndex (via posFromIndex prop)', () => {
   });
 
   test('handles lineStart exactly 0 (source starts with newline)', () => {
-    // Source: "\nabc" => index 2 = 'b'
-    // lastIndexOf('\n', 1) = 0, column = 2 - 0 - 1 = 1, line = 1
-    // while(0 > 0) => false, skip
-    // lineStart === 0 => line++, line = 2
     const mockMap = {
       sourcesContent: ['\nabc'],
       sources: ['s.js'],

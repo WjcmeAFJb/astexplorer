@@ -1,8 +1,4 @@
-import CodeMirror from 'codemirror';
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/addon/fold/foldgutter';
-import 'codemirror/addon/fold/foldcode';
-import 'codemirror/addon/fold/brace-fold';
+import * as monaco from 'monaco-editor';
 import { subscribe, clear } from '../utils/pubsub';
 import React from 'react';
 
@@ -13,19 +9,20 @@ type JSONEditorProps = {
 
 export default class Editor extends React.Component<JSONEditorProps> {
   static displayName = 'JSONEditor';
-  codeMirror: CodeMirror.Editor | null = null;
+  monacoEditor: monaco.editor.IStandaloneCodeEditor | null = null;
   container: HTMLElement | null = null;
   _subscriptions: Array<() => void> = [];
 
   componentDidUpdate(prevProps: JSONEditorProps) {
     if (
-      this.codeMirror &&
+      this.monacoEditor &&
       this.props.value !== prevProps.value &&
-      this.props.value !== this.codeMirror.getValue()
+      this.props.value !== this.monacoEditor.getValue()
     ) {
-      let info = this.codeMirror.getScrollInfo();
-      this.codeMirror.setValue(this.props.value ?? '');
-      this.codeMirror.scrollTo(info.left, info.top);
+      const scrollTop = this.monacoEditor.getScrollTop();
+      const scrollLeft = this.monacoEditor.getScrollLeft();
+      this.monacoEditor.setValue(this.props.value ?? '');
+      this.monacoEditor.setScrollPosition({ scrollTop, scrollLeft });
     }
   }
 
@@ -38,23 +35,28 @@ export default class Editor extends React.Component<JSONEditorProps> {
     if (!this.container) {
       return;
     }
-    this.codeMirror = CodeMirror(
-      // eslint-disable-line new-cap
-      this.container,
-      {
-        value: this.props.value,
-        mode: { name: 'javascript', json: true },
-        readOnly: true,
-        lineNumbers: true,
-        foldGutter: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+    this.monacoEditor = monaco.editor.create(this.container, {
+      value: this.props.value,
+      language: 'json',
+      readOnly: true,
+      lineNumbers: 'on',
+      folding: true,
+      minimap: { enabled: false },
+      scrollBeyondLastLine: false,
+      automaticLayout: true,
+      fontSize: 12,
+      overviewRulerLanes: 0,
+      hideCursorInOverviewRuler: true,
+      overviewRulerBorder: false,
+      scrollbar: {
+        useShadows: false,
       },
-    );
+    });
 
     this._subscriptions.push(
       subscribe('PANEL_RESIZE', () => {
-        if (this.codeMirror) {
-          this.codeMirror.refresh();
+        if (this.monacoEditor) {
+          this.monacoEditor.layout();
         }
       }),
     );
@@ -62,11 +64,10 @@ export default class Editor extends React.Component<JSONEditorProps> {
 
   componentWillUnmount() {
     this._unbindHandlers();
-    let container = this.container;
-    if (container) {
-      container.children[0].remove();
+    if (this.monacoEditor) {
+      this.monacoEditor.dispose();
+      this.monacoEditor = null;
     }
-    this.codeMirror = null;
   }
 
   _unbindHandlers() {

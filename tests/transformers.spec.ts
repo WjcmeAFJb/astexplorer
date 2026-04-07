@@ -51,19 +51,21 @@ async function waitForTransformOutput(page: Page, timeout = 30_000) {
       const outputs = document.querySelectorAll('.output.highlight');
       if (outputs.length < 2) return false;
       const output = outputs[1];
-      // Check CodeMirror (used for string results and errors)
-      const cm = output.querySelector('.CodeMirror') as HTMLElement & {
-        CodeMirror?: { getValue(): string };
-      };
-      if (cm?.CodeMirror) {
-        return cm.CodeMirror.getValue().length > 0;
+      // Check Monaco editor (used for string results and errors)
+      const monacoEl = output.querySelector('.monaco-editor');
+      if (monacoEl) {
+        const viewLines = monacoEl.querySelector('.view-lines');
+        if (viewLines && viewLines.textContent && viewLines.textContent.length > 0) {
+          return true;
+        }
       }
       // Check JSONEditor (used for non-string/object results like glimmer-compiler)
-      const jsonCm = output.querySelector('#JSONEditor .CodeMirror') as HTMLElement & {
-        CodeMirror?: { getValue(): string };
-      };
-      if (jsonCm?.CodeMirror) {
-        return jsonCm.CodeMirror.getValue().length > 0;
+      const jsonMonaco = output.querySelector('#JSONEditor .monaco-editor');
+      if (jsonMonaco) {
+        const jsonLines = jsonMonaco.querySelector('.view-lines');
+        if (jsonLines && jsonLines.textContent && jsonLines.textContent.length > 0) {
+          return true;
+        }
       }
       return false;
     },

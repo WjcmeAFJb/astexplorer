@@ -38,17 +38,6 @@ declare global {
   var require: WebpackRequire;
 
   var process: { env: Record<string, string | undefined> };
-
-  // CodeMirror addon: Tern integration
-  namespace CodeMirror {
-    class TernServer {
-      constructor(options: unknown);
-      complete(cm: CodeMirror.Editor): void;
-      showType(cm: CodeMirror.Editor): void;
-      showDocs(cm: CodeMirror.Editor): void;
-      updateArgHints(cm: CodeMirror.Editor): void;
-    }
-  }
 }
 
 // No global type aliases — each parser types its own AST nodes and
