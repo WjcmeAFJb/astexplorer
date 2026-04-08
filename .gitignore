@@ -8,3 +8,4 @@ website/coverage
 website/reports
 .stryker-tmp
 coverage/
+website/dev-dist
