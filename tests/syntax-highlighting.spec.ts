@@ -159,4 +159,172 @@ test.describe('Syntax highlighting', () => {
       });
     }
   });
+
+  // ---------------------------------------------------------------------------
+  // Screenshot tests — capture the code editor pane to detect highlighting
+  // regressions. Only the editor element is captured so AST tree / toolbar
+  // changes don't cause false-positive diffs.
+  // ---------------------------------------------------------------------------
+  test.describe('screenshots', () => {
+    /**
+     * Wait for syntax highlighting to be applied, then screenshot the
+     * code editor element. We wait until more than one mtk class appears
+     * so the screenshot always shows highlighted code, not plain text.
+     */
+    async function waitForHighlighting(page: Page, timeout = 5_000) {
+      await page.waitForFunction(
+        () => {
+          const editor = document.querySelector('.editor .monaco-editor');
+          if (!editor) return false;
+          const spans = editor.querySelectorAll('.view-lines span span');
+          const classes = new Set<string>();
+          for (const span of spans) {
+            for (const cls of span.classList) {
+              if (cls.startsWith('mtk')) classes.add(cls);
+            }
+          }
+          return classes.size > 1;
+        },
+        { timeout },
+      );
+    }
+
+    test('JavaScript editor highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+      await waitForHighlighting(page);
+      const editor = page.locator('.editor .monaco-editor').first();
+      await expect(editor).toHaveScreenshot('highlight-editor-javascript.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+
+    test('CSS editor highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+      await selectCategory(page, 'css');
+      await waitForTree(page);
+      await waitForHighlighting(page);
+      const editor = page.locator('.editor .monaco-editor').first();
+      await expect(editor).toHaveScreenshot('highlight-editor-css.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+
+    test('Python editor highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+      await selectCategory(page, 'python');
+      await waitForTree(page);
+      await waitForHighlighting(page);
+      const editor = page.locator('.editor .monaco-editor').first();
+      await expect(editor).toHaveScreenshot('highlight-editor-python.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+
+    test('HTML editor highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+      await selectCategory(page, 'htmlmixed');
+      await waitForTree(page);
+      await waitForHighlighting(page);
+      const editor = page.locator('.editor .monaco-editor').first();
+      await expect(editor).toHaveScreenshot('highlight-editor-html.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+
+    test('Go editor highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+      await selectCategory(page, 'go');
+      await waitForTree(page);
+      await waitForHighlighting(page);
+      const editor = page.locator('.editor .monaco-editor').first();
+      await expect(editor).toHaveScreenshot('highlight-editor-go.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+
+    test('Rust editor highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+      await selectCategory(page, 'rust');
+      await waitForTree(page);
+      await waitForHighlighting(page);
+      const editor = page.locator('.editor .monaco-editor').first();
+      await expect(editor).toHaveScreenshot('highlight-editor-rust.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+
+    test('YAML editor highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+      await selectCategory(page, 'yaml');
+      await waitForTree(page);
+      await waitForHighlighting(page);
+      const editor = page.locator('.editor .monaco-editor').first();
+      await expect(editor).toHaveScreenshot('highlight-editor-yaml.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+
+    test('SQL editor highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+      await selectCategory(page, 'sql');
+      await waitForTree(page);
+      await waitForHighlighting(page);
+      const editor = page.locator('.editor .monaco-editor').first();
+      await expect(editor).toHaveScreenshot('highlight-editor-sql.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+
+    test('Markdown editor highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+      await selectCategory(page, 'markdown');
+      await waitForTree(page);
+      await waitForHighlighting(page);
+      const editor = page.locator('.editor .monaco-editor').first();
+      await expect(editor).toHaveScreenshot('highlight-editor-markdown.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+
+    test('JSON AST view highlighting', async ({ page }) => {
+      await page.goto('/');
+      await waitForTree(page);
+
+      // Switch to JSON AST view
+      const jsonButton = page.locator('.output .toolbar button').nth(1);
+      await jsonButton.click();
+      await page.waitForSelector('#JSONEditor .monaco-editor', { timeout: 5_000 });
+
+      // Wait for JSON highlighting
+      await page.waitForFunction(
+        () => {
+          const editor = document.querySelector('#JSONEditor .monaco-editor');
+          if (!editor) return false;
+          const spans = editor.querySelectorAll('.view-lines span span');
+          const classes = new Set<string>();
+          for (const span of spans) {
+            for (const cls of span.classList) {
+              if (cls.startsWith('mtk')) classes.add(cls);
+            }
+          }
+          return classes.size > 1;
+        },
+        { timeout: 5_000 },
+      );
+
+      const jsonEditor = page.locator('#JSONEditor .monaco-editor').first();
+      await expect(jsonEditor).toHaveScreenshot('highlight-editor-json-ast.png', {
+        maxDiffPixelRatio: 0.01,
+      });
+    });
+  });
 });
