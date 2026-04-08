@@ -1,7 +1,6 @@
-import { accumWalkMatch, string, group } from "tree-gex";
+import * as w from "tree-gex";
 
 // Find all HTML elements and capture their tag names.
-// `ast` is the parsed HTML tree.
-export default accumWalkMatch(ast, {
-  tag: group(string(), "tagName"),
+export default w.accumWalkMatch(ast, {
+  tag: w.group(w.string(), "tagName"),
 });

@@ -1,9 +1,9 @@
-import { walkReplace, transform, string } from "tree-gex";
+import * as w from "tree-gex";
 
 // Replace all 'a' characters with 'b' in the regex.
-// `ast` is the regexp-tree AST. Result is printed back to a regex string.
-export default walkReplace(ast, {
+// Result is printed back to a regex string.
+export default w.walkReplace(ast, {
   type: "Char",
   kind: "simple",
-  value: transform(string(), (v) => (v === "a" ? "b" : v)),
+  value: w.transform(w.string(), (v) => (v === "a" ? "b" : v)),
 });

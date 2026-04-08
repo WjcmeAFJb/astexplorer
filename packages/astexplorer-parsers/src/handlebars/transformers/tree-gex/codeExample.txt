@@ -1,11 +1,10 @@
-import { accumWalkMatch, string, group } from "tree-gex";
+import * as w from "tree-gex";
 
 // Find all MustacheStatement helpers in the template.
-// `ast` is the Glimmer AST of the Handlebars code.
-export default accumWalkMatch(ast, {
+export default w.accumWalkMatch(ast, {
   type: "MustacheStatement",
   path: {
     type: "PathExpression",
-    original: group(string(), "helper"),
+    original: w.group(w.string(), "helper"),
   },
 });

@@ -1,8 +1,7 @@
-import { accumWalkMatch, any, string, group } from "tree-gex";
+import * as w from "tree-gex";
 
 // Find all mapping nodes and capture their values.
-// `ast` is the YAML AST parsed by yaml-ast-parser.
-export default accumWalkMatch(ast, {
-  kind: group(any(), "nodeKind"),
-  value: group(string(), "nodeValue"),
+export default w.accumWalkMatch(ast, {
+  kind: w.group(w.any(), "nodeKind"),
+  value: w.group(w.string(), "nodeValue"),
 });

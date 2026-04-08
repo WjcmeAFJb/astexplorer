@@ -1,7 +1,7 @@
-import { accumWalkMatch, string, group } from "tree-gex";
+import * as w from "tree-gex";
 
-// Find all nodes with a "type" property and capture their type names.
-// `ast` is the parsed AST of the code in the left pane.
-export default accumWalkMatch(ast, {
-  type: group(string(), "nodeType"),
+// Find all AST nodes with a "type" property and capture their type names.
+export default w.accumWalkMatch(ast, {
+  type: w.group(w.string(), "nodeType"),
 });
+

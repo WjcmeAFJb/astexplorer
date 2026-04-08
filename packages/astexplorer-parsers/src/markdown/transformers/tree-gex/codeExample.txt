@@ -1,8 +1,8 @@
-import { walkReplace, transform, any } from "tree-gex";
+import * as w from "tree-gex";
 
 // Increase all heading depths by 1 (# -> ##, ## -> ###).
-// `ast` is the remark AST. The return value is stringified back to Markdown.
-export default walkReplace(ast, {
+// The return value is stringified back to Markdown.
+export default w.walkReplace(ast, {
   type: "heading",
-  depth: transform(any(), (d) => d + 1),
+  depth: w.transform(w.any(), (d) => d + 1),
 });

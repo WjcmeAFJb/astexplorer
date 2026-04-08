@@ -1,12 +1,12 @@
-import { walkReplace, transform, string } from "tree-gex";
+import * as w from "tree-gex";
 
 // Reverse all function names in the code.
-// `ast` is the parsed AST. The result is printed back to source via recast.
-export default walkReplace(ast, {
+// The result is printed back to source via recast.
+export default w.walkReplace(ast, {
   type: "FunctionDeclaration",
   id: {
     type: "Identifier",
-    name: transform(string(), (name) =>
+    name: w.transform(w.string(), (name) =>
       name.split("").reverse().join("")
     ),
   },

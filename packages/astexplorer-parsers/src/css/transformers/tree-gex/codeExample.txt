@@ -1,9 +1,8 @@
-import { accumWalkMatch, string, group } from "tree-gex";
+import * as w from "tree-gex";
 
 // Find all CSS declarations and capture their property names and values.
-// `ast` is the parsed PostCSS AST of the CSS in the left pane.
-export default accumWalkMatch(ast, {
+export default w.accumWalkMatch(ast, {
   type: "decl",
-  prop: group(string(), "property"),
-  value: group(string(), "value"),
+  prop: w.group(w.string(), "property"),
+  value: w.group(w.string(), "value"),
 });

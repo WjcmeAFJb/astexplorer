@@ -1,11 +1,10 @@
-import { accumWalkMatch, string, group } from "tree-gex";
+import * as w from "tree-gex";
 
 // Find all property nodes and capture their keys.
-// `ast` is the JSON AST parsed by json-to-ast.
-export default accumWalkMatch(ast, {
+export default w.accumWalkMatch(ast, {
   type: "Property",
   key: {
     type: "Identifier",
-    value: group(string(), "key"),
+    value: w.group(w.string(), "key"),
   },
 });
