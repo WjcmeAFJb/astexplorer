@@ -29,8 +29,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      // Enable SW in dev mode so PWA install works on dev server
-      devOptions: { enabled: true },
+      devOptions: { enabled: true, type: 'module' },
       // Only precache Vite-built assets (not the parser chunks copied later).
       // Parser chunks, Monaco, workers, and WASM are cached at runtime.
       workbox: {
