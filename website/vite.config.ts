@@ -27,6 +27,17 @@ function copyParsersChunks() {
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    // Add crossorigin="use-credentials" to the manifest link so browsers send
+    // cookies when fetching it. Required for auth proxies like code-server.
+    {
+      name: 'manifest-credentials',
+      transformIndexHtml(html) {
+        return html.replace(
+          '<link rel="manifest"',
+          '<link rel="manifest" crossorigin="use-credentials"',
+        );
+      },
+    },
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: { enabled: true, type: 'module' },
