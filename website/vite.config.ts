@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 import fs from 'fs';
 import path from 'path';
 
@@ -24,7 +25,113 @@ function copyParsersChunks() {
 }
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), copyParsersChunks()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      // Only precache Vite-built assets (not the parser chunks copied later).
+      // Parser chunks, Monaco, workers, and WASM are cached at runtime.
+      workbox: {
+        // Precache the core app shell — small files needed for first paint.
+        globPatterns: ['*.html', 'assets/index-*.{js,css}', 'assets/favicon-*.png'],
+        // Don't precache large assets — they're runtime-cached on first use.
+        globIgnores: [
+          'assets/parsers/**',
+          'assets/monaco-*',
+          'assets/*.worker-*',
+          'assets/*.wasm',
+          'assets/*-*.js.map',
+        ],
+        maximumFileSizeToCacheInBytes: 5_000_000,
+        // Cache everything else on first use. All hashed assets are immutable
+        // so CacheFirst is safe. Parser chunks, Monaco, workers, WASM — all
+        // get cached permanently once fetched.
+        runtimeCaching: [
+          {
+            // Monaco editor chunk
+            urlPattern: /\/assets\/monaco-[a-zA-Z0-9]+\.(js|css)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'monaco',
+              expiration: { maxEntries: 10 },
+            },
+          },
+          {
+            // Monaco language contribution chunks (basic-languages, language services)
+            urlPattern: /\/assets\/[a-zA-Z]+-[a-zA-Z0-9]+\.js$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'app-chunks',
+              expiration: { maxEntries: 200 },
+            },
+          },
+          {
+            // Worker scripts
+            urlPattern: /\/assets\/.*worker.*\.js$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'workers',
+              expiration: { maxEntries: 10 },
+            },
+          },
+          {
+            // Parser chunks (loaded on demand per language/parser)
+            urlPattern: /\/assets\/parsers\/chunk-\d+\.js$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'parser-chunks',
+              expiration: { maxEntries: 200 },
+            },
+          },
+          {
+            // Parser index
+            urlPattern: /\/assets\/parsers\/index-[a-zA-Z0-9]+\.js$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'parser-chunks',
+              expiration: { maxEntries: 5 },
+            },
+          },
+          {
+            // WASM binaries
+            urlPattern: /\/assets\/.*\.wasm$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'wasm',
+              expiration: { maxEntries: 10 },
+            },
+          },
+          {
+            // Web fonts
+            urlPattern: /\/assets\/.*\.(woff2?|ttf|eot)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'fonts',
+              expiration: { maxEntries: 20 },
+            },
+          },
+        ],
+        // Handle navigation requests (SPA routing)
+        navigateFallback: 'index.html',
+      },
+      manifest: {
+        name: 'AST Explorer',
+        short_name: 'AST Explorer',
+        description:
+          'An online AST explorer — parse code, visualize ASTs, and transform code with plugins.',
+        theme_color: '#efefef',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
+        icons: [
+          { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+    }),
+    copyParsersChunks(),
+  ],
 
   // Treat .wasm imports as static assets (URL strings) rather than ESM WASM modules
   assetsInclude: ['**/*.wasm'],
