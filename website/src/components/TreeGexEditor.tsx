@@ -39,6 +39,8 @@ export default class TreeGexEditor extends Editor {
   componentDidMount() {
     configureTypeDefs();
     void ensureLanguageRegistered('javascript');
+    // Load TS tokenizer so hover popups can highlight TypeScript code blocks.
+    void ensureLanguageRegistered('typescript');
     super.componentDidMount();
   }
 }
