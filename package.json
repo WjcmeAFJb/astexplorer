@@ -20,6 +20,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "monaco-editor": "^0.55.1"
+    "monaco-editor": "^0.55.1",
+    "tree-gex": "^0.0.8"
   }
 }

@@ -1,5 +1,6 @@
 import Editor from './Editor';
 import JSCodeshiftEditor from './JSCodeshiftEditor';
+import TreeGexEditor from './TreeGexEditor';
 import { publish } from '../utils/pubsub';
 import * as React from 'react';
 import SplitPane from './SplitPane';
@@ -25,7 +26,11 @@ type TransformerProps = {
 
 export default function Transformer(props: TransformerProps): React.ReactElement {
   const plainEditor = React.createElement(
-    props.transformer?.id === 'jscodeshift' ? JSCodeshiftEditor : Editor,
+    props.transformer?.id === 'jscodeshift'
+      ? JSCodeshiftEditor
+      : props.transformer?.id === 'tree-gex'
+        ? TreeGexEditor
+        : Editor,
     {
       highlight: false,
       value: props.transformCode,

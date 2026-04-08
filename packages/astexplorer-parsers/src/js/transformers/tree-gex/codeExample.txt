@@ -1,0 +1,17 @@
+const w = require("tree-gex");
+
+// Match all variable declarations and capture their names
+module.exports = {
+  pattern: {
+    type: "VariableDeclaration",
+    declarations: w.arrayFor(
+      w.group(
+        {
+          type: "VariableDeclarator",
+          id: { type: "Identifier", name: w.group(w.string(), "varName") },
+        },
+        "declarations",
+      ),
+    ),
+  },
+};

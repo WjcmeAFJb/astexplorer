@@ -1,0 +1,9 @@
+const w = require("tree-gex");
+
+// Define a pattern to match AST nodes.
+// This example matches any object with a "type" property.
+module.exports = {
+  pattern: {
+    type: w.group(w.string(), "nodeType"),
+  },
+};

@@ -1,0 +1,8 @@
+const w = require("tree-gex");
+
+// Match all HTML tags and capture their tag names
+module.exports = {
+  pattern: {
+    tag: w.group(w.string(), "tagName"),
+  },
+};

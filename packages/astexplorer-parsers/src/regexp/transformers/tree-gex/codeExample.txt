@@ -1,0 +1,10 @@
+const w = require("tree-gex");
+
+// Match character nodes and capture their values
+module.exports = {
+  pattern: {
+    type: "Char",
+    value: w.group(w.string(), "charValue"),
+    kind: w.group(w.string(), "charKind"),
+  },
+};

@@ -257,6 +257,7 @@ module.exports = {
           nm( 'chevrotain-allstar'),
           nm( 'meriyah'),
           nm( 'minimatch'),
+          nm( 'tree-gex'),
         ],
         loader: 'babel-loader',
         options: {

@@ -196,6 +196,78 @@ import catCode_yaml from "./yaml/codeExample.txt";
 import p_yaml_yaml_ast_parser from "./yaml/yaml-ast-parser";
 import p_yaml_yaml from "./yaml/yaml";
 
+// tree-gex transformers (one per category)
+import tx_css_treegex from "./css/transformers/tree-gex/index";
+import tx_css_treegex_code from "./css/transformers/tree-gex/codeExample.txt";
+import tx_glsl_treegex from "./glsl/transformers/tree-gex/index";
+import tx_glsl_treegex_code from "./glsl/transformers/tree-gex/codeExample.txt";
+import tx_go_treegex from "./go/transformers/tree-gex/index";
+import tx_go_treegex_code from "./go/transformers/tree-gex/codeExample.txt";
+import tx_graphql_treegex from "./graphql/transformers/tree-gex/index";
+import tx_graphql_treegex_code from "./graphql/transformers/tree-gex/codeExample.txt";
+import tx_graphviz_treegex from "./graphviz/transformers/tree-gex/index";
+import tx_graphviz_treegex_code from "./graphviz/transformers/tree-gex/codeExample.txt";
+import tx_handlebars_treegex from "./handlebars/transformers/tree-gex/index";
+import tx_handlebars_treegex_code from "./handlebars/transformers/tree-gex/codeExample.txt";
+import tx_html_treegex from "./html/transformers/tree-gex/index";
+import tx_html_treegex_code from "./html/transformers/tree-gex/codeExample.txt";
+import tx_icu_treegex from "./icu/transformers/tree-gex/index";
+import tx_icu_treegex_code from "./icu/transformers/tree-gex/codeExample.txt";
+import tx_java_treegex from "./java/transformers/tree-gex/index";
+import tx_java_treegex_code from "./java/transformers/tree-gex/codeExample.txt";
+import tx_js_treegex from "./js/transformers/tree-gex/index";
+import tx_js_treegex_code from "./js/transformers/tree-gex/codeExample.txt";
+import tx_json_treegex from "./json/transformers/tree-gex/index";
+import tx_json_treegex_code from "./json/transformers/tree-gex/codeExample.txt";
+import tx_lua_treegex from "./lua/transformers/tree-gex/index";
+import tx_lua_treegex_code from "./lua/transformers/tree-gex/codeExample.txt";
+import tx_lucene_treegex from "./lucene/transformers/tree-gex/index";
+import tx_lucene_treegex_code from "./lucene/transformers/tree-gex/codeExample.txt";
+import tx_markdown_treegex from "./markdown/transformers/tree-gex/index";
+import tx_markdown_treegex_code from "./markdown/transformers/tree-gex/codeExample.txt";
+import tx_mathjs_treegex from "./mathjs/transformers/tree-gex/index";
+import tx_mathjs_treegex_code from "./mathjs/transformers/tree-gex/codeExample.txt";
+import tx_mdx_treegex from "./mdx/transformers/tree-gex/index";
+import tx_mdx_treegex_code from "./mdx/transformers/tree-gex/codeExample.txt";
+import tx_monkey_treegex from "./monkey/transformers/tree-gex/index";
+import tx_monkey_treegex_code from "./monkey/transformers/tree-gex/codeExample.txt";
+import tx_ocaml_treegex from "./ocaml/transformers/tree-gex/index";
+import tx_ocaml_treegex_code from "./ocaml/transformers/tree-gex/codeExample.txt";
+import tx_php_treegex from "./php/transformers/tree-gex/index";
+import tx_php_treegex_code from "./php/transformers/tree-gex/codeExample.txt";
+import tx_protobuf_treegex from "./protobuf/transformers/tree-gex/index";
+import tx_protobuf_treegex_code from "./protobuf/transformers/tree-gex/codeExample.txt";
+import tx_pug_treegex from "./pug/transformers/tree-gex/index";
+import tx_pug_treegex_code from "./pug/transformers/tree-gex/codeExample.txt";
+import tx_python_treegex from "./python/transformers/tree-gex/index";
+import tx_python_treegex_code from "./python/transformers/tree-gex/codeExample.txt";
+import tx_reason_treegex from "./reason/transformers/tree-gex/index";
+import tx_reason_treegex_code from "./reason/transformers/tree-gex/codeExample.txt";
+import tx_regexp_treegex from "./regexp/transformers/tree-gex/index";
+import tx_regexp_treegex_code from "./regexp/transformers/tree-gex/codeExample.txt";
+import tx_rust_treegex from "./rust/transformers/tree-gex/index";
+import tx_rust_treegex_code from "./rust/transformers/tree-gex/codeExample.txt";
+import tx_san_treegex from "./san/transformers/tree-gex/index";
+import tx_san_treegex_code from "./san/transformers/tree-gex/codeExample.txt";
+import tx_scala_treegex from "./scala/transformers/tree-gex/index";
+import tx_scala_treegex_code from "./scala/transformers/tree-gex/codeExample.txt";
+import tx_solididy_treegex from "./solididy/transformers/tree-gex/index";
+import tx_solididy_treegex_code from "./solididy/transformers/tree-gex/codeExample.txt";
+import tx_sql_treegex from "./sql/transformers/tree-gex/index";
+import tx_sql_treegex_code from "./sql/transformers/tree-gex/codeExample.txt";
+import tx_svelte_treegex from "./svelte/transformers/tree-gex/index";
+import tx_svelte_treegex_code from "./svelte/transformers/tree-gex/codeExample.txt";
+import tx_thrift_treegex from "./thrift/transformers/tree-gex/index";
+import tx_thrift_treegex_code from "./thrift/transformers/tree-gex/codeExample.txt";
+import tx_vue_treegex from "./vue/transformers/tree-gex/index";
+import tx_vue_treegex_code from "./vue/transformers/tree-gex/codeExample.txt";
+import tx_wat_treegex from "./wat/transformers/tree-gex/index";
+import tx_wat_treegex_code from "./wat/transformers/tree-gex/codeExample.txt";
+import tx_webidl_treegex from "./webidl/transformers/tree-gex/index";
+import tx_webidl_treegex_code from "./webidl/transformers/tree-gex/codeExample.txt";
+import tx_yaml_treegex from "./yaml/transformers/tree-gex/index";
+import tx_yaml_treegex_code from "./yaml/transformers/tree-gex/codeExample.txt";
+
 export type RegistryEntry = {
   category: {id: string; displayName: string; mimeTypes: string[]; fileExtension: string; editorMode?: unknown};
   codeExample: string;
@@ -204,39 +276,39 @@ export type RegistryEntry = {
 };
 
 export const registry: RegistryEntry[] = [
-  {category: cat_css, codeExample: catCode_css, parsers: [p_css_cssom, p_css_csstree, p_css_postcss, p_css_rework], transformers: [{module: tx_css_postcss, codeExample: tx_css_postcss_code}]},
-  {category: cat_glsl, codeExample: catCode_glsl, parsers: [p_glsl_glsl_parser], transformers: []},
-  {category: cat_go, codeExample: catCode_go, parsers: [p_go_go], transformers: []},
-  {category: cat_graphql, codeExample: catCode_graphql, parsers: [p_graphql_graphql_js], transformers: []},
-  {category: cat_graphviz, codeExample: catCode_graphviz, parsers: [p_graphviz_redot], transformers: []},
-  {category: cat_handlebars, codeExample: catCode_handlebars, parsers: [p_handlebars_ember_template_recast, p_handlebars_glimmer, p_handlebars_handlebars], transformers: [{module: tx_handlebars_ember_template_recast, codeExample: tx_handlebars_ember_template_recast_code}, {module: tx_handlebars_glimmer, codeExample: tx_handlebars_glimmer_code}, {module: tx_handlebars_glimmer_compiler, codeExample: tx_handlebars_glimmer_compiler_code}]},
-  {category: cat_html, codeExample: catCode_html, parsers: [p_html_angular_eslint, p_html_angular, p_html_htmlparser2, p_html_hyntax, p_html_parse5, p_html_posthtml, p_html_svelte], transformers: [{module: tx_html_posthtml, codeExample: tx_html_posthtml_code}, {module: tx_html_svelte, codeExample: tx_html_svelte_code}]},
-  {category: cat_icu, codeExample: catCode_icu, parsers: [p_icu_intl_messageformat_parser], transformers: []},
-  {category: cat_java, codeExample: catCode_java, parsers: [p_java_java_parser], transformers: []},
-  {category: cat_js, codeExample: catCode_js, parsers: [p_js_acorn_to_esprima, p_js_acorn, p_js_babel_eslint_parser, p_js_babel_eslint, p_js_babel_eslint8, p_js_babel_eslint9, p_js_babylon, p_js_babylon6, p_js_babylon7, p_js_esformatter, p_js_espree, p_js_esprima, p_js_flow, p_js_hermes, p_js_meriyah, p_js_recast, p_js_seafox, p_js_shift, p_js_swc, p_js_tenko, p_js_traceur, p_js_typescript_eslint_parser, p_js_typescript, p_js_uglify], transformers: [{module: tx_js_babel, codeExample: tx_js_babel_code}, {module: tx_js_babel_plugin_macros, codeExample: tx_js_babel_plugin_macros_code}, {module: tx_js_babel6, codeExample: tx_js_babel6_code}, {module: tx_js_babel7, codeExample: tx_js_babel7_code}, {module: tx_js_eslint1, codeExample: tx_js_eslint1_code}, {module: tx_js_eslint2, codeExample: tx_js_eslint2_code}, {module: tx_js_eslint3, codeExample: tx_js_eslint3_code}, {module: tx_js_eslint4, codeExample: tx_js_eslint4_code}, {module: tx_js_eslint8, codeExample: tx_js_eslint8_code}, {module: tx_js_jscodeshift, codeExample: tx_js_jscodeshift_code}, {module: tx_js_prettier, codeExample: tx_js_prettier_code}, {module: tx_js_recast, codeExample: tx_js_recast_code}, {module: tx_js_tslint, codeExample: tx_js_tslint_code}, {module: tx_js_typescript, codeExample: tx_js_typescript_code}]},
-  {category: cat_json, codeExample: catCode_json, parsers: [p_json_json_to_ast, p_json_momoa], transformers: []},
-  {category: cat_lua, codeExample: catCode_lua, parsers: [p_lua_luaparse], transformers: []},
-  {category: cat_lucene, codeExample: catCode_lucene, parsers: [p_lucene_lucene], transformers: []},
-  {category: cat_markdown, codeExample: catCode_markdown, parsers: [p_markdown_remark], transformers: [{module: tx_markdown_remark, codeExample: tx_markdown_remark_code}]},
-  {category: cat_mathjs, codeExample: catCode_mathjs, parsers: [p_mathjs_mathjs], transformers: []},
-  {category: cat_mdx, codeExample: catCode_mdx, parsers: [p_mdx_mdxhast], transformers: [{module: tx_mdx_mdx, codeExample: tx_mdx_mdx_code}]},
-  {category: cat_monkey, codeExample: catCode_monkey, parsers: [p_monkey_monkey], transformers: []},
-  {category: cat_ocaml, codeExample: catCode_ocaml, parsers: [p_ocaml_refmt_ml], transformers: []},
-  {category: cat_php, codeExample: catCode_php, parsers: [p_php_php_parser], transformers: []},
-  {category: cat_protobuf, codeExample: catCode_protobuf, parsers: [p_protobuf_pbkit], transformers: []},
-  {category: cat_pug, codeExample: catCode_pug, parsers: [p_pug_pug], transformers: []},
-  {category: cat_python, codeExample: catCode_python, parsers: [p_python_python], transformers: []},
-  {category: cat_reason, codeExample: catCode_reason, parsers: [p_reason_codeMirrorMode, p_reason_refmt], transformers: []},
-  {category: cat_regexp, codeExample: catCode_regexp, parsers: [p_regexp_regexp_tree, p_regexp_regexpp, p_regexp_regjsparser], transformers: [{module: tx_regexp_regexp_tree, codeExample: tx_regexp_regexp_tree_code}]},
-  {category: cat_rust, codeExample: catCode_rust, parsers: [p_rust_syn], transformers: []},
-  {category: cat_san, codeExample: catCode_san, parsers: [p_san_san_template_parser], transformers: []},
-  {category: cat_scala, codeExample: catCode_scala, parsers: [p_scala_scalameta], transformers: []},
-  {category: cat_solididy, codeExample: catCode_solididy, parsers: [p_solididy_solidity_parser_antlr, p_solididy_solidity_parser_diligence], transformers: []},
-  {category: cat_sql, codeExample: catCode_sql, parsers: [p_sql_sql_parser_cst, p_sql_sqlite_parser], transformers: []},
-  {category: cat_svelte, codeExample: catCode_svelte, parsers: [p_svelte_svelte_parser], transformers: []},
-  {category: cat_thrift, codeExample: catCode_thrift, parsers: [p_thrift_thrift_parser], transformers: []},
-  {category: cat_vue, codeExample: catCode_vue, parsers: [p_vue_vue_compiler_dom, p_vue_vue_eslint_parser, p_vue_vue_template_compiler], transformers: []},
-  {category: cat_wat, codeExample: catCode_wat, parsers: [p_wat_wat_parser], transformers: []},
-  {category: cat_webidl, codeExample: catCode_webidl, parsers: [p_webidl_webidl2], transformers: []},
-  {category: cat_yaml, codeExample: catCode_yaml, parsers: [p_yaml_yaml_ast_parser, p_yaml_yaml], transformers: []},
+  {category: cat_css, codeExample: catCode_css, parsers: [p_css_cssom, p_css_csstree, p_css_postcss, p_css_rework], transformers: [{module: tx_css_postcss, codeExample: tx_css_postcss_code}, {module: tx_css_treegex, codeExample: tx_css_treegex_code}]},
+  {category: cat_glsl, codeExample: catCode_glsl, parsers: [p_glsl_glsl_parser], transformers: [{module: tx_glsl_treegex, codeExample: tx_glsl_treegex_code}]},
+  {category: cat_go, codeExample: catCode_go, parsers: [p_go_go], transformers: [{module: tx_go_treegex, codeExample: tx_go_treegex_code}]},
+  {category: cat_graphql, codeExample: catCode_graphql, parsers: [p_graphql_graphql_js], transformers: [{module: tx_graphql_treegex, codeExample: tx_graphql_treegex_code}]},
+  {category: cat_graphviz, codeExample: catCode_graphviz, parsers: [p_graphviz_redot], transformers: [{module: tx_graphviz_treegex, codeExample: tx_graphviz_treegex_code}]},
+  {category: cat_handlebars, codeExample: catCode_handlebars, parsers: [p_handlebars_ember_template_recast, p_handlebars_glimmer, p_handlebars_handlebars], transformers: [{module: tx_handlebars_ember_template_recast, codeExample: tx_handlebars_ember_template_recast_code}, {module: tx_handlebars_glimmer, codeExample: tx_handlebars_glimmer_code}, {module: tx_handlebars_glimmer_compiler, codeExample: tx_handlebars_glimmer_compiler_code}, {module: tx_handlebars_treegex, codeExample: tx_handlebars_treegex_code}]},
+  {category: cat_html, codeExample: catCode_html, parsers: [p_html_angular_eslint, p_html_angular, p_html_htmlparser2, p_html_hyntax, p_html_parse5, p_html_posthtml, p_html_svelte], transformers: [{module: tx_html_posthtml, codeExample: tx_html_posthtml_code}, {module: tx_html_svelte, codeExample: tx_html_svelte_code}, {module: tx_html_treegex, codeExample: tx_html_treegex_code}]},
+  {category: cat_icu, codeExample: catCode_icu, parsers: [p_icu_intl_messageformat_parser], transformers: [{module: tx_icu_treegex, codeExample: tx_icu_treegex_code}]},
+  {category: cat_java, codeExample: catCode_java, parsers: [p_java_java_parser], transformers: [{module: tx_java_treegex, codeExample: tx_java_treegex_code}]},
+  {category: cat_js, codeExample: catCode_js, parsers: [p_js_acorn_to_esprima, p_js_acorn, p_js_babel_eslint_parser, p_js_babel_eslint, p_js_babel_eslint8, p_js_babel_eslint9, p_js_babylon, p_js_babylon6, p_js_babylon7, p_js_esformatter, p_js_espree, p_js_esprima, p_js_flow, p_js_hermes, p_js_meriyah, p_js_recast, p_js_seafox, p_js_shift, p_js_swc, p_js_tenko, p_js_traceur, p_js_typescript_eslint_parser, p_js_typescript, p_js_uglify], transformers: [{module: tx_js_babel, codeExample: tx_js_babel_code}, {module: tx_js_babel_plugin_macros, codeExample: tx_js_babel_plugin_macros_code}, {module: tx_js_babel6, codeExample: tx_js_babel6_code}, {module: tx_js_babel7, codeExample: tx_js_babel7_code}, {module: tx_js_eslint1, codeExample: tx_js_eslint1_code}, {module: tx_js_eslint2, codeExample: tx_js_eslint2_code}, {module: tx_js_eslint3, codeExample: tx_js_eslint3_code}, {module: tx_js_eslint4, codeExample: tx_js_eslint4_code}, {module: tx_js_eslint8, codeExample: tx_js_eslint8_code}, {module: tx_js_jscodeshift, codeExample: tx_js_jscodeshift_code}, {module: tx_js_prettier, codeExample: tx_js_prettier_code}, {module: tx_js_recast, codeExample: tx_js_recast_code}, {module: tx_js_tslint, codeExample: tx_js_tslint_code}, {module: tx_js_typescript, codeExample: tx_js_typescript_code}, {module: tx_js_treegex, codeExample: tx_js_treegex_code}]},
+  {category: cat_json, codeExample: catCode_json, parsers: [p_json_json_to_ast, p_json_momoa], transformers: [{module: tx_json_treegex, codeExample: tx_json_treegex_code}]},
+  {category: cat_lua, codeExample: catCode_lua, parsers: [p_lua_luaparse], transformers: [{module: tx_lua_treegex, codeExample: tx_lua_treegex_code}]},
+  {category: cat_lucene, codeExample: catCode_lucene, parsers: [p_lucene_lucene], transformers: [{module: tx_lucene_treegex, codeExample: tx_lucene_treegex_code}]},
+  {category: cat_markdown, codeExample: catCode_markdown, parsers: [p_markdown_remark], transformers: [{module: tx_markdown_remark, codeExample: tx_markdown_remark_code}, {module: tx_markdown_treegex, codeExample: tx_markdown_treegex_code}]},
+  {category: cat_mathjs, codeExample: catCode_mathjs, parsers: [p_mathjs_mathjs], transformers: [{module: tx_mathjs_treegex, codeExample: tx_mathjs_treegex_code}]},
+  {category: cat_mdx, codeExample: catCode_mdx, parsers: [p_mdx_mdxhast], transformers: [{module: tx_mdx_mdx, codeExample: tx_mdx_mdx_code}, {module: tx_mdx_treegex, codeExample: tx_mdx_treegex_code}]},
+  {category: cat_monkey, codeExample: catCode_monkey, parsers: [p_monkey_monkey], transformers: [{module: tx_monkey_treegex, codeExample: tx_monkey_treegex_code}]},
+  {category: cat_ocaml, codeExample: catCode_ocaml, parsers: [p_ocaml_refmt_ml], transformers: [{module: tx_ocaml_treegex, codeExample: tx_ocaml_treegex_code}]},
+  {category: cat_php, codeExample: catCode_php, parsers: [p_php_php_parser], transformers: [{module: tx_php_treegex, codeExample: tx_php_treegex_code}]},
+  {category: cat_protobuf, codeExample: catCode_protobuf, parsers: [p_protobuf_pbkit], transformers: [{module: tx_protobuf_treegex, codeExample: tx_protobuf_treegex_code}]},
+  {category: cat_pug, codeExample: catCode_pug, parsers: [p_pug_pug], transformers: [{module: tx_pug_treegex, codeExample: tx_pug_treegex_code}]},
+  {category: cat_python, codeExample: catCode_python, parsers: [p_python_python], transformers: [{module: tx_python_treegex, codeExample: tx_python_treegex_code}]},
+  {category: cat_reason, codeExample: catCode_reason, parsers: [p_reason_codeMirrorMode, p_reason_refmt], transformers: [{module: tx_reason_treegex, codeExample: tx_reason_treegex_code}]},
+  {category: cat_regexp, codeExample: catCode_regexp, parsers: [p_regexp_regexp_tree, p_regexp_regexpp, p_regexp_regjsparser], transformers: [{module: tx_regexp_regexp_tree, codeExample: tx_regexp_regexp_tree_code}, {module: tx_regexp_treegex, codeExample: tx_regexp_treegex_code}]},
+  {category: cat_rust, codeExample: catCode_rust, parsers: [p_rust_syn], transformers: [{module: tx_rust_treegex, codeExample: tx_rust_treegex_code}]},
+  {category: cat_san, codeExample: catCode_san, parsers: [p_san_san_template_parser], transformers: [{module: tx_san_treegex, codeExample: tx_san_treegex_code}]},
+  {category: cat_scala, codeExample: catCode_scala, parsers: [p_scala_scalameta], transformers: [{module: tx_scala_treegex, codeExample: tx_scala_treegex_code}]},
+  {category: cat_solididy, codeExample: catCode_solididy, parsers: [p_solididy_solidity_parser_antlr, p_solididy_solidity_parser_diligence], transformers: [{module: tx_solididy_treegex, codeExample: tx_solididy_treegex_code}]},
+  {category: cat_sql, codeExample: catCode_sql, parsers: [p_sql_sql_parser_cst, p_sql_sqlite_parser], transformers: [{module: tx_sql_treegex, codeExample: tx_sql_treegex_code}]},
+  {category: cat_svelte, codeExample: catCode_svelte, parsers: [p_svelte_svelte_parser], transformers: [{module: tx_svelte_treegex, codeExample: tx_svelte_treegex_code}]},
+  {category: cat_thrift, codeExample: catCode_thrift, parsers: [p_thrift_thrift_parser], transformers: [{module: tx_thrift_treegex, codeExample: tx_thrift_treegex_code}]},
+  {category: cat_vue, codeExample: catCode_vue, parsers: [p_vue_vue_compiler_dom, p_vue_vue_eslint_parser, p_vue_vue_template_compiler], transformers: [{module: tx_vue_treegex, codeExample: tx_vue_treegex_code}]},
+  {category: cat_wat, codeExample: catCode_wat, parsers: [p_wat_wat_parser], transformers: [{module: tx_wat_treegex, codeExample: tx_wat_treegex_code}]},
+  {category: cat_webidl, codeExample: catCode_webidl, parsers: [p_webidl_webidl2], transformers: [{module: tx_webidl_treegex, codeExample: tx_webidl_treegex_code}]},
+  {category: cat_yaml, codeExample: catCode_yaml, parsers: [p_yaml_yaml_ast_parser, p_yaml_yaml], transformers: [{module: tx_yaml_treegex, codeExample: tx_yaml_treegex_code}]},
 ];
