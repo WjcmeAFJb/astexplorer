@@ -5,59 +5,49 @@ import { ensureLanguageRegistered } from '../monacoLanguages';
 // tree-gex type definitions for Monaco IntelliSense.
 import treeGexDts from '../treegex.d.ts.txt?raw';
 
-let typesConfigured = false;
+let configured = false;
 
-function configureTypeScriptDefaults() {
-  if (typesConfigured) return;
-  typesConfigured = true;
+/**
+ * Create hidden models containing type definitions.
+ * Monaco's JS language service automatically picks up all JS models
+ * (including these) and shares type information between them.
+ * This avoids the `addExtraLib` split-instance issue with Vite pre-bundling.
+ */
+function configureTypeDefs() {
+  if (configured) return;
+  configured = true;
 
-  void ensureLanguageRegistered('typescript').then(() => {
-    const ts = monaco.languages.typescript;
-    if (!ts) return;
+  // Create type-definition models using 'javascript' language so the JS
+  // worker picks them up. The .d.ts URI extension tells the TS compiler
+  // inside the worker to treat them as declaration files.
+  monaco.editor.createModel(
+    `declare module 'tree-gex' {\n${treeGexDts}\n}`,
+    'javascript',
+    monaco.Uri.parse('file:///node_modules/tree-gex/index.d.ts'),
+  );
 
-    ts.typescriptDefaults.setCompilerOptions({
-      target: ts.ScriptTarget.ESNext,
-      module: ts.ModuleKind.ESNext,
-      moduleResolution: ts.ModuleResolutionKind.NodeJs,
-      allowJs: true,
-      checkJs: false,
-      noEmit: true,
-      strict: false,
-      esModuleInterop: true,
-      allowSyntheticDefaultImports: true,
-    });
-
-    // Provide tree-gex types
-    ts.typescriptDefaults.addExtraLib(
-      `declare module 'tree-gex' {\n${treeGexDts}\n}`,
-      'ts:tree-gex/index.d.ts',
-    );
-
-    // Declare the global `ast` variable available in user code
-    ts.typescriptDefaults.addExtraLib('declare const ast: any;', 'ts:globals/ast.d.ts');
-  });
+  monaco.editor.createModel(
+    'declare const ast: unknown;',
+    'javascript',
+    monaco.Uri.parse('file:///globals.d.ts'),
+  );
 }
 
 export default class TreeGexEditor extends Editor {
   static displayName = 'TreeGexEditor';
 
   componentDidMount() {
-    // Start configuring TS defaults (async, but doesn't block editor creation)
-    configureTypeScriptDefaults();
+    // Create type definition models (shared across all editors)
+    configureTypeDefs();
 
-    // Create the editor with all event bindings (reactive to edits)
+    // Ensure the JS language service is loaded (provides IntelliSense)
+    void ensureLanguageRegistered('javascript');
+
+    // Base class creates the editor and binds event handlers
     super.componentDidMount();
-
-    // Override the language to TypeScript
-    void ensureLanguageRegistered('typescript').then(() => {
-      const model = this.monacoEditor?.getModel();
-      if (model) {
-        monaco.editor.setModelLanguage(model, 'typescript');
-      }
-    });
   }
 }
 
 TreeGexEditor.defaultProps = Object.assign({}, Editor.defaultProps, {
-  mode: 'typescript',
+  mode: 'javascript',
 });

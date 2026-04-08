@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => ({
     },
     VitePWA({
       registerType: 'autoUpdate',
-      devOptions: { enabled: true, type: 'module' },
+      devOptions: { enabled: false },
       // Only precache Vite-built assets (not the parser chunks copied later).
       // Parser chunks, Monaco, workers, and WASM are cached at runtime.
       workbox: {
@@ -196,6 +196,34 @@ export default defineConfig(({ mode }) => ({
 
   optimizeDeps: {
     exclude: ['astexplorer-parsers'],
+    include: [
+      // Monaco sub-path dynamic imports must be pre-bundled for Vite dev mode.
+      // Without this, import('monaco-editor/esm/vs/...') fails at runtime.
+      'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution',
+      'monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution',
+      'monaco-editor/esm/vs/basic-languages/css/css.contribution',
+      'monaco-editor/esm/vs/basic-languages/go/go.contribution',
+      'monaco-editor/esm/vs/basic-languages/handlebars/handlebars.contribution',
+      'monaco-editor/esm/vs/basic-languages/html/html.contribution',
+      'monaco-editor/esm/vs/basic-languages/lua/lua.contribution',
+      'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution',
+      'monaco-editor/esm/vs/basic-languages/fsharp/fsharp.contribution',
+      'monaco-editor/esm/vs/basic-languages/php/php.contribution',
+      'monaco-editor/esm/vs/basic-languages/protobuf/protobuf.contribution',
+      'monaco-editor/esm/vs/basic-languages/pug/pug.contribution',
+      'monaco-editor/esm/vs/basic-languages/python/python.contribution',
+      'monaco-editor/esm/vs/basic-languages/rust/rust.contribution',
+      'monaco-editor/esm/vs/basic-languages/sql/sql.contribution',
+      'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution',
+      'monaco-editor/esm/vs/basic-languages/java/java.contribution',
+      'monaco-editor/esm/vs/basic-languages/scala/scala.contribution',
+      'monaco-editor/esm/vs/basic-languages/xml/xml.contribution',
+      'monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution',
+      'monaco-editor/esm/vs/language/typescript/monaco.contribution',
+      'monaco-editor/esm/vs/language/json/monaco.contribution',
+      'monaco-editor/esm/vs/language/css/monaco.contribution',
+      'monaco-editor/esm/vs/language/html/monaco.contribution',
+    ],
   },
 
   server: {

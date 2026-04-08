@@ -56,10 +56,12 @@ export default function createTreeGexTransformer(config: TreeGexConfig) {
       // If result is a string, return it directly (codegen already done by user)
       if (typeof result === 'string') return result;
 
-      // If codegen available and result looks like an AST, try to generate code
-      if (config.codegen && result && typeof result === 'object') {
+      // If codegen available and result looks like an AST (not an array from
+      // accumWalkMatch), try to generate code from the transformed AST.
+      if (config.codegen && result && typeof result === 'object' && !Array.isArray(result)) {
         try {
-          return config.codegen(deps, result, code);
+          const generated = config.codegen(deps, result, code);
+          if (generated) return generated;
         } catch {
           // fall through to JSON
         }

@@ -1,9 +1,9 @@
 import { accumWalkMatch, string, group } from "tree-gex";
 
-// Find all field definitions and capture their names.
+// Find all fields in the query and capture their names.
 // `ast` is the GraphQL AST parsed by graphql-js.
 export default accumWalkMatch(ast, {
-  kind: "FieldDefinition",
+  kind: "Field",
   name: {
     kind: "Name",
     value: group(string(), "fieldName"),

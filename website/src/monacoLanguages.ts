@@ -27,42 +27,116 @@ const cmModeToMonaco: Record<string, string> = {
   'text/x-scala': 'scala',
   xml: 'xml',
   graphql: 'graphql',
+  typescript: 'typescript',
 };
 
 // Basic-language contribution loaders (syntax highlighting / tokenizers).
 // Each contribution self-registers with Monaco's language registry.
+// Using explicit () => import(...) with string literals so Vite can
+// statically analyze and pre-bundle them for dev mode.
+function loadBasicJS() {
+  return import('monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution');
+}
+function loadBasicTS() {
+  return import('monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution');
+}
+function loadBasicCSS() {
+  return import('monaco-editor/esm/vs/basic-languages/css/css.contribution');
+}
+function loadBasicGo() {
+  return import('monaco-editor/esm/vs/basic-languages/go/go.contribution');
+}
+function loadBasicHBS() {
+  return import('monaco-editor/esm/vs/basic-languages/handlebars/handlebars.contribution');
+}
+function loadBasicHTML() {
+  return import('monaco-editor/esm/vs/basic-languages/html/html.contribution');
+}
+function loadBasicLua() {
+  return import('monaco-editor/esm/vs/basic-languages/lua/lua.contribution');
+}
+function loadBasicMD() {
+  return import('monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution');
+}
+function loadBasicFS() {
+  return import('monaco-editor/esm/vs/basic-languages/fsharp/fsharp.contribution');
+}
+function loadBasicPHP() {
+  return import('monaco-editor/esm/vs/basic-languages/php/php.contribution');
+}
+function loadBasicProto() {
+  return import('monaco-editor/esm/vs/basic-languages/protobuf/protobuf.contribution');
+}
+function loadBasicPug() {
+  return import('monaco-editor/esm/vs/basic-languages/pug/pug.contribution');
+}
+function loadBasicPy() {
+  return import('monaco-editor/esm/vs/basic-languages/python/python.contribution');
+}
+function loadBasicRust() {
+  return import('monaco-editor/esm/vs/basic-languages/rust/rust.contribution');
+}
+function loadBasicSQL() {
+  return import('monaco-editor/esm/vs/basic-languages/sql/sql.contribution');
+}
+function loadBasicYAML() {
+  return import('monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution');
+}
+function loadBasicJava() {
+  return import('monaco-editor/esm/vs/basic-languages/java/java.contribution');
+}
+function loadBasicScala() {
+  return import('monaco-editor/esm/vs/basic-languages/scala/scala.contribution');
+}
+function loadBasicXML() {
+  return import('monaco-editor/esm/vs/basic-languages/xml/xml.contribution');
+}
+function loadBasicGQL() {
+  return import('monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution');
+}
+function loadRichTS() {
+  return import('monaco-editor/esm/vs/language/typescript/monaco.contribution');
+}
+function loadRichJSON() {
+  return import('monaco-editor/esm/vs/language/json/monaco.contribution');
+}
+function loadRichCSS() {
+  return import('monaco-editor/esm/vs/language/css/monaco.contribution');
+}
+function loadRichHTML() {
+  return import('monaco-editor/esm/vs/language/html/monaco.contribution');
+}
+
 const basicLanguageLoaders: Record<string, () => Promise<unknown>> = {
-  javascript: () =>
-    import('monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution.js'),
-  css: () => import('monaco-editor/esm/vs/basic-languages/css/css.contribution.js'),
-  go: () => import('monaco-editor/esm/vs/basic-languages/go/go.contribution.js'),
-  handlebars: () =>
-    import('monaco-editor/esm/vs/basic-languages/handlebars/handlebars.contribution.js'),
-  html: () => import('monaco-editor/esm/vs/basic-languages/html/html.contribution.js'),
-  lua: () => import('monaco-editor/esm/vs/basic-languages/lua/lua.contribution.js'),
-  markdown: () => import('monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js'),
-  fsharp: () => import('monaco-editor/esm/vs/basic-languages/fsharp/fsharp.contribution.js'),
-  php: () => import('monaco-editor/esm/vs/basic-languages/php/php.contribution.js'),
-  protobuf: () => import('monaco-editor/esm/vs/basic-languages/protobuf/protobuf.contribution.js'),
-  pug: () => import('monaco-editor/esm/vs/basic-languages/pug/pug.contribution.js'),
-  python: () => import('monaco-editor/esm/vs/basic-languages/python/python.contribution.js'),
-  rust: () => import('monaco-editor/esm/vs/basic-languages/rust/rust.contribution.js'),
-  sql: () => import('monaco-editor/esm/vs/basic-languages/sql/sql.contribution.js'),
-  yaml: () => import('monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution.js'),
-  java: () => import('monaco-editor/esm/vs/basic-languages/java/java.contribution.js'),
-  scala: () => import('monaco-editor/esm/vs/basic-languages/scala/scala.contribution.js'),
-  xml: () => import('monaco-editor/esm/vs/basic-languages/xml/xml.contribution.js'),
-  graphql: () => import('monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution.js'),
+  javascript: loadBasicJS,
+  typescript: loadBasicTS,
+  css: loadBasicCSS,
+  go: loadBasicGo,
+  handlebars: loadBasicHBS,
+  html: loadBasicHTML,
+  lua: loadBasicLua,
+  markdown: loadBasicMD,
+  fsharp: loadBasicFS,
+  php: loadBasicPHP,
+  protobuf: loadBasicProto,
+  pug: loadBasicPug,
+  python: loadBasicPy,
+  rust: loadBasicRust,
+  sql: loadBasicSQL,
+  yaml: loadBasicYAML,
+  java: loadBasicJava,
+  scala: loadBasicScala,
+  xml: loadBasicXML,
+  graphql: loadBasicGQL,
 };
 
 // Rich language service loaders (IntelliSense, validation, etc.)
-// These are heavier and load workers, so only load when the language is used.
+// Only enabled for 'javascript' — the TS contribution registers the
+// JS/TS language service worker which provides IntelliSense for JS models.
+// The tree-gex editor uses 'javascript' mode (not 'typescript') to leverage
+// this worker, since the TS worker can't sync models in Vite dev mode.
 const richLanguageLoaders: Record<string, () => Promise<unknown>> = {
-  javascript: () => import('monaco-editor/esm/vs/language/typescript/monaco.contribution.js'),
-  typescript: () => import('monaco-editor/esm/vs/language/typescript/monaco.contribution.js'),
-  json: () => import('monaco-editor/esm/vs/language/json/monaco.contribution.js'),
-  css: () => import('monaco-editor/esm/vs/language/css/monaco.contribution.js'),
-  html: () => import('monaco-editor/esm/vs/language/html/monaco.contribution.js'),
+  javascript: loadRichTS,
 };
 
 const registrationPromises = new Map<string, Promise<void>>();

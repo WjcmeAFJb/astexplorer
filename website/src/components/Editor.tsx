@@ -34,6 +34,7 @@ export default class Editor extends React.Component<EditorProps, { value: string
   container: HTMLElement | null = null;
   _subscriptions: Array<() => void> = [];
   _updateTimer: ReturnType<typeof setTimeout> | undefined;
+  _activityTimer: ReturnType<typeof setTimeout> | undefined;
   _markerRange: [number, number] | null = null;
   _decorationIds: string[] = [];
   _errorDecorationIds: string[] = [];
@@ -55,9 +56,15 @@ export default class Editor extends React.Component<EditorProps, { value: string
 
   componentDidUpdate(prevProps: EditorProps, prevState: { value: string }) {
     if (this.props.value !== prevState.value && this.monacoEditor) {
-      this._ignoreChange = true;
-      this.monacoEditor.setValue(this.props.value ?? '');
-      this._ignoreChange = false;
+      // Only call setValue when the model content actually differs.
+      // When the user types, the model already has the new value; calling
+      // setValue again would reset undo history and cursor position.
+      const model = this.monacoEditor.getModel();
+      if (model && model.getValue() !== (this.props.value ?? '')) {
+        this._ignoreChange = true;
+        this.monacoEditor.setValue(this.props.value ?? '');
+        this._ignoreChange = false;
+      }
     }
     if (this.props.mode !== prevProps.mode && this.monacoEditor) {
       const newLangId = getMonacoLanguage(this.props.mode);
@@ -171,19 +178,26 @@ export default class Editor extends React.Component<EditorProps, { value: string
       const editor = this.monacoEditor;
       if (!editor) return;
 
-      require(['prettier/standalone', 'prettier/parser-babel'], (
-        prettier: { format: (code: string, options: Record<string, unknown>) => string },
-        babel: unknown,
-      ) => {
-        const currValue = editor.getValue();
-        const domNode = editor.getDomNode();
-        const maxLineLength = domNode ? domNode.clientWidth : 80;
-        const options = Object.assign({}, defaultPrettierOptions, {
-          printWidth: maxLineLength,
-          plugins: [babel],
-        });
-        editor.setValue(prettier.format(currValue, options));
-      });
+      void Promise.all([import('prettier/standalone'), import('prettier/parser-babel')]).then(
+        ([prettierMod, babelMod]) => {
+          const prettier = prettierMod.default ?? prettierMod;
+          const babel = babelMod.default ?? babelMod;
+          const currValue = editor.getValue();
+          const domNode = editor.getDomNode();
+          const maxLineLength = domNode ? domNode.clientWidth : 80;
+          const options = Object.assign({}, defaultPrettierOptions, {
+            printWidth: maxLineLength,
+            plugins: [babel],
+          });
+          const result = prettier.format(currValue, options);
+          // Prettier v2 returns string, v3 returns Promise<string>
+          if (typeof result === 'string') {
+            editor.setValue(result);
+          } else {
+            void (result as Promise<string>).then((formatted) => editor.setValue(formatted));
+          }
+        },
+      );
     });
 
     this.monacoEditor.onDidChangeModelContent(() => {
@@ -193,8 +207,8 @@ export default class Editor extends React.Component<EditorProps, { value: string
     });
 
     this.monacoEditor.onDidChangeCursorPosition(() => {
-      clearTimeout(this._updateTimer);
-      this._updateTimer = setTimeout(() => this._onActivity(), 100);
+      clearTimeout(this._activityTimer);
+      this._activityTimer = setTimeout(() => this._onActivity(), 100);
     });
 
     this._subscriptions.push(
@@ -265,6 +279,7 @@ export default class Editor extends React.Component<EditorProps, { value: string
 
   componentWillUnmount() {
     clearTimeout(this._updateTimer);
+    clearTimeout(this._activityTimer);
     this._unbindHandlers();
     this._markerRange = null;
     this._decorationIds = [];
