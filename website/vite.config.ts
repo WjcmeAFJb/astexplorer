@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 import { VitePWA } from 'vite-plugin-pwa';
 import fs from 'fs';
 import path from 'path';
@@ -27,8 +28,11 @@ function copyParsersChunks() {
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    basicSsl(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Enable SW in dev mode so PWA install works on dev server
+      devOptions: { enabled: true },
       // Only precache Vite-built assets (not the parser chunks copied later).
       // Parser chunks, Monaco, workers, and WASM are cached at runtime.
       workbox: {
