@@ -65,17 +65,36 @@ const richLanguageLoaders: Record<string, () => Promise<unknown>> = {
   html: () => import('monaco-editor/esm/vs/language/html/monaco.contribution.js'),
 };
 
-const registered = new Set<string>();
+const registrationPromises = new Map<string, Promise<void>>();
 
-export function ensureLanguageRegistered(monacoLangId: string): void {
-  if (monacoLangId === 'plaintext' || registered.has(monacoLangId)) return;
-  registered.add(monacoLangId);
+/**
+ * Ensure a Monaco language is registered. Returns a Promise that resolves
+ * once the language contribution module has been loaded and registerLanguage()
+ * has been called. The editor must wait for this before the tokenizer works.
+ */
+export function ensureLanguageRegistered(monacoLangId: string): Promise<void> {
+  if (monacoLangId === 'plaintext') return Promise.resolve();
+
+  const existing = registrationPromises.get(monacoLangId);
+  if (existing) return existing;
+
+  const promises: Promise<unknown>[] = [];
 
   const basicLoader = basicLanguageLoaders[monacoLangId];
-  if (basicLoader) basicLoader();
+  if (basicLoader) promises.push(basicLoader());
 
   const richLoader = richLanguageLoaders[monacoLangId];
-  if (richLoader) richLoader();
+  if (richLoader) promises.push(richLoader());
+
+  if (promises.length === 0) {
+    const resolved = Promise.resolve();
+    registrationPromises.set(monacoLangId, resolved);
+    return resolved;
+  }
+
+  const promise = Promise.all(promises).then(() => {});
+  registrationPromises.set(monacoLangId, promise);
+  return promise;
 }
 
 export function getMonacoLanguage(mode: string | { name: string } | undefined): string {

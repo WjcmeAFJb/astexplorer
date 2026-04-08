@@ -60,7 +60,7 @@ vi.mock('monaco-editor', () => mockMonaco);
 
 vi.mock('../src/monacoLanguages', () => ({
   getMonacoLanguage: vi.fn((mode: string) => mode || 'plaintext'),
-  ensureLanguageRegistered: vi.fn(),
+  ensureLanguageRegistered: vi.fn(() => Promise.resolve()),
 }));
 
 import Editor from '../src/components/Editor';
@@ -456,6 +456,7 @@ describe('Editor', () => {
     await flushMicrotasks();
     mockMonaco.editor.setModelLanguage.mockClear();
     rerender(<Editor value="x" mode="css" />);
+    await flushMicrotasks();
     expect(mockMonaco.editor.setModelLanguage).toHaveBeenCalled();
   });
 

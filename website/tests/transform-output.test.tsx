@@ -50,7 +50,7 @@ vi.mock('monaco-editor', () => mockMonaco);
 
 vi.mock('../src/monacoLanguages', () => ({
   getMonacoLanguage: vi.fn((mode: string) => mode || 'plaintext'),
-  ensureLanguageRegistered: vi.fn(),
+  ensureLanguageRegistered: vi.fn(() => Promise.resolve()),
 }));
 
 // Mock Editor to capture its props so we can test posFromIndex

@@ -4,8 +4,8 @@
  * Tests for website/src/monacoLanguages.ts
  * The getMonacoLanguage function maps CodeMirror mode names to Monaco language IDs.
  */
-import { describe, test, expect } from 'vitest';
-import { getMonacoLanguage } from '../src/monacoLanguages';
+import { describe, test, expect, vi } from 'vitest';
+import { getMonacoLanguage, ensureLanguageRegistered } from '../src/monacoLanguages';
 
 describe('getMonacoLanguage', () => {
   test('returns plaintext for undefined mode', () => {
@@ -114,5 +114,29 @@ describe('getMonacoLanguage', () => {
 
   test('accepts object with name for unknown mode', () => {
     expect(getMonacoLanguage({ name: 'unknown-xyz' })).toBe('plaintext');
+  });
+});
+
+describe('ensureLanguageRegistered', () => {
+  test('returns a Promise', () => {
+    const result = ensureLanguageRegistered('javascript');
+    expect(result).toBeInstanceOf(Promise);
+  });
+
+  test('returns resolved Promise for plaintext', async () => {
+    const result = ensureLanguageRegistered('plaintext');
+    expect(result).toBeInstanceOf(Promise);
+    await expect(result).resolves.toBeUndefined();
+  });
+
+  test('returns same Promise for repeated calls (caching)', () => {
+    const first = ensureLanguageRegistered('css');
+    const second = ensureLanguageRegistered('css');
+    expect(first).toBe(second);
+  });
+
+  test('returns resolved Promise for unknown language', async () => {
+    const result = ensureLanguageRegistered('nonexistent');
+    await expect(result).resolves.toBeUndefined();
   });
 });

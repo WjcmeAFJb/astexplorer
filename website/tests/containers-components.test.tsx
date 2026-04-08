@@ -153,7 +153,7 @@ vi.mock('monaco-editor', () => {
 });
 vi.mock('../src/monacoLanguages', () => ({
   getMonacoLanguage: vi.fn((m: string) => m || 'plaintext'),
-  ensureLanguageRegistered: vi.fn(),
+  ensureLanguageRegistered: vi.fn(() => Promise.resolve()),
 }));
 
 import { astexplorer } from '../src/store/reducers';

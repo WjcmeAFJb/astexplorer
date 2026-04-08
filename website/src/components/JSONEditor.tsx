@@ -36,10 +36,8 @@ export default class Editor extends React.Component<JSONEditorProps> {
     if (!this.container) {
       return;
     }
-    ensureLanguageRegistered('json');
     this.monacoEditor = monaco.editor.create(this.container, {
       value: this.props.value,
-      language: 'json',
       readOnly: true,
       lineNumbers: 'on',
       folding: true,
@@ -53,6 +51,13 @@ export default class Editor extends React.Component<JSONEditorProps> {
       scrollbar: {
         useShadows: false,
       },
+    });
+
+    void ensureLanguageRegistered('json').then(() => {
+      const model = this.monacoEditor?.getModel();
+      if (model) {
+        monaco.editor.setModelLanguage(model, 'json');
+      }
     });
 
     this._subscriptions.push(

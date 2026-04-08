@@ -61,11 +61,13 @@ export default class Editor extends React.Component<EditorProps, { value: string
     }
     if (this.props.mode !== prevProps.mode && this.monacoEditor) {
       const newLangId = getMonacoLanguage(this.props.mode);
-      ensureLanguageRegistered(newLangId);
-      const model = this.monacoEditor.getModel();
-      if (model) {
-        monaco.editor.setModelLanguage(model, newLangId);
-      }
+      const editor = this.monacoEditor;
+      void ensureLanguageRegistered(newLangId).then(() => {
+        const model = editor.getModel();
+        if (model) {
+          monaco.editor.setModelLanguage(model, newLangId);
+        }
+      });
     }
     if (this.props.keyMap !== prevProps.keyMap) {
       this._applyKeyMap();
@@ -135,10 +137,8 @@ export default class Editor extends React.Component<EditorProps, { value: string
     if (!this.container) return;
 
     const langId = getMonacoLanguage(this.props.mode);
-    ensureLanguageRegistered(langId);
     this.monacoEditor = monaco.editor.create(this.container, {
       value: this.state.value,
-      language: langId,
       lineNumbers: this.props.lineNumbers !== false ? 'on' : 'off',
       readOnly: this.props.readOnly === true,
       minimap: { enabled: false },
@@ -154,6 +154,15 @@ export default class Editor extends React.Component<EditorProps, { value: string
       scrollbar: {
         useShadows: false,
       },
+    });
+
+    // Register language then apply it. The editor starts with no language
+    // (plaintext) and gets syntax highlighting once the contribution loads.
+    void ensureLanguageRegistered(langId).then(() => {
+      const model = this.monacoEditor?.getModel();
+      if (model) {
+        monaco.editor.setModelLanguage(model, langId);
+      }
     });
 
     this.monacoEditor.onDidBlurEditorWidget(() => {

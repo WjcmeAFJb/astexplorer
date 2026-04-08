@@ -3,13 +3,13 @@
  */
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 
 const { mockEditor, mockMonaco } = vi.hoisted(() => {
   const _mockEditor = {
     getValue: vi.fn(() => '{}'),
     setValue: vi.fn(),
-    getModel: vi.fn(() => null),
+    getModel: vi.fn(() => ({})),
     getPosition: vi.fn(() => ({ lineNumber: 1, column: 1 })),
     getDomNode: vi.fn(() => document.createElement('div')),
     getScrollTop: vi.fn(() => 0),
@@ -41,6 +41,11 @@ const { mockEditor, mockMonaco } = vi.hoisted(() => {
 
 vi.mock('monaco-editor', () => mockMonaco);
 
+vi.mock('../src/monacoLanguages', () => ({
+  getMonacoLanguage: vi.fn((m: string) => m || 'plaintext'),
+  ensureLanguageRegistered: vi.fn(() => Promise.resolve()),
+}));
+
 import JSONEditor from '../src/components/JSONEditor';
 
 describe('JSONEditor', () => {
@@ -53,12 +58,11 @@ describe('JSONEditor', () => {
     expect(container.querySelector('#JSONEditor')).not.toBeNull();
   });
 
-  test('initializes Monaco with JSON language', () => {
+  test('sets JSON language after registration', async () => {
     render(<JSONEditor value="{}" />);
-    const calls = mockMonaco.editor.create.mock.calls;
-    expect(calls.length).toBeGreaterThan(0);
-    const lastOpts = calls[calls.length - 1][1];
-    expect(lastOpts.language).toBe('json');
+    // Language is set asynchronously after ensureLanguageRegistered resolves
+    await act(() => new Promise((r) => setTimeout(r, 0)));
+    expect(mockMonaco.editor.setModelLanguage).toHaveBeenCalled();
   });
 
   test('initializes Monaco as readOnly', () => {

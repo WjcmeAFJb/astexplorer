@@ -42,7 +42,7 @@ vi.mock('monaco-editor', () => ({
 
 vi.mock('../src/monacoLanguages', () => ({
   getMonacoLanguage: vi.fn((mode: string) => mode || 'plaintext'),
-  ensureLanguageRegistered: vi.fn(),
+  ensureLanguageRegistered: vi.fn(() => Promise.resolve()),
 }));
 
 // Mock JSCodeshiftEditor to avoid any import issues
