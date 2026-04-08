@@ -1,6 +1,7 @@
 import createTreeGexTransformer from '../../../utils/treegex-transformer';
 
 export default createTreeGexTransformer({
+  categoryId: 'css',
   defaultParserID: 'postcss',
   loadDeps(callback) {
     require(['postcss'], (postcss: unknown) => {

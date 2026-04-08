@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('mathjs');
+export default createGenericTreeGexTransformer('mathjs', 'mathjs');

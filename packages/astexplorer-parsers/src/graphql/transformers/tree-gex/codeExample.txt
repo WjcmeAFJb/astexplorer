@@ -1,9 +1,11 @@
-const w = require("tree-gex");
+import { accumWalkMatch, string, group } from "tree-gex";
 
-// Define a pattern to match AST nodes.
-// This example matches any object with a "type" property.
-module.exports = {
-  pattern: {
-    type: w.group(w.string(), "nodeType"),
+// Find all field definitions and capture their names.
+// `ast` is the GraphQL AST parsed by graphql-js.
+export default accumWalkMatch(ast, {
+  kind: "FieldDefinition",
+  name: {
+    kind: "Name",
+    value: group(string(), "fieldName"),
   },
-};
+});

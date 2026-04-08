@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('ck-thrift-parser');
+export default createGenericTreeGexTransformer('thrift-idl', 'ck-thrift-parser');

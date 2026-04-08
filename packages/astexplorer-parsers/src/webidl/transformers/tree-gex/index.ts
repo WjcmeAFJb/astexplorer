@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('webidl2');
+export default createGenericTreeGexTransformer('webidl', 'webidl2');

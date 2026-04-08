@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('wat-parser');
+export default createGenericTreeGexTransformer('wat', 'wat-parser');

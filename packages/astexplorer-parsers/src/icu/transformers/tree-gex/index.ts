@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('intl-messageformat-parser');
+export default createGenericTreeGexTransformer('icu', 'intl-messageformat-parser');

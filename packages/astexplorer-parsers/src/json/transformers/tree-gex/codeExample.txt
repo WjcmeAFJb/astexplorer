@@ -1,9 +1,11 @@
-const w = require("tree-gex");
+import { accumWalkMatch, string, group } from "tree-gex";
 
-// Define a pattern to match AST nodes.
-// This example matches any object with a "type" property.
-module.exports = {
-  pattern: {
-    type: w.group(w.string(), "nodeType"),
+// Find all property nodes and capture their keys.
+// `ast` is the JSON AST parsed by json-to-ast.
+export default accumWalkMatch(ast, {
+  type: "Property",
+  key: {
+    type: "Identifier",
+    value: group(string(), "key"),
   },
-};
+});

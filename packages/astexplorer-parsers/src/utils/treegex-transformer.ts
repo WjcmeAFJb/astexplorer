@@ -2,6 +2,7 @@ import compileModule from './compileModule';
 import treeGexPkg from 'tree-gex/package.json';
 
 type TreeGexConfig = {
+  categoryId: string;
   defaultParserID: string;
   loadDeps: (callback: (deps: Record<string, unknown>) => void) => void;
   parse: (deps: Record<string, unknown>, code: string) => unknown;
@@ -10,7 +11,7 @@ type TreeGexConfig = {
 
 export default function createTreeGexTransformer(config: TreeGexConfig) {
   return {
-    id: 'tree-gex',
+    id: 'tree-gex-' + config.categoryId,
     displayName: 'tree-gex',
     version: treeGexPkg.version,
     homepage: 'https://github.com/d7sd6u/tree-gex',
@@ -18,9 +19,9 @@ export default function createTreeGexTransformer(config: TreeGexConfig) {
     defaultParserID: config.defaultParserID,
 
     loadTransformer(callback: (realTransformer: unknown) => void) {
-      require(['tree-gex'], (treeGex: Record<string, unknown>) => {
+      require(['../transpilers/babel', 'tree-gex'], (transpile: {default: (code: string) => string}, treeGex: Record<string, unknown>) => {
         config.loadDeps((deps: Record<string, unknown>) => {
-          callback({ treeGex, deps });
+          callback({ transpile: transpile.default, treeGex, deps });
         });
       });
     },
@@ -30,39 +31,41 @@ export default function createTreeGexTransformer(config: TreeGexConfig) {
       transformCode: string,
       code: string,
     ) {
+      const transpile = realTransformer.transpile as (code: string) => string;
       const tg = realTransformer.treeGex as typeof import('tree-gex');
       const deps = realTransformer.deps as Record<string, unknown>;
 
-      // User code exports: { pattern } or a pattern object directly
-      // Sandbox provides `require('tree-gex')`
+      const ast = config.parse(deps, code);
+
+      // Transpile user's ES module code to CJS
+      transformCode = transpile(transformCode);
+
+      // User code has `ast` as a global and tree-gex via require('tree-gex').
+      // User exports the result of calling tree-gex functions directly, e.g.:
+      //   export default w.accumWalkMatch(ast, { ... })
+      //   export default w.walkReplace(ast, { ... })
       const mod = compileModule(transformCode, {
+        ast,
         require(name: string) {
           if (name === 'tree-gex') return tg;
           throw new Error(`Cannot find module '${name}'`);
         },
       });
-      const userExport = mod.__esModule ? (mod.default || mod) : mod;
-      const pattern = (userExport as Record<string, unknown>).pattern ?? userExport;
+      const result = mod.__esModule ? (mod.default ?? mod) : mod;
 
-      const ast = config.parse(deps, code);
+      // If result is a string, return it directly (codegen already done by user)
+      if (typeof result === 'string') return result;
 
-      // Collect matches
-      const matches = tg.accumWalkMatch(ast, pattern);
-
-      // If codegen is available, try walkReplace to produce transformed code
-      if (config.codegen) {
+      // If codegen available and result looks like an AST, try to generate code
+      if (config.codegen && result && typeof result === 'object') {
         try {
-          const transformed = tg.walkReplace(ast, pattern);
-          if (transformed !== ast) {
-            const output = config.codegen(deps, transformed, code);
-            return JSON.stringify({ matches, output }, null, 2);
-          }
+          return config.codegen(deps, result, code);
         } catch {
-          // Codegen failed — fall through to JSON-only output
+          // fall through to JSON
         }
       }
 
-      return JSON.stringify(matches, null, 2);
+      return JSON.stringify(result, null, 2);
     },
   };
 }

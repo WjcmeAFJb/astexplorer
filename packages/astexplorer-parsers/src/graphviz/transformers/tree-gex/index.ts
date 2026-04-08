@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('redot');
+export default createGenericTreeGexTransformer('graphviz', 'redot');

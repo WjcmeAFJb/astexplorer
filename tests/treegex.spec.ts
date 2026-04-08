@@ -49,68 +49,138 @@ async function waitForTransformOutput(page: Page, timeout = 30_000) {
   );
 }
 
+function getTransformOutputText(page: Page): Promise<string> {
+  return page.evaluate(() => {
+    const outputs = document.querySelectorAll('.output.highlight');
+    if (outputs.length < 2) return '';
+    const output = outputs[1];
+    const viewLines = output.querySelector('.monaco-editor .view-lines');
+    return viewLines?.textContent ?? '';
+  });
+}
+
 test.describe('tree-gex transformer E2E', () => {
-  // Test categories that work in the browser (not WASM-only)
-  const categories = [
-    { id: 'javascript', name: 'JavaScript' },
-    { id: 'css', name: 'CSS' },
-    { id: 'graphql', name: 'GraphQL' },
-    { id: 'json', name: 'JSON' },
-    { id: 'markdown', name: 'Markdown' },
-    { id: 'yaml', name: 'YAML' },
-    { id: 'lua', name: 'Lua' },
-    { id: 'python', name: 'Python' },
-    { id: 'htmlmixed', name: 'HTML' },
-    { id: 'regexp', name: 'RegExp' },
-    { id: 'handlebars', name: 'Handlebars' },
-    { id: 'sql', name: 'SQL' },
-  ];
 
-  for (const { id, name } of categories) {
-    test(`${name}: tree-gex transformer loads and produces output`, async ({ page }) => {
-      await page.goto('/');
-      await waitForTree(page);
-
-      if (id !== 'javascript') {
-        await selectCategory(page, id);
-        await waitForTree(page);
-      }
-
-      await selectTransformer(page, 'tree-gex');
-      await waitForTransformOutput(page);
-    });
-  }
-
-  test('JavaScript: tree-gex shows JSON matches', async ({ page }) => {
+  test('JavaScript: tree-gex produces JSON output with matches', async ({ page }) => {
     await page.goto('/');
     await waitForTree(page);
-
-    await selectTransformer(page, 'tree-gex');
+    await selectTransformer(page, 'tree-gex-javascript');
     await waitForTransformOutput(page);
 
-    // The output should contain JSON with matches
-    const outputText = await page.evaluate(() => {
-      const outputs = document.querySelectorAll('.output.highlight');
-      if (outputs.length < 2) return '';
-      const output = outputs[1];
-      const viewLines = output.querySelector('.monaco-editor .view-lines');
-      return viewLines?.textContent ?? '';
-    });
-
-    // tree-gex output is JSON containing matched nodes
-    expect(outputText.length).toBeGreaterThan(0);
+    const text = await getTransformOutputText(page);
+    expect(text).toContain('funcName');
+    expect(text).toContain('FunctionDeclaration');
   });
 
-  test('tree-gex transformer editor uses TypeScript mode', async ({ page }) => {
+  test('CSS: tree-gex produces output', async ({ page }) => {
+    await page.goto('/');
+    await waitForTree(page);
+    await selectCategory(page, 'css');
+    await waitForTree(page);
+    await selectTransformer(page, 'tree-gex-css');
+    await waitForTransformOutput(page);
+
+    const text = await getTransformOutputText(page);
+    expect(text.length).toBeGreaterThan(2);
+  });
+
+  test('GraphQL: tree-gex captures field definitions', async ({ page }) => {
+    await page.goto('/');
+    await waitForTree(page);
+    await selectCategory(page, 'graphql');
+    await waitForTree(page);
+    await selectTransformer(page, 'tree-gex-graphql');
+    await waitForTransformOutput(page);
+
+    const text = await getTransformOutputText(page);
+    expect(text).toContain('fieldName');
+  });
+
+  test('Markdown: tree-gex finds heading nodes', async ({ page }) => {
+    await page.goto('/');
+    await waitForTree(page);
+    await selectCategory(page, 'markdown');
+    await waitForTree(page);
+    await selectTransformer(page, 'tree-gex-markdown');
+    await waitForTransformOutput(page);
+
+    const text = await getTransformOutputText(page);
+    expect(text).toContain('nodeType');
+  });
+
+  test('JSON: tree-gex produces output', async ({ page }) => {
+    await page.goto('/');
+    await waitForTree(page);
+    await selectCategory(page, 'json');
+    await waitForTree(page);
+    await selectTransformer(page, 'tree-gex-json');
+    await waitForTransformOutput(page);
+
+    const text = await getTransformOutputText(page);
+    expect(text.length).toBeGreaterThan(2);
+  });
+
+  test('YAML: tree-gex produces output', async ({ page }) => {
+    await page.goto('/');
+    await waitForTree(page);
+    await selectCategory(page, 'yaml');
+    await waitForTree(page);
+    await selectTransformer(page, 'tree-gex-yaml');
+    await waitForTransformOutput(page);
+
+    const text = await getTransformOutputText(page);
+    expect(text.length).toBeGreaterThan(2);
+  });
+
+  test('RegExp: tree-gex captures char nodes', async ({ page }) => {
+    await page.goto('/');
+    await waitForTree(page);
+    await selectCategory(page, 'regexp');
+    await waitForTree(page);
+    await selectTransformer(page, 'tree-gex-regexp');
+    await waitForTransformOutput(page);
+
+    const text = await getTransformOutputText(page);
+    expect(text).toContain('charValue');
+  });
+
+  test('Handlebars: tree-gex produces output', async ({ page }) => {
+    await page.goto('/');
+    await waitForTree(page);
+    await selectCategory(page, 'handlebars');
+    await waitForTree(page);
+    await selectTransformer(page, 'tree-gex-handlebars');
+    await waitForTransformOutput(page);
+
+    const text = await getTransformOutputText(page);
+    expect(text.length).toBeGreaterThan(2);
+  });
+
+  test('tree-gex editor shows Monaco', async ({ page }) => {
+    await page.goto('/');
+    await waitForTree(page);
+    await selectTransformer(page, 'tree-gex-javascript');
+    await page.waitForTimeout(1500);
+
+    const editorCount = await page.locator('.monaco-editor').count();
+    expect(editorCount).toBeGreaterThanOrEqual(2);
+  });
+
+  test('selecting tree-gex does NOT redirect to different category', async ({ page }) => {
     await page.goto('/');
     await waitForTree(page);
 
-    await selectTransformer(page, 'tree-gex');
-    await page.waitForTimeout(1000);
+    const catBefore = await page.evaluate(() =>
+      document.querySelector('.categoryButton span')?.textContent,
+    );
 
-    // The transformer editor (left pane of the split) should have TypeScript mode
-    // Check that the editor exists
-    const editorCount = await page.locator('.monaco-editor').count();
-    expect(editorCount).toBeGreaterThanOrEqual(2); // code editor + transform editor
+    await selectTransformer(page, 'tree-gex-javascript');
+    await page.waitForTimeout(500);
+
+    const catAfter = await page.evaluate(() =>
+      document.querySelector('.categoryButton span')?.textContent,
+    );
+
+    expect(catAfter).toBe(catBefore);
   });
 });

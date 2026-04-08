@@ -3,13 +3,13 @@ import compileModule from './compileModule';
 import treeGexPkg from 'tree-gex/package.json';
 
 /**
- * Creates a tree-gex transformer that uses the parsers registry to load
- * and invoke the parser. This is for categories without codegen — the
- * output is always JSON showing matched nodes and captured groups.
+ * Creates a tree-gex transformer that uses the parsers registry to parse code.
+ * The parsed AST is passed as a global `ast` variable to the user's code.
+ * User code calls tree-gex functions directly and exports the result.
  */
-export default function createGenericTreeGexTransformer(defaultParserID: string) {
+export default function createGenericTreeGexTransformer(categoryId: string, defaultParserID: string) {
   return {
-    id: 'tree-gex',
+    id: 'tree-gex-' + categoryId,
     displayName: 'tree-gex',
     version: treeGexPkg.version,
     homepage: 'https://github.com/d7sd6u/tree-gex',
@@ -17,11 +17,11 @@ export default function createGenericTreeGexTransformer(defaultParserID: string)
     defaultParserID,
 
     loadTransformer(callback: (realTransformer: unknown) => void) {
-      require(['tree-gex'], (treeGex: Record<string, unknown>) => {
+      require(['../transpilers/babel', 'tree-gex'], (transpile: {default: (code: string) => string}, treeGex: Record<string, unknown>) => {
         const parser = getParserByID(defaultParserID);
         parser._promise ??= new Promise(parser.loadParser);
         parser._promise.then((realParser: unknown) => {
-          callback({ treeGex, realParser, parser });
+          callback({ transpile: transpile.default, treeGex, realParser, parser });
         });
       });
     },
@@ -31,23 +31,26 @@ export default function createGenericTreeGexTransformer(defaultParserID: string)
       transformCode: string,
       code: string,
     ) {
+      const transpile = realTransformer.transpile as (code: string) => string;
       const tg = realTransformer.treeGex as typeof import('tree-gex');
       const realParser = realTransformer.realParser;
-      const parser = realTransformer.parser as { parse: (realParser: unknown, code: string, options: Record<string, unknown>) => unknown; getDefaultOptions: () => Record<string, unknown> };
+      const parser = realTransformer.parser as { parse: (rp: unknown, code: string, opts: Record<string, unknown>) => unknown; getDefaultOptions: () => Record<string, unknown> };
+
+      const ast = parser.parse(realParser, code, parser.getDefaultOptions());
+
+      transformCode = transpile(transformCode);
 
       const mod = compileModule(transformCode, {
+        ast,
         require(name: string) {
           if (name === 'tree-gex') return tg;
           throw new Error(`Cannot find module '${name}'`);
         },
       });
-      const userExport = mod.__esModule ? (mod.default || mod) : mod;
-      const pattern = (userExport as Record<string, unknown>).pattern ?? userExport;
+      const result = mod.__esModule ? (mod.default ?? mod) : mod;
 
-      const ast = parser.parse(realParser, code, parser.getDefaultOptions());
-      const matches = tg.accumWalkMatch(ast, pattern);
-
-      return JSON.stringify(matches, null, 2);
+      if (typeof result === 'string') return result;
+      return JSON.stringify(result, null, 2);
     },
   };
 }

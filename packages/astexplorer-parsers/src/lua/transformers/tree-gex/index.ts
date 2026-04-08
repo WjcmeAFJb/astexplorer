@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('luaparse');
+export default createGenericTreeGexTransformer('lua', 'luaparse');

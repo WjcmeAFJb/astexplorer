@@ -1,6 +1,7 @@
 import createTreeGexTransformer from '../../../utils/treegex-transformer';
 
 export default createTreeGexTransformer({
+  categoryId: 'markdown',
   defaultParserID: 'remark',
   loadDeps(callback) {
     require(['remark'], ({ remark }: { remark: typeof import('remark').remark }) => {

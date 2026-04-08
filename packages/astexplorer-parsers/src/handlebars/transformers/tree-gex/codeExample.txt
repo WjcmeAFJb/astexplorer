@@ -1,12 +1,11 @@
-const w = require("tree-gex");
+import { accumWalkMatch, string, group } from "tree-gex";
 
-// Match all MustacheStatement nodes and capture their path
-module.exports = {
-  pattern: {
-    type: "MustacheStatement",
-    path: {
-      type: "PathExpression",
-      original: w.group(w.string(), "helper"),
-    },
+// Find all MustacheStatement helpers in the template.
+// `ast` is the Glimmer AST of the Handlebars code.
+export default accumWalkMatch(ast, {
+  type: "MustacheStatement",
+  path: {
+    type: "PathExpression",
+    original: group(string(), "helper"),
   },
-};
+});

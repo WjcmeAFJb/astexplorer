@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('graphql-js');
+export default createGenericTreeGexTransformer('graphql', 'graphql-js');

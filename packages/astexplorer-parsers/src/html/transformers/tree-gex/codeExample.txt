@@ -1,8 +1,7 @@
-const w = require("tree-gex");
+import { accumWalkMatch, string, group } from "tree-gex";
 
-// Match all HTML tags and capture their tag names
-module.exports = {
-  pattern: {
-    tag: w.group(w.string(), "tagName"),
-  },
-};
+// Find all HTML elements and capture their tag names.
+// `ast` is the parsed HTML tree.
+export default accumWalkMatch(ast, {
+  tag: group(string(), "tagName"),
+});

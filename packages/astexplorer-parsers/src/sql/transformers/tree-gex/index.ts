@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('sql-parser-cst');
+export default createGenericTreeGexTransformer('sql', 'sql-parser-cst');

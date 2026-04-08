@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('mdxhast');
+export default createGenericTreeGexTransformer('mdx', 'mdxhast');

@@ -40,14 +40,14 @@ describe('tree-gex transformers', () => {
 
   test('every category has a tree-gex transformer', () => {
     for (const cat of bundle.categories) {
-      const tg = cat.transformers.find((t: Transformer) => t.id === 'tree-gex');
+      const tg = cat.transformers.find((t: Transformer) => t.id.startsWith('tree-gex'));
       expect(tg, `${cat.id} should have tree-gex`).toBeTruthy();
     }
   });
 
   test('all tree-gex transformers have correct metadata', () => {
     for (const cat of bundle.categories) {
-      const tg = cat.transformers.find((t: Transformer) => t.id === 'tree-gex');
+      const tg = cat.transformers.find((t: Transformer) => t.id.startsWith('tree-gex'));
       expect(tg.displayName).toBe('tree-gex');
       expect(tg.version).toBeTruthy();
       expect(typeof tg.loadTransformer).toBe('function');
@@ -71,42 +71,36 @@ describe('tree-gex transformers', () => {
   for (const { id, code } of testCategories) {
     test(`${id}: tree-gex transformer loads and runs`, async () => {
       const cat = bundle.getCategoryByID(id);
-      const tg = cat.transformers.find((t: Transformer) => t.id === 'tree-gex');
+      const tg = cat.transformers.find((t: Transformer) => t.id.startsWith('tree-gex'));
 
       const real = await loadTransformerAsync(tg);
       expect(real).toBeTruthy();
 
       const transformCode = `
-const w = require('tree-gex');
-module.exports = {
-  pattern: {
-    type: w.group(w.string(), 'nodeType'),
-  },
-};`;
+import { accumWalkMatch, string, group } from 'tree-gex';
+export default accumWalkMatch(ast, {
+  type: group(string(), 'nodeType'),
+});`;
       const result = tg.transform(real, transformCode, code);
       expect(typeof result).toBe('string');
       const parsed = JSON.parse(result);
-      const matches = parsed.matches ?? parsed;
-      expect(Array.isArray(matches)).toBe(true);
+      expect(Array.isArray(parsed)).toBe(true);
     });
   }
 
   test('javascript: tree-gex captures variable declarations', async () => {
     const cat = bundle.getCategoryByID('javascript');
-    const tg = cat.transformers.find((t: Transformer) => t.id === 'tree-gex');
+    const tg = cat.transformers.find((t: Transformer) => t.id.startsWith('tree-gex'));
     const real = await loadTransformerAsync(tg);
 
     const code = 'const x = 1; let y = 2; var z = 3;';
     const transformCode = `
-const w = require('tree-gex');
-module.exports = {
-  pattern: {
-    type: 'VariableDeclaration',
-    kind: w.group(w.string(), 'kind'),
-  },
-};`;
-    const result = JSON.parse(tg.transform(real, transformCode, code));
-    const matches = result.matches ?? result;
+import { accumWalkMatch, string, group } from 'tree-gex';
+export default accumWalkMatch(ast, {
+  type: 'VariableDeclaration',
+  kind: group(string(), 'kind'),
+});`;
+    const matches = JSON.parse(tg.transform(real, transformCode, code));
     const kinds = matches.map((m: any) => m.groups?.kind?.[0]?.value);
     expect(kinds).toContain('const');
     expect(kinds).toContain('let');
@@ -115,15 +109,14 @@ module.exports = {
 
   test('graphql: tree-gex captures node kinds', async () => {
     const cat = bundle.getCategoryByID('graphql');
-    const tg = cat.transformers.find((t: Transformer) => t.id === 'tree-gex');
+    const tg = cat.transformers.find((t: Transformer) => t.id.startsWith('tree-gex'));
     const real = await loadTransformerAsync(tg);
 
     const code = 'type Query { hello: String }';
     const transformCode = `
-const w = require('tree-gex');
-module.exports = { pattern: { kind: w.group(w.string(), 'kind') } };`;
-    const result = JSON.parse(tg.transform(real, transformCode, code));
-    const matches = result.matches ?? result;
+import { accumWalkMatch, string, group } from 'tree-gex';
+export default accumWalkMatch(ast, { kind: group(string(), 'kind') });`;
+    const matches = JSON.parse(tg.transform(real, transformCode, code));
     const kinds = matches.map((m: any) => m.groups?.kind?.[0]?.value).filter(Boolean);
     expect(kinds).toContain('Document');
     expect(kinds).toContain('ObjectTypeDefinition');
@@ -131,31 +124,30 @@ module.exports = { pattern: { kind: w.group(w.string(), 'kind') } };`;
 
   test('sandbox require rejects unknown modules', async () => {
     const cat = bundle.getCategoryByID('javascript');
-    const tg = cat.transformers.find((t: Transformer) => t.id === 'tree-gex');
+    const tg = cat.transformers.find((t: Transformer) => t.id.startsWith('tree-gex'));
     const real = await loadTransformerAsync(tg);
 
     const code = 'const x = 1;';
     const transformCode = `
-const fs = require('fs');
-module.exports = { pattern: {} };`;
+import fs from 'fs';
+export default ast;`;
     expect(() => tg.transform(real, transformCode, code)).toThrow("Cannot find module 'fs'");
   });
 
   test('sandbox require provides tree-gex', async () => {
     const cat = bundle.getCategoryByID('javascript');
-    const tg = cat.transformers.find((t: Transformer) => t.id === 'tree-gex');
+    const tg = cat.transformers.find((t: Transformer) => t.id.startsWith('tree-gex'));
     const real = await loadTransformerAsync(tg);
 
     const code = 'const x = 1;';
     const transformCode = `
-const w = require('tree-gex');
-// Verify tree-gex exports are available
-if (typeof w.group !== 'function') throw new Error('group missing');
-if (typeof w.string !== 'function') throw new Error('string missing');
-if (typeof w.any !== 'function') throw new Error('any missing');
-if (typeof w.regex !== 'function') throw new Error('regex missing');
-if (typeof w.accumWalkMatch !== 'function') throw new Error('accumWalkMatch missing');
-module.exports = { pattern: { type: w.string() } };`;
+import { group, string, any, regex, accumWalkMatch } from 'tree-gex';
+if (typeof group !== 'function') throw new Error('group missing');
+if (typeof string !== 'function') throw new Error('string missing');
+if (typeof any !== 'function') throw new Error('any missing');
+if (typeof regex !== 'function') throw new Error('regex missing');
+if (typeof accumWalkMatch !== 'function') throw new Error('accumWalkMatch missing');
+export default accumWalkMatch(ast, { type: string() });`;
     const result = tg.transform(real, transformCode, code);
     expect(typeof result).toBe('string');
   });

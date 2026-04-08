@@ -1,10 +1,9 @@
-const w = require("tree-gex");
+import { walkReplace, transform, string } from "tree-gex";
 
-// Match character nodes and capture their values
-module.exports = {
-  pattern: {
-    type: "Char",
-    value: w.group(w.string(), "charValue"),
-    kind: w.group(w.string(), "charKind"),
-  },
-};
+// Replace all 'a' characters with 'b' in the regex.
+// `ast` is the regexp-tree AST. Result is printed back to a regex string.
+export default walkReplace(ast, {
+  type: "Char",
+  kind: "simple",
+  value: transform(string(), (v) => (v === "a" ? "b" : v)),
+});

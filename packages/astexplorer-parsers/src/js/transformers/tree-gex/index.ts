@@ -1,6 +1,7 @@
 import createTreeGexTransformer from '../../../utils/treegex-transformer';
 
 export default createTreeGexTransformer({
+  categoryId: 'javascript',
   defaultParserID: 'acorn',
   loadDeps(callback) {
     require(['recast'], (recast: typeof import('recast')) => {

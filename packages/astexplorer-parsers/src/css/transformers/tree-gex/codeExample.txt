@@ -1,9 +1,9 @@
-const w = require("tree-gex");
+import { accumWalkMatch, string, group } from "tree-gex";
 
-// Match all CSS rules and capture their selectors
-module.exports = {
-  pattern: {
-    type: "rule",
-    selector: w.group(w.string(), "selector"),
-  },
-};
+// Find all CSS declarations and capture their property names and values.
+// `ast` is the parsed PostCSS AST of the CSS in the left pane.
+export default accumWalkMatch(ast, {
+  type: "decl",
+  prop: group(string(), "property"),
+  value: group(string(), "value"),
+});

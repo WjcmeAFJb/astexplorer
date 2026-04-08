@@ -28,7 +28,7 @@ export default function Transformer(props: TransformerProps): React.ReactElement
   const plainEditor = React.createElement(
     props.transformer?.id === 'jscodeshift'
       ? JSCodeshiftEditor
-      : props.transformer?.id === 'tree-gex'
+      : props.transformer?.id.startsWith('tree-gex')
         ? TreeGexEditor
         : Editor,
     {

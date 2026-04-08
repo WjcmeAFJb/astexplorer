@@ -1,3 +1,3 @@
 import createGenericTreeGexTransformer from '../../../utils/treegex-generic';
 
-export default createGenericTreeGexTransformer('solidity-parser-antlr');
+export default createGenericTreeGexTransformer('solididy', 'solidity-parser-antlr');
