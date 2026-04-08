@@ -98,9 +98,9 @@ test.describe('tree-gex transformer E2E', () => {
     await waitForTransformOutput(page);
 
     const text = await getTransformOutputText(page);
-    // accumWalkMatch returns JSON with matched Field nodes
-    expect(text).toContain('"Field"');
-    expect(text).toContain('user');
+    // accumWalkMatch returns JSON with matched ObjectTypeDefinition actions
+    expect(text).toContain('ObjectTypeDefinition');
+    expect(text).toContain('Query');
   });
 
   test('Markdown: tree-gex increases heading depth via walkReplace', async ({ page }) => {

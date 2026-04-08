@@ -1,20 +1,12 @@
-# Paste or drop some GraphQL queries or schema
-# definitions here and explore the syntax tree
-# created by the GraphQL parser.
+# Paste or drop a GraphQL schema or query here
+# and explore the syntax tree.
 
-query GetUser($userId: ID!) {
-  user(id: $userId) {
-    id,
-    name,
-    isViewerFriend,
-    profilePicture(size: 50)  {
-      ...PictureFragment
-    }
-  }
+type Query {
+  cartItem(cartId: ID! @isId, itemId: ID!): CartItem
+    @requiresPermission(permission: "cart.view")
 }
 
-fragment PictureFragment on Picture {
-  uri,
-  width,
-  height
+type Mutation {
+  deleteItem(id: ID! @isId): Boolean
+    @requiresPermission(permission: "cart.modify")
 }

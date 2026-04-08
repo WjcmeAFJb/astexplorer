@@ -1,11 +1,22 @@
-import { accumWalkMatch, string, group } from "tree-gex";
+import { accumWalkMatch, string, group, regex, arrayFor, arrayZeroOrOne } from "tree-gex";
 
-// Find all fields in the query and capture their names.
+// Find all Query/Mutation actions and their @isId-annotated arguments.
 // `ast` is the GraphQL AST parsed by graphql-js.
+
+const argWithIsIdDirective = {
+  kind: "InputValueDefinition",
+  name: { kind: "Name", value: group(string(), "arg") },
+  directives: [{ kind: "Directive", name: { kind: "Name", value: "isId" } }],
+};
+
+const actionDefinition = {
+  kind: "FieldDefinition",
+  name: { kind: "Name", value: group(string(), "action") },
+  arguments: arrayZeroOrOne(argWithIsIdDirective),
+};
+
 export default accumWalkMatch(ast, {
-  kind: "Field",
-  name: {
-    kind: "Name",
-    value: group(string(), "fieldName"),
-  },
+  kind: "ObjectTypeDefinition",
+  name: { value: regex(/Query|Mutation/) },
+  fields: arrayFor(group(actionDefinition, "actions")),
 });
