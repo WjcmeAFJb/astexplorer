@@ -105,6 +105,11 @@ module.exports = {
       'gojs': nm( 'astexplorer-go', 'go.js'),
       // Browser-safe fs shim with realpathSync.native etc.
       'fs': path.resolve(__dirname, 'src', 'shims', 'fs-browser.js'),
+      // is-decimal/is-hexadecimal/is-alphabetical v2 changed to named ESM exports,
+      // but remark-parse v8 (used by @mdx-js/mdx v1) expects default CJS exports.
+      'is-decimal$': path.resolve(__dirname, 'src', 'shims', 'is-decimal.js'),
+      'is-hexadecimal$': path.resolve(__dirname, 'src', 'shims', 'is-hexadecimal.js'),
+      'is-alphabetical$': path.resolve(__dirname, 'src', 'shims', 'is-alphabetical.js'),
     },
   },
 
@@ -393,6 +398,28 @@ module.exports = {
         }
       }
     ),
+
+    // remark v14's remark-stringify (and its deps) depend on ESM-only packages
+    // (bail@2, ccount@2, longest-streak@3, zwitch@2, mdast-util-to-string@3, etc.)
+    // that have nested versions under the unified ecosystem. Webpack 4 hoists
+    // to root (older CJS versions). Walk up from the import context to find the
+    // nearest nested node_modules copy, just like the unist-util-* handler above.
+    ...[
+      'bail', 'ccount', 'longest-streak', 'zwitch',
+      'mdast-util-phrasing', 'mdast-util-to-string',
+      'comma-separated-tokens', 'space-separated-tokens', 'property-information',
+      'is-plain-obj',
+    ].map(dep => new webpack.NormalModuleReplacementPlugin(
+      new RegExp('^' + dep.replace(/-/g, '\\-') + '$'),
+      function(resource) {
+        let dir = resource.context || '';
+        while (dir.includes('/node_modules/')) {
+          const candidate = path.join(dir, 'node_modules', dep);
+          try { require.resolve(candidate); resource.request = candidate; return; } catch(e) {}
+          dir = path.dirname(dir);
+        }
+      }
+    )),
 
     new webpack.DefinePlugin({
       'process.env.API_HOST': JSON.stringify(''),

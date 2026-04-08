@@ -22,7 +22,7 @@ export default {
     });
   },
 
-  transform({ transpile, mdx, prettier, babylon }: {transpile: (code: string) => string, mdx: {sync: (code: string, options: object) => string}, prettier: {format: (code: string, options: object) => string}, babylon: object}, transformCode: string, code: string) {
+  transform({ transpile, mdx, prettier, babel }: {transpile: (code: string) => string, mdx: {sync: (code: string, options: object) => string}, prettier: {format: (code: string, options: object) => string}, babel: object}, transformCode: string, code: string) {
     transformCode = transpile(transformCode);
     const transform = compileModule(transformCode);
     const jsxCode = mdx.sync(code, {
@@ -30,8 +30,8 @@ export default {
     });
     try {
       return prettier.format(jsxCode, {
-        parser: 'babylon',
-        plugins: [babylon],
+        parser: 'babel',
+        plugins: [babel],
       });
     } catch (err) {
       return `
