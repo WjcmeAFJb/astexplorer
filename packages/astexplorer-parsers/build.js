@@ -18,6 +18,13 @@ const config = require('./webpack.config.js');
 const mode = process.argv.includes('--production') ? 'production' : 'development';
 config.mode = mode;
 
+// Some third-party parsers ship broken inline source maps that crash
+// webpack-sources when the main build concatenates them. Setting
+// NO_SOURCE_MAPS=1 skips source-map emission so CI builds succeed.
+if (process.env.NO_SOURCE_MAPS === '1') {
+  config.devtool = false;
+}
+
 const distDir = path.join(__dirname, 'dist');
 
 // Step 1: webpack bundle → dist/index.js (CJS, self-contained)

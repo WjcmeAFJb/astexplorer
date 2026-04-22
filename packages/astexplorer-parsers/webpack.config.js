@@ -10,7 +10,20 @@ const fs = require('fs');
 function nm(...segments) {
   const ws = path.join(websiteNodeModules, ...segments);
   if (fs.existsSync(ws)) return ws;
-  return path.join(rootNodeModules, ...segments);
+  const rn = path.join(rootNodeModules, ...segments);
+  if (fs.existsSync(rn)) return rn;
+  // Fallback: when a nested path like ['java-parser', 'node_modules', X, ...]
+  // doesn't exist (because yarn hoisted X to the root), drop everything up to
+  // and including the last "node_modules" segment and try the hoisted location.
+  const idx = segments.lastIndexOf('node_modules');
+  if (idx > 0 && idx < segments.length - 1) {
+    const stripped = segments.slice(idx + 1);
+    const wsStripped = path.join(websiteNodeModules, ...stripped);
+    if (fs.existsSync(wsStripped)) return wsStripped;
+    const rnStripped = path.join(rootNodeModules, ...stripped);
+    if (fs.existsSync(rnStripped)) return rnStripped;
+  }
+  return rn;
 }
 
 const webpack = require(nm('webpack'));
@@ -94,7 +107,7 @@ module.exports = {
       '@chevrotain/gast': nm( 'java-parser', 'node_modules', '@chevrotain', 'gast', 'lib', 'src', 'api.js'),
       '@chevrotain/regexp-to-ast': nm( 'java-parser', 'node_modules', '@chevrotain', 'regexp-to-ast', 'lib', 'src', 'api.js'),
       '@chevrotain/utils': nm( 'java-parser', 'node_modules', '@chevrotain', 'utils', 'lib', 'src', 'api.js'),
-      'chevrotain-allstar$': nm( 'chevrotain-allstar', 'lib', 'index.js'),
+      'chevrotain-allstar$': nm( 'java-parser', 'node_modules', 'chevrotain-allstar', 'lib', 'index.js'),
       'meriyah$': nm( 'meriyah', 'dist', 'meriyah.esm.js'),
       'meriyah/package.json': nm( 'meriyah', 'package.json'),
       'java-parser$': nm( 'java-parser', 'src', 'index.js'),
