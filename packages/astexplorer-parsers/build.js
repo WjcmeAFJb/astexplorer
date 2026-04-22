@@ -99,9 +99,16 @@ compiler.run((err, stats) => {
   // Set public path from __webpack_public_path__ (defined in the ESM wrapper
   // via import.meta.url) so webpack's async chunk loading resolves correctly.
   // Also expose __webpack_require__ for the require() stub.
+  //
+  // In production builds webpack's terser pass renames __webpack_require__ to
+  // a short identifier (e.g. `i`), so we detect the actual name by locating
+  // the chunk URL expression `<X>.p+"chunk-"` and target `<X>.p=""`.
+  const wrMatch = cjsCode.match(/\b([A-Za-z_$][\w$]*)\.p\s*\+\s*"chunk-"/);
+  const wrName = wrMatch ? wrMatch[1] : '__webpack_require__';
+  const wrPattern = new RegExp('(' + wrName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\.p\\s*=\\s*)""', 'g');
   cjsCode = cjsCode.replace(
-    /(__webpack_require__\.p\s*=\s*)""/g,
-    '$1(typeof __webpack_public_path__!=="undefined"?__webpack_public_path__:"");globalThis.__PARSERS_WR__=__webpack_require__;void 0'
+    wrPattern,
+    '$1(typeof __webpack_public_path__!=="undefined"?__webpack_public_path__:"");globalThis.__PARSERS_WR__=' + wrName + ';void 0'
   );
 
   // Build a mapping from bare module names to webpack module IDs.
