@@ -1,0 +1,82 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**/*.md'
+      - 'LICENSE.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Cancel in-progress runs; only the latest deploy is kept.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: '0'
+      NODE_OPTIONS: '--openssl-legacy-provider --max-old-space-size=6144'
+      NO_SOURCE_MAPS: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --ignore-engines
+
+      - name: Build parsers package
+        run: yarn workspace astexplorer-parsers build
+
+      - name: Sync parsers dist into website node_modules
+        run: |
+          mkdir -p website/node_modules/astexplorer-parsers/dist
+          cp -r packages/astexplorer-parsers/dist/. website/node_modules/astexplorer-parsers/dist/
+
+      - name: Build website with Pages base path
+        # ${{ steps.pages.outputs.base_path }} is "/<repo>" for project pages
+        # and "/" for user/organization pages.
+        run: yarn workspace astexplorer build --base "${{ steps.pages.outputs.base_path }}/"
+
+      - name: Prepare Pages artifact
+        # The fork inherits the upstream CNAME (astexplorer.net) which we don't
+        # own — leaving it in place would break the *.github.io URL. Also write
+        # a .nojekyll so Pages serves files starting with underscore.
+        run: |
+          rm -f out/CNAME
+          touch out/.nojekyll
+          ls out
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
