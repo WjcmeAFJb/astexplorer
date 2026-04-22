@@ -1,0 +1,92 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.0.0). Leave blank to use a timestamp tag.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: '0'
+      NODE_OPTIONS: '--openssl-legacy-provider --max-old-space-size=6144'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Resolve release tag
+        id: tag
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            TAG="${GITHUB_REF_NAME}"
+          elif [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="v$(date -u +%Y%m%d-%H%M%S)"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Using tag ${TAG}"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build parsers package
+        run: yarn workspace astexplorer-parsers build
+
+      - name: Build website
+        run: yarn workspace astexplorer build
+
+      - name: Pack parsers tarball
+        run: |
+          mkdir -p artifacts
+          (cd packages/astexplorer-parsers && npm pack --pack-destination ../../artifacts)
+          ls -la artifacts
+
+      - name: Archive website
+        run: |
+          mkdir -p artifacts
+          tar -czf "artifacts/astexplorer-website-${{ steps.tag.outputs.tag }}.tar.gz" -C out .
+          ls -la artifacts
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts-${{ steps.tag.outputs.tag }}
+          path: artifacts/*
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          if ! git rev-parse "refs/tags/${TAG}" >/dev/null 2>&1; then
+            git tag "${TAG}"
+            git push origin "${TAG}"
+          fi
+          gh release create "${TAG}" \
+            --title "${TAG}" \
+            --notes "Automated release built from ${GITHUB_SHA}.
+
+          Artifacts:
+          - \`astexplorer-website-${TAG}.tar.gz\` — static website build, extract to any static host.
+          - \`astexplorer-parsers-*.tgz\` — NPM-installable tarball of the parsers package." \
+            artifacts/*.tgz artifacts/*.tar.gz
