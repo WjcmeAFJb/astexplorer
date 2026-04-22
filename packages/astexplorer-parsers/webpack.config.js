@@ -491,4 +491,13 @@ module.exports = {
       profile: false,
     }),
   ],
+
+  // terser-webpack-plugin 1.x (bundled with webpack 4) ships an older Terser
+  // that strips parentheses required around `??` when mixed with `&&`/`||`,
+  // producing invalid ES2020 output for TypeScript's own source (and anything
+  // else that uses nullish-coalescing). Leave the output un-minified — it's
+  // gzip-compressed by the host anyway.
+  optimization: {
+    minimize: false,
+  },
 };
