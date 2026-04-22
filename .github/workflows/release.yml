@@ -29,7 +29,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'yarn'
 
       - name: Resolve release tag
@@ -46,7 +46,7 @@ jobs:
           echo "Using tag ${TAG}"
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --ignore-engines
 
       - name: Build parsers package
         run: yarn workspace astexplorer-parsers build
