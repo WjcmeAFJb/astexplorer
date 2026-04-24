@@ -16,28 +16,57 @@ type TransformerProps = {
   transformer?: TransformerType;
   transformCode: string;
   onContentChange: (args: { value: string; cursor: number }) => void;
+  /** Hover-driven capture offset for tree-gex; null when hover leaves. */
+  onCursorActivity?: (cursor: number | null) => void;
   enableFormatting: boolean;
   keyMap: string;
   toggleFormatting: () => void;
   transformResult: TransformResult | null;
   transforming?: boolean;
   mode: string;
+  hoverMode?: boolean;
+  onToggleHover?: () => void;
 };
 
+function HoverToggle({
+  enabled,
+  onToggle,
+}: {
+  enabled: boolean;
+  onToggle: () => void;
+}): React.ReactElement {
+  return (
+    <button
+      type="button"
+      className={`tg-hover-toggle${enabled ? ' on' : ''}`}
+      onClick={onToggle}
+      title="Toggle hover mode: highlight the tree-gex sub-expression and the nodes it would capture under the mouse."
+    >
+      {enabled ? 'Hover: on' : 'Hover: off'}
+    </button>
+  );
+}
+
 export default function Transformer(props: TransformerProps): React.ReactElement {
+  const isTreeGex = props.transformer?.id.startsWith('tree-gex') === true;
+  const editorProps: Record<string, unknown> = {
+    highlight: false,
+    value: props.transformCode,
+    onContentChange: props.onContentChange,
+    enableFormatting: props.enableFormatting,
+    keyMap: props.keyMap,
+  };
+  if (isTreeGex) {
+    editorProps.hoverMode = props.hoverMode === true;
+    editorProps.onHoverOffset = props.onCursorActivity;
+  }
   const plainEditor = React.createElement(
     props.transformer?.id === 'jscodeshift'
       ? JSCodeshiftEditor
-      : props.transformer?.id.startsWith('tree-gex')
+      : isTreeGex
         ? TreeGexEditor
         : Editor,
-    {
-      highlight: false,
-      value: props.transformCode,
-      onContentChange: props.onContentChange,
-      enableFormatting: props.enableFormatting,
-      keyMap: props.keyMap,
-    },
+    editorProps,
   );
 
   const formattingEditor = (
@@ -46,6 +75,9 @@ export default function Transformer(props: TransformerProps): React.ReactElement
         toggleFormatting={props.toggleFormatting}
         enableFormatting={props.enableFormatting}
       />
+      {isTreeGex && props.onToggleHover && (
+        <HoverToggle enabled={props.hoverMode === true} onToggle={props.onToggleHover} />
+      )}
       {plainEditor}
     </div>
   );

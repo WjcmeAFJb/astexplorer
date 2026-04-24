@@ -138,6 +138,18 @@ export function getTransformResult(state: AppState): TransformResult | null {
   return state.workbench.transform.transformResult;
 }
 
+export function getTransformCursor(state: AppState): number | null {
+  return state.workbench.transform.cursor ?? null;
+}
+
+export function getTransformCursorNodes(state: AppState): unknown[] {
+  return state.workbench.transform.transformResult?.cursorNodes ?? [];
+}
+
+export function getTransformHoverMode(state: AppState): boolean {
+  return state.workbench.transform.hoverMode === true;
+}
+
 export function showTransformer(state: AppState): boolean {
   return state.showTransformPanel;
 }

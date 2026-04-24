@@ -69,7 +69,7 @@ export type Transformer = {
   defaultTransform: string;
   showInMenu?: boolean;
   loadTransformer: (callback: (realTransformer: unknown) => void) => void;
-  transform: (realTransformer: unknown, transformCode: string, code: string) => Promise<string | TransformResultWithMap>;
+  transform: (realTransformer: unknown, transformCode: string, code: string, cursor?: number) => Promise<string | TransformResultWithMap>;
   formatCodeExample?: (code: string, options: Record<string, unknown>) => string;
   _promise?: Promise<unknown>;
 };
@@ -77,6 +77,8 @@ export type Transformer = {
 export type TransformResultWithMap = {
   code: string;
   map?: unknown;
+  /** tree-gex cursor-capture: matched AST nodes for highlighting in the UI. */
+  cursorNodes?: unknown[];
 };
 
 // ---------------------------------------------------------------------------

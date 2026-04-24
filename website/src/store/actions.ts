@@ -23,6 +23,8 @@ export const OPEN_SHARE_DIALOG = 'OPEN_SHARE_DIALOG';
 export const CLOSE_SHARE_DIALOG = 'CLOSE_SHARE_DIALOG';
 export const SET_CODE = 'SET_CODE';
 export const SET_CURSOR = 'SET_CURSOR';
+export const SET_TRANSFORM_CURSOR = 'SET_TRANSFORM_CURSOR';
+export const TOGGLE_TRANSFORM_HOVER = 'TOGGLE_TRANSFORM_HOVER';
 export const DROP_TEXT = 'DROP_TEXT';
 export const SAVE = 'SAVE';
 export const START_SAVE = 'START_SAVE';
@@ -144,6 +146,17 @@ export function setCode(state: { code: string; cursor?: number }): {
 
 export function setCursor(cursor: number): { type: typeof SET_CURSOR; cursor: number } {
   return { type: SET_CURSOR, cursor };
+}
+
+export function setTransformCursor(cursor: number | null): {
+  type: typeof SET_TRANSFORM_CURSOR;
+  cursor: number | null;
+} {
+  return { type: SET_TRANSFORM_CURSOR, cursor };
+}
+
+export function toggleTransformHover(): { type: typeof TOGGLE_TRANSFORM_HOVER } {
+  return { type: TOGGLE_TRANSFORM_HOVER };
 }
 
 export function dropText(

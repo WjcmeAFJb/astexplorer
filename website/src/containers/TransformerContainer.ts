@@ -1,6 +1,11 @@
 import { connect } from 'react-redux';
 import Transformer from '../components/Transformer';
-import { setTransformState, toggleFormatting } from '../store/actions';
+import {
+  setTransformState,
+  setTransformCursor,
+  toggleFormatting,
+  toggleTransformHover,
+} from '../store/actions';
 import * as selectors from '../store/selectors';
 import type { AppState } from '../types';
 import type { Dispatch } from 'redux';
@@ -16,6 +21,7 @@ function mapStateToProps(state: AppState) {
     keyMap: selectors.getKeyMap(state),
     transformResult: selectors.getTransformResult(state),
     transforming: selectors.isTransforming(state),
+    hoverMode: selectors.getTransformHoverMode(state),
   };
 }
 
@@ -24,8 +30,14 @@ function mapDispatchToProps(dispatch: Dispatch) {
     onContentChange: ({ value, cursor }: { value: string; cursor: number }) => {
       dispatch(setTransformState({ code: value, cursor }));
     },
+    onCursorActivity: (cursor: number | null) => {
+      dispatch(setTransformCursor(cursor));
+    },
     toggleFormatting: () => {
       dispatch(toggleFormatting());
+    },
+    onToggleHover: () => {
+      dispatch(toggleTransformHover());
     },
   };
 }

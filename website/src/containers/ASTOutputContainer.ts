@@ -8,6 +8,7 @@ function mapStateToProps(state: AppState) {
     parseResult: selectors.getParseResult(state),
     position: selectors.getCursor(state) ?? undefined,
     parsing: selectors.isParsing(state),
+    cursorNodes: selectors.getTransformCursorNodes(state),
   };
 }
 

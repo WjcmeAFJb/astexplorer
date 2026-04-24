@@ -65,9 +65,14 @@ function makeCheckbox(
 type TreeProps = {
   parseResult: ParseResult;
   position?: number;
+  cursorRanges?: Set<string>;
 };
 
-export default function Tree({ parseResult, position }: TreeProps): React.ReactElement {
+export default function Tree({
+  parseResult,
+  position,
+  cursorRanges,
+}: TreeProps): React.ReactElement {
   const [settings, updateSettings] = useReducer(reducer, null, initSettings);
   const treeAdapter = useMemo(
     () => treeAdapterFromParseResult(parseResult, settings),
@@ -115,6 +120,7 @@ export default function Tree({ parseResult, position }: TreeProps): React.ReactE
             treeAdapter={treeAdapter}
             autofocus={settings.autofocus}
             position={position}
+            cursorRanges={cursorRanges}
           />
         </SelectedNodeProvider>
       </ul>

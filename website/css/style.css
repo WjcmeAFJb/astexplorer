@@ -390,6 +390,20 @@ li.entry {
   background-color: rgba(255,240,6,0.4);
 }
 
+/* tree-gex cursor-capture highlights in tree view and source/JSON editors */
+.entry.cursor-matched > .value,
+.entry.cursor-matched > .key {
+  background-color: rgba(255, 140, 0, 0.25);
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(255, 140, 0, 0.6);
+}
+
+.monaco-editor .cursor-matched {
+  background-color: rgba(255, 140, 0, 0.25);
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(255, 140, 0, 0.6);
+}
+
 .entry > .value {
   white-space: pre-wrap;
 }
@@ -536,6 +550,33 @@ body .monaco-editor .suggest-widget {
 .toggleBtn > .btnText {
   padding-left: 5px;
   font-size: 12px;
+}
+
+.tg-hover-toggle {
+  position: absolute;
+  top: 24px;
+  right: 0;
+  z-index: 10;
+  cursor: pointer;
+  outline: none;
+  font-size: 12px;
+  padding: 2px 6px;
+  border: 1px solid #ccc;
+  background: #f6f6f6;
+  border-radius: 3px;
+}
+
+.tg-hover-toggle.on {
+  background: rgba(255, 140, 0, 0.15);
+  border-color: rgba(255, 140, 0, 0.6);
+  color: #a14400;
+}
+
+/* Boundary outline for the tree-gex sub-expression under the mouse. */
+.monaco-editor .tg-hover-boundary {
+  background-color: rgba(255, 140, 0, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 140, 0, 0.9);
+  border-radius: 2px;
 }
 
 .settings-drawer__expanded {

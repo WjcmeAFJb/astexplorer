@@ -100,6 +100,9 @@ export type TransformState = {
   initialCode: string;
   transformer: string | null;
   transformResult: TransformResult | null;
+  cursor?: number | null;
+  /** tree-gex hover-mode: show sub-expression boundary under mouse and match its capture */
+  hoverMode?: boolean;
 };
 
 export type TransformResult = {
@@ -107,6 +110,8 @@ export type TransformResult = {
   error?: Error | null;
   map?: SourceMapConsumer | null;
   version?: string;
+  /** For tree-gex: AST nodes captured by the cursor-driven group. */
+  cursorNodes?: unknown[];
 };
 
 export type WorkbenchState = {
@@ -154,7 +159,7 @@ export type Action = {
   category?: Category;
   transformer?: Transformer;
   code?: string;
-  cursor?: number;
+  cursor?: number | null;
   text?: string;
   categoryId?: string;
   keyMap?: string;

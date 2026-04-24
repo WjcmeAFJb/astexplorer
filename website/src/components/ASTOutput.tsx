@@ -1,9 +1,11 @@
 import React from 'react';
 import cx from '../utils/classnames';
 import visualizations from './visualization';
+import { publish } from '../utils/pubsub';
+import { treeAdapterFromParseResult } from '../core/TreeAdapter';
 import type { ParseResult } from '../types';
 
-const { useState } = React;
+const { useState, useEffect, useMemo } = React;
 
 function formatTime(time: number | null | undefined): string | undefined {
   if (time === null || time === undefined || time === 0) {
@@ -19,16 +21,53 @@ type ASTOutputProps = {
   parseResult?: ParseResult;
   position?: number;
   parsing?: boolean;
+  cursorNodes?: unknown[];
 };
 
 export default function ASTOutput({
   parseResult,
   position,
   parsing,
+  cursorNodes,
 }: ASTOutputProps): React.ReactElement {
   const [selectedOutput, setSelectedOutput] = useState(0);
   const ast = parseResult?.ast;
   let output;
+
+  // Compute source ranges for all cursor-matched nodes and publish them so the
+  // source code editor (and JSON view) can draw persistent highlights.
+  const cursorRanges = useMemo(() => {
+    if (!cursorNodes || cursorNodes.length === 0 || !parseResult?.treeAdapter) return [];
+    const adapter = treeAdapterFromParseResult(parseResult, {});
+    const ranges: [number, number][] = [];
+    const seen = new Set<string>();
+    for (const node of cursorNodes) {
+      const r = adapter.getRange(node);
+      if (r && typeof r[0] === 'number' && typeof r[1] === 'number') {
+        const key = `${r[0]}:${r[1]}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          ranges.push([r[0], r[1]]);
+        }
+      }
+    }
+    return ranges;
+  }, [cursorNodes, parseResult]);
+
+  useEffect(() => {
+    publish('CURSOR_CAPTURE_RANGES', { ranges: cursorRanges });
+  }, [cursorRanges]);
+
+  // Match nodes by range rather than identity: the cursor-captured nodes
+  // come from a separate parse pass (the transformer may use a different
+  // parser than the AST view), so object references don't align.
+  const cursorRangeSet = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of cursorRanges) {
+      set.add(`${r[0]}:${r[1]}`);
+    }
+    return set;
+  }, [cursorRanges]);
 
   if (parseResult !== undefined && parseResult.error !== null && parseResult.error !== undefined) {
     output = (
@@ -45,7 +84,11 @@ export default function ASTOutput({
   } else if (ast !== undefined && ast !== null && parseResult !== undefined) {
     output = (
       <ErrorBoundary>
-        {React.createElement(visualizations[selectedOutput].component, { parseResult, position })}
+        {React.createElement(visualizations[selectedOutput].component, {
+          parseResult,
+          position,
+          cursorRanges: cursorRangeSet,
+        })}
       </ErrorBoundary>
     );
   }

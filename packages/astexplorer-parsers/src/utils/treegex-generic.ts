@@ -1,6 +1,13 @@
 import { getParserByID } from '../index';
 import compileModule from './compileModule';
 import treeGexPkg from 'tree-gex/package.json';
+import {
+  buildCursorRewrite,
+  extractCursorCaptures,
+  CURSOR_WRAP_GLOBAL,
+  CURSOR_MATCHES_NAME,
+} from './treegex-cursor-capture';
+import type { TreeGexTransformResult } from './treegex-transformer';
 
 /**
  * Creates a tree-gex transformer that uses the parsers registry to parse code.
@@ -30,7 +37,8 @@ export default function createGenericTreeGexTransformer(categoryId: string, defa
       realTransformer: Record<string, unknown>,
       transformCode: string,
       code: string,
-    ) {
+      cursor?: number,
+    ): string | TreeGexTransformResult {
       const transpile = realTransformer.transpile as (code: string) => string;
       const tg = realTransformer.treeGex as typeof import('tree-gex');
       const realParser = realTransformer.realParser;
@@ -38,19 +46,50 @@ export default function createGenericTreeGexTransformer(categoryId: string, defa
 
       const ast = parser.parse(realParser, code, parser.getDefaultOptions());
 
-      transformCode = transpile(transformCode);
+      let sourceToRun = transformCode;
+      let cursorActive = false;
+      if (typeof cursor === 'number') {
+        const rewrite = buildCursorRewrite(transformCode, cursor);
+        if (rewrite) {
+          try {
+            transpile(rewrite.code);
+            sourceToRun = rewrite.code;
+            cursorActive = true;
+          } catch {
+            cursorActive = false;
+          }
+        }
+      }
 
-      const mod = compileModule(transformCode, {
+      const transpiled = transpile(sourceToRun);
+      const cursorWrap = (pattern: unknown) =>
+        (tg as unknown as { group: (p: unknown, name: string) => unknown }).group(
+          pattern,
+          '__astexplorerCursorCapture__',
+        );
+
+      const mod = compileModule(transpiled, {
         ast,
         require(name: string) {
           if (name === 'tree-gex') return tg;
           throw new Error(`Cannot find module '${name}'`);
         },
+        [CURSOR_WRAP_GLOBAL]: cursorWrap,
       });
       const result = mod.__esModule ? (mod.default ?? mod) : mod;
 
-      if (typeof result === 'string') return result;
-      return JSON.stringify(result, null, 2);
+      let cursorNodes: unknown[] = [];
+      if (cursorActive) {
+        const matches = (mod as Record<string, unknown>)[CURSOR_MATCHES_NAME];
+        cursorNodes = extractCursorCaptures(matches).map((c) => c.value);
+      }
+
+      const output = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+
+      if (cursorActive) {
+        return { code: output, cursorNodes };
+      }
+      return output;
     },
   };
 }

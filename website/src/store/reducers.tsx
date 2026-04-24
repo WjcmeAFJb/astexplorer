@@ -62,6 +62,8 @@ const initialState: AppState = {
       initialCode: '',
       transformer: null,
       transformResult: null,
+      cursor: null,
+      hoverMode: false,
     },
   },
 
@@ -268,6 +270,26 @@ function workbench(
         transform: {
           ...state.transform,
           code: action.code ?? '',
+          cursor:
+            action.cursor !== null && action.cursor !== undefined
+              ? action.cursor
+              : (state.transform.cursor ?? null),
+        },
+      };
+    case actions.SET_TRANSFORM_CURSOR:
+      return {
+        ...state,
+        transform: {
+          ...state.transform,
+          cursor: action.cursor ?? null,
+        },
+      };
+    case actions.TOGGLE_TRANSFORM_HOVER:
+      return {
+        ...state,
+        transform: {
+          ...state.transform,
+          hoverMode: !state.transform.hoverMode,
         },
       };
     case actions.SET_TRANSFORM_RESULT:

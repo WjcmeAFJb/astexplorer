@@ -1,4 +1,10 @@
-import { getTransformer, getTransformCode, getCode, showTransformer } from './selectors';
+import {
+  getTransformer,
+  getTransformCode,
+  getCode,
+  getTransformCursor,
+  showTransformer,
+} from './selectors';
 import type { TransformResult, Transformer, AppState, Action, SourceMapConsumer } from '../types';
 import type { MiddlewareAPI, Dispatch } from 'redux';
 
@@ -6,10 +12,15 @@ function isSourceMapConsumer(value: unknown): value is SourceMapConsumer {
   return typeof value === 'object' && value !== null;
 }
 
+function isTreeGexTransformer(t: Transformer | undefined | null): boolean {
+  return Boolean(t?.id?.startsWith('tree-gex'));
+}
+
 async function transform(
   transformer: Transformer,
   transformCode: string,
   code: string,
+  cursor: number | null,
 ): Promise<TransformResult> {
   // Transforms may make use of Node's __filename global. See GitHub issue #420.
   // So we define a dummy one.
@@ -26,15 +37,20 @@ async function transform(
     ) {
       realTransformerVersion = String(resolved.version);
     }
-    let result = await transformer.transform(resolved, transformCode, code);
+    const maybeCursor = isTreeGexTransformer(transformer) && cursor !== null ? cursor : undefined;
+    let result = await transformer.transform(resolved, transformCode, code, maybeCursor);
     let map: SourceMapConsumer | null = null;
+    let cursorNodes: unknown[] | undefined;
     if (typeof result !== 'string') {
       if (isSourceMapConsumer(result.map)) {
         map = result.map;
       }
+      if (Array.isArray((result as { cursorNodes?: unknown[] }).cursorNodes)) {
+        cursorNodes = (result as { cursorNodes?: unknown[] }).cursorNodes;
+      }
       result = result.code;
     }
-    return { result, map, version: realTransformerVersion, error: null };
+    return { result, map, version: realTransformerVersion, error: null, cursorNodes };
   } catch (err) {
     const error = err instanceof Error ? err : new Error(String(err));
     return {
@@ -60,13 +76,18 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) =>
     const newTransformer = getTransformer(newState);
     const newTransformCode = getTransformCode(newState);
     const newCode = getCode(newState);
+    const newCursor = getTransformCursor(newState);
+
+    const treeGex = isTreeGexTransformer(newTransformer);
+    const cursorChanged = treeGex && getTransformCursor(oldState) !== newCursor;
 
     if (
       action.type === 'INIT' ||
       show !== showTransformer(oldState) ||
       getTransformer(oldState) !== newTransformer ||
       getTransformCode(oldState) !== newTransformCode ||
-      getCode(oldState) !== newCode
+      getCode(oldState) !== newCode ||
+      cursorChanged
     ) {
       if (
         newTransformer === undefined ||
@@ -84,7 +105,7 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) =>
       next({ type: 'START_TRANSFORMING' });
       let result: TransformResult;
       try {
-        result = await transform(newTransformer, newTransformCode, newCode);
+        result = await transform(newTransformer, newTransformCode, newCode, newCursor);
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err));
         result = { error };
@@ -94,7 +115,8 @@ export default (store: MiddlewareAPI<Dispatch, AppState>) =>
       if (
         newTransformer !== getTransformer(store.getState()) ||
         newTransformCode !== getTransformCode(store.getState()) ||
-        newCode !== getCode(store.getState())
+        newCode !== getCode(store.getState()) ||
+        (treeGex && newCursor !== getTransformCursor(store.getState()))
       ) {
         return;
       }

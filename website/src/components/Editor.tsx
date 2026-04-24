@@ -38,6 +38,7 @@ export default class Editor extends React.Component<EditorProps, { value: string
   _markerRange: [number, number] | null = null;
   _decorationIds: string[] = [];
   _errorDecorationIds: string[] = [];
+  _cursorCaptureDecorationIds: string[] = [];
   _ignoreChange = false;
 
   constructor(props: EditorProps) {
@@ -222,6 +223,7 @@ export default class Editor extends React.Component<EditorProps, { value: string
     if (this.props.highlight === true) {
       this._markerRange = null;
       this._decorationIds = [];
+      this._cursorCaptureDecorationIds = [];
       this._subscriptions.push(
         subscribe('HIGHLIGHT', (data: unknown) => {
           const { range } = (data ?? {}) as { range?: [number, number] };
@@ -269,6 +271,40 @@ export default class Editor extends React.Component<EditorProps, { value: string
             }
           }
         }),
+
+        subscribe('CURSOR_CAPTURE_RANGES', (data: unknown) => {
+          const editor = this.monacoEditor;
+          if (!editor) return;
+          const model = editor.getModel();
+          if (!model) return;
+          const { ranges } = (data ?? {}) as { ranges?: [number, number][] };
+          const decorations: monaco.editor.IModelDeltaDecoration[] = [];
+          for (const r of ranges ?? []) {
+            if (!Array.isArray(r) || r.length !== 2) continue;
+            const startPos = model.getPositionAt(r[0]);
+            const endPos = model.getPositionAt(r[1]);
+            if (!startPos || !endPos) continue;
+            decorations.push({
+              range: new monaco.Range(
+                startPos.lineNumber,
+                startPos.column,
+                endPos.lineNumber,
+                endPos.column,
+              ),
+              options: {
+                className: 'cursor-matched',
+                overviewRuler: {
+                  color: 'rgba(255, 165, 0, 0.8)',
+                  position: monaco.editor.OverviewRulerLane.Right,
+                },
+              },
+            });
+          }
+          this._cursorCaptureDecorationIds = editor.deltaDecorations(
+            this._cursorCaptureDecorationIds,
+            decorations,
+          );
+        }),
       );
     }
 
@@ -284,6 +320,7 @@ export default class Editor extends React.Component<EditorProps, { value: string
     this._markerRange = null;
     this._decorationIds = [];
     this._errorDecorationIds = [];
+    this._cursorCaptureDecorationIds = [];
     if (this.monacoEditor) {
       this.monacoEditor.dispose();
       this.monacoEditor = null;

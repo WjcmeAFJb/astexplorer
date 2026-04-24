@@ -133,6 +133,8 @@ type ElementProps = {
   selected?: boolean;
   onClick?: (state: number, own?: boolean) => void;
   position?: number;
+  cursorRanges?: Set<string>;
+  cursorMatched?: boolean;
 };
 
 const Element = React.memo(
@@ -149,6 +151,8 @@ const Element = React.memo(
     selected,
     onClick,
     position,
+    cursorRanges,
+    cursorMatched,
   }: ElementProps) {
     if (!treeAdapter) {
       throw new Error('Element requires a treeAdapter prop');
@@ -234,6 +238,7 @@ const Element = React.memo(
             parent={childParent}
             onClick={clickHandler}
             position={position}
+            cursorRanges={cursorRanges}
           />
         );
       }
@@ -331,6 +336,7 @@ const Element = React.memo(
       highlighted:
         (isInRange === true && (hasChildrenInRange !== true || !isOpen)) ||
         (isInRange !== true && hasChildrenInRange === true && !isOpen),
+      'cursor-matched': cursorMatched === true,
       toggable: showToggler,
       open: isOpen,
     });
@@ -370,7 +376,9 @@ const Element = React.memo(
       //
       // @ts-expect-error — hashChildrenInRange is a typo for hasChildrenInRange in original code; kept as-is
       (nextProps.isInRange === true || nextProps.hashChildrenInRange === true) &&
-      prevProps.position === nextProps.position
+      prevProps.position === nextProps.position &&
+      prevProps.cursorRanges === nextProps.cursorRanges &&
+      prevProps.cursorMatched === nextProps.cursorMatched
     );
   },
 );
@@ -485,6 +493,13 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
   const name = props.name ?? '';
   const position = props.position;
   const isInRange = position != null ? treeAdapter.isInRange(props.value, name, position) : false;
+  let cursorMatched = false;
+  if (props.cursorRanges && props.cursorRanges.size > 0) {
+    const r = treeAdapter.getRange(props.value);
+    if (r && typeof r[0] === 'number' && typeof r[1] === 'number') {
+      cursorMatched = props.cursorRanges.has(`${r[0]}:${r[1]}`);
+    }
+  }
   const propValue = props.value;
   const propOnClick = props.onClick;
   const onClick = useCallback(
@@ -513,6 +528,7 @@ export default function ElementContainer(props: ElementProps): React.ReactElemen
         position != null ? treeAdapter.hasChildrenInRange(props.value, name, position) : false
       }
       isInRange={isInRange}
+      cursorMatched={cursorMatched}
       onClick={onClick}
     />
   );
