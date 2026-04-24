@@ -3,61 +3,87 @@ import Editor from './Editor';
 import type { EditorProps } from './Editor';
 import { ensureLanguageRegistered } from '../monacoLanguages';
 import { findHoverBoundary } from '../utils/treegexHoverBoundary';
-import { createTreegexSemanticProvider, TREEGEX_THEME_RULES } from './treegexSemanticTokens';
 
 // tree-gex type definitions for Monaco IntelliSense.
 import treeGexDts from '../treegex.d.ts.txt?raw';
 
 let configured = false;
-let semanticProviderRegistered = false;
-let themeDefined = false;
 
 /**
- * Create hidden models containing type definitions.
- * Monaco's JS language service automatically picks up all JS models
- * (including these) and shares type information between them.
- * This avoids the `addExtraLib` split-instance issue with Vite pre-bundling.
+ * Install tree-gex type definitions into Monaco's TypeScript language service
+ * so autocomplete, hover info, parameter hints, and diagnostics all resolve
+ * against the real tree-gex API while the user types. The declarations are
+ * registered as extra libs on both the TS and JS defaults — the same
+ * underlying worker handles both languages.
+ *
+ * Also declares an ambient `ast` global so patterns that reference it by
+ * name don't trip "cannot find name 'ast'" diagnostics.
+ *
+ * The `edcore.main` monaco entry doesn't auto-attach the TS language service
+ * onto `monaco.languages.typescript`; the TS contribution exports its API
+ * directly. We import it from the contribution module so we can wire up
+ * the tree-gex type definitions and compiler options.
  */
-function configureTypeDefs() {
+type TSContributionModule = {
+  typescriptDefaults: {
+    addExtraLib: (content: string, filePath: string) => void;
+    setCompilerOptions: (options: Record<string, unknown>) => void;
+  };
+  javascriptDefaults: {
+    addExtraLib: (content: string, filePath: string) => void;
+    setCompilerOptions: (options: Record<string, unknown>) => void;
+  };
+  ScriptTarget: { ESNext: number };
+  ModuleKind: { ESNext: number };
+  ModuleResolutionKind: { NodeJs: number };
+};
+
+async function configureTypeDefs(): Promise<void> {
   if (configured) return;
   configured = true;
 
-  // Create type-definition models using 'javascript' language so the JS
-  // worker picks them up. The .d.ts URI extension tells the TS compiler
-  // inside the worker to treat them as declaration files.
-  monaco.editor.createModel(
-    `declare module 'tree-gex' {\n${treeGexDts}\n}`,
-    'javascript',
-    monaco.Uri.parse('file:///node_modules/tree-gex/index.d.ts'),
+  const tsModule =
+    (await import('monaco-editor/esm/vs/language/typescript/monaco.contribution')) as unknown as TSContributionModule;
+
+  const treeGexSource = `declare module 'tree-gex' {\n${treeGexDts}\n}`;
+  const globalsSource = 'declare const ast: unknown;';
+
+  // addExtraLib is the official entry point for supplying project-wide type
+  // information to Monaco's TS worker. Registering on both defaults means a
+  // JS-mode editor would also see the types, and avoids the subtle per-
+  // language lib split.
+  tsModule.typescriptDefaults.addExtraLib(
+    treeGexSource,
+    'file:///node_modules/tree-gex/index.d.ts',
   );
-
-  monaco.editor.createModel(
-    'declare const ast: unknown;',
-    'javascript',
-    monaco.Uri.parse('file:///globals.d.ts'),
+  tsModule.typescriptDefaults.addExtraLib(globalsSource, 'file:///globals.d.ts');
+  tsModule.javascriptDefaults.addExtraLib(
+    treeGexSource,
+    'file:///node_modules/tree-gex/index.d.ts',
   );
-}
+  tsModule.javascriptDefaults.addExtraLib(globalsSource, 'file:///globals.d.ts');
 
-function registerSemanticTokens() {
-  if (semanticProviderRegistered) return;
-  semanticProviderRegistered = true;
-  const provider = createTreegexSemanticProvider();
-  // Register for both JS and TS — same acorn parser handles both code
-  // shapes (TS annotations aren't used in the transform editor).
-  monaco.languages.registerDocumentSemanticTokensProvider('javascript', provider);
-  monaco.languages.registerDocumentSemanticTokensProvider('typescript', provider);
-}
-
-function defineTreegexTheme() {
-  if (themeDefined) return;
-  themeDefined = true;
-  // Define a theme that layers our semantic token colors on top of the VS
-  // light theme. Monaco auto-picks up the theme by name from editor options.
-  monaco.editor.defineTheme('tree-gex-vs', {
-    base: 'vs',
-    inherit: true,
-    rules: TREEGEX_THEME_RULES,
-    colors: {},
+  // Keep the TS worker from flagging the module-resolution artifacts the
+  // type-def files rely on. `esModuleInterop` lets `import * as w` work
+  // against the `declare module` form, and targeting a modern lib means
+  // newer syntax in the transform code doesn't trip spurious errors.
+  tsModule.typescriptDefaults.setCompilerOptions({
+    target: tsModule.ScriptTarget.ESNext,
+    module: tsModule.ModuleKind.ESNext,
+    moduleResolution: tsModule.ModuleResolutionKind.NodeJs,
+    allowNonTsExtensions: true,
+    esModuleInterop: true,
+    allowSyntheticDefaultImports: true,
+    strict: false,
+  });
+  tsModule.javascriptDefaults.setCompilerOptions({
+    target: tsModule.ScriptTarget.ESNext,
+    module: tsModule.ModuleKind.ESNext,
+    moduleResolution: tsModule.ModuleResolutionKind.NodeJs,
+    allowNonTsExtensions: true,
+    esModuleInterop: true,
+    allowSyntheticDefaultImports: true,
+    strict: false,
   });
 }
 
@@ -82,17 +108,10 @@ export default class TreeGexEditor extends Editor {
   _lastHoverOffset: number | null = null;
 
   componentDidMount() {
-    configureTypeDefs();
-    defineTreegexTheme();
-    void ensureLanguageRegistered('javascript').then(() => {
-      registerSemanticTokens();
-    });
-    // Load TS tokenizer so hover popups can highlight TypeScript code blocks.
-    void ensureLanguageRegistered('typescript');
+    // Load the TS tokenizer and rich language service (IntelliSense, hover,
+    // signature help, diagnostics). Both land in the same TS worker instance.
+    void ensureLanguageRegistered('typescript').then(() => configureTypeDefs());
     super.componentDidMount();
-    if (this.monacoEditor) {
-      monaco.editor.setTheme('tree-gex-vs');
-    }
     this._bindHoverHandlers();
   }
 
@@ -225,5 +244,9 @@ export default class TreeGexEditor extends Editor {
 }
 
 TreeGexEditor.defaultProps = Object.assign({}, Editor.defaultProps, {
-  mode: 'javascript',
+  // Native TypeScript mode — Monaco's built-in TS contribution already
+  // handles tokenization, and the rich TS language service it loads provides
+  // semantic coloring, IntelliSense, signature help, hover info, and
+  // diagnostics without us writing a parser.
+  mode: 'typescript',
 });
