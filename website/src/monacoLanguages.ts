@@ -131,12 +131,12 @@ const basicLanguageLoaders: Record<string, () => Promise<unknown>> = {
 };
 
 // Rich language service loaders (IntelliSense, validation, etc.)
-// Only enabled for 'javascript' — the TS contribution registers the
-// JS/TS language service worker which provides IntelliSense for JS models.
-// The tree-gex editor uses 'javascript' mode (not 'typescript') to leverage
-// this worker, since the TS worker can't sync models in Vite dev mode.
+// The TS contribution registers a shared JS/TS language service worker
+// that provides IntelliSense and (when enabled) semantic highlighting for
+// both JS and TS models.
 const richLanguageLoaders: Record<string, () => Promise<unknown>> = {
   javascript: loadRichTS,
+  typescript: loadRichTS,
 };
 
 const registrationPromises = new Map<string, Promise<void>>();

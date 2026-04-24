@@ -3,11 +3,14 @@ import Editor from './Editor';
 import type { EditorProps } from './Editor';
 import { ensureLanguageRegistered } from '../monacoLanguages';
 import { findHoverBoundary } from '../utils/treegexHoverBoundary';
+import { createTreegexSemanticProvider, TREEGEX_THEME_RULES } from './treegexSemanticTokens';
 
 // tree-gex type definitions for Monaco IntelliSense.
 import treeGexDts from '../treegex.d.ts.txt?raw';
 
 let configured = false;
+let semanticProviderRegistered = false;
+let themeDefined = false;
 
 /**
  * Create hidden models containing type definitions.
@@ -35,6 +38,29 @@ function configureTypeDefs() {
   );
 }
 
+function registerSemanticTokens() {
+  if (semanticProviderRegistered) return;
+  semanticProviderRegistered = true;
+  const provider = createTreegexSemanticProvider();
+  // Register for both JS and TS — same acorn parser handles both code
+  // shapes (TS annotations aren't used in the transform editor).
+  monaco.languages.registerDocumentSemanticTokensProvider('javascript', provider);
+  monaco.languages.registerDocumentSemanticTokensProvider('typescript', provider);
+}
+
+function defineTreegexTheme() {
+  if (themeDefined) return;
+  themeDefined = true;
+  // Define a theme that layers our semantic token colors on top of the VS
+  // light theme. Monaco auto-picks up the theme by name from editor options.
+  monaco.editor.defineTheme('tree-gex-vs', {
+    base: 'vs',
+    inherit: true,
+    rules: TREEGEX_THEME_RULES,
+    colors: {},
+  });
+}
+
 type TreeGexEditorProps = EditorProps & {
   /** When true, hovering over tree-gex code draws a boundary around the
    *  sub-expression that would be captured and drives the transform's
@@ -57,10 +83,16 @@ export default class TreeGexEditor extends Editor {
 
   componentDidMount() {
     configureTypeDefs();
-    void ensureLanguageRegistered('javascript');
+    defineTreegexTheme();
+    void ensureLanguageRegistered('javascript').then(() => {
+      registerSemanticTokens();
+    });
     // Load TS tokenizer so hover popups can highlight TypeScript code blocks.
     void ensureLanguageRegistered('typescript');
     super.componentDidMount();
+    if (this.monacoEditor) {
+      monaco.editor.setTheme('tree-gex-vs');
+    }
     this._bindHoverHandlers();
   }
 

@@ -159,6 +159,9 @@ export default class Editor extends React.Component<EditorProps, { value: string
       overviewRulerLanes: 0,
       hideCursorInOverviewRuler: true,
       overviewRulerBorder: false,
+      // Let semantic-token providers (ours, for the tree-gex editor) overlay
+      // token colors on top of the basic tokenizer output.
+      'semanticHighlighting.enabled': true,
       scrollbar: {
         useShadows: false,
       },
