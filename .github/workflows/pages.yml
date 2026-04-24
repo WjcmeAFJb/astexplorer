@@ -48,8 +48,8 @@ jobs:
 
       - name: Sync parsers dist into website node_modules
         run: |
-          mkdir -p website/node_modules/astexplorer-parsers/dist
-          cp -r packages/astexplorer-parsers/dist/. website/node_modules/astexplorer-parsers/dist/
+          mkdir -p packages/website/node_modules/astexplorer-parsers/dist
+          cp -r packages/astexplorer-parsers/dist/. packages/website/node_modules/astexplorer-parsers/dist/
 
       - name: Build website with Pages base path
         # ${{ steps.pages.outputs.base_path }} is "/<repo>" for project pages

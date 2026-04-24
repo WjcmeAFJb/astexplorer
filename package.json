@@ -1,8 +1,7 @@
 {
   "private": true,
   "workspaces": [
-    "packages/*",
-    "website"
+    "packages/*"
   ],
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.18.6",

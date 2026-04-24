@@ -2,7 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
-const websiteNodeModules = path.resolve(__dirname, '..', '..', 'website', 'node_modules');
+const websiteNodeModules = path.resolve(__dirname, '..', 'website', 'node_modules');
 const rootNodeModules = path.resolve(__dirname, '..', '..', 'node_modules');
 
 /** Resolve a path under node_modules, checking website then root (hoisted). */

@@ -4,7 +4,7 @@ set -e
 
 rm -rf out/*
 (
-  cd website/
+  cd packages/website/
   yarn
   if [ "$1" = "--dev" ]; then
     yarn build-dev

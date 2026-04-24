@@ -210,7 +210,7 @@ as possible!
 
 #### How to add a new parser
 
-1. Go to `website/`.
+1. Go to `packages/website/`.
 2. Install the new parser as dependency: `yarn add theParser`
 3. Copy one of the existing examples in `src/parsers/{language}`.
 4. Adjust the code as necessary:
@@ -226,7 +226,7 @@ as possible!
 
 #### How to add a new transformer
 
-0. Go to `website/`.
+0. Go to `packages/website/`.
 1. Install the new transformer as dependency.
 1. Copy one of the existing examples in `src/parsers/{language}/transformers`.
 1. Adjust the code as necessary:
@@ -243,7 +243,7 @@ as possible!
 [`asdf`](https://asdf-vm.com/) switching versions will happen automatically.
 
 1. Clone the repository.
-2. Go to `website/`.
+2. Go to `packages/website/`.
 3. Install all dependencies with `yarn install`
 
 Run `yarn run build` for the final minimized version.

@@ -12,12 +12,12 @@ build-dev:
   cache:
     key: build
     paths:
-      - website/node_modules
+      - packages/website/node_modules
   script:
-    - cd website/
+    - cd packages/website/
     - yarn install --frozen-lockfile
     - yarn build-dev
-    - cd ..
+    - cd ../..
     - ./scripts/inject-rev.sh out/index.html
   artifacts:
     expire_in: 1 days
@@ -79,15 +79,15 @@ build-prod:
   stage: build-prod
   dependencies: []
   script:
-    - cd website/
+    - cd packages/website/
     - yarn install --frozen-lockfile
     - yarn build
-    - cd ..
+    - cd ../..
     - ./scripts/inject-rev.sh out/index.html
   cache:
     key: build
     paths:
-      - website/node_modules
+      - packages/website/node_modules
   when: manual
   allow_failure: false
   artifacts:

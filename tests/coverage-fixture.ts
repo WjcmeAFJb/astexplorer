@@ -59,11 +59,16 @@ export const test = base.extend<{ collectCoverage: void }>({
         converter.applyCoverage(entry.functions);
         const istanbulCov = converter.toIstanbul();
 
-        // Filter to only website/src/ files (source-mapped origins)
+        // Filter to only website src/ files (source-mapped origins).
+        // Accept both the new (packages/website/src/) and legacy
+        // (website/src/) paths so an old checkout's built assets still map.
         const filtered: Record<string, any> = {};
         for (const [filePath, data] of Object.entries(istanbulCov)) {
-          // Accept paths that contain website/src/ (source-mapped from built files)
-          if (filePath.includes('/website/src/') && !filePath.includes('node_modules')) {
+          if (filePath.includes('node_modules')) continue;
+          if (
+            filePath.includes('/packages/website/src/') ||
+            filePath.includes('/website/src/')
+          ) {
             filtered[filePath] = data;
           }
         }

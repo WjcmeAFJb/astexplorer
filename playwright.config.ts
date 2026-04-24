@@ -9,7 +9,7 @@ export default defineConfig({
   },
   webServer: {
     // Self-contained: builds the website with Vite, then serves it.
-    command: 'cd website && npx vite build --mode development && cd .. && npx serve -l 8080 out',
+    command: 'cd packages/website && npx vite build --mode development && cd ../.. && npx serve -l 8080 out',
     port: 8080,
     reuseExistingServer: !process.env.CI,
     timeout: 600_000, // build can take several minutes

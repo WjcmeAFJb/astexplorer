@@ -1,1 +1,1 @@
-cd website && npx lint-staged
+cd packages/website && npx lint-staged

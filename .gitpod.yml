@@ -1,6 +1,6 @@
 
 tasks:
-  - init: cd website && yarn 
+  - init: cd packages/website && yarn
     command: yarn dev
   - init: fish
 

@@ -2,7 +2,7 @@ const path = require('path');
 
 // Resolve webpack and build tools from the website's node_modules (the host project).
 // With yarn workspaces, dependencies may be hoisted to the root node_modules.
-const websiteNodeModules = path.resolve(__dirname, '..', '..', 'website', 'node_modules');
+const websiteNodeModules = path.resolve(__dirname, '..', 'website', 'node_modules');
 const rootNodeModules = path.resolve(__dirname, '..', '..', 'node_modules');
 const fs = require('fs');
 

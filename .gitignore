@@ -3,9 +3,9 @@ node_modules
 .idea
 package-lock.json
 test-results
-website/.stryker-tmp
-website/coverage
-website/reports
+packages/website/.stryker-tmp
+packages/website/coverage
+packages/website/reports
+packages/website/dev-dist
 .stryker-tmp
 coverage/
-website/dev-dist

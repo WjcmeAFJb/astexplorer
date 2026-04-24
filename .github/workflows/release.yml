@@ -54,12 +54,12 @@ jobs:
 
       - name: Sync parsers dist into website node_modules
         # yarn v1 treats the `file:` dep as a copy rather than a symlink, so
-        # website/node_modules/astexplorer-parsers is populated at install time
-        # — before dist exists. Copy the freshly built dist over that copy so
-        # vite can resolve the package's entry points.
+        # packages/website/node_modules/astexplorer-parsers is populated at
+        # install time — before dist exists. Copy the freshly built dist
+        # over that copy so vite can resolve the package's entry points.
         run: |
-          mkdir -p website/node_modules/astexplorer-parsers/dist
-          cp -r packages/astexplorer-parsers/dist/. website/node_modules/astexplorer-parsers/dist/
+          mkdir -p packages/website/node_modules/astexplorer-parsers/dist
+          cp -r packages/astexplorer-parsers/dist/. packages/website/node_modules/astexplorer-parsers/dist/
 
       - name: Build website
         run: yarn workspace astexplorer build

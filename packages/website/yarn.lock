@@ -3038,7 +3038,7 @@ astexplorer-go@^1.0.0:
   resolved "https://registry.yarnpkg.com/astexplorer-go/-/astexplorer-go-1.0.0.tgz#b871657b1e84eecc8d8d4ea27a8da310fa8624dc"
   integrity sha512-1pK63GodoGdzow6JNNvOnMNsqR1Vpq59vFk5Y/ZeyXlU6U8PtBC0Lm0i4QI6wIN9xUaY2AnB/MXVuXBsi6LWpQ==
 
-"astexplorer-parsers@file:../packages/astexplorer-parsers":
+"astexplorer-parsers@file:../astexplorer-parsers":
   version "1.0.0"
 
 astexplorer-refmt@^1.0.1:

@@ -9,8 +9,8 @@ function copyParsersChunks() {
   return {
     name: 'copy-parsers-chunks',
     writeBundle(options: { dir?: string }) {
-      const parsersDir = path.resolve(__dirname, '../packages/astexplorer-parsers/dist');
-      const outDir = options.dir || path.resolve(__dirname, '../out');
+      const parsersDir = path.resolve(__dirname, '../astexplorer-parsers/dist');
+      const outDir = options.dir || path.resolve(__dirname, '../../out');
       const assetsDir = path.join(outDir, 'assets');
       // Copy parsers main ESM module so chunks resolve relative to it
       const parsersOut = path.join(assetsDir, 'parsers');
@@ -153,7 +153,7 @@ export default defineConfig(({ mode }) => ({
   },
 
   build: {
-    outDir: '../out',
+    outDir: '../../out',
     emptyOutDir: true,
     sourcemap: mode === 'development',
     target: 'es2022',

@@ -29,7 +29,7 @@ function build {
   echo "Building..."
   rm -rf out/*
   (
-    cd website/
+    cd packages/website/
     yarn && yarn build
   )
 
@@ -61,7 +61,7 @@ function build {
 }
 
 function bump_cache_breaker {
-  cache_breaker_file=$WORKING_DIR/website/CACHE_BREAKER
+  cache_breaker_file=$WORKING_DIR/packages/website/CACHE_BREAKER
   oldnum=$(cat $cache_breaker_file)
   newnum=$(expr $oldnum + 1)
   echo $newnum > $cache_breaker_file

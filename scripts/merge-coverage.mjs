@@ -6,7 +6,7 @@
  * Usage: node scripts/merge-coverage.mjs
  *
  * Reads from:
- *   - website/coverage/coverage-final.json (vitest)
+ *   - packages/website/coverage/coverage-final.json (vitest)
  *   - coverage/playwright/*.json (Playwright)
  *
  * Writes to:
@@ -35,11 +35,18 @@ function loadJson(filePath) {
 }
 
 function normalizePath(p) {
-  // Normalize all paths to be relative to the website/src directory
-  // This ensures vitest and Playwright coverage use the same keys
-  const srcIdx = p.indexOf('/website/src/');
+  // Normalize all paths to be relative to the website src directory. This
+  // ensures vitest and Playwright coverage use the same keys regardless of
+  // whether the file resolved through the old or new layout.
+  const srcMarker = '/packages/website/src/';
+  const legacyMarker = '/website/src/';
+  const srcIdx = p.indexOf(srcMarker);
   if (srcIdx !== -1) {
-    return path.resolve(ROOT, 'website', 'src', p.slice(srcIdx + '/website/src/'.length));
+    return path.resolve(ROOT, 'packages', 'website', 'src', p.slice(srcIdx + srcMarker.length));
+  }
+  const legacyIdx = p.indexOf(legacyMarker);
+  if (legacyIdx !== -1) {
+    return path.resolve(ROOT, 'packages', 'website', 'src', p.slice(legacyIdx + legacyMarker.length));
   }
   return p;
 }
@@ -59,7 +66,9 @@ function normalizeReport(report) {
 const coverageMap = createCoverageMap({});
 
 // 1. Load vitest coverage (primary source — accurate statement boundaries)
-const vitestCov = loadJson(path.join(ROOT, 'website', 'coverage', 'coverage-final.json'));
+const vitestCov = loadJson(
+  path.join(ROOT, 'packages', 'website', 'coverage', 'coverage-final.json'),
+);
 const vitestFiles = new Set();
 if (vitestCov) {
   const normalized = normalizeReport(vitestCov);
@@ -67,7 +76,9 @@ if (vitestCov) {
   for (const key of Object.keys(normalized)) vitestFiles.add(key);
   console.log(`Loaded vitest coverage: ${vitestFiles.size} files`);
 } else {
-  console.log('No vitest coverage found (run: cd website && npx vitest run --coverage)');
+  console.log(
+    'No vitest coverage found (run: cd packages/website && npx vitest run --coverage)',
+  );
 }
 
 // 2. Load Playwright coverage — ONLY for files NOT already covered by vitest.
