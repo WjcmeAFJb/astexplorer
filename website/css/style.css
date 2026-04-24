@@ -398,10 +398,11 @@ li.entry {
   box-shadow: 0 0 0 1px rgba(255, 140, 0, 0.6);
 }
 
+/* Monaco renders multi-line ranges as a stack of per-line overlays, so using
+   box-shadow here produces visible seams between lines. A plain background
+   fill reads as a single contiguous highlight across the matched range. */
 .monaco-editor .cursor-matched {
-  background-color: rgba(255, 140, 0, 0.25);
-  border-radius: 2px;
-  box-shadow: inset 0 0 0 1px rgba(255, 140, 0, 0.6);
+  background-color: rgba(255, 165, 0, 0.28);
 }
 
 .entry > .value {
@@ -572,11 +573,11 @@ body .monaco-editor .suggest-widget {
   color: #a14400;
 }
 
-/* Boundary outline for the tree-gex sub-expression under the mouse. */
+/* Boundary highlight for the tree-gex sub-expression under the mouse.
+   Uses a plain background fill (no box-shadow) so multi-line ranges render
+   as a single contiguous highlight rather than a stack of outlined lines. */
 .monaco-editor .tg-hover-boundary {
-  background-color: rgba(255, 140, 0, 0.1);
-  box-shadow: inset 0 0 0 1px rgba(255, 140, 0, 0.9);
-  border-radius: 2px;
+  background-color: rgba(255, 165, 0, 0.3);
 }
 
 .settings-drawer__expanded {
