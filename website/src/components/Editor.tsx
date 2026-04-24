@@ -25,6 +25,11 @@ export type EditorProps = {
   mode?: string;
   enableFormatting?: boolean;
   keyMap?: string;
+  /** Pubsub topic to subscribe for cursor-capture range highlights. Defaults
+   *  to `CURSOR_CAPTURE_RANGES` (source-code offsets). The transform output
+   *  editor passes `CURSOR_CAPTURE_OUTPUT_RANGES` so it paints ranges that
+   *  refer to the printed output, not the original source. */
+  captureTopic?: string;
 };
 
 export default class Editor extends React.Component<EditorProps, { value: string }> {
@@ -275,7 +280,7 @@ export default class Editor extends React.Component<EditorProps, { value: string
           }
         }),
 
-        subscribe('CURSOR_CAPTURE_RANGES', (data: unknown) => {
+        subscribe(this.props.captureTopic ?? 'CURSOR_CAPTURE_RANGES', (data: unknown) => {
           const editor = this.monacoEditor;
           if (!editor) return;
           const model = editor.getModel();

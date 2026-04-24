@@ -176,6 +176,43 @@ export default w.walkReplace(ast, {
     expect(result.cursorNodes.length).toBe(2);
   });
 
+  test('cursorOutputNodes point into the transformed output', async () => {
+    const cat = bundle.getCategoryByID('javascript');
+    const tg = cat.transformers.find((t: Transformer) => t.id.startsWith('tree-gex'));
+    const real = await loadTransformerAsync(tg);
+
+    // walkReplace renames the identifier so the output has different positions
+    // from the source. cursorOutputNodes should carry ranges that index into
+    // the output string.
+    const code = 'function printTips() {} function showHelp() {}';
+    const transformCode = `import * as w from 'tree-gex';
+export default w.walkReplace(ast, {
+  type: 'FunctionDeclaration',
+  id: {
+    type: 'Identifier',
+    name: w.transform(w.string(), (name) => name.split('').reverse().join(''))
+  }
+});
+`;
+    const cursor = transformCode.indexOf('Identifier');
+    const result = tg.transform(real, transformCode, code, cursor) as {
+      code: string;
+      cursorNodes: unknown[];
+      cursorOutputNodes: unknown[];
+    };
+    expect(Array.isArray(result.cursorOutputNodes)).toBe(true);
+    expect(result.cursorOutputNodes.length).toBe(2);
+    // Each output capture should slice the reversed name from the printed code.
+    const reversed = ['spiTtnirp', 'pleHwohs'];
+    for (const n of result.cursorOutputNodes as Array<{
+      start: number;
+      end: number;
+    }>) {
+      const slice = result.code.slice(n.start, n.end);
+      expect(reversed).toContain(slice);
+    }
+  });
+
   test('cursor inside a helper (outside walker call) still captures', async () => {
     const cat = bundle.getCategoryByID('javascript');
     const tg = cat.transformers.find((t: Transformer) => t.id.startsWith('tree-gex'));

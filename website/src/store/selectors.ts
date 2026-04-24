@@ -146,6 +146,10 @@ export function getTransformCursorNodes(state: AppState): unknown[] {
   return state.workbench.transform.transformResult?.cursorNodes ?? [];
 }
 
+export function getTransformCursorOutputNodes(state: AppState): unknown[] {
+  return state.workbench.transform.transformResult?.cursorOutputNodes ?? [];
+}
+
 export function getTransformHoverMode(state: AppState): boolean {
   return state.workbench.transform.hoverMode === true;
 }

@@ -41,16 +41,24 @@ async function transform(
     let result = await transformer.transform(resolved, transformCode, code, maybeCursor);
     let map: SourceMapConsumer | null = null;
     let cursorNodes: unknown[] | undefined;
+    let cursorOutputNodes: unknown[] | undefined;
     if (typeof result !== 'string') {
       if (isSourceMapConsumer(result.map)) {
         map = result.map;
       }
-      if (Array.isArray((result as { cursorNodes?: unknown[] }).cursorNodes)) {
-        cursorNodes = (result as { cursorNodes?: unknown[] }).cursorNodes;
-      }
+      const rObj = result as { cursorNodes?: unknown[]; cursorOutputNodes?: unknown[] };
+      if (Array.isArray(rObj.cursorNodes)) cursorNodes = rObj.cursorNodes;
+      if (Array.isArray(rObj.cursorOutputNodes)) cursorOutputNodes = rObj.cursorOutputNodes;
       result = result.code;
     }
-    return { result, map, version: realTransformerVersion, error: null, cursorNodes };
+    return {
+      result,
+      map,
+      version: realTransformerVersion,
+      error: null,
+      cursorNodes,
+      cursorOutputNodes,
+    };
   } catch (err) {
     const error = err instanceof Error ? err : new Error(String(err));
     return {

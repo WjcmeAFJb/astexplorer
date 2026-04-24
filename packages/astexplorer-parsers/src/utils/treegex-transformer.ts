@@ -18,7 +18,14 @@ type TreeGexConfig = {
 
 export type TreeGexTransformResult = {
   code: string;
+  /** Captures computed against the SOURCE AST — positions point into the
+   *  user's original code (drive source-code / AST / JSON highlights). */
   cursorNodes: unknown[];
+  /** Captures re-computed against the parsed output code — positions point
+   *  into `code` (drive the transform output editor's highlights). Empty
+   *  when the output isn't a parseable source (e.g. JSON from
+   *  accumWalkMatch). */
+  cursorOutputNodes: unknown[];
 };
 
 type ParserLike = {
@@ -93,33 +100,53 @@ export default function createTreeGexTransformer(config: TreeGexConfig) {
       // 2. Cursor-capture: run an instrumented copy of the user's module
       //    against the PARSER'S AST (matching the AST view), so captured
       //    node references align with what's rendered for highlighting.
+      //
+      //    When the user's transform prints back into source code (e.g. JS
+      //    walkReplace → recast), also re-run the instrumented module
+      //    against the parsed OUTPUT so we can light up the equivalent
+      //    nodes in the transform result pane — their positions diverge
+      //    from the input (names get rewritten, whitespace reflows).
       let cursorNodes: unknown[] = [];
+      let cursorOutputNodes: unknown[] = [];
       if (typeof cursor === 'number' && parser && realParser) {
         const rewrite = buildCursorRewrite(transformCode, cursor);
         if (rewrite) {
-          try {
-            const parserAst = parser.parse(realParser, code, parser.getDefaultOptions());
-            const transpiledCursor = transpile(rewrite.code);
-            const cursorMod = compileModule(transpiledCursor, {
-              ast: parserAst,
+          const compile = (ast: unknown) => {
+            const transpiled = transpile(rewrite.code);
+            const mod = compileModule(transpiled, {
+              ast,
               require(name: string) {
                 if (name === 'tree-gex') return tg;
                 throw new Error(`Cannot find module '${name}'`);
               },
               [CURSOR_WRAP_GLOBAL]: cursorWrap,
             });
-            const matches = (cursorMod as Record<string, unknown>)[CURSOR_MATCHES_NAME];
-            cursorNodes = extractCursorCaptures(matches).map((c) => c.value);
+            const matches = (mod as Record<string, unknown>)[CURSOR_MATCHES_NAME];
+            return extractCursorCaptures(matches).map((c) => c.value);
+          };
+
+          try {
+            const parserAst = parser.parse(realParser, code, parser.getDefaultOptions());
+            cursorNodes = compile(parserAst);
           } catch {
             // Instrumentation is best-effort; swallow errors so highlighting
             // simply doesn't appear if the cursor rewrite produces broken code.
             cursorNodes = [];
           }
+
+          try {
+            const outputAst = parser.parse(realParser, output, parser.getDefaultOptions());
+            cursorOutputNodes = compile(outputAst);
+          } catch {
+            // Output isn't parseable (e.g. JSON from accumWalkMatch) — just
+            // skip output-pane highlights.
+            cursorOutputNodes = [];
+          }
         }
       }
 
-      if (cursorNodes.length > 0) {
-        return { code: output, cursorNodes };
+      if (cursorNodes.length > 0 || cursorOutputNodes.length > 0) {
+        return { code: output, cursorNodes, cursorOutputNodes };
       }
       return output;
     },

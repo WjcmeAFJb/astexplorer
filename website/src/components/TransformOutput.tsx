@@ -2,7 +2,10 @@
 import Editor from './Editor';
 import JSONEditor from './JSONEditor';
 import * as React from 'react';
+import { publish } from '../utils/pubsub';
 import type { TransformResult, SourceMapConsumer } from '../types';
+
+const OUTPUT_CAPTURE_TOPIC = 'CURSOR_CAPTURE_OUTPUT_RANGES';
 
 function safeStringify(value: unknown, space: number): string {
   try {
@@ -61,6 +64,42 @@ export default function TransformOutput({
     [transformResult],
   );
 
+  // Extract ranges from cursorOutputNodes. These nodes came from a parse of
+  // the transformer's output, so their `start`/`end` are already offsets
+  // into the output string — no tree-adapter indirection needed.
+  const outputRanges = React.useMemo(() => {
+    const nodes = transformResult?.cursorOutputNodes ?? [];
+    const ranges: [number, number][] = [];
+    const seen = new Set<string>();
+    for (const n of nodes) {
+      if (!n || typeof n !== 'object') continue;
+      const rec = n as { start?: unknown; end?: unknown; range?: unknown };
+      let start: number | undefined;
+      let end: number | undefined;
+      if (typeof rec.start === 'number' && typeof rec.end === 'number') {
+        start = rec.start;
+        end = rec.end;
+      } else if (
+        Array.isArray(rec.range) &&
+        typeof rec.range[0] === 'number' &&
+        typeof rec.range[1] === 'number'
+      ) {
+        start = rec.range[0];
+        end = rec.range[1];
+      }
+      if (start === undefined || end === undefined) continue;
+      const key = `${start}:${end}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      ranges.push([start, end]);
+    }
+    return ranges;
+  }, [transformResult]);
+
+  React.useEffect(() => {
+    publish(OUTPUT_CAPTURE_TOPIC, { ranges: outputRanges });
+  }, [outputRanges]);
+
   return (
     <div className={`output highlight${transforming === true ? ' loading' : ''}`}>
       {transforming === true && (
@@ -83,6 +122,7 @@ export default function TransformOutput({
           key="output"
           readOnly={true}
           value={result.result}
+          captureTopic={OUTPUT_CAPTURE_TOPIC}
         />
       ) : (
         <JSONEditor className="container no-toolbar" value={safeStringify(result.result, 2)} />

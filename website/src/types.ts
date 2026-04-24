@@ -110,8 +110,11 @@ export type TransformResult = {
   error?: Error | null;
   map?: SourceMapConsumer | null;
   version?: string;
-  /** For tree-gex: AST nodes captured by the cursor-driven group. */
+  /** tree-gex cursor capture: nodes with positions in the original source. */
   cursorNodes?: unknown[];
+  /** tree-gex cursor capture: nodes with positions in the transform output
+   *  (empty when the output isn't parseable source). */
+  cursorOutputNodes?: unknown[];
 };
 
 export type WorkbenchState = {
